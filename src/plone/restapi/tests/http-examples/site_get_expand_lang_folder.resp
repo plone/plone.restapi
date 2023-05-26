@@ -18,6 +18,110 @@ Content-Type: application/json
         "navigation": {
             "@id": "http://localhost:55001/plone/en/@navigation"
         },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/en/@navroot",
+            "navroot": {
+                "@components": {
+                    "actions": {
+                        "@id": "http://localhost:55001/plone/en/@actions"
+                    },
+                    "aliases": {
+                        "@id": "http://localhost:55001/plone/en/@aliases"
+                    },
+                    "breadcrumbs": {
+                        "@id": "http://localhost:55001/plone/en/@breadcrumbs"
+                    },
+                    "contextnavigation": {
+                        "@id": "http://localhost:55001/plone/en/@contextnavigation"
+                    },
+                    "navigation": {
+                        "@id": "http://localhost:55001/plone/en/@navigation"
+                    },
+                    "navroot": {
+                        "@id": "http://localhost:55001/plone/en/@navroot"
+                    },
+                    "site": {
+                        "@id": "http://localhost:55001/plone/en/@site"
+                    },
+                    "translations": {
+                        "@id": "http://localhost:55001/plone/en/@translations"
+                    },
+                    "types": {
+                        "@id": "http://localhost:55001/plone/en/@types"
+                    },
+                    "workflow": {
+                        "@id": "http://localhost:55001/plone/en/@workflow"
+                    }
+                },
+                "@id": "http://localhost:55001/plone/en",
+                "@type": "LRF",
+                "UID": "00000000000000000000000000000001",
+                "allow_discussion": false,
+                "contributors": [],
+                "created": "1995-07-31T13:45:00",
+                "creators": [
+                    "admin"
+                ],
+                "description": "",
+                "effective": null,
+                "exclude_from_nav": true,
+                "expires": null,
+                "id": "en",
+                "is_folderish": true,
+                "items": [
+                    {
+                        "@id": "http://localhost:55001/plone/en/assets",
+                        "@type": "LIF",
+                        "description": "",
+                        "review_state": "published",
+                        "title": "Assets",
+                        "type_title": "Language Independent Folder"
+                    },
+                    {
+                        "@id": "http://localhost:55001/plone/en/test-document",
+                        "@type": "Document",
+                        "description": "",
+                        "review_state": "private",
+                        "title": "Test document",
+                        "type_title": "Page"
+                    }
+                ],
+                "items_total": 2,
+                "language": {
+                    "title": "English",
+                    "token": "en"
+                },
+                "layout": "folder_listing",
+                "lock": {},
+                "modified": "1995-07-31T17:30:00",
+                "next_item": {
+                    "@id": "http://localhost:55001/plone/de",
+                    "@type": "LRF",
+                    "description": "",
+                    "title": "Deutsch",
+                    "type_title": "Language Root Folder"
+                },
+                "parent": {
+                    "@id": "http://localhost:55001/plone",
+                    "@type": "Plone Site",
+                    "description": "",
+                    "title": "Plone site",
+                    "type_title": "Plone Site"
+                },
+                "previous_item": {},
+                "review_state": "published",
+                "rights": "",
+                "subjects": [],
+                "title": "English",
+                "type_title": "Language Root Folder",
+                "version": "current",
+                "working_copy": null,
+                "working_copy_of": null
+            }
+        },
+        "site": {
+            "@id": "http://localhost:55001/plone/en/@site"
+        },
         "translations": {
             "@id": "http://localhost:55001/plone/en/@translations"
         },
@@ -30,7 +134,7 @@ Content-Type: application/json
     },
     "@id": "http://localhost:55001/plone/en",
     "@type": "LRF",
-    "UID": "SomeUUID000000000000000000000001",
+    "UID": "00000000000000000000000000000001",
     "allow_discussion": false,
     "contributors": [],
     "created": "1995-07-31T13:45:00",
@@ -49,14 +153,16 @@ Content-Type: application/json
             "@type": "LIF",
             "description": "",
             "review_state": "published",
-            "title": "Assets"
+            "title": "Assets",
+            "type_title": "Language Independent Folder"
         },
         {
             "@id": "http://localhost:55001/plone/en/test-document",
             "@type": "Document",
             "description": "",
             "review_state": "private",
-            "title": "Test document"
+            "title": "Test document",
+            "type_title": "Page"
         }
     ],
     "items_total": 2,
@@ -71,19 +177,22 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/de",
         "@type": "LRF",
         "description": "",
-        "title": "Deutsch"
+        "title": "Deutsch",
+        "type_title": "Language Root Folder"
     },
     "parent": {
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
         "description": "",
-        "title": "Plone site"
+        "title": "Plone site",
+        "type_title": "Plone Site"
     },
     "previous_item": {},
     "review_state": "published",
     "rights": "",
     "subjects": [],
     "title": "English",
+    "type_title": "Language Root Folder",
     "version": "current",
     "working_copy": null,
     "working_copy_of": null

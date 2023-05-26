@@ -225,7 +225,6 @@ class TestDocumentation(TestDocumentationBase):
         super().setUp()
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
-
         transaction.commit()
 
     def tearDown(self):
@@ -2241,6 +2240,25 @@ class TestPAMDocumentation(TestDocumentationBase):
     def setUp(self):
         super().setUp()
 
+        #
+        # We manually set the UIDs for LRFs here because the static uuid
+        # generator is not applied for LRFs.
+        # When we have tried to apply it for LRFs we have had several
+        # utility registration problems.
+        #
+        setattr(
+            self.portal.en, "_plone.uuid", "00000000000000000000000000000001"
+        )
+        setattr(
+            self.portal.es, "_plone.uuid", "00000000000000000000000000000002"
+        )
+        setattr(
+            self.portal.fr, "_plone.uuid", "00000000000000000000000000000003"
+        )
+        setattr(
+            self.portal.de, "_plone.uuid", "00000000000000000000000000000004"
+        )
+
         en_id = self.portal["en"].invokeFactory(
             "Document", id="test-document", title="Test document"
         )
@@ -2330,45 +2348,31 @@ class TestPAMDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@navroot")
         save_request_and_response_for_docs("navroot_site_get", response)
 
-    #
-    # These 2 tests are commented because the UID generation for
-    # LRFs is not consistent
-    # We have Static UUID generation but it is not applied when the LRFs
-    # are created.
-    # When trying to apply it before LRF generation there are some
-    # global site registry registration issues that I wasn't able to fix.
-    #
-    # def test_site_navroot_language_folder_get(self):
-    #     response = self.api_session.get("/en/@navroot")
-    #     save_request_and_response_for_docs("navroot_lang_folder_get", response)
+    def test_site_navroot_language_folder_get(self):
+        response = self.api_session.get("/en/@navroot")
+        save_request_and_response_for_docs("navroot_lang_folder_get", response)
 
-    # def test_site_navroot_language_content_get(self):
-    #     response = self.api_session.get("/en/test-document/@navroot")
-    #     save_request_and_response_for_docs("navroot_lang_content_get", response)
+    def test_site_navroot_language_content_get(self):
+        response = self.api_session.get("/en/test-document/@navroot")
+        save_request_and_response_for_docs(
+            "navroot_lang_content_get", response
+        )
 
     def test_site_expansion_navroot(self):
         response = self.api_session.get("?expand=navroot")
         save_request_and_response_for_docs("site_get_expand_navroot", response)
 
-    #
-    # These 2 tests are commented because the UID generation for
-    # LRFs is not consistent
-    # We have Static UUID generation but it is not applied when the LRFs
-    # are created.
-    # When trying to apply it before LRF generation there are some
-    # global site registry registration issues that I wasn't able to fix.
-    #
-    # def test_site_expansion_navroot_language_folder(self):
-    #     response = self.api_session.get("/en?expand=navroot")
-    #     save_request_and_response_for_docs(
-    #         "site_get_expand_lang_folder", response
-    #     )
+    def test_site_expansion_navroot_language_folder(self):
+        response = self.api_session.get("/en?expand=navroot")
+        save_request_and_response_for_docs(
+            "site_get_expand_lang_folder", response
+        )
 
-    # def test_site_expansion_navroot_language_folder_content(self):
-    #     response = self.api_session.get("/en/test-document?expand=navroot")
-    #     save_request_and_response_for_docs(
-    #         "site_get_expand_lang_folder_content", response
-    #     )
+    def test_site_expansion_navroot_language_folder_content(self):
+        response = self.api_session.get("/en/test-document?expand=navroot")
+        save_request_and_response_for_docs(
+            "site_get_expand_lang_folder_content", response
+        )
 
 
 class TestIterateDocumentation(TestDocumentationBase):
