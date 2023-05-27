@@ -60,6 +60,7 @@
       factory="plone.restapi.controlpanels.rules.ContentRulesControlpanel"
       provides="plone.restapi.controlpanels.interfaces.IContentRulesControlpanel"
       name="content-rules"
+      zcml:condition="installed plone.app.contentrules"
       />
 
   <configure zcml:condition="have plone-5">
