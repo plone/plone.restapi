@@ -33,7 +33,6 @@
   <include package=".registry" />
   <include package=".relations" />
   <include package=".roles" />
-  <include package=".rules" />
   <include package=".search" />
   <include package=".site" />
   <include package=".system" />
@@ -64,5 +63,9 @@
   <include
       package=".tiles"
       zcml:condition="installed plone.tiles"
+      />
+  <include
+      package=".rules"
+      zcml:condition="installed plone.app.contentrules"
       />
 </configure>

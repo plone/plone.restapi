@@ -3,6 +3,8 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     >
 
+  <include package="plone.app.contentrules" />
+
   <plone:service
       method="GET"
       factory=".get.ContentRulesGet"
