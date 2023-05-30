@@ -1,0 +1,3 @@
+Fix possible startup error by explicitly loading ``plone.app.contentrules`` zcml.
+Also: only load code related to contentrules when this package is available.
+[maurits]
