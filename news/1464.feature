@@ -1,1 +1,1 @@
-@site and @navroot endpoints
+Added `@site` and `@navroot` endpoints. @erral 
