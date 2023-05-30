@@ -38,7 +38,7 @@ If you request the `@navroot` of a given content item in the site:
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.req
 ```
 
-The response will contain the navigation root information for the site:
+The response will contain the navigation root information in the context of that content item:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.resp
 :language: http
