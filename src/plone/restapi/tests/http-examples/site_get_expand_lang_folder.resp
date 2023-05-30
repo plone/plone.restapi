@@ -40,9 +40,6 @@ Content-Type: application/json
                     "navroot": {
                         "@id": "http://localhost:55001/plone/en/@navroot"
                     },
-                    "site": {
-                        "@id": "http://localhost:55001/plone/en/@site"
-                    },
                     "translations": {
                         "@id": "http://localhost:55001/plone/en/@translations"
                     },
@@ -118,9 +115,6 @@ Content-Type: application/json
                 "working_copy": null,
                 "working_copy_of": null
             }
-        },
-        "site": {
-            "@id": "http://localhost:55001/plone/en/@site"
         },
         "translations": {
             "@id": "http://localhost:55001/plone/en/@translations"
