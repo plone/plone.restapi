@@ -31,7 +31,7 @@ The response will contain the navigation root information for the site:
 :language: http
 ```
 
-If you request the `@navroot` of a given content type of the site:
+If you request the `@navroot` of a given content item in the site:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
