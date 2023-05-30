@@ -104,7 +104,7 @@ The response will contain information of the site root with the navigation expan
 :language: http
 ```
 
-When querying a content type inside the root:
+When querying a content item inside the root:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
