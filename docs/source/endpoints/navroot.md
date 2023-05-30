@@ -111,7 +111,7 @@ When querying a content type inside the root:
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get_expansion.req
 ```
 
-The response will contain the information of that content type and navigation root with the site expanded:
+The response will contain the information of that content item with its navigation root information expanded:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get_expansion.resp
 :language: http
