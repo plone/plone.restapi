@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+8.39.1 (2023-05-30)
+-------------------
+
+Bug fixes:
+
+
+- Fix possible startup error by explicitly loading ``plone.app.contentrules`` zcml.
+  Also: only load code related to contentrules when this package is available.
+  [maurits] (#1644)
+
+
 8.39.0 (2023-05-23)
 -------------------
 
