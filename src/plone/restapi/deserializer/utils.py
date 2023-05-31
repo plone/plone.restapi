@@ -32,7 +32,7 @@ def path2uid(context, link):
     if suffix_regexp:
         suffix = suffix_regexp.group(0)
     if suffix:
-        path = path.replace(suffix, '')
+        path = path.replace(suffix, "")
     obj = portal.unrestrictedTraverse(path, None)
     if obj is None or obj == portal:
         return link
