@@ -89,7 +89,7 @@ class SerializeToJson:
         except ValueError:
             # If we're serializing an old version that was renamed or moved,
             # then its id might not be found inside the current object's container.
-            pass
+            result.update({"previous_item": {}, "next_item": {}})
 
         # Insert working copy information
         if WorkingCopyInfo is not None:
