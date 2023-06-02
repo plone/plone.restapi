@@ -31,14 +31,12 @@ contributing/index
 .. include:: ../../README.rst
 ```
 
-
 ## Appendix and Glossary
 
 ```{toctree}
 http-status-codes
 /glossary
 ```
-
 
 ## Index
 
