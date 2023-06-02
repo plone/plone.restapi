@@ -32,6 +32,7 @@ from zope.component import getUtility
 from zope.configuration import xmlconfig
 from zope.interface import implementer
 
+
 import collective.MockMailHost
 import os
 import pkg_resources
@@ -253,7 +254,8 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
 
 PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
 PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,), name="PloneRestApiDXPAMLayer:Integration"
+    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,),
+    name="PloneRestApiDXPAMLayer:Integration",
 )
 PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
@@ -339,7 +341,8 @@ class PloneRestApIBlocksLayer(PloneSandboxLayer):
 
 PLONE_RESTAPI_BLOCKS_FIXTURE = PloneRestApIBlocksLayer()
 PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE,), name="PloneRestApIBlocksLayer:Integration"
+    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE,),
+    name="PloneRestApIBlocksLayer:Integration",
 )
 PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_BLOCKS_FIXTURE, z2.ZSERVER_FIXTURE),
