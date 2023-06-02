@@ -81,10 +81,15 @@ class SerializeToJson:
         }
 
         # Insert next/prev information
-        nextprevious = NextPrevious(obj)
-        result.update(
-            {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
-        )
+        try:
+            nextprevious = NextPrevious(obj)
+            result.update(
+                {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
+            )
+        except ValueError:
+            # If we're serializing an old version that was renamed or moved,
+            # then its id might not be found inside the current object's container.
+            result.update({"previous_item": {}, "next_item": {}})
 
         # Insert working copy information
         if WorkingCopyInfo is not None:
