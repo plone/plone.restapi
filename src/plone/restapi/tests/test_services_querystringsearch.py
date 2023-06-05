@@ -325,6 +325,13 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         response = self.api_session.get("/@querystring-search?query={")
         self.assertEqual(response.status_code, 400)
 
+        # empty query
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={"query": []},
+        )
+        self.assertEqual(response.status_code, 400)
+
         # bad b_size
         response = self.api_session.post(
             "/@querystring-search",

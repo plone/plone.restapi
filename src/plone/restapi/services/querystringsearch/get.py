@@ -47,7 +47,7 @@ class QuerystringSearch:
             raise BadRequest("Invalid limit")
         fullobjects = bool(data.get("fullobjects", False))
 
-        if query is None:
+        if not query:
             raise BadRequest("No query supplied")
 
         if sort_order:
