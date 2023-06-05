@@ -24,7 +24,7 @@ def path2uid(context, link):
             portal_path=portal_path, path=path.lstrip("/")
         )
 
-    # handle edge-case when we have path with /@@download/file for example
+    # handle edge-case when we have non traversable path like /@@download/file
     if "/@@" in path:
         path, suffix = path.split("/@@", 1)
         suffix = "/@@" + suffix
