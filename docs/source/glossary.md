@@ -53,11 +53,15 @@ Authentication Method
 
 Basic Auth
     A simple {term}`Authentication Method` referenced in the {term}`Authorization Header` that needs to be provided by the server.
-
+    
 content rule
     A content rule will automatically perform an action when a certain event, known as a {term}`trigger`, takes place.
 
 trigger
     A trigger is an event in Plone that causes the execution of defined actions.
     Example triggers include object modified, user logged in, and workflow state changed.
+
+navigation root
+    An object marked as a navigation root provides a way to root catalog queries, searches, breadcrumbs, and so on, into that object.
+
 ```

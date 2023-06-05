@@ -35,6 +35,7 @@ history
 linkintegrity
 locking
 navigation
+navroot
 actions
 portrait
 principals
@@ -44,6 +45,7 @@ registry
 relations
 roles
 searching
+site
 system
 tiles
 transactions
