@@ -3,8 +3,6 @@ from plone.uuid.interfaces import IUUID
 from plone.uuid.interfaces import IUUIDAware
 from zope.component import getMultiAdapter
 
-import re
-
 
 def path2uid(context, link):
     # unrestrictedTraverse requires a string on py3. see:
@@ -25,24 +23,22 @@ def path2uid(context, link):
         path = "{portal_path}/{path}".format(
             portal_path=portal_path, path=path.lstrip("/")
         )
-    suffix = ""
 
     # handle edge-case when we have path with /@@download/file for example
-    suffix_regexp = re.search(r"(/@@.*)", path)
-    if suffix_regexp:
-        suffix = suffix_regexp.group(0)
-    if suffix:
-        path = path.replace(suffix, "")
+    if "/@@" in path:
+        path, suffix = path.split("/@@", 1)
+        suffix = "/@@" + suffix
+    else:
+        suffix = ""
     obj = portal.unrestrictedTraverse(path, None)
     if obj is None or obj == portal:
         return link
     segments = path.split("/")
-    if not suffix:
-        while not IUUIDAware.providedBy(obj):
-            obj = aq_parent(obj)
-            if obj is None:
-                break
-            suffix += "/" + segments.pop()
+    while not IUUIDAware.providedBy(obj):
+        obj = aq_parent(obj)
+        if obj is None:
+            break
+        suffix = "/" + segments.pop() + suffix
     # check if obj is wrong because of acquisition
     if not obj or "/".join(obj.getPhysicalPath()) != "/".join(segments):
         return link
