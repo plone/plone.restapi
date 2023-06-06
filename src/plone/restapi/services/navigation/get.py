@@ -139,6 +139,9 @@ class Navigation:
                 # skip excluded items if they're not in our context path
                 continue
             url = brain.getURL()
+            print(brain.getRemoteUrl,"this is remoteurl")
+            if brain.portal_type == "Link":
+                print(brain.getRemoteUrl)
             entry = {
                 "path": brain_path,
                 "@id": url,
@@ -146,6 +149,8 @@ class Navigation:
                 "description": safe_text(brain.Description),
                 "review_state": json_compatible(brain.review_state),
                 "use_view_action_in_listings": brain.portal_type in types_using_view,
+                "remoteUrl": json_compatible(brain.getRemoteUrl),
+                "@type":safe_text(brain.portal_type)
             }
             if "nav_title" in brain and brain.nav_title:
                 entry.update({"title": brain.nav_title})
