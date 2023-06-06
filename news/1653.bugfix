@@ -1,1 +1,0 @@
-Validate input to the `@querystring-search` service. Input which can't be processed now results in a 400 response instead of 500. @davisagli
