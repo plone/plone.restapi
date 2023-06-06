@@ -320,19 +320,18 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
             f"{self.portal.absolute_url()}/testdocument9",
         )
 
-    def test_querystringsearch__invalid_input(self):
-        # bad JSON
+    def test_querystringsearch__bad_json(self):
         response = self.api_session.get("/@querystring-search?query={")
         self.assertEqual(response.status_code, 400)
 
-        # empty query
+    def test_querystringsearch__empty_query(self):
         response = self.api_session.post(
             "/@querystring-search",
             json={"query": []},
         )
         self.assertEqual(response.status_code, 400)
 
-        # bad b_size
+    def test_querystringsearch__bad_b_size(self):
         response = self.api_session.post(
             "/@querystring-search",
             json={
@@ -348,7 +347,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
-        # bad operation
+    def test_querystringsearch__bad_operation(self):
         response = self.api_session.post(
             "/@querystring-search",
             json={
