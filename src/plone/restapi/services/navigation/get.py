@@ -139,9 +139,6 @@ class Navigation:
                 # skip excluded items if they're not in our context path
                 continue
             url = brain.getURL()
-            print(brain.getRemoteUrl,"this is remoteurl")
-            if brain.portal_type == "Link":
-                print(brain.getRemoteUrl)
             entry = {
                 "path": brain_path,
                 "@id": url,
