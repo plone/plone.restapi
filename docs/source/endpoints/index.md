@@ -35,14 +35,17 @@ history
 linkintegrity
 locking
 navigation
+navroot
 actions
 portrait
 principals
 querystring
 querystringsearch
 registry
+relations
 roles
 searching
+site
 system
 tiles
 transactions

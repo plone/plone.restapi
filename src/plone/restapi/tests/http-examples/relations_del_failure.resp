@@ -1,0 +1,27 @@
+HTTP/1.1 422 Unprocessable Entity
+Content-Type: application/json
+
+{
+    "error": {
+        "failed": [
+            [
+                {
+                    "relation": "comprisesComponentPart",
+                    "source": "/document",
+                    "target": "/dont-know-this-doc"
+                },
+                "Failed on deleting a relation. Target not found."
+            ],
+            [
+                {
+                    "relation": "comprisesComponentPart",
+                    "source": "/doc-does-not-exist",
+                    "target": "/document"
+                },
+                "Failed on deleting a relation. Source not found."
+            ]
+        ],
+        "message": "Failed on deleting relations",
+        "type": "Unprocessable Content"
+    }
+}
