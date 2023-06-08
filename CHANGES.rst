@@ -8,6 +8,21 @@ Changelog
 
 .. towncrier release notes start
 
+8.40.0 (2023-06-06)
+-------------------
+
+New features:
+
+
+- Added `@site` and `@navroot` endpoints. @erral (#1464)
+
+
+Bug fixes:
+
+
+- Validate input to the `@querystring-search` service. Input which can't be processed now results in a 400 response instead of 500. @davisagli (#1653)
+
+
 8.39.2 (2023-06-01)
 -------------------
 
