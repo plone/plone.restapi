@@ -30,6 +30,7 @@ from zope.component import getUtility
 from zope.configuration import xmlconfig
 from zope.interface import implementer
 
+
 import collective.MockMailHost
 import os
 import re

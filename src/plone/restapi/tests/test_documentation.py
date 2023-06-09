@@ -7,9 +7,6 @@ from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
-from plone.app.testing import applyProfile
-from plone.app.testing import popGlobalRegistry
-from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -24,7 +21,6 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
-from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import patch_addon_versions
 from plone.restapi.tests.helpers import patch_scale_uuid
@@ -34,9 +30,11 @@ from plone.uuid.interfaces import IUUID
 from zope.component import createObject
 from zope.component import getMultiAdapter
 from zope.component import getUtility
-from zope.component.hooks import getSite
 from zope.interface import alsoProvides
-
+from plone.app.testing import popGlobalRegistry
+from plone.app.testing import pushGlobalRegistry
+from plone.restapi.testing import register_static_uuid_utility
+from zope.component.hooks import getSite
 import collections
 import json
 import os
@@ -221,7 +219,6 @@ class TestDocumentation(TestDocumentationBase):
         super().setUp()
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
-
         transaction.commit()
 
     def tearDown(self):
@@ -1603,7 +1600,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock", response)
@@ -1616,7 +1614,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock_nonstealable_timeout", response)
@@ -1642,7 +1641,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("refresh_lock", response)
@@ -1716,6 +1716,32 @@ class TestDocumentation(TestDocumentationBase):
             "/@addons/plone.restapi/import/testing-workflows"
         )
         save_request_for_docs("addons_install_profile", response)
+
+    def test_site_navroot_get(self):
+        response = self.api_session.get("/@navroot")
+        save_request_and_response_for_docs("navroot_standard_site_get", response)
+
+    def test_site_content_navroot_get(self):
+        response = self.api_session.get("/front-page/@navroot")
+        save_request_and_response_for_docs(
+            "navroot_standard_site_content_get", response
+        )
+
+    def test_site_navroot_get_expansion(self):
+        response = self.api_session.get("/?expand=navroot")
+        save_request_and_response_for_docs(
+            "navroot_standard_site_get_expansion", response
+        )
+
+    def test_site_navroot_content_get_expansion(self):
+        response = self.api_session.get("/front-page?expand=navroot")
+        save_request_and_response_for_docs(
+            "navroot_standard_site_content_get_expansion", response
+        )
+
+    def test_site_get(self):
+        response = self.api_session.get("/@site")
+        save_request_and_response_for_docs("site_get", response)
 
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
@@ -2114,6 +2140,16 @@ class TestPAMDocumentation(TestDocumentationBase):
         ):
             applyProfile(self.portal, "plone.app.multilingual:default")
 
+        # We manually set the UIDs for LRFs here because the static uuid
+        # generator is not applied for LRFs.
+        # When we have tried to apply it for LRFs we have had several
+        # utility registration problems.
+        #
+        setattr(self.portal.en, "_plone.uuid", "00000000000000000000000000000001")
+        setattr(self.portal.es, "_plone.uuid", "00000000000000000000000000000002")
+        setattr(self.portal.fr, "_plone.uuid", "00000000000000000000000000000003")
+        setattr(self.portal.de, "_plone.uuid", "00000000000000000000000000000004")
+
         en_id = self.portal["en"].invokeFactory(
             "Document", id="test-document", title="Test document"
         )
@@ -2123,9 +2159,6 @@ class TestPAMDocumentation(TestDocumentationBase):
         )
         self.es_content = self.portal["es"].get(es_id)
         transaction.commit()
-
-    def tearDown(self):
-        super().tearDown()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
@@ -2151,6 +2184,7 @@ class TestPAMDocumentation(TestDocumentationBase):
     def test_documentation_translations_get(self):
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
+
         response = self.api_session.get(
             f"{self.en_content.absolute_url()}/@translations"
         )
@@ -2188,6 +2222,32 @@ class TestPAMDocumentation(TestDocumentationBase):
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
         )
         save_request_and_response_for_docs("translation_locator", response)
+
+    def test_site_navroot_get(self):
+        response = self.api_session.get("/@navroot")
+        save_request_and_response_for_docs("navroot_site_get", response)
+
+    def test_site_navroot_language_folder_get(self):
+        response = self.api_session.get("/en/@navroot")
+        save_request_and_response_for_docs("navroot_lang_folder_get", response)
+
+    def test_site_navroot_language_content_get(self):
+        response = self.api_session.get("/en/test-document/@navroot")
+        save_request_and_response_for_docs("navroot_lang_content_get", response)
+
+    def test_site_expansion_navroot(self):
+        response = self.api_session.get("?expand=navroot")
+        save_request_and_response_for_docs("site_get_expand_navroot", response)
+
+    def test_site_expansion_navroot_language_folder(self):
+        response = self.api_session.get("/en?expand=navroot")
+        save_request_and_response_for_docs("site_get_expand_lang_folder", response)
+
+    def test_site_expansion_navroot_language_folder_content(self):
+        response = self.api_session.get("/en/test-document?expand=navroot")
+        save_request_and_response_for_docs(
+            "site_get_expand_lang_folder_content", response
+        )
 
 
 class TestIterateDocumentation(TestDocumentationBase):
