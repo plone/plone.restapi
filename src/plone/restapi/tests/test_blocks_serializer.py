@@ -390,7 +390,7 @@ class TestBlocksSerializer(unittest.TestCase):
         link = cell["value"][0]["children"][1]["data"]["url"]
         self.assertTrue(link, self.portal.absolute_url() + "/doc1")
 
-    @unittest.skipIf(
+    @unittest.skipUnless(
         HAS_PLONE_6,
         "image_scales were added to the catalog in Plone 6",
     )
