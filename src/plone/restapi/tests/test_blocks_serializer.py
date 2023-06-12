@@ -1,3 +1,4 @@
+from importlib import import_module
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.dexterity.utils import iterSchemata
@@ -20,6 +21,9 @@ import pathlib
 import unittest
 
 
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 IMAGE_PATH = (pathlib.Path(__file__).parent / "image.png").resolve()
 IMAGE_DATA = IMAGE_PATH.read_bytes()
 
@@ -386,6 +390,10 @@ class TestBlocksSerializer(unittest.TestCase):
         link = cell["value"][0]["children"][1]["data"]["url"]
         self.assertTrue(link, self.portal.absolute_url() + "/doc1")
 
+    @unittest.skipIf(
+        HAS_PLONE_6,
+        "image_scales were added to the catalog in Plone 6",
+    )
     def test_image_scales_serializer(self):
         image_uid = self.image.UID()
         res = self.serialize(

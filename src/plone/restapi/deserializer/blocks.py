@@ -182,10 +182,7 @@ class ImageBlockDeserializerBase:
 
     def __call__(self, block):
         url = block.get("url", "")
-        if isinstance(url, str):
-            block["url"] = path2uid(context=self.context, link=url)
-        elif isinstance(url, dict) and "@id" in url:
-            url["@id"] = path2uid(context=self.context, link=url["@id"])
+        block["url"] = path2uid(context=self.context, link=url)
         return block
 
 

@@ -1,8 +1,6 @@
 from plone.dexterity.schema import lookup_fti
 from plone.app.uuid.utils import uuidToCatalogBrain
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
-from Products.ZCatalog.CatalogBrains import AbstractCatalogBrain
-from typing import Optional, Tuple
 from zope.component import queryMultiAdapter
 from zope.i18n import translate
 from zope.globalrequest import getRequest
@@ -13,7 +11,7 @@ import re
 RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
 
 
-def resolve_uid(path: str) -> Tuple[str, Optional[AbstractCatalogBrain]]:
+def resolve_uid(path):
     """Resolves a resolveuid URL into a tuple of absolute URL and catalog brain.
 
     If the original path is not found (including external URLs),
@@ -44,7 +42,7 @@ def resolve_uid(path: str) -> Tuple[str, Optional[AbstractCatalogBrain]]:
     return href, brain
 
 
-def uid_to_url(path: str) -> str:
+def uid_to_url(path):
     path, brain = resolve_uid(path)
     return path
 
