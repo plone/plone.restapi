@@ -119,6 +119,15 @@ class TestHistoryEndpoint(unittest.TestCase):
         response = self.api_session.get(url)
         self.assertEqual(response.json()["title"], "My Document")
 
+    def test_previous_version_of_renamed_item(self):
+        api.content.move(source=self.doc, id="renamed-doc")
+        transaction.commit()
+
+        url = self.doc.absolute_url() + "/@history/0"
+        response = self.api_session.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["id"], "doc_with_history")
+
     def test_no_sharing(self):
         url = self.doc.absolute_url() + "/@history/0"
         response = self.api_session.get(url)

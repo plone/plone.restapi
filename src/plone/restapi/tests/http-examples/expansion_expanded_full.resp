@@ -159,6 +159,9 @@ Content-Type: application/json
                 }
             ]
         },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/front-page/@navroot"
+        },
         "types": [
             {
                 "@id": "http://localhost:55001/plone/@types/Collection",
