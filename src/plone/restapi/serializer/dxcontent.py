@@ -147,7 +147,6 @@ class SerializeToJson:
             "version": version,
         }
 
-
         # Filter basic metadata
         for key, value in metadatas.items():
             if not self.can_include_metadata(key):
@@ -208,7 +207,7 @@ class SerializeToJson:
                 value = serializer()
                 result[json_compatible(name)] = value
 
-        if self.can_include_metadata('allow_discussion'):
+        if self.can_include_metadata("allow_discussion"):
             result["allow_discussion"] = self.getAllowDiscussion()
 
         return result
