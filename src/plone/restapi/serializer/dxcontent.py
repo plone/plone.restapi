@@ -143,8 +143,7 @@ class SerializeToJson:
             if not self.can_include_metadata(key):
                 continue
             if callable(value):
-                result[key] = value(obj=obj)
-                continue
+                value = value(obj=obj)
             if value is not None:
                 result[key] = value
 

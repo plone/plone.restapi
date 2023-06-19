@@ -1,0 +1,1 @@
+- Add param option to exclude basic metadata from GET content - @razvanMiu
