@@ -153,7 +153,7 @@ class SerializeToJson:
                 continue
             if callable(value):
                 value = value(obj=obj)
-            if value is not None:
+            if value is not None or key in ['review_state']:
                 result[key] = value
 
         # Insert next/prev information
