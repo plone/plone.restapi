@@ -45,8 +45,18 @@ class SerializeToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        self.metadata_fields = self.getParam("metadata_fields", list)
+        self.include_basic_metadata = self.getParam("include_basic_metadata", bool, True)
+        self.include_expandable_elements = self.getParam("include_expandable_elements", bool, True)
 
         self.permission_cache = {}
+
+    def can_include_metadata(self, metadata):
+        if self.include_basic_metadata:
+            return True
+        if metadata in self.metadata_fields:
+            return True
+        return False
 
     def getVersion(self, version):
         if version == "current":
@@ -55,60 +65,138 @@ class SerializeToJson:
             repo_tool = getToolByName(self.context, "portal_repository")
             return repo_tool.retrieve(self.context, int(version)).object
 
-    def __call__(self, version=None, include_items=True):
-        version = "current" if version is None else version
+    def getParam(self, param, value_type, default_value=None):
+        value = self.request.form.get(param, default_value)
+        if value_type == list and not value:
+            return []
+        if value_type == list and type(value) != list:
+            return [value]
+        if value_type == bool:
+            return boolean_value(value)
+        return value
 
-        obj = self.getVersion(version)
+    def getId(self, obj):
+        return obj.id
+
+    def getTypeTitle(self, obj):
+        return get_portal_type_title(obj.portal_type)
+
+    def getUID(self, obj):
+        return obj.UID()
+    
+    def getParent(self, obj):
         parent = aq_parent(aq_inner(obj))
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary
         )()
+        return parent_summary
+    
+    def getCreated(self, obj):
+        return json_compatible(obj.created())
+
+    def getModified(self, obj):
+        return json_compatible(obj.modified())
+    
+    def getLayout(self, **kwargs):
+        return self.context.getLayout()
+    
+    def getLock(self, obj):
+        return lock_info(obj)
+
+    def getReviewState(self, obj):
+        return self._get_workflow_state(obj)
+
+    def getAllowDiscussion(self, **kwargs):
+        return getMultiAdapter(
+            (self.context, self.request), name="conversation_view"
+        ).enabled()
+
+    def getTargetUrl(self, **kwargs):
+        target_url = getMultiAdapter(
+            (self.context, self.request), IObjectPrimaryFieldTarget
+        )()
+        return target_url
+
+    def __call__(self, version=None, include_items=True):
+        version = "current" if version is None else version
+
+        obj = self.getVersion(version)
 
         result = {
-            # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             "@id": obj.absolute_url(),
-            "id": obj.id,
             "@type": obj.portal_type,
-            "type_title": get_portal_type_title(obj.portal_type),
-            "parent": parent_summary,
-            "created": json_compatible(obj.created()),
-            "modified": json_compatible(obj.modified()),
-            "review_state": self._get_workflow_state(obj),
-            "UID": obj.UID(),
-            "version": version,
-            "layout": self.context.getLayout(),
             "is_folderish": False,
         }
+        metadatas = {
+            # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+            "id": self.getId,
+            "type_title": self.getTypeTitle,
+            "UID": self.getUID,
+            "parent": self.getParent,
+            "created": self.getCreated,
+            "modified": self.getModified,
+            "layout": self.getLayout,
+            # Insert locking information
+            "lock": self.getLock,
+            "review_state": self.getReviewState,
+            "allow_discussion": self.getAllowDiscussion,
+            "targetUrl": self.getTargetUrl,
+            "version": version,
+        }
+
+        # Filter basic metadata
+        for key, value in metadatas.items():
+            if not self.can_include_metadata(key):
+                continue
+            if callable(value):
+                result[key] = value(obj=obj)
+                continue
+            if not value is None:
+                result[key] = value
 
         # Insert next/prev information
-        try:
-            nextprevious = NextPrevious(obj)
-            result.update(
-                {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
-            )
-        except ValueError:
-            # If we're serializing an old version that was renamed or moved,
-            # then its id might not be found inside the current object's container.
-            result.update({"previous_item": {}, "next_item": {}})
+        if self.can_include_metadata(
+            "previous_item"
+        ) or self.can_include_metadata("next_item"):
+            try:
+                nextprevious = NextPrevious(obj)
+                result.update(
+                    {
+                        "previous_item": nextprevious.previous,
+                        "next_item": nextprevious.next,
+                    }
+                )
+            except ValueError:
+                # If we're serializing an old version that was renamed or moved,
+                # then its id might not be found inside the current object's container.
+                result.update({"previous_item": {}, "next_item": {}})
 
         # Insert working copy information
-        if WorkingCopyInfo is not None:
-            baseline, working_copy = WorkingCopyInfo(
-                self.context
-            ).get_working_copy_info()
-            result.update({"working_copy": working_copy, "working_copy_of": baseline})
-
-        # Insert locking information
-        result.update({"lock": lock_info(obj)})
+        if self.can_include_metadata("working_copy"):
+            if WorkingCopyInfo is not None:
+                baseline, working_copy = WorkingCopyInfo(
+                    self.context
+                ).get_working_copy_info()
+                result.update(
+                    {
+                        "working_copy": working_copy,
+                        "working_copy_of": baseline,
+                    }
+                )
 
         # Insert expandable elements
-        result.update(expandable_elements(self.context, self.request))
+        if self.include_expandable_elements:
+            result.update(expandable_elements(self.context, self.request))
 
         # Insert field values
         for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
+            read_permissions = mergedTaggedValueDict(
+                schema, READ_PERMISSIONS_KEY
+            )
 
             for name, field in getFields(schema).items():
+                if not self.can_include_metadata(name):
+                    continue
                 if not self.check_permission(read_permissions.get(name), obj):
                     continue
 
@@ -119,21 +207,13 @@ class SerializeToJson:
                 value = serializer()
                 result[json_compatible(name)] = value
 
-        target_url = getMultiAdapter(
-            (self.context, self.request), IObjectPrimaryFieldTarget
-        )()
-        if target_url:
-            result["targetUrl"] = target_url
-
-        result["allow_discussion"] = getMultiAdapter(
-            (self.context, self.request), name="conversation_view"
-        ).enabled()
-
         return result
 
     def _get_workflow_state(self, obj):
         wftool = getToolByName(self.context, "portal_workflow")
-        review_state = wftool.getInfoFor(ob=obj, name="review_state", default=None)
+        review_state = wftool.getInfoFor(
+            ob=obj, name="review_state", default=None
+        )
         return review_state
 
     def check_permission(self, permission_name, obj):
@@ -189,7 +269,9 @@ class SerializeFolderToJson(SerializeToJson):
                 )(fullobjects=True)["items"]
             else:
                 result["items"] = [
-                    getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
+                    getMultiAdapter(
+                        (brain, self.request), ISerializeToJsonSummary
+                    )()
                     for brain in batch
                 ]
         return result
@@ -207,10 +289,14 @@ class DexterityObjectPrimaryFieldTarget:
     def __call__(self):
         primary_field_name = self.get_primary_field_name()
         for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
+            read_permissions = mergedTaggedValueDict(
+                schema, READ_PERMISSIONS_KEY
+            )
 
             for name, field in getFields(schema).items():
-                if not self.check_permission(read_permissions.get(name), self.context):
+                if not self.check_permission(
+                    read_permissions.get(name), self.context
+                ):
                     continue
 
                 if name != primary_field_name:

@@ -142,6 +142,8 @@ For folderish types, their children are automatically included in the response a
 To disable the inclusion, add the `GET` parameter `include_items=false` to the URL.
 
 By default, only basic metadata is included.
+To exclude basic metadata add the `GET` parameter `include_basic_metadata=false` to the URL.
+To exclude expandable elements add the `GET` parameter `include_expandable_elements=false` to the URL
 To include additional metadata, you can specify the names of the properties with the `metadata_fields` parameter.
 See also {ref}`retrieving-additional-metadata`.
 
