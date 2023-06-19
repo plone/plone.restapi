@@ -25,6 +25,7 @@
   <include package=".history" />
   <include package=".linkintegrity" />
   <include package=".locking" />
+  <include package=".navroot" />
   <include package=".principals" />
   <include package=".querysources" />
   <include package=".querystring" />
@@ -32,8 +33,8 @@
   <include package=".registry" />
   <include package=".relations" />
   <include package=".roles" />
-  <include package=".rules" />
   <include package=".search" />
+  <include package=".site" />
   <include package=".system" />
   <include package=".sources" />
   <include package=".transactions" />
@@ -62,5 +63,9 @@
   <include
       package=".tiles"
       zcml:condition="installed plone.tiles"
+      />
+  <include
+      package=".rules"
+      zcml:condition="installed plone.app.contentrules"
       />
 </configure>
