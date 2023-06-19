@@ -143,10 +143,10 @@ class SerializeToJson:
             # Insert locking information
             "lock": self.getLock,
             "review_state": self.getReviewState,
-            "allow_discussion": self.getAllowDiscussion,
             "targetUrl": self.getTargetUrl,
             "version": version,
         }
+
 
         # Filter basic metadata
         for key, value in metadatas.items():
@@ -207,6 +207,9 @@ class SerializeToJson:
                 )
                 value = serializer()
                 result[json_compatible(name)] = value
+
+        if self.can_include_metadata('allow_discussion'):
+            result["allow_discussion"] = self.getAllowDiscussion()
 
         return result
 
