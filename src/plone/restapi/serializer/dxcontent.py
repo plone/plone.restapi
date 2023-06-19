@@ -46,7 +46,9 @@ class SerializeToJson:
         self.context = context
         self.request = request
         self.metadata_fields = self.getParam("metadata_fields", list)
-        self.include_basic_metadata = self.getParam("include_basic_metadata", bool, True)
+        self.include_basic_metadata = self.getParam(
+            "include_basic_metadata", bool, True
+        )
         self.include_expandable_elements = self.getParam(
             "include_expandable_elements", bool, True
         )
