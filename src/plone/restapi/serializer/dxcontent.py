@@ -143,7 +143,6 @@ class SerializeToJson:
             # Insert locking information
             "lock": self.getLock,
             "review_state": self.getReviewState,
-            "targetUrl": self.getTargetUrl,
             "version": version,
         }
 
@@ -153,8 +152,7 @@ class SerializeToJson:
                 continue
             if callable(value):
                 value = value(obj=obj)
-            if value is not None or key in ['review_state']:
-                result[key] = value
+            result[key] = value
 
         # Insert next/prev information
         if self.can_include_metadata("previous_item") or self.can_include_metadata(
@@ -206,6 +204,9 @@ class SerializeToJson:
                 )
                 value = serializer()
                 result[json_compatible(name)] = value
+
+        if self.can_include_metadata("targetUrl"):
+            result["targetUrl"] = self.getTargetUrl()
 
         if self.can_include_metadata("allow_discussion"):
             result["allow_discussion"] = self.getAllowDiscussion()
