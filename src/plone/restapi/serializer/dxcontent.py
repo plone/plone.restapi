@@ -83,23 +83,21 @@ class SerializeToJson:
 
     def getUID(self, obj):
         return obj.UID()
-    
+
     def getParent(self, obj):
         parent = aq_parent(aq_inner(obj))
-        parent_summary = getMultiAdapter(
-            (parent, self.request), ISerializeToJsonSummary
-        )()
+        parent_summary = getMultiAdapter((parent, self.request), ISerializeToJsonSummary)()
         return parent_summary
-    
+
     def getCreated(self, obj):
         return json_compatible(obj.created())
 
     def getModified(self, obj):
         return json_compatible(obj.modified())
-    
+
     def getLayout(self, **kwargs):
         return self.context.getLayout()
-    
+
     def getLock(self, obj):
         return lock_info(obj)
 
@@ -107,14 +105,10 @@ class SerializeToJson:
         return self._get_workflow_state(obj)
 
     def getAllowDiscussion(self, **kwargs):
-        return getMultiAdapter(
-            (self.context, self.request), name="conversation_view"
-        ).enabled()
+        return getMultiAdapter((self.context, self.request), name="conversation_view").enabled()
 
     def getTargetUrl(self, **kwargs):
-        target_url = getMultiAdapter(
-            (self.context, self.request), IObjectPrimaryFieldTarget
-        )()
+        target_url = getMultiAdapter((self.context, self.request), IObjectPrimaryFieldTarget)()
         return target_url
 
     def __call__(self, version=None, include_items=True):
@@ -151,13 +145,11 @@ class SerializeToJson:
             if callable(value):
                 result[key] = value(obj=obj)
                 continue
-            if not value is None:
+            if value is not None:
                 result[key] = value
 
         # Insert next/prev information
-        if self.can_include_metadata(
-            "previous_item"
-        ) or self.can_include_metadata("next_item"):
+        if self.can_include_metadata("previous_item") or self.can_include_metadata("next_item"):
             try:
                 nextprevious = NextPrevious(obj)
                 result.update(
@@ -174,9 +166,7 @@ class SerializeToJson:
         # Insert working copy information
         if self.can_include_metadata("working_copy"):
             if WorkingCopyInfo is not None:
-                baseline, working_copy = WorkingCopyInfo(
-                    self.context
-                ).get_working_copy_info()
+                baseline, working_copy = WorkingCopyInfo(self.context).get_working_copy_info()
                 result.update(
                     {
                         "working_copy": working_copy,
@@ -190,9 +180,7 @@ class SerializeToJson:
 
         # Insert field values
         for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(
-                schema, READ_PERMISSIONS_KEY
-            )
+            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
                 if not self.can_include_metadata(name):
@@ -201,9 +189,7 @@ class SerializeToJson:
                     continue
 
                 # serialize the field
-                serializer = queryMultiAdapter(
-                    (field, obj, self.request), IFieldSerializer
-                )
+                serializer = queryMultiAdapter((field, obj, self.request), IFieldSerializer)
                 value = serializer()
                 result[json_compatible(name)] = value
 
@@ -211,9 +197,7 @@ class SerializeToJson:
 
     def _get_workflow_state(self, obj):
         wftool = getToolByName(self.context, "portal_workflow")
-        review_state = wftool.getInfoFor(
-            ob=obj, name="review_state", default=None
-        )
+        review_state = wftool.getInfoFor(ob=obj, name="review_state", default=None)
         return review_state
 
     def check_permission(self, permission_name, obj):
@@ -264,14 +248,12 @@ class SerializeFolderToJson(SerializeToJson):
                 result["batching"] = batch.links
 
             if "fullobjects" in list(self.request.form):
-                result["items"] = getMultiAdapter(
-                    (brains, self.request), ISerializeToJson
-                )(fullobjects=True)["items"]
+                result["items"] = getMultiAdapter((brains, self.request), ISerializeToJson)(
+                    fullobjects=True
+                )["items"]
             else:
                 result["items"] = [
-                    getMultiAdapter(
-                        (brain, self.request), ISerializeToJsonSummary
-                    )()
+                    getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
                     for brain in batch
                 ]
         return result
@@ -289,14 +271,10 @@ class DexterityObjectPrimaryFieldTarget:
     def __call__(self):
         primary_field_name = self.get_primary_field_name()
         for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(
-                schema, READ_PERMISSIONS_KEY
-            )
+            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
-                if not self.check_permission(
-                    read_permissions.get(name), self.context
-                ):
+                if not self.check_permission(read_permissions.get(name), self.context):
                     continue
 
                 if name != primary_field_name:
