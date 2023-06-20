@@ -208,7 +208,7 @@ class SerializeToJson:
         if self.can_include_metadata("targetUrl"):
             targetUrl = self.getTargetUrl()
             if targetUrl:
-                result["targetUrl"]
+                result["targetUrl"] = targetUrl
 
         if self.can_include_metadata("allow_discussion"):
             result["allow_discussion"] = self.getAllowDiscussion()
