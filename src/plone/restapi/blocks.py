@@ -15,11 +15,15 @@ def visit_blocks(context, blocks):
     """
     request = getRequest()
     visitors = subscribers((context, request), IBlockVisitor)
-    queue = list(blocks.values())
-    for block in queue:
+
+    def _visit_subblocks(block):
         for visitor in visitors:
-            queue.extend(visitor(block))
+            for subblock in visitor(block):
+                yield from _visit_subblocks(subblock)
         yield block
+
+    for block in blocks.values():
+        yield from _visit_subblocks(block)
 
 
 def visit_subblocks(context, block):
