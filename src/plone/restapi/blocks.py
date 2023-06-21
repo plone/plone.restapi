@@ -1,32 +1,41 @@
-from typing import Dict, Generator, List, Iterable
 from zope.component import adapter
 from zope.component import subscribers
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.globalrequest import getRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
-from plone.restapi.interfaces import IBlockVisitor, IBlockTransformer
+from plone.restapi.interfaces import IBlockVisitor
 
 
-def visit_blocks(context, blocks: Dict[str, dict]) -> Generator[dict, None, None]:
-    """Visit all blocks, including nested blocks.
+def visit_blocks(context, blocks):
+    """Generator yielding all blocks, including nested blocks.
 
     context: Content item where these blocks are stored.
     blocks: A dict mapping block ids to a dict of block data.
-    handler: Function to be called for each block found.
     """
     request = getRequest()
     visitors = subscribers((context, request), IBlockVisitor)
-    queue: List[dict] = list(blocks.values())
+    queue = list(blocks.values())
     for block in queue:
         for visitor in visitors:
             queue.extend(visitor(block))
         yield block
 
 
-def iter_block_transform_handlers(
-    context, block_value: dict, interface: IBlockTransformer
-) -> Iterable:
+def visit_subblocks(context, block):
+    """Generator yielding the immediate subblocks of a block.
+
+    context: Context item where this block is stored
+    block: A dict of block data
+    """
+    request = getRequest()
+    visitors = subscribers((context, request), IBlockVisitor)
+    for visitor in visitors:
+        for subblock in visitor(block):
+            yield subblock
+
+
+def iter_block_transform_handlers(context, block_value, interface):
     """Find valid handlers for a particular block transformation.
 
     Looks for adapters of the context and request to this interface.
@@ -52,7 +61,7 @@ class NestedBlocksVisitor:
     def __init__(self, context, request):
         pass
 
-    def __call__(self, block_value: dict):
+    def __call__(self, block_value):
         """Visit nested blocks in ["data"]["blocks"] or ["blocks"]"""
         if "data" in block_value:
             if isinstance(block_value["data"], dict):

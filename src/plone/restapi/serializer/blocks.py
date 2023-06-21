@@ -24,7 +24,7 @@ import os
 @implementer(IFieldSerializer)
 class BlocksJSONFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
-        value: dict = copy.deepcopy(self.get_value())
+        value = copy.deepcopy(self.get_value())
 
         if self.field.getName() == "blocks":
             for block in visit_blocks(self.context, value):

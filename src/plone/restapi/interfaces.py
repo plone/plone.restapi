@@ -2,7 +2,6 @@
 # E0211: Method has no argument
 # W0221: Arguments number differs from overridden '__call__' method
 
-from typing import Iterable, List
 from zope.interface import Attribute
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
@@ -102,28 +101,28 @@ class IBlockTransformer(Interface):
     )
     disabled = Attribute("Boolean that disables the transformer if required")
 
-    def __call__(value: dict):
+    def __call__(value):
         """Do the transform."""
 
 
 class IBlockFieldDeserializationTransformer(IBlockTransformer):
     """Convert/adjust raw block deserialized value into block value."""
 
-    def __call__(value: dict) -> dict:
+    def __call__(value):
         """Convert the provided raw Python value to a block value."""
 
 
 class IBlockFieldSerializationTransformer(IBlockTransformer):
     """Transform block value before final JSON serialization"""
 
-    def __call__(value: dict) -> dict:
+    def __call__(value):
         """Convert the provided raw Python value to a block value."""
 
 
 class IBlockFieldLinkIntegrityRetriever(Interface):
     """Retrieve internal links set in current block."""
 
-    def __call__(value: dict) -> List[str]:
+    def __call__(value):
         """Return a list of internal links set in this block."""
 
 
@@ -239,5 +238,5 @@ class IBlockVisitor(Interface):
     Used by the visit_blocks utility.
     """
 
-    def __call__(self, block: dict) -> Iterable[dict]:
-        """Return a list of sub-blocks found inside `block`."""
+    def __call__(self, block):
+        """Return an iterable of sub-blocks found inside `block`."""
