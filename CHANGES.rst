@@ -8,6 +8,73 @@ Changelog
 
 .. towncrier release notes start
 
+8.40.0 (2023-06-06)
+-------------------
+
+New features:
+
+
+- Added `@site` and `@navroot` endpoints. @erral (#1464)
+
+
+Bug fixes:
+
+
+- Validate input to the `@querystring-search` service. Input which can't be processed now results in a 400 response instead of 500. @davisagli (#1653)
+
+
+8.39.2 (2023-06-01)
+-------------------
+
+Bug fixes:
+
+
+- Fix content serializer with an old version of an item that was renamed. @davisagli (#1651)
+
+
+8.39.1 (2023-05-30)
+-------------------
+
+Bug fixes:
+
+
+- Fix possible startup error by explicitly loading ``plone.app.contentrules`` zcml.
+  Also: only load code related to contentrules when this package is available.
+  [maurits] (#1644)
+
+
+8.39.0 (2023-05-23)
+-------------------
+
+New features:
+
+
+- Create relations service. Query, add, delete. @ksuess (#1432)
+
+
+8.38.0 (2023-05-19)
+-------------------
+
+New features:
+
+
+- Add portal_type title (`type_title`) to content response @razvanMiu @nileshgulia1 (#1355)
+- Added support for nested schemas with resolveuid deserializer @JeffersonBledsoe (#1595)
+
+
+Bug fixes:
+
+
+- Fix missing metadata_fields in Response via GET Request to Endpoint /@querystring-search @1letter (#1628)
+- Respect Password Policy @tschorr (#1630)
+
+
+Internal:
+
+
+- Update buildout and requirements to Plone-6.0.4 @1letter (#1632)
+
+
 8.37.0 (2023-04-19)
 -------------------
 

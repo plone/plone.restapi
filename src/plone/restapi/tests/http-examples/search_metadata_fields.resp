@@ -11,7 +11,8 @@ Content-Type: application/json
             "description": "",
             "modified": "1995-07-31T17:30:00",
             "review_state": "private",
-            "title": "Lorem Ipsum"
+            "title": "Lorem Ipsum",
+            "type_title": "Page"
         }
     ],
     "items_total": 1

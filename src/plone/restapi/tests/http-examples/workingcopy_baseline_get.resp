@@ -18,6 +18,9 @@ Content-Type: application/json
         "navigation": {
             "@id": "http://localhost:55001/plone/document/@navigation"
         },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/document/@navroot"
+        },
         "types": {
             "@id": "http://localhost:55001/plone/document/@types"
         },
@@ -59,13 +62,15 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/copy_of_document",
         "@type": "Document",
         "description": "",
-        "title": "Test document"
+        "title": "Test document",
+        "type_title": "Page"
     },
     "parent": {
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
         "description": "",
-        "title": "Plone site"
+        "title": "Plone site",
+        "type_title": "Plone Site"
     },
     "previous_item": {},
     "relatedItems": [],
@@ -75,6 +80,7 @@ Content-Type: application/json
     "table_of_contents": null,
     "text": null,
     "title": "Test document",
+    "type_title": "Page",
     "version": "current",
     "working_copy": {
         "@id": "http://localhost:55001/plone/copy_of_document",
