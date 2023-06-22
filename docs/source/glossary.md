@@ -40,7 +40,7 @@ Verb
     One of the basic actions that can be requested to be executed by the server (on an object) based on the {term}`Request`.
 
 Object URL
-    The target object of the {term}`Request`
+    The target object of the {term}`Request`.
 
 Authorization Header
     Part of the {term}`Request` that is responsible for the authentication related to the right user or service to ask for a {term}`Response`.
@@ -53,7 +53,7 @@ Authentication Method
 
 Basic Auth
     A simple {term}`Authentication Method` referenced in the {term}`Authorization Header` that needs to be provided by the server.
-    
+
 content rule
     A content rule will automatically perform an action when a certain event, known as a {term}`trigger`, takes place.
 
