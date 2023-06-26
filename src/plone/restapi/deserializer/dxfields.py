@@ -31,6 +31,7 @@ from zope.schema.interfaces import IVocabularyTokenized
 import codecs
 import dateutil
 import html as html_parser
+import os
 
 
 @implementer(IFieldDeserializer)
@@ -238,6 +239,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
         content_type = "application/octet-stream"
         filename = None
+        tus_filepath = None
         if isinstance(value, dict):
             if "data" not in value:
                 # We are probably pushing the contents of a previous GET
@@ -257,10 +259,11 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
         elif isinstance(value, TUSUpload):
             content_type = value.metadata().get("content-type", content_type)
             filename = value.metadata().get("filename", filename)
-            data = value.open()
+            # Put an single byte in place. Blob file is moved below.
+            data = b'0'
+            tus_filepath = value.filepath
         else:
             data = value
-
         # Convert if we have data
         if data:
             value = self.field._type(
@@ -268,6 +271,15 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
             )
         else:
             value = None
+
+        # If it si a TUS upload, we rename the temporary file to the temp blob
+        # file. If the two files are on the same disk volume this will be a 
+        # very quick operation
+        if tus_filepath:
+            try:
+                os.rename(tus_filepath, value._blob._p_blob_uncommitted)
+            except OSError:
+                os.copy(tus_filepath, value._blob._p_blob_uncommitted)
 
         # Always validate to check for required fields
         self.field.validate(value)
