@@ -4,10 +4,11 @@ from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import IPloneSiteRoot
+from plone.restapi.blocks import visit_blocks, iter_block_transform_handlers
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.serializer.blocks import apply_block_serialization_transforms
+from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.services.locking import lock_info
@@ -140,8 +141,12 @@ class SerializeSiteRootToJson:
     def serialize_blocks(self):
         # This is only for below 6
         blocks = json.loads(getattr(self.context, "blocks", "{}"))
-        if not blocks:
-            return blocks
-        for id, block_value in blocks.items():
-            blocks[id] = apply_block_serialization_transforms(block_value, self.context)
+        for block in visit_blocks(self.context, blocks):
+            new_block = block.copy()
+            for handler in iter_block_transform_handlers(
+                self.context, block, IBlockFieldSerializationTransformer
+            ):
+                new_block = handler(new_block)
+            block.clear()
+            block.update(new_block)
         return blocks
