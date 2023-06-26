@@ -260,7 +260,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
             content_type = value.metadata().get("content-type", content_type)
             filename = value.metadata().get("filename", filename)
             # Put an single byte in place. Blob file is moved below.
-            data = b'0'
+            data = b"0"
             tus_filepath = value.filepath
         else:
             data = value
@@ -273,7 +273,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
             value = None
 
         # If it si a TUS upload, we rename the temporary file to the temp blob
-        # file. If the two files are on the same disk volume this will be a 
+        # file. If the two files are on the same disk volume this will be a
         # very quick operation
         if tus_filepath:
             try:
