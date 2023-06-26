@@ -2,11 +2,10 @@
 from plone.app.linkintegrity.interfaces import IRetriever
 from plone.app.linkintegrity.retriever import DXGeneral
 from plone.restapi.behaviors import IBlocks
+from plone.restapi.blocks import iter_block_transform_handlers, visit_blocks
 from plone.restapi.deserializer.blocks import iterate_children
 from plone.restapi.interfaces import IBlockFieldLinkIntegrityRetriever
 from zope.component import adapter
-from zope.component import subscribers
-from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
@@ -22,22 +21,11 @@ class BlocksRetriever(DXGeneral):
         blocks = getattr(self.context, "blocks", {})
         if not blocks:
             return links
-        request = getattr(self.context, "REQUEST", None)
-        if request is None:
-            # context does not have full acquisition chain
-            request = getRequest()
-        for block in blocks.values():
-            block_type = block.get("@type", None)
-            handlers = []
-            for h in subscribers(
-                (self.context, request),
-                IBlockFieldLinkIntegrityRetriever,
+        for block in visit_blocks(self.context, blocks):
+            for handler in iter_block_transform_handlers(
+                self.context, block, IBlockFieldLinkIntegrityRetriever
             ):
-                if h.block_type == block_type or h.block_type is None:
-                    handlers.append(h)
-            for handler in sorted(handlers, key=lambda h: h.order):
                 links |= set(handler(block))
-
         return links
 
 
