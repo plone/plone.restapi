@@ -1,1 +1,0 @@
-Fix path2uid method, to handle suffix with non-traversable objects. @cekk @mamico
