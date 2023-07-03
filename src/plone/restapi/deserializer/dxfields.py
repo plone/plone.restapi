@@ -27,7 +27,6 @@ from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
 from zope.schema.interfaces import IVocabularyTokenized
-from ZODB.blob import rename_or_copy_blob
 
 import codecs
 import dateutil
@@ -239,7 +238,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
         content_type = "application/octet-stream"
         filename = None
-        tus_filepath = None
+        tus = None
         if isinstance(value, dict):
             if "data" not in value:
                 # We are probably pushing the contents of a previous GET
@@ -261,7 +260,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
             filename = value.metadata().get("filename", filename)
             # Put an single byte in place. Blob file is moved below.
             data = b"0"
-            tus_filepath = value.filepath
+            tus = value
         else:
             data = value
         # Convert if we have data
@@ -272,14 +271,17 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
         else:
             value = None
 
-        # If it si a TUS upload, we rename the temporary file to the temp blob
-        # file. If the two files are on the same disk volume this will be a
-        # very quick operation
-        if tus_filepath:
-            rename_or_copy_blob(tus_filepath, value._blob._p_blob_uncommitted)
+        
 
         # Always validate to check for required fields
         self.field.validate(value)
+
+        # If it is a TUS upload, we rename the temporary file to the temp blob
+        # file. If the two files are on the same disk volume this will be a
+        # very quick operation
+        if tus:
+            tus.process_blob(value._blob)
+
         return value
 
 

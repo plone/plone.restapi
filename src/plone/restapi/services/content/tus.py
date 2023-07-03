@@ -22,6 +22,7 @@ from zope.interface import implementer
 from zope.lifecycleevent import ObjectCreatedEvent
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
+from ZODB.blob import rename_or_copy_blob
 
 import json
 import os
@@ -394,3 +395,7 @@ class TUSUpload:
         else:
             expiration = time.time() + self.expiration_period
         return formatdate(expiration, False, True)
+
+    def process_blob(self, blob):
+        rename_or_copy_blob(self.filepath, blob._p_blob_uncommitted)
+
