@@ -9,7 +9,6 @@ myst:
 
 # Contributing to `plone.restapi`
 
-
 ## Generating documentation examples
 
 This documentation includes examples of requests and responses (http, curl, httpie, and python-requests).
@@ -37,7 +36,6 @@ Include them in the documentation using MyST syntax:
 Build the documentation locally to test the rendering by running `./bin/sphinxbuilder`.
 Alternatively, you can use Makefile targets:
 
-
 `docs-clean`
 : Clean current and legacy docs build directories, and Python virtual environment
 
@@ -58,9 +56,8 @@ Alternatively, you can use Makefile targets:
 
 `docs`
 : Build Docs
- 
-Make sure you add and commit the generated files in `http-examples`.
 
+Make sure you add and commit the generated files in `http-examples`.
 
 ## Conventions
 
@@ -69,3 +66,11 @@ Make sure you add and commit the generated files in `http-examples`.
 
 conventions
 ```
+
+## Code Formatting and Testing
+
+To ensure consistent code formatting, it's recommended to have the "black" tool installed locally. You can install it by running the "make" command inside the "plone.restapi" folder. Once installed, you can use "black" to automatically format the code.
+
+The project has a set of dependencies required for its proper functioning. You can install these dependencies by running the "make" command, which will handle the installation process for you.
+
+To run tests locally and ensure your changes don't introduce any issues, use the "make" command followed by "make test". This will execute the test suite and provide test feedback.
