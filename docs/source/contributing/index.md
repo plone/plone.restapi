@@ -9,6 +9,13 @@ myst:
 
 # Contributing to `plone.restapi`
 
+We use GNU `make` when developing `plone.restapi`.
+To install this package, its dependencies, and its documentation, code formatting, and testing tools, run the following command in the root of the project.
+
+```shell
+make
+```
+
 ## Generating documentation examples
 
 This documentation includes examples of requests and responses (http, curl, httpie, and python-requests).
@@ -67,10 +74,20 @@ Make sure you add and commit the generated files in `http-examples`.
 conventions
 ```
 
-## Code Formatting and Testing
+## Code formatting and testing
 
-To ensure consistent code formatting, it's recommended to have the "black" tool installed locally. You can install it by running the "make" command inside the "plone.restapi" folder. Once installed, you can use "black" to automatically format the code.
+To ensure consistent code formatting, we use [Black](https://black.readthedocs.io/en/stable/index.html).
+All pull requests must pass code formatting checks.
+We recommend that you run Black locally.
+You can use the following command to automatically format the code.
 
-The project has a set of dependencies required for its proper functioning. You can install these dependencies by running the "make" command, which will handle the installation process for you.
+```shell
+make black
+```
 
-To run tests locally and ensure your changes don't introduce any issues, use the "make" command followed by "make test". This will execute the test suite and provide test feedback.
+To run tests locally and ensure your changes don't introduce any issues, use the following command.
+This will execute the test suite and provide test feedback.
+
+```shell
+make test
+```
