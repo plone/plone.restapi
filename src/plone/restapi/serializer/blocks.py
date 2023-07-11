@@ -1,4 +1,3 @@
-from copy import deepcopy
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.blocks import visit_blocks, iter_block_transform_handlers
@@ -9,7 +8,7 @@ from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
-from plone.restapi.serializer.utils import uid_to_url
+from plone.restapi.serializer.utils import resolve_uid, uid_to_url
 from plone.schema import IJSONField
 from zope.component import adapter
 from zope.interface import implementer
@@ -57,19 +56,27 @@ class ResolveUIDSerializerBase:
         if isinstance(data, list):
             return [self._process_data(data=value, field=field) for value in data]
         if isinstance(data, dict):
-            if data.get("@type", None) == "URL" and data.get("value", None):
-                data["value"] = uid_to_url(data["value"])
-            elif data.get("@id", None):
-                item_clone = deepcopy(data)
-                item_clone["@id"] = uid_to_url(item_clone["@id"])
-                return {
-                    field: self._process_data(data=value, field=field)
-                    for field, value in item_clone.items()
-                }
-            return {
-                field: self._process_data(data=value, field=field)
+            fields = ["value"] if data.get("@type") == "URL" else []
+            fields.append("@id")
+            fields.extend(self.fields)
+            newdata = {}
+            for field in fields:
+                if field not in data or not isinstance(data[field], str):
+                    continue
+                newdata[field], brain = resolve_uid(data[field])
+                if brain is not None and "image_scales" not in newdata:
+                    newdata["image_scales"] = getattr(brain, "image_scales", None)
+            result = {
+                field: (
+                    newdata[field]
+                    if field in newdata
+                    else self._process_data(data=newdata.get(field, value), field=field)
+                )
                 for field, value in data.items()
             }
+            if newdata.get("image_scales"):
+                result["image_scales"] = newdata["image_scales"]
+            return result
         return data
 
 
