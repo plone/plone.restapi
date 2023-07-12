@@ -204,20 +204,19 @@ def get_widget_params(schemas):
 
 
 def get_multilingual_directives(schemas):
-    if HAS_MULTILINGUAL:
-        params = {}
-        for schema in schemas:
-            if not schema:
-                continue
-            tagged_values = mergedTaggedValueList(schema, MULTILINGUAL_KEY)
-            result = {field_name: value for _, field_name, value in tagged_values}
-
-            for field_name, value in result.items():
-                params[field_name] = {}
-                params[field_name]["language_independent"] = value
-        return params
-    else:
+    if not HAS_MULTILINGUAL:
         return {}
+    params = {}
+    for schema in schemas:
+        if not schema:
+            continue
+        tagged_values = mergedTaggedValueList(schema, MULTILINGUAL_KEY)
+        result = {field_name: value for _, field_name, value in tagged_values}
+
+        for field_name, value in result.items():
+            params[field_name] = {}
+            params[field_name]["language_independent"] = value
+    return params
 
 
 def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):

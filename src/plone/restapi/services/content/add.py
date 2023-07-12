@@ -23,10 +23,8 @@ from zope.lifecycleevent import ObjectCreatedEvent
 import plone.protect.interfaces
 
 if HAS_MULTILINGUAL:
-    from plone.app.multilingual.interfaces import (
-        IPloneAppMultilingualInstalled,
-        ITranslationManager,
-    )
+    from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
+    from plone.app.multilingual.interfaces import ITranslationManager
 
 
 class FolderPost(Service):
@@ -98,16 +96,16 @@ class FolderPost(Service):
         obj = add(self.context, obj, rename=not bool(id_))
 
         # Link translation given the translation_of property
-        if HAS_MULTILINGUAL:
-            if (
-                IPloneAppMultilingualInstalled.providedBy(self.request)
-                and translation_of
-                and language
-            ):
-                source = self.get_object(translation_of)
-                if source:
-                    manager = ITranslationManager(source)
-                    manager.register_translation(language, obj)
+        if (
+            HAS_MULTILINGUAL
+            and IPloneAppMultilingualInstalled.providedBy(self.request)
+            and translation_of
+            and language
+        ):
+            source = self.get_object(translation_of)
+            if source:
+                manager = ITranslationManager(source)
+                manager.register_translation(language, obj)
 
         self.request.response.setStatus(201)
         self.request.response.setHeader("Location", obj.absolute_url())
