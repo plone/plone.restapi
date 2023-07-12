@@ -44,7 +44,7 @@ update: ## Update Make and Buildout
 bin/buildout: bin/pip
 	bin/pip install --upgrade pip
 	bin/pip install -r requirements-5.2.txt
-	bin/pip install --upgrade click==$(awk '/^click =/{print $NF}' versions.cfg) black==$(awk '/^black =/{print $NF}' versions.cfg) || true
+	bin/pip install --upgrade click==$$(awk '/^click =/{{print $$NF}}' versions.cfg) black==$$(awk '/^black =/{{print $$NF}}' versions.cfg) || true
 	@touch -c $@
 
 bin/python bin/pip:
