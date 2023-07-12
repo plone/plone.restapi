@@ -8,6 +8,33 @@ Changelog
 
 .. towncrier release notes start
 
+8.41.0 (2023-06-29)
+-------------------
+
+New features:
+
+
+- Add `visit_blocks` util for finding all nested blocks. @davisagli (#1648)
+
+
+Bug fixes:
+
+
+- Fix path2uid method, to handle suffix with non-traversable objects. @cekk @mamico (#1649)
+
+
+Internal:
+
+
+- Allow GHA tests to run on PRs from forks. @Akshat2Jain (#1656)
+
+
+Documentation:
+
+
+- Fix html_meta tags, and remove stray spaces that prevented the glossary from rendering. @stevepiercy (#1663)
+
+
 8.40.0 (2023-06-06)
 -------------------
 

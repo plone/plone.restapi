@@ -1,6 +1,8 @@
+from importlib import import_module
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.dexterity.utils import iterSchemata
+from plone.namedfile.file import NamedBlobImage
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
@@ -15,7 +17,15 @@ from zope.component import queryUtility
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
+import pathlib
 import unittest
+
+
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
+IMAGE_PATH = (pathlib.Path(__file__).parent / "image.png").resolve()
+IMAGE_DATA = IMAGE_PATH.read_bytes()
 
 
 class TestBlocksSerializer(unittest.TestCase):
@@ -36,6 +46,8 @@ class TestBlocksSerializer(unittest.TestCase):
         self.image = self.portal[
             self.portal.invokeFactory("Image", id="image-1", title="Target image")
         ]
+        self.image.image = NamedBlobImage(data=IMAGE_DATA, filename="test.jpg")
+        self.image.reindexObject()
 
     def serialize(self, context, blocks):
         fieldname = "blocks"
@@ -377,3 +389,16 @@ class TestBlocksSerializer(unittest.TestCase):
         cell = rows[1]["cells"][0]
         link = cell["value"][0]["children"][1]["data"]["url"]
         self.assertTrue(link, self.portal.absolute_url() + "/doc1")
+
+    @unittest.skipUnless(
+        HAS_PLONE_6,
+        "image_scales were added to the catalog in Plone 6",
+    )
+    def test_image_scales_serializer(self):
+        image_uid = self.image.UID()
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks={"123": {"@type": "image", "url": f"../resolveuid/{image_uid}"}},
+        )
+        self.assertEqual(res["123"]["url"], self.image.absolute_url())
+        self.assertIn("image_scales", res["123"])

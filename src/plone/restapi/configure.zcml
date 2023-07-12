@@ -130,6 +130,11 @@
       name="plone.restapi"
       />
 
+  <subscriber
+      factory=".blocks.NestedBlocksVisitor"
+      provides="plone.restapi.interfaces.IBlockVisitor"
+      />
+
   <!-- blocks link integrity -->
   <adapter factory=".blocks_linkintegrity.BlocksRetriever" />
 
