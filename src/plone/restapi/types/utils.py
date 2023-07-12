@@ -14,7 +14,6 @@ processed the same way they would for a server-rendered form.
 
 from collections import OrderedDict
 from copy import copy
-from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
 from plone.autoform.form import AutoExtensibleForm
 from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
@@ -22,10 +21,12 @@ from plone.behavior.interfaces import IBehavior
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import getAdditionalSchemata
+from plone.dexterity.schema import splitSchemaName
 from plone.i18n.normalizer import idnormalizer
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.serializer.converters import IJsonCompatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
+from plone.restapi import HAS_MULTILINGUAL
 from plone.supermodel import serializeModel
 from plone.supermodel.interfaces import FIELDSETS_KEY
 from plone.supermodel.utils import mergedTaggedValueDict
@@ -43,14 +44,8 @@ from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
 
-
-try:
-    # Plone 5.1+
-    from plone.dexterity.schema import splitSchemaName
-except ImportError:
-    # Plone 4.3
-    from plone.dexterity.utils import splitSchemaName
-
+if HAS_MULTILINGUAL:
+    from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
 
 _marker = []  # Create a new marker object.
 
@@ -203,6 +198,8 @@ def get_widget_params(schemas):
 
 
 def get_multilingual_directives(schemas):
+    if not HAS_MULTILINGUAL:
+        return {}
     params = {}
     for schema in schemas:
         if not schema:
