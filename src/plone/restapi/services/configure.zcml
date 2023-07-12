@@ -48,10 +48,9 @@
       package=".workingcopy"
       zcml:condition="installed plone.app.iterate"
       />
-  <include
-      package=".multilingual"
-      zcml:condition="have plone-5"
-      />
+  <configure zcml:condition="installed plone.app.multilingual">
+    <include package=".multilingual" />
+  </configure>
   <include
       package=".email_notification"
       zcml:condition="have plone-5"
