@@ -21,6 +21,7 @@ from plone.behavior.interfaces import IBehavior
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import getAdditionalSchemata
+from plone.dexterity.schema import splitSchemaName
 from plone.i18n.normalizer import idnormalizer
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.serializer.converters import IJsonCompatible
@@ -42,13 +43,6 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
-
-try:
-    # Plone 5.1+
-    from plone.dexterity.schema import splitSchemaName
-except ImportError:
-    # Plone 4.3
-    from plone.dexterity.utils import splitSchemaName
 
 if HAS_MULTILINGUAL:
     from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
