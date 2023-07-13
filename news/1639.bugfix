@@ -1,0 +1,2 @@
+Remove the hard code dependency by plone.app.multilingual, use it conditionaly instead
+[@folix-01]
