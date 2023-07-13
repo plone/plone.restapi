@@ -213,7 +213,7 @@ To update an existing resource, we send a `PATCH` request to the server.
 `PATCH` allows providing just a subset of the resource, such as the values you actually want to change.
 
 If you send the value `null` for a field, the field's content will be deleted, and the `missing_value` defined for the field in the schema will be set.
-Note that this is not possible if the field is `required`, and it only works for Dexterity types, not Archetypes:
+Note that this is not possible if the field is `required`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
