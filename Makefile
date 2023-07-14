@@ -44,7 +44,7 @@ update: ## Update Make and Buildout
 bin/buildout: bin/pip
 	bin/pip install --upgrade pip
 	bin/pip install -r requirements-5.2.txt
-	bin/pip install black || true
+	bin/pip install -c constraints.txt black
 	@touch -c $@
 
 bin/python bin/pip:
