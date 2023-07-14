@@ -1,8 +1,7 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer
-from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
-from plone.app.multilingual.interfaces import ITranslationManager
+from plone.restapi import HAS_MULTILINGUAL
 from plone.restapi.bbb import safe_hasattr
 from plone.restapi.deserializer import json_body
 from plone.restapi.exceptions import DeserializationError
@@ -22,6 +21,10 @@ from zope.interface import alsoProvides
 from zope.lifecycleevent import ObjectCreatedEvent
 
 import plone.protect.interfaces
+
+if HAS_MULTILINGUAL:
+    from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
+    from plone.app.multilingual.interfaces import ITranslationManager
 
 
 class FolderPost(Service):
@@ -94,7 +97,8 @@ class FolderPost(Service):
 
         # Link translation given the translation_of property
         if (
-            IPloneAppMultilingualInstalled.providedBy(self.request)
+            HAS_MULTILINGUAL
+            and IPloneAppMultilingualInstalled.providedBy(self.request)
             and translation_of
             and language
         ):

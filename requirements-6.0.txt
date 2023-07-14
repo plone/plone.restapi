@@ -1,1 +1,1 @@
--r https://dist.plone.org/release/6.0.4/requirements.txt
+-r https://dist.plone.org/release/6.0.6/requirements.txt

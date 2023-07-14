@@ -3,13 +3,13 @@ from copy import deepcopy
 from plone import api
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
+from plone.restapi.blocks import iter_block_transform_handlers, visit_blocks
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
 from plone.restapi.deserializer.utils import path2uid
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.schema import IJSONField
 from zope.component import adapter
-from zope.component import subscribers
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
@@ -32,60 +32,17 @@ def iterate_children(value):
 @implementer(IFieldDeserializer)
 @adapter(IJSONField, IBlocks, IBrowserRequest)
 class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
-    def _transform(self, blocks):
-        for id, block_value in blocks.items():
-            self.handle_subblocks(block_value)
-            block_type = block_value.get("@type", "")
-            handlers = []
-            for h in subscribers(
-                (self.context, self.request),
-                IBlockFieldDeserializationTransformer,
-            ):
-                if h.block_type == block_type or h.block_type is None:
-                    h.blockid = id
-                    handlers.append(h)
-
-            for handler in sorted(handlers, key=lambda h: h.order):
-                block_value = handler(block_value)
-
-            blocks[id] = block_value
-
-        return blocks
-
-    def handle_subblocks(self, block_value):
-        if "data" in block_value:
-            if isinstance(block_value["data"], dict):
-                if "blocks" in block_value["data"]:
-                    block_value["data"]["blocks"] = self._transform(
-                        block_value["data"]["blocks"]
-                    )
-
-        if "blocks" in block_value:
-            block_value["blocks"] = self._transform(block_value["blocks"])
-
     def __call__(self, value):
         value = super().__call__(value)
-
         if self.field.getName() == "blocks":
-            for id, block_value in value.items():
-                self.handle_subblocks(block_value)
-                block_type = block_value.get("@type", "")
-
-                handlers = []
-                for h in subscribers(
-                    (self.context, self.request),
-                    IBlockFieldDeserializationTransformer,
+            for block in visit_blocks(self.context, value):
+                new_block = block.copy()
+                for handler in iter_block_transform_handlers(
+                    self.context, block, IBlockFieldDeserializationTransformer
                 ):
-                    if h.block_type == block_type or h.block_type is None:
-                        h.blockid = id
-                        handlers.append(h)
-
-                for handler in sorted(handlers, key=lambda h: h.order):
-                    if not getattr(handler, "disabled", False):
-                        block_value = handler(block_value)
-
-                value[id] = block_value
-
+                    new_block = handler(new_block)
+                block.clear()
+                block.update(new_block)
         return value
 
 
@@ -118,14 +75,9 @@ class ResolveUIDDeserializerBase:
             if data.get("@type", None) == "URL" and data.get("value", None):
                 data["value"] = path2uid(context=self.context, link=data["value"])
             elif data.get("@id", None):
-                item_clone = deepcopy(data)
-                item_clone["@id"] = path2uid(
-                    context=self.context, link=item_clone["@id"]
-                )
-                return {
-                    field: self._process_data(data=value, field=field)
-                    for field, value in item_clone.items()
-                }
+                data = deepcopy(data)
+                data["@id"] = path2uid(context=self.context, link=data["@id"])
+            data.pop("image_scales", None)
             return {
                 field: self._process_data(data=value, field=field)
                 for field, value in data.items()

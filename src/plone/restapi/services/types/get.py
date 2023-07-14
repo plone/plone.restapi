@@ -7,6 +7,7 @@ from plone.restapi.types.utils import get_info_for_field
 from plone.restapi.types.utils import get_info_for_fieldset
 from plone.restapi.types.utils import get_info_for_type
 from Products.CMFCore.interfaces import IFolderish
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
 from zope.component import adapter
@@ -83,6 +84,12 @@ class TypesInfo:
         ]
 
         return result
+
+
+@implementer(IExpandableElement)
+@adapter(IPloneSiteRoot, Interface)
+class TypesInfoRoot(TypesInfo):
+    pass
 
 
 @implementer(IPublishTraverse)
