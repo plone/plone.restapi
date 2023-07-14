@@ -35,7 +35,7 @@ Location: http://localhost:55001/plone/folder/my-document
     "allow_discussion": false,
     "changeNote": "",
     "contributors": [],
-    "created": "1995-07-31T13:45:00",
+    "created": "1995-07-31T13:45:00+00:00",
     "creators": [
         "admin"
     ],
@@ -51,7 +51,7 @@ Location: http://localhost:55001/plone/folder/my-document
         "locked": false,
         "stealable": true
     },
-    "modified": "1995-07-31T17:30:00",
+    "modified": "1995-07-31T17:30:00+00:00",
     "next_item": {},
     "parent": {
         "@id": "http://localhost:55001/plone/folder",
