@@ -1,2 +1,2 @@
--r https://dist.plone.org/release/5.2.9/requirements.txt
+-r https://dist.plone.org/release/5.2.12/requirements.txt
 zpretty
