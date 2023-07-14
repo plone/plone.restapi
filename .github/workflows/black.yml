@@ -20,10 +20,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
 
-      # install black (extract version from versions.cfg)
-      - name: install black
-        run: pip install click==$(awk '/^click =/{print $NF}' versions.cfg) black==$(awk '/^black =/{print $NF}' versions.cfg)
-
       # install black (with constraints)
       - name: install black
         run: pip install -c constraints.txt black
