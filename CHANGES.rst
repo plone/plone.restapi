@@ -8,6 +8,38 @@ Changelog
 
 .. towncrier release notes start
 
+8.42.0 (2023-07-17)
+-------------------
+
+New features:
+
+
+- When serializing blocks, `image_scales` is now added to blocks that contain a resolveuid-based `url`.
+  When deserializing blocks, `image_scales` is removed. @davisagli (#1642)
+
+
+Bug fixes:
+
+
+- Remove the hard code dependency by plone.app.multilingual, use it conditionaly instead
+  [@folix-01] (#1639)
+- Fix timezone of dates for revisions in the `@history` service. @davisagli (#1647)
+- Fix types expander in root for Plone 5.2 (for non-Dexterity Plone Site Root) @sneridagh (#1669)
+
+
+Internal:
+
+
+- Updated package installation to use constraints.txt for black package, ensuring compatibility and consistent versions. @Akshat2Jain (#1671)
+- Update Makefile and buildout to use Plone 6.0.6. @davisagli (#1672)
+
+
+Documentation:
+
+
+- added instruction to ensure consistent code formatting. @Akshat2Jain (#1664)
+
+
 8.41.0 (2023-06-29)
 -------------------
 
