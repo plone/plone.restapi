@@ -597,3 +597,9 @@ class TestBlocksDeserializer(unittest.TestCase):
         cell = rows[1]["cells"][0]
         link = cell["value"][0]["children"][1]["data"]["url"]
         self.assertTrue(link.startswith("../resolveuid/"))
+
+    def test_deserialize_url_with_image_scales(self):
+        blocks = {"123": {"url": self.image.absolute_url(), "image_scales": {}}}
+        res = self.deserialize(blocks=blocks)
+        self.assertTrue(res.blocks["123"]["url"].startswith("../resolveuid/"))
+        self.assertNotIn("image_scales", res.blocks["123"])

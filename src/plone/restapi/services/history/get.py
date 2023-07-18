@@ -1,4 +1,5 @@
 from datetime import datetime as dt
+from datetime import timezone
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import ISerializeToJson
@@ -71,13 +72,9 @@ class HistoryGet(Service):
             # Versioning entries use a timestamp,
             # workflow ISO formatted string
             if not isinstance(item["time"], str):
-                # Note that isoformat does not add the Z at the end of the string, The lack of the
-                # timezone specifier causes Intl (and derivative libraries) in the browser not to
-                # use local time, which is considered a bug in applications. Therefore we add the Z
-                # to the end to make sure that the date will be interpreted properly by the client.
-                item["time"] = dt.fromtimestamp(int(item["time"])).strftime(
-                    "%Y-%m-%dT%H:%M:%SZ"
-                )
+                item["time"] = dt.fromtimestamp(
+                    int(item["time"]), tz=timezone.utc
+                ).isoformat(timespec="seconds")
 
             # The create event has an empty 'action', but we like it to say
             # 'Create', alike the transition_title

@@ -319,3 +319,45 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
             response.json()["items"][-1]["@id"],
             f"{self.portal.absolute_url()}/testdocument9",
         )
+
+    def test_querystringsearch__bad_json(self):
+        response = self.api_session.get("/@querystring-search?query={")
+        self.assertEqual(response.status_code, 400)
+
+    def test_querystringsearch__empty_query(self):
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={"query": []},
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_querystringsearch__bad_b_size(self):
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.is",
+                        "v": ["Document"],
+                    }
+                ],
+                "b_size": "x",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_querystringsearch__bad_operation(self):
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "BOGUS",
+                        "v": ["Document"],
+                    }
+                ],
+            },
+        )
+        self.assertEqual(response.status_code, 400)
