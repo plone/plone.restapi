@@ -28,22 +28,21 @@ Getting started
 
 A live demo of Plone 6 with the latest ``plone.restapi`` release is available at:
 
-https://6.demo.plone.org/
+https://demo.plone.org/
 
 An example GET request on the portal root is the following.
 
 .. code-block:: shell
 
-    curl -i https://6.demo.plone.org/ -H "Accept: application/json"
+    curl -i https://demo.plone.org/++api++ -H "Accept: application/json"
 
 An example POST request to create a new document is the following.
 
 .. code-block:: shell
 
-    curl -i -X POST https://6.demo.plone.org/ \
+    curl -i -X POST https://demo.plone.org/++api++ \
         -H "Accept: application/json" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Basic YOUR_BASIC_AUTH_TOKEN" \
         --data-raw '{"@type": "Document", "title": "My Document"}' \
         --user admin:admin
 
@@ -70,6 +69,19 @@ Install ``plone.restapi`` by adding it to your buildout.
 
 
 …and then running ``bin/buildout``.
+
+
+Python / Plone Compatibility
+============================
+
+plone.restapi 8 requires Python 3 and works with Plone 5.2 and Plone 6.x.
+
+plone.restapi 8 does not officially support Python 3.6.
+
+Python versions that reached their `end-of-life <https://devguide.python.org/versions/>`_,
+including Python 3.6, might still work, but the maintainers do not guarantee this in any way.
+
+Use plone.restapi 7 if you are running Python 2.7 or Plone versions below 5.2.
 
 
 Contribute

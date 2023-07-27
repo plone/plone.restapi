@@ -169,7 +169,14 @@ def step_setup_content(context):
         publish(folder10np[f"doc{i}"])
 
     # Collection
-    portal.invokeFactory("Collection", id="collection", title="Collection")
+    query = [
+        {
+            "i": "portal_type",
+            "o": "plone.app.querystring.operation.string.is",
+            "v": ["Document"],
+        }
+    ]
+    portal.invokeFactory("Collection", id="collection", title="Collection", query=query)
     set_description(portal.collection)
     set_text(portal.collection)
     publish(portal.collection)

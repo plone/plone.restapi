@@ -144,7 +144,6 @@ def vocabularyRequireingContextFactory(context):
 
 
 class IDXTestDocumentSchema(model.Schema):
-
     # zope.schema fields
     test_ascii_field = schema.ASCII(required=False)
     test_asciiline_field = schema.ASCIILine(required=False)
@@ -310,7 +309,6 @@ class DXTestDocument(Item):
 
 @provider(IFormFieldProvider)
 class ITestBehavior(model.Schema):
-
     test_behavior_field = schema.TextLine(required=False)
     # Add nav_title to test if it gets substituted in Navigation service
     nav_title = schema.TextLine(required=False)
@@ -318,5 +316,4 @@ class ITestBehavior(model.Schema):
 
 @provider(IFormFieldProvider)
 class ITestAnnotationsBehavior(model.Schema):
-
     test_annotations_behavior_field = schema.TextLine(required=False)

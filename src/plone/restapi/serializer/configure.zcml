@@ -75,6 +75,17 @@
       <adapter factory=".atcollection.SerializeCollectionToJson" />
     </configure>
   </configure>
+  
+  <subscriber
+      factory=".blocks.SlateTableBlockSerializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
+
+  <subscriber
+      factory=".blocks.SlateTableBlockSerializer"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
+
 
   <adapter factory=".converters.date_converter" />
   <adapter factory=".converters.decimal_converter" />

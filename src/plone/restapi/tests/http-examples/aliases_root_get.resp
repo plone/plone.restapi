@@ -1,0 +1,21 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@aliases",
+    "items": [
+        {
+            "datetime": "2022-05-05T00:00:00",
+            "manual": true,
+            "path": "/fizzbuzz",
+            "redirect-to": "/front-page"
+        },
+        {
+            "datetime": "2022-05-05T00:00:00",
+            "manual": true,
+            "path": "/old-page",
+            "redirect-to": "/front-page"
+        }
+    ],
+    "items_total": 2
+}

@@ -12,6 +12,7 @@
   <include package=".auth" />
   <include package=".actions" />
   <include package=".addons" />
+  <include package=".aliases" />
   <include package=".breadcrumbs" />
   <include package=".content" />
   <include package=".controlpanels" />
@@ -22,29 +23,35 @@
   <include package=".navigation" />
   <include package=".contextnavigation" />
   <include package=".history" />
+  <include package=".linkintegrity" />
   <include package=".locking" />
+  <include package=".navroot" />
   <include package=".principals" />
   <include package=".querysources" />
   <include package=".querystring" />
   <include package=".querystringsearch" />
   <include package=".registry" />
+  <include package=".relations" />
   <include package=".roles" />
   <include package=".search" />
   <include package=".slots" />
+  <include package=".site" />
   <include package=".system" />
   <include package=".sources" />
+  <include package=".transactions" />
   <include package=".types" />
+  <include package=".upgrade" />
   <include package=".users" />
+  <include package=".userschema" />
   <include package=".vocabularies" />
   <include package=".workflow" />
   <include
       package=".workingcopy"
-      zcml:condition="have plone-5"
+      zcml:condition="installed plone.app.iterate"
       />
-  <include
-      package=".multilingual"
-      zcml:condition="have plone-5"
-      />
+  <configure zcml:condition="installed plone.app.multilingual">
+    <include package=".multilingual" />
+  </configure>
   <include
       package=".email_notification"
       zcml:condition="have plone-5"
@@ -56,5 +63,9 @@
   <include
       package=".tiles"
       zcml:condition="installed plone.tiles"
+      />
+  <include
+      package=".rules"
+      zcml:condition="installed plone.app.contentrules"
       />
 </configure>

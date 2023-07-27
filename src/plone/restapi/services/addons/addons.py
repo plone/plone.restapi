@@ -1,7 +1,6 @@
 from plone.memoize import view
+from plone.restapi.bbb import INonInstallable
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone import PloneMessageFactory as _
-from Products.CMFPlone.interfaces import INonInstallable
 from Products.GenericSetup import EXTENSION
 from Products.GenericSetup.tool import UNKNOWN
 from zope.component import getAllUtilitiesRegisteredFor
@@ -9,6 +8,12 @@ from zope.i18n import translate
 
 import logging
 import pkg_resources
+
+
+try:
+    from plone.base import PloneMessageFactory as _
+except ImportError:
+    from Products.CMFPlone import PloneMessageFactory as _
 
 
 logger = logging.getLogger("Plone")
@@ -357,6 +362,17 @@ class Addons:
         if install_profile:
             self.ps.unsetLastVersionForProfile(install_profile["id"])
         return True
+
+    def import_profile(self, product_id, profile_id):
+        profile = self._get_profile(
+            product_id, profile_id, strict=True, allow_hidden=True
+        )
+        if not profile:
+            logger.error("Could not find %s: profile", product_id)
+            return False
+        else:
+            self.ps.runAllImportStepsFromProfile("profile-%s" % profile["id"])
+            return True
 
     @view.memoize
     def marshall_addons(self):

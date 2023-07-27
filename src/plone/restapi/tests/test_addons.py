@@ -1,18 +1,18 @@
+from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.restapi.bbb import safe_text
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_unicode
 
 import transaction
 import unittest
 
 
 class TestAddons(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -61,7 +61,7 @@ class TestAddons(unittest.TestCase):
 
         response = self.api_session.post("/@addons/plone.session/install")
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(safe_unicode(response.content), "")
+        self.assertEqual(safe_text(response.content), "")
 
         # Check to make sure the addon is currently shown as installed
         self.assertEqual(_get_install_status(self), True)
@@ -69,13 +69,12 @@ class TestAddons(unittest.TestCase):
         # Now uninstall the addon
         response = self.api_session.post("/@addons/plone.session/uninstall")
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(safe_unicode(response.content), "")
+        self.assertEqual(safe_text(response.content), "")
 
         # Check to make sure the addon is currently shown as not installed
         self.assertEqual(_get_install_status(self), False)
 
     def test_install_uninstall_addon_with_representation(self):
-
         # Check to make sure the addon is currently shown as not installed
         response = self.api_session.get("/@addons/plone.session")
         result = response.json()
@@ -130,7 +129,7 @@ class TestAddons(unittest.TestCase):
         # Now call the upgrade
         response = self.api_session.post("/@addons/plone.restapi/upgrade")
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(safe_unicode(response.content), "")
+        self.assertEqual(safe_text(response.content), "")
         self.assertEqual(
             {
                 "available": False,
@@ -200,3 +199,16 @@ class TestAddons(unittest.TestCase):
 
         self.assertEqual(1, len(response.json()["items"]))
         self.assertEqual("plone.restapi", response.json()["items"][0]["id"])
+
+    def test_install_specific_profile(self):
+        response = self.api_session.post(
+            "/@addons/plone.restapi/import/testing-workflows"
+        )
+        self.assertEqual(response.status_code, 204)
+
+        transaction.commit()
+
+        # This test installs the profile 'testing-workflows', which installs
+        # a workflow named "restriction_workflow", we check for it to be present
+        pw = api.portal.get_tool("portal_workflow")
+        self.assertIn("restriction_workflow", pw.listWorkflows())

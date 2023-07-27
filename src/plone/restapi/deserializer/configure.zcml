@@ -18,6 +18,7 @@
   <adapter factory=".dxfields.TimedeltaFieldDeserializer" />
   <adapter factory=".dxfields.NamedFieldDeserializer" />
   <adapter factory=".dxfields.RichTextFieldDeserializer" />
+  <adapter factory=".dxfields.DecimalFieldDeserializer" />
   <adapter factory=".blocks.BlocksJSONFieldDeserializer" />
 
   <adapter factory=".slots.SlotDeserializer" />
@@ -69,7 +70,11 @@
       provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
       />
   <subscriber
-      factory=".blocks.VolatileSmartField"
+      factory=".blocks.SlateTableBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.SlateTableBlockDeserializerRoot"
       provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
       />
 

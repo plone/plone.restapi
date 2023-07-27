@@ -1,12 +1,13 @@
-from DateTime import DateTime
 from datetime import datetime
+from datetime import timezone
+from DateTime import DateTime
 from plone.app.discussion.comment import Comment
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.dexterity.content import DexterityContent
 from plone.locking.lockable import TTWLockable
+from plone.restapi.serializer.working_copy import WorkingCopyInfo
 from Products.CMFCore.WorkflowTool import _marker
 from Products.CMFCore.WorkflowTool import WorkflowTool
-from plone.restapi.serializer.working_copy import WorkingCopyInfo
 
 
 _originals = {
@@ -70,8 +71,8 @@ class StaticTime:
 
     def __init__(
         self,
-        created=datetime(1995, 7, 31, 13, 45),
-        modified=datetime(1995, 7, 31, 17, 30),
+        created=datetime(1995, 7, 31, 13, 45, tzinfo=timezone.utc),
+        modified=datetime(1995, 7, 31, 17, 30, tzinfo=timezone.utc),
     ):
         self.static_created = created
         self.static_modified = modified
