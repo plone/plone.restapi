@@ -218,9 +218,7 @@ class GetRelations(Service):
         if not source and not target and not relationship:
             try:
                 stats = relation_stats()
-                stats[
-                    "@id"
-                ] = f"{self.context.absolute_url()}/@relations"
+                stats["@id"] = f"{self.context.absolute_url()}/@relations"
                 return stats
             except ImportError:
                 self.request.response.setStatus(501)
