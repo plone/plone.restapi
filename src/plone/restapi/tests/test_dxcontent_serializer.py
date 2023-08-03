@@ -576,17 +576,6 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertIn("allow_discussion", obj)
         self.assertEqual(True, obj["allow_discussion"])
 
-    def test_allow_discussion_global_enabled_but_instance_has_no_discussion_behavior(
-        self,
-    ):  # noqa
-        registry = queryUtility(IRegistry)
-        settings = registry.forInterface(IDiscussionSettings, check=False)
-        settings.globally_enabled = True
-
-        obj = self.serialize()
-        self.assertIn("allow_discussion", obj)
-        self.assertEqual(False, obj["allow_discussion"])
-
 
 class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING

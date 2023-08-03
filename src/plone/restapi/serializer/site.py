@@ -23,6 +23,7 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
+from plone.restapi.serializer.dxcontent import get_allow_discussion_value
 
 import json
 
@@ -120,6 +121,8 @@ class SerializeSiteRootToJson:
             getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
             for brain in batch
         ]
+
+        get_allow_discussion_value(self.context, self.request, result)
 
         return result
 

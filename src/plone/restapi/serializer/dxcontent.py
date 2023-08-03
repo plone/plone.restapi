@@ -39,6 +39,14 @@ except ImportError:
     WorkingCopyInfo = None
 
 
+def get_allow_discussion_value(context, request, result):
+    # This test is to handle the plone.app.discussion not being installed situation
+    if "allow_discussion" in result:
+        result["allow_discussion"] = getMultiAdapter(
+            (context, request), name="conversation_view"
+        ).enabled()
+
+
 @implementer(ISerializeToJson)
 @adapter(IDexterityContent, Interface)
 class SerializeToJson:
@@ -125,9 +133,7 @@ class SerializeToJson:
         if target_url:
             result["targetUrl"] = target_url
 
-        result["allow_discussion"] = getMultiAdapter(
-            (self.context, self.request), name="conversation_view"
-        ).enabled()
+        get_allow_discussion_value(self.context, self.request, result)
 
         return result
 
