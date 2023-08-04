@@ -107,6 +107,7 @@ exising translation using two parameters: `translationOf` and `language`.
 :language: http
 ```
 
+
 ## Get location in the tree for new translations
 
 When you create a translation in Plone, there are policies in place for finding a suitable placement for it.
@@ -120,6 +121,7 @@ This endpoint returns the proper placement for the newly created translation:
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translation_locator.resp
 :language: http
 ```
+
 
 ## Expansion
 
