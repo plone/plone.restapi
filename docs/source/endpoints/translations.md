@@ -91,7 +91,6 @@ To unlink the content, issue a `DELETE` request on the `@translations` endpoint 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_delete.resp
 :language: http
 ```
-
 ## Creating a translation from an existing content
 
 The `POST` content endpoint to a folder is also capable of linking this new content with an
