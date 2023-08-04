@@ -1,0 +1,8 @@
+GET /plone/en/test-document?expand=@translations HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "id": "http://localhost:55001/plone/es/test-document"
+}

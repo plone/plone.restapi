@@ -2168,7 +2168,7 @@ class TestPAMDocumentation(TestDocumentationBase):
             json={"id": self.es_content.absolute_url()},
         )
         save_request_and_response_for_docs("translations_post", response)
-    
+
     def test_documentation_translations_expand_get(self):
         response = self.api_session.get(
             f"{self.en_content.absolute_url()}?expand=@translations",
@@ -2182,7 +2182,7 @@ class TestPAMDocumentation(TestDocumentationBase):
             json={"id": self.es_content.absolute_url().replace(self.portal_url, "")},
         )
         save_request_and_response_for_docs("translations_post_by_id", response)
-    
+
     def test_documentation_translations_post_by_uid(self):
         response = self.api_session.post(
             f"{self.en_content.absolute_url()}/@translations",
