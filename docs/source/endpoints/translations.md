@@ -92,7 +92,6 @@ To unlink the content, issue a `DELETE` request on the `@translations` endpoint 
 :language: http
 ```
 
-
 ## Creating a translation from an existing content
 
 The `POST` content endpoint to a folder is also capable of linking this new content with an
@@ -106,7 +105,6 @@ exising translation using two parameters: `translationOf` and `language`.
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_link_on_post.resp
 :language: http
 ```
-
 
 ## Get location in the tree for new translations
 
@@ -122,9 +120,17 @@ This endpoint returns the proper placement for the newly created translation:
 :language: http
 ```
 
-
 ## Expansion
 
 This endpoint can be used with the {doc}`expansion` mechanism which allows getting additional information about a content item in one query, avoiding unnecessary requests.
 
 If a simple `GET` request is done on the content item, a new entry will be shown on the `@components` entry, with the URL of the `@translations` endpoint:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/translations_expand_get.req
+```
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_expand_get.resp
+:language: http
+```
