@@ -125,7 +125,11 @@ This endpoint returns the proper placement for the newly created translation:
 
 ## Expansion
 
-This endpoint can be used with the {doc}`expansion` mechanism which allows getting additional information about a content item in one query, avoiding unnecessary requests.
+This service can be used with the {doc}`expansion` mechanism which allows getting additional information about a content item in one query, avoiding additional requests.
+
+As soon as plone.app.multilingual is installed, a content item is translatable.
+Which means it provides the ITranslatable interface.
+Therefore the content information provided by the content endpoint is expandable to translations.
 
 If a simple `GET` request is done on the content item, a new entry will be shown on the `@components` entry, with the URL of the `@translations` endpoint:
 

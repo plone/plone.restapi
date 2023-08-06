@@ -2171,7 +2171,7 @@ class TestPAMDocumentation(TestDocumentationBase):
 
     def test_documentation_translations_expand_get(self):
         response = self.api_session.get(
-            f"{self.en_content.absolute_url()}?expand=@translations",
+            f"{self.en_content.absolute_url()}?expand=translations",
             json={"id": self.es_content.absolute_url()},
         )
         save_request_and_response_for_docs("translations_expand_get", response)
