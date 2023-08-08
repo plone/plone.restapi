@@ -125,6 +125,6 @@ This endpoint returns the proper placement for the newly created translation:
 
 ## Expansion
 
-This endpoint can be used with the {doc}`expansion` mechanism which allows getting additional information about a content item in one query, avoiding unnecessary requests.
+This endpoint can be used with the {doc}`../usage/expansion` mechanism which allows getting additional information about a content item in one query, avoiding unnecessary requests.
 
 If a simple `GET` request is done on the content item, a new entry will be shown on the `@components` entry, with the URL of the `@translations` endpoint:
