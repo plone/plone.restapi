@@ -17,7 +17,19 @@ This helps the API consumers avoid unnecessary requests.
 Say you want to show a document in Plone together with the breadcrumbs and a workflow switcher.
 Instead of doing three individual requests, you can expand the breadcrumbs and the workflow "components" within the document `GET` request.
 
-The list of expandable components is listed in the `@components` attribute in the response of any content `GET` request:
+The following is a list of components that support expansion.
+
+-   {doc}`actions <../endpoints/actions>`
+-   {doc}`aliases <../endpoints/aliases>`
+-   {doc}`breadcrumbs <../endpoints/breadcrumbs>`
+-   {doc}`contextnavigation <../endpoints/contextnavigation>`
+-   {doc}`navigation <../endpoints/navigation>`
+-   {doc}`navroot <../endpoints/navroot>`
+-   {doc}`translations <../endpoints/translations>`
+-   {doc}`types <../endpoints/types>`
+-   {doc}`workflow <../endpoints/workflow>`
+
+You can also get the list expandable components by inspecting the `@components` attribute in the response of any content `GET` request, as shown in the following example.
 
 ```http
 GET /plone/front-page HTTP/1.1

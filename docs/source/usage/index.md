@@ -21,6 +21,7 @@ authentication
 batching
 content
 customization
+expansion
 exploring
 i18n
 serialization
