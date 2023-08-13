@@ -129,7 +129,7 @@ This service can be used with the {doc}`expansion` mechanism which allows gettin
 
 Translation information can be provided by the API expansion for translatable content items.
 A content type is translatable if it has the `plone.translatable` behavior enabled. 
-plone.app.multilingual enables this behavior for all content types at the time that it is installed.
+`plone.app.multilingual` enables this behavior for all content types at the time that it is installed.
 For other content types added later, it would be necessary to enable the behavior for them also.
 
 If a simple `GET` request is done on the content item, a new entry will be shown on the `@components` entry, with the URL of the `@translations` endpoint:
