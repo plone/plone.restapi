@@ -8,6 +8,11 @@ Changelog
 
 .. towncrier release notes start
 
+7.8.3rc1 (2024-08-14)
+---------------------
+- EEA RELEASE: Fix nextprev with versions exportimport when object moved
+  [avoinea] (#1679)
+
 7.8.2 (2023-04-19)
 ------------------
 
