@@ -35,7 +35,10 @@ class NextPrevious(object):
         if getattr(self.parent, "_ordering", "") == "unordered":
             # Unordered folder
             return {}
-        data = self.nextprev.getNextItem(self.context)
+        try:
+            data = self.nextprev.getNextItem(self.context)
+        except ValueError:
+            data = None
         if data is None:
             return {}
         return {
@@ -51,7 +54,10 @@ class NextPrevious(object):
         if getattr(self.parent, "_ordering", "") == "unordered":
             # Unordered folder
             return {}
-        data = self.nextprev.getPreviousItem(self.context)
+        try:
+            data = self.nextprev.getPreviousItem(self.context)
+        except ValueError:
+            data = None
         if data is None:
             return {}
         return {
