@@ -136,9 +136,19 @@ If a simple `GET` request is done on the content item, a new entry will be shown
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/translations_unexpand_get.req
+```
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_unexpand_get.resp
+:language: http
+```
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/translations_expand_get.req
 ```
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_expand_get.resp
 :language: http
 ```
+
