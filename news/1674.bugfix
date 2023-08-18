@@ -1,1 +1,1 @@
-Added the function `get_allow_discussion_value(context, request)`. It returns `True` if discussion is allowed, or `False` if not, based on the enabled status of the `conversation_view` adapter. @Akshat2Jain
+Fixed `allow_discussion` serialization for the Plone Site, to return a boolean like other content types. @Akshat2Jain
