@@ -125,7 +125,7 @@ This endpoint returns the proper placement for the newly created translation:
 
 ## Expansion
 
-This service can be used with the {doc}`expansion` mechanism which allows getting additional information about a content item in one query, avoiding additional requests.
+This service can be used with the {doc}`../usage/expansion` mechanism which allows getting additional information about a content item in one query, avoiding additional requests.
 
 Translation information can be provided by the API expansion for translatable content items.
 A content type is translatable if it has the `plone.translatable` behavior enabled. 

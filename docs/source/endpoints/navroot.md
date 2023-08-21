@@ -88,7 +88,7 @@ The response has the language folder information as a navigation root:
 
 ## Expansion
 
-This endpoint can be used with the {doc}`expansion` mechanism which allows getting more information about a content item in one query, avoiding unnecessary requests.
+This endpoint can be used with the {doc}`../usage/expansion` mechanism which allows getting more information about a content item in one query, avoiding unnecessary requests.
 
 If a simple `GET` request is made on the content item, a new entry will be shown on the `@components` entry with the URL of the `@navroot` endpoint.
 
