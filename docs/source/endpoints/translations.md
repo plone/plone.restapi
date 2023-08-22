@@ -136,12 +136,14 @@ If a simple `GET` request is done on the content item, a new entry will be shown
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/translations_unexpand_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/translations_unexpanded_get.req
 ```
 
-```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_unexpand_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_unexpanded_get.resp
 :language: http
 ```
+
+In order to expand and embed the translations component, use the GET parameter expand with the value 'translations'.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests

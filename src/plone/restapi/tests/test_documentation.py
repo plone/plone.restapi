@@ -2169,11 +2169,11 @@ class TestPAMDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("translations_post", response)
 
-    def test_documentation_translations_unexpand_get(self):
+    def test_documentation_translations_unexpanded_get(self):
         response = self.api_session.get(
-            f"{self.en_content.absolute_url()}?@translations",
+            f"{self.en_content.absolute_url()}",
         )
-        save_request_and_response_for_docs("translations_unexpand_get", response)
+        save_request_and_response_for_docs("translations_unexpanded_get", response)
 
     def test_documentation_translations_expand_get(self):
         response = self.api_session.get(
