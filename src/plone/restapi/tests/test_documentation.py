@@ -1107,6 +1107,48 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.delete("/@users/noam")
         save_request_and_response_for_docs("users_delete", response)
 
+    def test_documentation_users_delete_no_localroles(self):
+        properties = {
+            "email": "noam.chomsky@example.com",
+            "username": "noamchomsky",
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
+        )
+        transaction.commit()
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_localroles": 0}
+        )
+        save_request_and_response_for_docs("users_delete_no_localroles", response)
+
+    def test_documentation_users_delete_no_memberareas(self):
+        properties = {
+            "email": "noam.chomsky@example.com",
+            "username": "noamchomsky",
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
+        )
+        transaction.commit()
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_memberareas": 0}
+        )
+        save_request_and_response_for_docs("users_delete_no_memberareas", response)
+
     def test_documentation_groups(self):
         gtool = api.portal.get_tool("portal_groups")
         properties = {
