@@ -96,7 +96,7 @@ To unlink the content, issue a `DELETE` request on the `@translations` endpoint 
 ## Creating a translation from an existing content
 
 The `POST` content endpoint to a folder is also capable of linking this new content with an
-exising translation using two parameters: `translationOf` and `language`.
+existing translation using two parameters: `translationOf` and `language`.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests

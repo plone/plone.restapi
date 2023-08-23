@@ -23,7 +23,12 @@ Content-Type: application/json
         },
         "translations": {
             "@id": "http://localhost:55001/plone/en/test-document/@translations",
-            "items": [],
+            "items": [
+                {
+                    "@id": "http://localhost:55001/plone/es/test-document",
+                    "language": "es"
+                }
+            ],
             "root": {
                 "de": "http://localhost:55001/plone/de",
                 "en": "http://localhost:55001/plone/en",
