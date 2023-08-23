@@ -14,7 +14,8 @@ It explains the steps that are needed to upgrade to the latest version.
 
 ## Upgrading to `plone.restapi` 8.x
 
-plone.restapi 8.x dropped support for Python 2 and Plone 5.1 and 4.3.Upgrading to plone.restapi 8.x does not require any changes to your code base if you use Python 3 and Plone 5.2 or newer.
+plone.restapi 8.x dropped support for Python 2 and Plone 5.1 and 4.3.
+Upgrading to plone.restapi 8.x does not require any changes to your code base if you use Python 3 and Plone 5.2 or newer.
 
 If you use Python 2 and a Plone version older than 5.2, stick with plone.restapi 7.x.
 
