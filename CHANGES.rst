@@ -8,6 +8,27 @@ Changelog
 
 .. towncrier release notes start
 
+8.42.1 (2023-08-23)
+-------------------
+
+Bug fixes:
+
+
+- Fix broken relations info. @ksuess (#1673)
+
+
+Internal:
+
+
+- Fix test cleanup. @davisagli (#1680)
+
+
+Documentation:
+
+
+- Move expansion docs from endpoints to usage, and add a list of all expandable components. Fixes #1677. @stevepiercy (#1678)
+
+
 8.42.0 (2023-07-17)
 -------------------
 
