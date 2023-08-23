@@ -33,7 +33,7 @@ Content-Type: application/json
     "UID": "SomeUUID000000000000000000000002",
     "allow_discussion": false,
     "contributors": [],
-    "created": "1995-07-31T13:45:00",
+    "created": "1995-07-31T13:45:00+00:00",
     "creators": [
         "test_user_1_"
     ],
@@ -96,7 +96,7 @@ Content-Type: application/json
         "locked": false,
         "stealable": true
     },
-    "modified": "1995-07-31T17:30:00",
+    "modified": "1995-07-31T17:30:00+00:00",
     "next_item": {
         "@id": "http://localhost:55001/plone/doc1",
         "@type": "Document",

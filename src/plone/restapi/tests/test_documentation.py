@@ -7,6 +7,7 @@ from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
+from plone.app.testing import applyProfile
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -35,6 +36,7 @@ from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.restapi.testing import register_static_uuid_utility
 from zope.component.hooks import getSite
+
 import collections
 import json
 import os
@@ -213,7 +215,6 @@ class TestDocumentationBase(unittest.TestCase):
 
 
 class TestDocumentation(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -1788,7 +1789,6 @@ class TestDocumentation(TestDocumentationBase):
 
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -1845,7 +1845,6 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
 
 
 class TestCommenting(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -2114,7 +2113,6 @@ class TestCommenting(TestDocumentationBase):
 
 
 class TestControlPanelDocumentation(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def test_controlpanels_get_listing(self):
@@ -2172,13 +2170,20 @@ class TestControlPanelDocumentation(TestDocumentationBase):
 
 
 class TestPAMDocumentation(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
         super().setUp()
 
-        #
+        language_tool = api.portal.get_tool("portal_languages")
+        language_tool.addSupportedLanguage("en")
+        language_tool.addSupportedLanguage("es")
+        language_tool.addSupportedLanguage("de")
+        if api.portal.get().portal_setup.profileExists(
+            "plone.app.multilingual:default"
+        ):
+            applyProfile(self.portal, "plone.app.multilingual:default")
+
         # We manually set the UIDs for LRFs here because the static uuid
         # generator is not applied for LRFs.
         # When we have tried to apply it for LRFs we have had several
@@ -2290,7 +2295,6 @@ class TestPAMDocumentation(TestDocumentationBase):
 
 
 class TestIterateDocumentation(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -2394,7 +2398,6 @@ class TestIterateDocumentation(TestDocumentationBase):
 
 
 class TestRules(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
