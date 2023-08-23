@@ -28,3 +28,7 @@ class IControlpanel(Interface):
 
 class IDexterityTypesControlpanel(IControlpanel):
     """Dexterity Types Control panel"""
+
+
+class IContentRulesControlpanel(IControlpanel):
+    """Content Rules Control panel"""

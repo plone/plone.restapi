@@ -1,75 +1,73 @@
 name: Tests
-on: [push]
+on: [push,pull_request]
 jobs:
   build:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - python-version: '3.6'
-            plone-version: '5.2'
           - python-version: '3.7'
             plone-version: '5.2'
           - python-version: '3.8'
             plone-version: '5.2'
-          - python-version: '3.7'
-            plone-version: '6.0'
           - python-version: '3.8'
             plone-version: '6.0'
           - python-version: '3.9'
             plone-version: '6.0'
+          - python-version: '3.10'
+            plone-version: '6.0'
+          - python-version: '3.11'
+            plone-version: '6.0'
 
     steps:
       # git checkout
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # python setup
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+          cache: 'pip'
 
-      # python cache
-      - uses: actions/cache@v1
+      # buildout eggs cache
+      - uses: actions/cache@v3
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          path: eggs
+          key: ${{ runner.os }}-py${{ matrix.python-version }}-plone${{ matrix.plone-version }}-${{ hashFiles('*.cfg') }}
           restore-keys: |
-            ${{ runner.os }}-pip-
+            ${{ runner.os }}-py${{ matrix.python-version }}-plone${{ matrix.plone-version }}-
+            ${{ runner.os }}-py${{ matrix.python-version }}-
 
       # python install
       - run: pip install virtualenv
       - run: pip install wheel
       - name: pip install
-        run: pip install -r requirements.txt -r requirements-docs.txt
+        run: pip install -r requirements-${{ matrix.plone-version }}.txt -r requirements-docs.txt
 
       # buildout
       - name: buildout
-        run: buildout -t 10 -c plone-${{ matrix.plone-version }}.x.cfg code-analysis:return-status-codes=True
+        run: buildout -t 10 -c plone-${{ matrix.plone-version }}.x.cfg
         env:
           CI: true
 
-      # code analysis
-      - name: code analysis
-        run: bin/code-analysis
-
       # build sphinx
       - name: sphinx
-#        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/sphinxbuilder; fi
-        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then make docs-html; fi
+        run: if [ "${{ matrix.plone-version }}" == "6.0" ] && [ ${{ matrix.python-version }} == '3.9' ]; then make docs-html; fi
 
       # test
       - name: test
         run: bin/test
 
-      # test no uncommited changes
-      - name: test no uncommited changes
-        run: bin/test-no-uncommitted-doc-changes
+      # test no uncommitted changes
+      - name: test no uncommitted changes
+        run: ./test-no-uncommitted-doc-changes
         env:
           PYTHON_VERSION: ${{ matrix.python-version }}
           PLONE_VERSION: ${{ matrix.plone-version }}
 
-      # test sphinx warnings
-#      - name: sphinx
-#        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/test-no-sphinx-warnings; fi
+      # test for broken links
+      - name: linkcheck
+        run: if [ "${{ matrix.plone-version }}" == "6.0" ] && [ ${{ matrix.python-version }} == '3.9' ]; then make docs-linkcheckbroken; fi

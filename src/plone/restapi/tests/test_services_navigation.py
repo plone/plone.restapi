@@ -4,9 +4,9 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import INavigationSchema
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
 from zope.component import getUtility
 
 import transaction
@@ -98,6 +98,10 @@ class TestServicesNavigation(unittest.TestCase):
         )
 
     def test_dont_broke_with_contents_without_review_state(self):
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(INavigationSchema, prefix="plone")
+        displayed_types = settings.displayed_types
+        settings.displayed_types = tuple(list(displayed_types) + ["File"])
         createContentInContainer(
             self.portal,
             "File",
@@ -121,6 +125,16 @@ class TestServicesNavigation(unittest.TestCase):
         self.assertIsNone(response.json()["items"][1]["items"][3]["review_state"])
 
     def test_navigation_sorting(self):
+        registry = getUtility(IRegistry)
+        registry["plone.displayed_types"] = (
+            "Link",
+            "News Item",
+            "Folder",
+            "Document",
+            "Event",
+            "Collection",
+            "File",
+        )
         createContentInContainer(
             self.portal,
             "File",

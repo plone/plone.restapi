@@ -6,6 +6,9 @@ Content-Type: application/json
         "actions": {
             "@id": "http://localhost:55001/plone/folder/my-document/@actions"
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/folder/my-document/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/folder/my-document/@breadcrumbs"
         },
@@ -14,6 +17,9 @@ Content-Type: application/json
         },
         "navigation": {
             "@id": "http://localhost:55001/plone/folder/my-document/@navigation"
+        },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/folder/my-document/@navroot"
         },
         "types": {
             "@id": "http://localhost:55001/plone/folder/my-document/@types"
@@ -28,7 +34,7 @@ Content-Type: application/json
     "allow_discussion": false,
     "changeNote": "",
     "contributors": [],
-    "created": "1995-07-31T13:45:00",
+    "created": "1995-07-31T13:45:00+00:00",
     "creators": [
         "admin"
     ],
@@ -44,20 +50,22 @@ Content-Type: application/json
         "locked": false,
         "stealable": true
     },
-    "modified": "1995-07-31T17:30:00",
+    "modified": "1995-07-31T17:30:00+00:00",
     "next_item": {},
     "parent": {
         "@id": "http://localhost:55001/plone/folder",
         "@type": "Folder",
         "description": "This is a folder with two documents",
         "review_state": "private",
-        "title": "My Folder"
+        "title": "My Folder",
+        "type_title": "Folder"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/folder/doc2",
         "@type": "Document",
         "description": "",
-        "title": "A document within a folder"
+        "title": "A document within a folder",
+        "type_title": "Page"
     },
     "relatedItems": [],
     "review_state": "private",
@@ -66,6 +74,7 @@ Content-Type: application/json
     "table_of_contents": null,
     "text": null,
     "title": "My Document",
+    "type_title": "Page",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,

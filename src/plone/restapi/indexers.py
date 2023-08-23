@@ -8,6 +8,7 @@
 from plone.app.contenttypes.indexers import SearchableText
 from plone.indexer.decorator import indexer
 from plone.restapi.behaviors import IBlocks
+from plone.restapi.blocks import visit_subblocks
 from plone.restapi.interfaces import IBlockSearchableText
 from zope.component import adapter
 from zope.component import queryMultiAdapter
@@ -70,21 +71,6 @@ class SlateTextIndexer:
         return block.get("plaintext", "")
 
 
-def extract_subblocks(block):
-    """Extract subblocks from a block.
-
-    :param block: Dictionary with block information.
-    :returns: A list with subblocks, if present, or an empty list.
-    """
-    if "data" in block and "blocks" in block["data"]:
-        raw_blocks = block["data"]["blocks"]
-    elif "blocks" in block:
-        raw_blocks = block["blocks"]
-    else:
-        raw_blocks = None
-    return list(raw_blocks.values()) if isinstance(raw_blocks, dict) else []
-
-
 def extract_text(block, obj, request):
     """Extract text information from a block.
 
@@ -115,8 +101,7 @@ def extract_text(block, obj, request):
     adapter = queryMultiAdapter((obj, request), IBlockSearchableText, name=block_type)
     result = adapter(block) if adapter is not None else ""
     if not result:
-        subblocks = extract_subblocks(block)
-        for subblock in subblocks:
+        for subblock in visit_subblocks(obj, block):
             tmp_result = extract_text(subblock, obj, request)
             result = f"{result}\n{tmp_result}"
     return result

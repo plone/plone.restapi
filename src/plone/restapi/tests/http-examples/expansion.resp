@@ -6,6 +6,9 @@ Content-Type: application/json
         "actions": {
             "@id": "http://localhost:55001/plone/front-page/@actions"
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/front-page/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/front-page/@breadcrumbs"
         },
@@ -14,6 +17,9 @@ Content-Type: application/json
         },
         "navigation": {
             "@id": "http://localhost:55001/plone/front-page/@navigation"
+        },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/front-page/@navroot"
         },
         "types": {
             "@id": "http://localhost:55001/plone/front-page/@types"
@@ -28,7 +34,7 @@ Content-Type: application/json
     "allow_discussion": false,
     "changeNote": "",
     "contributors": [],
-    "created": "1995-07-31T13:45:00",
+    "created": "1995-07-31T13:45:00+00:00",
     "creators": [
         "test_user_1_"
     ],
@@ -44,13 +50,14 @@ Content-Type: application/json
         "locked": false,
         "stealable": true
     },
-    "modified": "1995-07-31T17:30:00",
+    "modified": "1995-07-31T17:30:00+00:00",
     "next_item": {},
     "parent": {
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
         "description": "",
-        "title": "Plone site"
+        "title": "Plone site",
+        "type_title": "Plone Site"
     },
     "previous_item": {},
     "relatedItems": [],
@@ -64,6 +71,7 @@ Content-Type: application/json
         "encoding": "utf-8"
     },
     "title": "Welcome to Plone",
+    "type_title": "Page",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,

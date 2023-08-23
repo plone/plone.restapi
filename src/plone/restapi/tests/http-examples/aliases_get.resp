@@ -1,0 +1,12 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/front-page/@aliases",
+    "items": [
+        {
+            "path": "/simple-alias"
+        }
+    ],
+    "items_total": 1
+}

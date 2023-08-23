@@ -11,6 +11,7 @@ from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
+from plone.restapi.tests.performance import set_file
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
@@ -537,11 +538,37 @@ class TestBlocksResolveUID(TestCase):
             ]["url"],
             f"../resolveuid/{uid}/view",
         )
+
+    def test_path_keeps_suffix_also_with_non_traversable_items(self):
+        self.portal.invokeFactory("File", id="file", title="File")
+        file_obj = self.portal.file
+        set_file(file_obj)
+        uid = IUUID(file_obj)
+
+        blocks = {
+            "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
+                "@type": "text",
+                "text": {
+                    "entityMap": {
+                        "0": {
+                            "data": {
+                                "href": file_obj.absolute_url() + "/@@download/file",
+                                "rel": "nofollow",
+                                "url": file_obj.absolute_url() + "/@@download/file",
+                            },
+                            "mutability": "MUTABLE",
+                            "type": "LINK",
+                        }
+                    }
+                },
+            }
+        }
+        value = self.deserialize("blocks", blocks)
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["url"],
-            f"../resolveuid/{uid}/view",
+            f"../resolveuid/{uid}/@@download/file",
         )
 
     def test_blocks_field_serialization_resolves_uids_with_primary_field_url(self):

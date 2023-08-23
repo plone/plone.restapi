@@ -36,6 +36,7 @@ class Actions:
                         "title": translate(action["title"], context=self.request),
                         "id": action["id"],
                         "icon": action["icon"],
+                        "url": action["url"],
                     }
                 )
             data[category] = category_action_data

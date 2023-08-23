@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:cache="http://namespaces.zope.org/cache"
     xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:zcml="http://namespaces.zope.org/zcml"
     >
@@ -20,6 +21,11 @@
       for="Products.CMFCore.interfaces.IContentish"
       permission="zope2.View"
       name="@translations"
+      />
+  <cache:ruleset
+      for=".pam.TranslationInfo"
+      ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
       />
 
   <plone:service
