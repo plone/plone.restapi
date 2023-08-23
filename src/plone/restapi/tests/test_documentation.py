@@ -2267,6 +2267,22 @@ class TestPAMDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("translation_locator", response)
 
+    def test_documentation_translations_unexpanded_get(self):
+        response = self.api_session.get(
+            f"{self.en_content.absolute_url()}",
+        )
+        save_request_and_response_for_docs("translations_unexpanded_get", response)
+
+    def test_documentation_translations_expand_get(self):
+        self.api_session.post(
+            f"{self.en_content.absolute_url()}/@translations",
+            json={"id": self.es_content.absolute_url()},
+        )
+        response = self.api_session.get(
+            f"{self.en_content.absolute_url()}?expand=translations",
+        )
+        save_request_and_response_for_docs("translations_expand_get", response)
+
     def test_site_navroot_get(self):
         response = self.api_session.get("/@navroot")
         save_request_and_response_for_docs("navroot_site_get", response)
