@@ -143,7 +143,7 @@ If a simple `GET` request is done on the content item, a new entry will be shown
 :language: http
 ```
 
-In order to expand and embed the translations component, use the GET parameter expand with the value 'translations'.
+In order to expand and embed the translations component, use the GET parameter `expand` with the value `translations`.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
