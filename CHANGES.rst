@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.43.0 (2023-08-23)
+-------------------
+
+New features:
+
+
+- Allow passing additional parameters to the delete users endpoint to request not to delete local roles and memberareas
+  [erral] (#1598)
+
+
 8.42.1 (2023-08-23)
 -------------------
 
