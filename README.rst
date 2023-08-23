@@ -1,5 +1,5 @@
-.. image:: https://github.com/plone/plone.restapi/workflows/Plone%20RESTAPI%20CI/badge.svg
-  :target: https://github.com/plone/plone.restapi/actions?query=workflow%3A%22Plone+RESTAPI+CI%22
+.. image:: https://github.com/plone/plone.restapi/actions/workflows/tests.yml/badge.svg?branch=master
+  :target: https://github.com/plone/plone.restapi/actions/workflows/tests.yml
 
 .. image:: https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=master
   :target: https://coveralls.io/github/plone/plone.restapi?branch=master
