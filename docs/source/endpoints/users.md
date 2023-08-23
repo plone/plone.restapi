@@ -12,7 +12,6 @@ myst:
 Available users in a Plone site can be created, queried, updated, and deleted by interacting with the `/@users` endpoint on portal root.
 This action requires an authenticated user:
 
-
 ## List Users
 
 To retrieve a list of all current users in the portal, call the `/@users` endpoint with a `GET` request:
@@ -104,7 +103,6 @@ The server will respond with a list of users where the `fullname`, `email` or `i
 :language: http
 ```
 
-
 ## Create User
 
 To create a new user, send a `POST` request to the global `/@users` endpoint with a JSON representation of the user you want to create in the body:
@@ -187,7 +185,6 @@ In this case, the server will respond with a {term}`200 OK` status code and the 
 :language: http
 ```
 
-
 ## Update User
 
 To update the settings of a user, send a `PATCH` request with the user details you want to amend to the URL of that particular user.
@@ -232,7 +229,6 @@ If you still want Plone to take care of image scaling using the default Plone be
     :request: ../../../src/plone/restapi/tests/http-examples/users_update_portrait_scale.req
 ```
 
-
 ## Delete User
 
 To delete a user, send a `DELETE` request to the `/@users` endpoint and append the user ID of the user you want to delete.
@@ -249,6 +245,47 @@ A successful response will be indicated by a {term}`204 No Content` response:
 :language: http
 ```
 
+When deleting a user in large sites with a lot of users and content the deleting operation may take a lot of time to the extent of setting it in an unresponsive state.
+
+There is a workaround about this which is to request Plone not to delete the Member areas or the local roles that may have been granted in the past.
+
+To mark such a behavior we need to pass specific parameters to the delete endpoint.
+
+In this case we request not to delete the local roles:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/users_delete_no_localroles.req
+```
+
+A successful response will be indicated by a {term}`204 No Content` response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_delete_no_localroles.resp
+:language: http
+```
+
+In this case we request not to delete the member areas:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/users_delete_no_memberareas.req
+```
+
+A successful response will be indicated by a {term}`204 No Content` response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_delete_no_memberareas.resp
+:language: http
+```
+
+Both parameters can be added in the same request.
+
+```{warning}
+These two specific requests should be made with special care because they may leave traces of the deleted users in the Plone database.
+
+Specifically, although the user is deleted the reference of its permissions stay on the database.
+
+This means that if in the future you add a new user with the same userid, it may get the local roles and member area previously created for the old user.
+```
 
 ## User registration
 
@@ -272,7 +309,6 @@ If the user has been created, the server will respond with a {term}`201 Created`
 :language: http
 ```
 
-
 ## Reset User Password
 
 Plone allows to reset a password for a user by sending a `POST` request to the user resource and appending `/reset-password` to the URL:
@@ -291,7 +327,6 @@ The token that is part of the reset URL in the email can be used to authorize se
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/users_reset.req
 ```
-
 
 ### Reset Own Password
 
@@ -315,7 +350,6 @@ The server will respond with a {term}`200 OK` response without sending an email.
 To set the password with the old password, you need either the `Set own password` or the `plone.app.controlpanel.UsersAndGroups` permission.
 
 If an API consumer tries to send a password in the payload that is not the same as the currently logged in user, the server will respond with a {term}`400 Bad Request` response.
-
 
 ### Return Values
 

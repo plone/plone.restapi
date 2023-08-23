@@ -40,6 +40,12 @@ class TestUsersEndpoint(unittest.TestCase):
         self.anon_api_session = RelativeSession(self.portal_url, test=self)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
+        api.portal.set_registry_record("plone.enable_user_folders", True)
+        api.content.create(
+            container=self.portal, type="Folder", id="Members", title="Members"
+        )
+
+        transaction.commit()
         properties = {
             "email": "noam.chomsky@example.com",
             "username": "noamchomsky",
@@ -66,6 +72,7 @@ class TestUsersEndpoint(unittest.TestCase):
             password="otherpassword",
         )
         api.group.add_user(groupname="Reviewers", username="otheruser")
+
         transaction.commit()
 
     def tearDown(self):
@@ -159,8 +166,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(400, response.status_code)
         self.assertTrue(
-            ("You have to either send a " "password or sendPasswordReset")
-            in response.text
+            "You have to either send a password or sendPasswordReset" in response.text
         )
 
     def test_add_user_email_is_required_if_email_login_is_enabled(self):
@@ -169,7 +175,8 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"username": "noam", "password": TEST_USER_PASSWORD}
+            "/@users",
+            json={"username": "noam", "password": TEST_USER_PASSWORD},
         )
 
         self.assertEqual(400, response.status_code)
@@ -182,7 +189,10 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -214,7 +224,10 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -308,7 +321,10 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -325,7 +341,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual("noam", response.json().get("id"))
         self.assertEqual(
-            self.portal.absolute_url() + "/@users/noam", response.json().get("@id")
+            self.portal.absolute_url() + "/@users/noam",
+            response.json().get("@id"),
         )
         self.assertEqual("noam.chomsky@example.com", response.json().get("email"))
         self.assertEqual("Noam Avram Chomsky", response.json().get("fullname"))
@@ -377,7 +394,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual("noam", response.json()[0].get("id"))
         self.assertEqual(
-            self.portal.absolute_url() + "/@users/noam", response.json()[0].get("@id")
+            self.portal.absolute_url() + "/@users/noam",
+            response.json()[0].get("@id"),
         )
         self.assertEqual("noam.chomsky@example.com", response.json()[0].get("email"))
         self.assertEqual(
@@ -696,7 +714,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_user_set_own_password_checks_old_password(self):
         self.api_session.auth = ("noam", "password")
-        payload = {"new_password": "new_password", "old_password": "wrong_password"}
+        payload = {
+            "new_password": "new_password",
+            "old_password": "wrong_password",
+        }
         response = self.api_session.post("/@users/noam/reset-password", json=payload)
 
         self.assertEqual(response.status_code, 403)
@@ -747,7 +768,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -777,7 +801,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -806,7 +833,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -829,6 +859,52 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_delete_user(self):
         response = self.api_session.delete("/@users/noam")
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+    def test_delete_user_but_not_memberareas(self):
+        mtool = getToolByName(self.portal, "portal_membership")
+        mtool.createMemberArea("noam")
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_memberareas": 0}
+        )
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+        memberfolder = self.portal.get("Members", None)
+        self.assertIsNotNone(memberfolder)
+        if memberfolder is not None:
+            self.assertIn("noam", memberfolder)
+
+    def test_delete_user_but_not_localroles(self):
+        self.folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            id="folder",
+            title="My Folder",
+        )
+        api.user.grant_roles(username="noam", roles=["Reviewer"], obj=self.folder)
+
+        self.assertIn("Reviewer", api.user.get_roles(username="noam", obj=self.folder))
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_localroles": 0}
+        )
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+        user_local_roles = self.folder.get_local_roles_for_userid(userid="noam")
+        self.assertIn("Reviewer", user_local_roles)
+
+    def test_delete_deletes_localroles(self):
+        response = self.api_session.delete("/@users/noam?delete_localroles=0")
         transaction.commit()
 
         self.assertEqual(response.status_code, 204)
@@ -857,7 +933,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.anon_api_session.post(
             "/@users",
-            json={"username": "new_user", "email": "avram.chomsky@example.com"},
+            json={
+                "username": "new_user",
+                "email": "avram.chomsky@example.com",
+            },
         )
         transaction.commit()
 
@@ -870,7 +949,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.anon_api_session.post(
             "/@users",
-            json={"username": "new_user", "email": "avram.chomsky@example.com"},
+            json={
+                "username": "new_user",
+                "email": "avram.chomsky@example.com",
+            },
         )
         transaction.commit()
 
@@ -1038,7 +1120,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 

@@ -5,6 +5,9 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 
+FALSE_VALUES = (0, "0", False, "false", "no")
+
+
 @implementer(IPublishTraverse)
 class UsersDelete(Service):
     """Deletes a user."""
@@ -27,7 +30,20 @@ class UsersDelete(Service):
     def reply(self):
         portal = getSite()
         portal_membership = getToolByName(portal, "portal_membership")
-        delete_successful = portal_membership.deleteMembers((self._get_user_id,))
+
+        delete_memberareas = (
+            self.request.get("delete_memberareas", True) not in FALSE_VALUES
+        )
+
+        delete_localroles = (
+            self.request.get("delete_localroles", True) not in FALSE_VALUES
+        )
+
+        delete_successful = portal_membership.deleteMembers(
+            (self._get_user_id,),
+            delete_memberareas=delete_memberareas,
+            delete_localroles=delete_localroles,
+        )
         if delete_successful:
             return self.reply_no_content()
         else:
