@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Plone\n"
 "POT-Creation-Date: 2019-12-09 10:14+0000\n"
-"PO-Revision-Date: 2023-08-23 21:02-0400\n"
+"PO-Revision-Date: 2023-08-23 21:19-0400\n"
 "Last-Translator: Leonardo J. Caballero G. <leonardocaballero@gmail.com>\n"
 "Language-Team: ES <LL@li.org>\n"
 "Language: es\n"
@@ -163,7 +163,7 @@ msgstr "Está recibiendo este correo porque ${sender_fullname} envió este mensa
 
 #: plone/restapi/services/users/add.py:114
 msgid "You can't send both password and sendPasswordReset."
-msgstr "No puede ingresar la contraseña y 'Enviar un correo electrónico de confirmación con un enlace para establecer la contraseña'."
+msgstr "No puede enviar la contraseña y 'Enviar un correo electrónico de confirmación con un enlace para establecer la contraseña'."
 
 #: plone/restapi/services/users/add.py:322
 msgid "You can't set a password without a password reset token."
@@ -171,7 +171,7 @@ msgstr "No puede establecer una contraseña sin un token de restablecimiento de 
 
 #: plone/restapi/services/users/update.py:125
 msgid "You can't update the properties of this user"
-msgstr "No puedes actualizar las propiedades de este usuario."
+msgstr "No puede actualizar las propiedades de este usuario."
 
 #: plone/restapi/services/users/add.py:284
 msgid "You can't use 'reset_token' and 'old_password' together."
@@ -179,7 +179,7 @@ msgstr "No puede utilizar 'Restablecer token' y 'Contraseña anterior' juntas."
 
 #: plone/restapi/services/users/add.py:109
 msgid "You have to either send a password or sendPasswordReset."
-msgstr "Debe ingresar una contraseña o 'Enviar un correo electrónico de confirmación con un enlace para establecer la contraseña'."
+msgstr "Debe enviar una contraseña o 'Enviar un correo electrónico de confirmación con un enlace para establecer la contraseña'."
 
 #: plone/restapi/services/users/add.py:154
 msgid "You need AddPortalMember permission."
@@ -187,7 +187,7 @@ msgstr "Necesita el permiso AddPortalMember."
 
 #: plone/restapi/services/users/add.py:329
 msgid "You need to be logged in as the user '${username}' to set the password."
-msgstr "Debe iniciar sesión como usuario '${username}' para establecer la contraseña."
+msgstr "Debe iniciar sesión como usuario '${username}' para poder establecer la contraseña."
 
 #. Default: "Missing dependency"
 #: plone/restapi/services/addons/addons.py:207
