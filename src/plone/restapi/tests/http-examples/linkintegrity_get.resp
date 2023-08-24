@@ -15,6 +15,7 @@ Content-Type: application/json
         "description": "",
         "items_total": 0,
         "review_state": "private",
-        "title": "Second document"
+        "title": "Second document",
+        "type_title": "Page"
     }
 ]
