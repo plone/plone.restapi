@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Plone\n"
 "POT-Creation-Date: 2019-12-09 10:14+0000\n"
-"PO-Revision-Date: 2023-08-23 12:27-0400\n"
+"PO-Revision-Date: 2023-08-23 21:02-0400\n"
 "Last-Translator: Leonardo J. Caballero G. <leonardocaballero@gmail.com>\n"
 "Language-Team: ES <LL@li.org>\n"
 "Language: es\n"
@@ -42,7 +42,7 @@ msgstr "Añadir flujos de trabajo de muestra para realizar pruebas"
 
 #: plone/restapi/services/aliases/add.py:106
 msgid "Alternative urls that point to themselves will cause an endless cycle of redirects."
-msgstr "Las URL alternativas que apuntan a sí mismas provocarán un ciclo interminable de redireccionamientos."
+msgstr "Las URL alternativas que apuntan a sí mismas provocarán un bucle interminable de redireccionamientos."
 
 #: plone/restapi/configure.zcml:115
 msgid "Blocks"
@@ -66,7 +66,7 @@ msgstr "Habilitar bloques en el tipo de contenido Documento"
 
 #: plone/restapi/services/contextnavigation/get.py:133
 msgid "Enter a valid scale name (see 'Image Handling' control panel) to override (e.g. icon, tile, thumb, mini, preview, ... ). Leave empty to use default (see 'Site' control panel)."
-msgstr "Ingrese un nombre de escala válido (consulte 'Manipulación de imágenes' en el panel de control) para anular (por ejemplo, icon, tile, thumb, mini, preview...). Déjelo en blanco para usar el valor predeterminado (consulte 'Sitio' en el panel de control)."
+msgstr "Introducir un nombre de escala válido (consulte 'Manipulación de imágenes' en el panel de control) para anular (por ejemplo, icon, tile, thumb, mini, preview...). Déjelo en blanco para usar el valor predeterminado (consulte 'Sitio' en el panel de control)."
 
 #: plone/restapi/services/users/add.py:163
 msgid "Error in fields. ${errors_to_string}"
@@ -75,7 +75,7 @@ msgstr "Errores en los campos. ${errors_to_string}"
 #. Default: "The reset_token is expired."
 #: plone/restapi/services/users/add.py:312
 msgid "Expired Token"
-msgstr "Token Venció"
+msgstr "Token caducado"
 
 #: plone/restapi/services/contextnavigation/get.py:126
 msgid "If enabled, the portlet will not show document type icons."
@@ -87,11 +87,11 @@ msgstr "Si está habilitado, el portlet no mostrará miniaturas."
 
 #: plone/restapi/services/users/add.py:296
 msgid "If you pass 'old_password' you have to pass 'new_password'"
-msgstr "Si ingresa 'Contraseña anterior', debe ingresar 'Contraseña nueva'"
+msgstr "Si introduce 'Contraseña anterior', debe ingresar 'Contraseña nueva'"
 
 #: plone/restapi/services/users/add.py:290
 msgid "If you pass 'reset_token' you have to pass 'new_password'"
-msgstr "Si ingresa 'Restablecer token' debe ingresar 'Nueva contraseña'"
+msgstr "Si introduce 'Restablecer token' debe ingresar 'Nueva contraseña'"
 
 #: plone/restapi/behaviors.py:23
 msgid "Layout"
