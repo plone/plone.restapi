@@ -112,7 +112,7 @@ If you are having issues, please let us know via the `issue tracker <https://git
 If you require professional support, here is a list of Plone solution providers that contributed significantly to ``plone.restapi`` in the past.
 
 - `kitconcept GmbH <https://kitconcept.com>`_ (Germany)
-- `4teamwork <https://www.4teamwork.ch>`_ (Switzerland)
+- `4teamwork <https://www.4teamwork.ch/en>`_ (Switzerland)
 - `CodeSyntax <https://www.codesyntax.com/en>`_ (Spain)
 
 
