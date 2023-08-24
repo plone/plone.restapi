@@ -12,6 +12,12 @@ myst:
 This upgrade guide lists all breaking changes in `plone.restapi`.
 It explains the steps that are needed to upgrade to the latest version.
 
+## Upgrading to `plone.restapi` 8.x
+
+plone.restapi 8.x dropped support for Python 2 and Plone 5.1 and 4.3.
+Upgrading to plone.restapi 8.x does not require any changes to your code base if you use Python 3 and Plone 5.2 or newer.
+
+If you use Python 2 and a Plone version older than 5.2, stick with plone.restapi 7.x.
 
 ## Upgrading to `plone.restapi` 7.x
 
@@ -19,7 +25,6 @@ The navigation endpoint has been refactored.
 Now its behavior is consistent regarding the `items` attribute.
 Now the `items` attribute is present, even if the element of the tree does not have child elements, in which case it will be an empty array.
 This might affect some logins via JavaScript, specifically if the condition is checking for the existence of the `items` attribute and expects it to be `undefined`.
-
 
 ## Upgrading to `plone.restapi` 6.x
 
@@ -43,7 +48,6 @@ If you need to fix object IDs, you can do one of the following:
 
 We expect that most content actually will not be affected.
 See <https://github.com/plone/plone.restapi/issues/827> for more details.
-
 
 ## Upgrading to `plone.restapi` 5.x
 
@@ -88,7 +92,6 @@ to:
 This change affects the `GET`, `PATCH`, and `POST` formats.
 It should only affect you if you use Volto.
 
-
 ## Upgrading to `plone.restapi` 4.x
 
 `plone.restapi` 4.0.0 introduces the following breaking changes:
@@ -97,7 +100,6 @@ It should only affect you if you use Volto.
 2.  Choice and list fields return a hyperlink to a vocabulary instead of `choices`, `enum`, and `enumNames`.
 3.  Serialize widget parameters into a `widgetOptions` object instead of adding them to the top level of the schema property.
 4.  The vocabularies endpoint does no longer returns an `@id` for terms, the results are batched, and terms are now listed as `items` instead of `terms` to match other batched responses.
-
 
 ### Serialization and Deserialization of fields with vocabularies
 
@@ -140,7 +142,6 @@ Deserialization accepts objects that contain a token, but also just the token or
 
 However, it is highly recommended to always use the token, as vocabulary terms may contain values that are not JSON serializable.
 
-
 ### Choice and List fields return link to vocabulary instead of the values
 
 Choice and List fields using named vocabularies are now serialized with a `vocabulary` property, giving the URL of the `@vocabularies` endpoint for the vocabulary instead of including `choices`,
@@ -177,7 +178,6 @@ New response:
 },
 ```
 
-
 ### Serialize widget parameters into a `widgetOptions` object
 
 Serialize widget parameters into a `widgetOptions` object instead of adding them to the top level of the schema property.
@@ -198,7 +198,6 @@ New response:
   "vocabulary": { "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users" }
 }
 ```
-
 
 ### Example: Vocabularies Subjects Field
 
@@ -232,7 +231,6 @@ New response:
   "type": "string"
 }
 ```
-
 
 ### Example: Available Time Zones Field (vocabulary in `items`)
 
@@ -288,7 +286,6 @@ New response:
   "uniqueItems": true
 },
 ```
-
 
 ### Example: Weekday Field (vocabulary in main property)
 
@@ -363,7 +360,6 @@ New response:
 },
 ```
 
-
 ### Vocabularies Endpoint
 
 The vocabularies endpoint no longer returns an `@id` for terms.
@@ -394,19 +390,17 @@ New response:
 {
   "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes",
   "items": [
-      {
-        "title": "Collection",
-        "token": "Collection"
-      },
-      "…"
+    {
+      "title": "Collection",
+      "token": "Collection"
+    },
+    "…"
   ],
   "items_total": 12
 }
 ```
 
-
 ## Upgrading to `plone.restapi` 3.x
-
 
 ### Image scales
 
@@ -448,7 +442,6 @@ New Response:
   "…"
 }
 ```
-
 
 ### `@sharing` endpoint
 
@@ -507,7 +500,6 @@ Content-Type: application/json
 }
 ```
 
-
 ### Custom Content Deserializers
 
 If you have implemented custom content deserializers, you have to handle the new `create` keyword in the `__call__` method, which determines if deserialization is performed during object creation or while updating an object.
@@ -516,12 +508,10 @@ Deserializers should only fire an `IObjectModifiedEvent` event if an object has 
 
 See [Dexterity content deserializer](https://github.com/plone/plone.restapi/blob/master/src/plone/restapi/deserializer/dxcontent.py) for an example.
 
-
 ## Upgrading to `plone.restapi` 2.x
 
 `plone.restapi` 2.0.0 converts all datetime, DateTime and time objects to UTC before serializing.
 The translations endpoint becomes "expandable", which introduces the following breaking changes.
-
 
 ### Translations
 
@@ -566,7 +556,6 @@ Content-Type: application/json
   ]
 }
 ```
-
 
 ## Upgrading to `plone.restapi` 1.0b1
 
@@ -720,7 +709,6 @@ Pull Request:
 
 - <https://github.com/plone/plone.restapi/pull/459>
 
-
 ## Upgrading to `plone.restapi` 1.0a25
 
 `plone.restapi` 1.0a25 introduced three breaking changes:
@@ -729,8 +717,7 @@ Pull Request:
   Use top level `@navigation` and `@breadcrumb` endpoints instead. [timo]
 - Remove `sharing` attributes from `GET` response. [timo, jaroel]
 - Convert `richtext` using `.output_relative_to`.
-  Direct conversion from `RichText` is no longer supported as we *always* need a context for the `ITransformer`. [jaroel]
-
+  Direct conversion from `RichText` is no longer supported as we _always_ need a context for the `ITransformer`. [jaroel]
 
 ### Remove @components endpoint
 
@@ -769,7 +756,6 @@ Pull Request:
 
 - <https://github.com/plone/plone.restapi/pull/425>
 
-
 ### Remove `sharing` attribute
 
 The `sharing` attribute was removed from all content `GET` responses:
@@ -791,7 +777,6 @@ Pull Request:
 
 - <https://github.com/plone/plone.restapi/commit/1b5e9e3a74df22e53b674849e27fa4b39b792b8c>
 
-
 ### Convert `richtext` using `.output_relative_to`
 
 Use `.output_relative_to` to convert `richtext`.
@@ -799,12 +784,11 @@ Use `.output_relative_to` to convert `richtext`.
 Changelog:
 
 - Convert `richtext` using `.output_relative_to.`
-  Direct conversion from `RichText` is no longer supported as we *always* need a context for the `ITransformer`. [jaroel]
+  Direct conversion from `RichText` is no longer supported as we _always_ need a context for the `ITransformer`. [jaroel]
 
 Pull Request:
 
 - <https://github.com/plone/plone.restapi/pull/428>
-
 
 ## Upgrading to `plone.restapi` 1.0a17
 
