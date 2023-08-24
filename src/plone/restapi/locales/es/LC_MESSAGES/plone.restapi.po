@@ -1,6 +1,6 @@
 # --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
 # SOME DESCRIPTIVE TITLE.
-# Leonardo J. Caballero G. <leonardocaballero@gmail.com>, 2019.
+# Leonardo J. Caballero G. <leonardocaballero@gmail.com>, 2019, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Plone\n"
