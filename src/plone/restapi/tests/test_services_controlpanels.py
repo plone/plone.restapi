@@ -19,7 +19,7 @@ class TestControlpanelsEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -114,3 +114,8 @@ class TestControlpanelsEndpoint(unittest.TestCase):
         response = response.json()
         self.assertIn("message", response)
         self.assertIn("Required input is missing.", response["message"])
+
+    def test_get_usergroup_control_panel(self):
+        # This control panel does not exist in Plone 5
+        response = self.api_session.get("/@controlpanels/usergroup")
+        self.assertEqual(200, response.status_code)

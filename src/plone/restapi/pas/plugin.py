@@ -6,8 +6,8 @@ from datetime import datetime
 from datetime import timedelta
 from plone.keyring.interfaces import IKeyManager
 from plone.keyring.keyring import GenerateSecret
-from plone.restapi import exceptions
 from plone.restapi import deserializer
+from plone.restapi import exceptions
 from Products.CMFCore.permissions import ManagePortal
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
@@ -20,6 +20,16 @@ from zope.interface import implementer
 import jwt
 import time
 
+
+try:
+    from importlib.metadata import version
+except ImportError:
+    from importlib_metadata import version
+
+if version("pyjwt")[0] == "1":
+    OLD_JWT = True
+else:
+    OLD_JWT = False
 
 manage_addJWTAuthenticationPlugin = PageTemplateFile(
     "add_plugin", globals(), __name__="manage_addJWTAuthenticationPlugin"
@@ -160,7 +170,14 @@ class JWTAuthenticationPlugin(BasePlugin):
         if isinstance(token, str):
             token = token.encode("utf-8")
         try:
-            return jwt.decode(token, secret, verify=verify, algorithms=["HS256"])
+            if OLD_JWT:
+                return jwt.decode(token, secret, verify=verify, algorithms=["HS256"])
+            return jwt.decode(
+                token,
+                secret,
+                options={"verify_signature": verify},
+                algorithms=["HS256"],
+            )
         except jwt.InvalidTokenError:
             pass
 
@@ -177,7 +194,7 @@ class JWTAuthenticationPlugin(BasePlugin):
 
     def delete_token(self, token):
         payload = self._decode_token(token, verify=False)
-        if "sub" not in payload:
+        if not payload or "sub" not in payload:
             return False
         userid = payload["sub"]
         if userid in self._tokens and token in self._tokens[userid]:
@@ -194,7 +211,8 @@ class JWTAuthenticationPlugin(BasePlugin):
         if data is not None:
             payload.update(data)
         token = jwt.encode(payload, self._signing_secret(), algorithm="HS256")
-        token = token.decode("utf-8")
+        if OLD_JWT:
+            token = token.decode("utf-8")
         if self.store_tokens:
             if self._tokens is None:
                 self._tokens = OOBTree()

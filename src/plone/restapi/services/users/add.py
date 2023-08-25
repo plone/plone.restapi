@@ -1,11 +1,13 @@
 from AccessControl import getSecurityManager
+from plone.app.users.schema import ICombinedRegisterSchema
+from plone.restapi import _
+from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.CMFPlone.PasswordResetTool import ExpiredRequestError
 from Products.CMFPlone.PasswordResetTool import InvalidRequestError
 from Products.CMFPlone.RegistrationTool import get_member_by_login_name
@@ -13,6 +15,7 @@ from zope.component import getAdapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
+from zope.i18n import translate
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
@@ -32,6 +35,22 @@ class UsersPost(Service):
         # Consume any path segments after /@users as parameters
         self.params.append(name)
         return self
+
+    def translate(self, msgid):
+        return translate(
+            msgid,
+            context=self.request,
+        )
+
+    def translate_fieldname(self, fieldname):
+        """Not all fields that appear on Add User Form in Volto match in Plone."""
+        if fieldname == "roles":
+            msgid = _("Roles")
+        elif fieldname == "sendPasswordReset":
+            msgid = ICombinedRegisterSchema["mail_me"].title
+        else:
+            msgid = ICombinedRegisterSchema[fieldname].title
+        return self.translate(msgid)
 
     def validate_input_data(self, portal, original_data):
         """Returns a tuple of (required_fields, allowed_fields)"""
@@ -62,11 +81,23 @@ class UsersPost(Service):
         # check input data
         for fieldname in required:
             if not data.get(fieldname, None):
-                self.add_field_error(fieldname, f"Property '{fieldname}' is required.")
+                translated_fieldname = self.translate_fieldname(fieldname)
+                self.add_field_error(
+                    fieldname,
+                    _(
+                        "Property '${fieldname}' is required.",
+                        mapping={"fieldname": translated_fieldname},
+                    ),
+                )
         for fieldname in data:
             if fieldname not in allowed:
+                translated_fieldname = self.translate_fieldname(fieldname)
                 self.add_field_error(
-                    fieldname, f"Property '{fieldname}' is not allowed."
+                    fieldname,
+                    _(
+                        "Property '${fieldname}' is not allowed.",
+                        mapping={"fieldname": translated_fieldname},
+                    ),
                 )
 
         password = data.get("password")
@@ -75,16 +106,16 @@ class UsersPost(Service):
             if password is None and send_password_reset is None:
                 self.add_field_error(
                     "sendPasswordReset",
-                    "You have to either send a password or sendPasswordReset.",
+                    _("You have to either send a password or sendPasswordReset."),
                 )
             if password and send_password_reset:
                 self.add_field_error(
                     "sendPasswordReset",
-                    "You can't send both password and sendPasswordReset.",
+                    _("You can't send both password and sendPasswordReset."),
                 )
 
-    def add_field_error(self, field, message):
-        self.errors.append({"field": field, "message": message})
+    def add_field_error(self, field, msgid):
+        self.errors.append({"field": field, "message": self.translate(msgid)})
 
     def errors_to_string(self):
         return " ".join([error["message"] for error in self.errors])
@@ -117,14 +148,23 @@ class UsersPost(Service):
 
         # Add a portal member
         if not self.can_add_member:
-            return self._error(403, "Forbidden", "You need AddPortalMember permission.")
+            return self._error(
+                403,
+                "Forbidden",
+                _("You need AddPortalMember permission."),
+            )
 
         if self.errors:
             self.request.response.setStatus(400)
             return dict(
                 error=dict(
                     type="WrongParameterError",
-                    message=f"Error in fields. {self.errors_to_string()}",
+                    message=self.translate(
+                        _(
+                            "Error in fields. ${errors_to_string}",
+                            mapping={"errors_to_string": self.errors_to_string()},
+                        )
+                    ),
                     errors=self.errors,
                 )
             )
@@ -167,7 +207,12 @@ class UsersPost(Service):
             )
         except ValueError as e:
             self.request.response.setStatus(400)
-            return dict(error=dict(type="MissingParameterError", message=str(e)))
+            return dict(
+                error=dict(
+                    type="MissingParameterError",
+                    message=self.translate(e.args[0]),
+                )
+            )
 
         if user_id != login_name:
             # The user id differs from the login name.  Set the login
@@ -192,9 +237,9 @@ class UsersPost(Service):
     def _get_user_by_login_name(self, user_id):
         return get_member_by_login_name(self.context, user_id, raise_exceptions=False)
 
-    def _error(self, status, type, message):
+    def _error(self, status, _type, msgid):
         self.request.response.setStatus(status)
-        return {"error": {"type": type, "message": message}}
+        return {"error": {"type": _type, "message": self.translate(msgid)}}
 
     @property
     def can_manage_users(self):
@@ -221,6 +266,7 @@ class UsersPost(Service):
         pas = getToolByName(self.context, "acl_users")
         mt = getToolByName(self.context, "portal_membership")
         pwt = getToolByName(self.context, "portal_password_reset")
+        registration_tool = getToolByName(self.context, "portal_registration")
 
         if target_user is None:
             self.request.response.setStatus(404)
@@ -228,7 +274,6 @@ class UsersPost(Service):
 
         # Send password reset mail
         if list(data) == []:
-            registration_tool = getToolByName(self.context, "portal_registration")
             registration_tool.mailPassword(username, self.request)
             return
 
@@ -236,31 +281,43 @@ class UsersPost(Service):
             return self._error(
                 400,
                 "Invalid parameters",
-                "You can't use 'reset_token' and 'old_password' together.",
+                _("You can't use 'reset_token' and 'old_password' together."),
             )
         if reset_token and not new_password:
             return self._error(
                 400,
                 "Invalid parameters",
-                "If you pass 'reset_token' you have to pass 'new_password'",
+                _("If you pass 'reset_token' you have to pass 'new_password'"),
             )
         if old_password and not new_password:
             return self._error(
                 400,
                 "Invalid parameters",
-                "If you pass 'old_password' you have to pass 'new_password'",
+                _("If you pass 'old_password' you have to pass 'new_password'"),
             )
 
         # Reset the password with a reset token
         if reset_token:
             try:
+                err = registration_tool.testPasswordValidity(new_password)
+                if err is not None:
+                    return self._error(
+                        400,
+                        "Invalid password",
+                        _(err),
+                    )
                 pwt.resetPassword(username, reset_token, new_password)
             except InvalidRequestError:
                 return self._error(
-                    403, "Unknown Token", "The reset_token is unknown/not valid."
+                    403,
+                    "Unknown Token",
+                    _("The reset_token is unknown/not valid."),
                 )
             except ExpiredRequestError:
-                return self._error(403, "Expired Token", "The reset_token is expired.")
+                return self._error(
+                    403,
+                    _("Expired Token", "The reset_token is expired."),
+                )
             return
 
         # set the new password by giving the old password
@@ -269,18 +326,17 @@ class UsersPost(Service):
                 return self._error(
                     403,
                     "Not allowed",
-                    "You can't set a password without " "a password reset token.",
+                    _("You can't set a password without a password reset token."),
                 )
             authenticated_user_id = mt.getAuthenticatedMember().getId()
             if username != authenticated_user_id:
                 return self._error(
                     403,
                     "Wrong user",
-                    (
-                        "You need to be logged in as the user '%s' to set "
-                        "the password."
-                    )
-                    % username,
+                    _(
+                        "You need to be logged in as the user '${username}' to set the password.",
+                        mapping={"username": username},
+                    ),
                 )
 
             check_password_auth = pas.authenticate(
@@ -290,7 +346,7 @@ class UsersPost(Service):
                 return self._error(
                     403,
                     "Wrong password",
-                    "The password passed as 'old_password' " "is wrong.",
+                    _("The password passed as 'old_password' is wrong."),
                 )
             mt.setPassword(new_password)
             return
@@ -298,5 +354,5 @@ class UsersPost(Service):
         return self._error(
             400,
             "Invalid parameters",
-            "See the user endpoint documentation for the " "valid parameters.",
+            _("See the user endpoint documentation for the valid parameters."),
         )

@@ -29,10 +29,10 @@ class TestJsonCompatibleConverters(TestCase):
             + r" \(<(class|type) \'object\'>\) JSON compatible.$"
         )
 
-        with self.assertRaisesRegexp(TypeError, err_regex):
+        with self.assertRaisesRegex(TypeError, err_regex):
             json_compatible(object())
 
-        with self.assertRaisesRegexp(TypeError, err_regex):
+        with self.assertRaisesRegex(TypeError, err_regex):
             json_compatible({"foo": [object()]})
 
     def test_True(self):
@@ -203,6 +203,8 @@ class TestJsonCompatibleConverters(TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "title": "Document 1",
+                "type_title": "DX Test Document",
+                "UID": doc1.UID(),
                 "description": "Description",
                 "review_state": "private",
             },

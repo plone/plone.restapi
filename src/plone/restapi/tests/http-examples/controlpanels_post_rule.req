@@ -1,0 +1,13 @@
+POST /plone/@controlpanels/content-rules HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "cascading": false,
+    "description": "Third rule added in the testing setup",
+    "enabled": true,
+    "event": "Comment added",
+    "stop": false,
+    "title": "Third test rule"
+}

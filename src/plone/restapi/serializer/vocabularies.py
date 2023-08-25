@@ -1,6 +1,6 @@
 from plone.restapi.batching import HypermediaBatch
+from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import ISerializeToJson
-from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.i18n import translate
@@ -10,6 +10,8 @@ from zope.schema.interfaces import IIterableSource
 from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary
+
+import warnings
 
 
 @implementer(ISerializeToJson)
@@ -25,8 +27,10 @@ class SerializeVocabLikeToJson:
 
     def __call__(self, vocabulary_id):
         vocabulary = self.context
-        title = safe_unicode(self.request.form.get("title", ""))
+        title = safe_text(self.request.form.get("title", ""))
         token = self.request.form.get("token", "")
+        tokens = self.request.form.get("tokens", [])
+        b_size = self.request.form.get("b_size", "")
 
         terms = []
         for term in vocabulary:
@@ -40,11 +44,22 @@ class SerializeVocabLikeToJson:
                 )
 
             if token:
+                warnings.warn(
+                    "``token`` parameter is deprecated and will be removed in plone.restapi 9.0. Use ``tokens`` parameter instead.",
+                    DeprecationWarning,
+                )
                 if token.lower() != term.token.lower():
                     continue
                 terms.append(term)
+            elif tokens:
+                if isinstance(tokens, str):
+                    tokens = [tokens]
+                for item in tokens:
+                    if item.lower() != term.token.lower():
+                        continue
+                    terms.append(term)
             else:
-                term_title = safe_unicode(getattr(term, "title", None) or "")
+                term_title = safe_text(getattr(term, "title", None) or "")
                 if (
                     title.lower()
                     not in translate(term_title, context=self.request).lower()
@@ -52,9 +67,19 @@ class SerializeVocabLikeToJson:
                     continue
                 terms.append(term)
 
+        serialized_terms = []
+
+        # Do not batch parameter is set
+        if b_size == "-1":
+            for term in terms:
+                serializer = getMultiAdapter(
+                    (term, self.request), interface=ISerializeToJson
+                )
+                serialized_terms.append(serializer())
+            return {"@id": vocabulary_id, "items": serialized_terms}
+
         batch = HypermediaBatch(self.request, terms)
 
-        serialized_terms = []
         for term in batch:
             serializer = getMultiAdapter(
                 (term, self.request), interface=ISerializeToJson

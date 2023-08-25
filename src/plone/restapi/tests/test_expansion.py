@@ -75,8 +75,15 @@ class TestExpansion(unittest.TestCase):
             expandable_elements(None, request),
         )
 
-    def test_expansion_returns_multiple_expanded_elements(self):
+    def test_expansion_returns_multiple_deprecated_commas_expanded_elements(self):
         request = TestRequest(form={"expand": "foo,bar"})
+        self.assertEqual(
+            {"@components": {"bar": "expanded", "foo": "expanded"}},
+            expandable_elements(None, request),
+        )
+
+    def test_expansion_returns_multiple_expanded_elements(self):
+        request = TestRequest(form={"expand": ["foo", "bar"]})
         self.assertEqual(
             {"@components": {"bar": "expanded", "foo": "expanded"}},
             expandable_elements(None, request),
@@ -99,7 +106,6 @@ class TestExpansion(unittest.TestCase):
 
 
 class TestExpansionFunctional(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -108,7 +114,7 @@ class TestExpansionFunctional(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -119,6 +125,68 @@ class TestExpansionFunctional(unittest.TestCase):
 
     def tearDown(self):
         self.api_session.close()
+
+    def test_expanded_marked_as_list(self):
+        response = self.api_session.get(
+            "/folder", params={"expand:list": ["actions", "navigation"]}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("object" in response.json()["@components"]["actions"])
+        self.assertTrue("object_buttons" in response.json()["@components"]["actions"])
+        self.assertTrue("portal_tabs" in response.json()["@components"]["actions"])
+        self.assertTrue("site_actions" in response.json()["@components"]["actions"])
+        self.assertTrue("user" in response.json()["@components"]["actions"])
+        self.assertEqual(
+            [
+                {
+                    "title": "Home",
+                    "@id": self.portal_url + "",
+                    "description": "",
+                    "review_state": None,
+                    "items": [],
+                },
+                {
+                    "title": "Some Folder",
+                    "@id": self.portal_url + "/folder",
+                    "description": "",
+                    "review_state": "private",
+                    "items": [],
+                },
+            ],
+            response.json()["@components"]["navigation"]["items"],
+        )
+
+    def test_expanded_as_list(self):
+        response = self.api_session.get(
+            "/folder", params={"expand": ["actions", "navigation"]}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("object" in response.json()["@components"]["actions"])
+        self.assertTrue("object_buttons" in response.json()["@components"]["actions"])
+        self.assertTrue("portal_tabs" in response.json()["@components"]["actions"])
+        self.assertTrue("site_actions" in response.json()["@components"]["actions"])
+        self.assertTrue("user" in response.json()["@components"]["actions"])
+        self.assertEqual(
+            [
+                {
+                    "title": "Home",
+                    "@id": self.portal_url + "",
+                    "description": "",
+                    "review_state": None,
+                    "items": [],
+                },
+                {
+                    "title": "Some Folder",
+                    "@id": self.portal_url + "/folder",
+                    "description": "",
+                    "review_state": "private",
+                    "items": [],
+                },
+            ],
+            response.json()["@components"]["navigation"]["items"],
+        )
 
     def test_actions_is_expandable(self):
         response = self.api_session.get("/folder")
@@ -270,6 +338,12 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("types", list(response.json().get("@components")))
 
+    def test_types_is_expandable_in_root(self):
+        response = self.api_session.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("types", list(response.json().get("@components")))
+
     def test_types_expanded(self):
         response = self.api_session.get("/folder", params={"expand": "types"})
 
@@ -288,54 +362,143 @@ class TestExpansionFunctional(unittest.TestCase):
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Collection",
+                    "id": "Collection",
                 },
                 {
                     "@id": "/".join((base_url, "@types/DXTestDocument")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "DX Test Document",
+                    "id": "DXTestDocument",
                 },
                 {
                     "@id": "/".join((base_url, "@types/Event")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Event",
+                    "id": "Event",
                 },
                 {
                     "@id": "/".join((base_url, "@types/File")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "File",
+                    "id": "File",
                 },
                 {
                     "@id": "/".join((base_url, "@types/Folder")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Folder",
+                    "id": "Folder",
                 },
                 {
                     "@id": "/".join((base_url, "@types/Image")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Image",
+                    "id": "Image",
                 },
                 {
                     "@id": "/".join((base_url, "@types/Link")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Link",
+                    "id": "Link",
                 },
                 {
                     "@id": "/".join((base_url, "@types/News Item")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "News Item",
+                    "id": "News Item",
                 },
                 {
                     "@id": "/".join((base_url, "@types/Document")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Page",
+                    "id": "Document",
+                },
+            ],
+            response.json().get("@components").get("types"),
+        )
+
+    def test_types_expanded_in_root(self):
+        response = self.api_session.get("/", params={"expand": "types"})
+
+        self.assertEqual(response.status_code, 200)
+
+        # XXX: Note: The @types endpoint currently doesn't conform to JSON-LD
+        # because it's directly returning a list, and does not have an @id
+        # property.
+
+        base_url = self.portal.absolute_url()
+
+        self.assertEqual(
+            [
+                {
+                    "@id": "/".join((base_url, "@types/Collection")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Collection",
+                    "id": "Collection",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/DXTestDocument")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "DX Test Document",
+                    "id": "DXTestDocument",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/Event")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Event",
+                    "id": "Event",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/File")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "File",
+                    "id": "File",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/Folder")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Folder",
+                    "id": "Folder",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/Image")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Image",
+                    "id": "Image",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/Link")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Link",
+                    "id": "Link",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/News Item")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "News Item",
+                    "id": "News Item",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/Document")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Page",
+                    "id": "Document",
                 },
             ],
             response.json().get("@components").get("types"),
@@ -343,7 +506,6 @@ class TestExpansionFunctional(unittest.TestCase):
 
 
 class TestTranslationExpansionFunctional(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -352,7 +514,7 @@ class TestTranslationExpansionFunctional(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 

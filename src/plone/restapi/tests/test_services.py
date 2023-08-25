@@ -1,4 +1,3 @@
-from unittest.mock import patch
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -8,7 +7,7 @@ from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from plone.scale import storage
+from plone.restapi.tests.helpers import patch_scale_uuid
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
@@ -28,7 +27,7 @@ class TestTraversal(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -87,7 +86,8 @@ class TestTraversal(unittest.TestCase):
         self.portal.news1.image_caption = "This is an image caption."
         transaction.commit()
 
-        with patch.object(storage, "uuid4", return_value="uuid1"):
+        scale_url_uuid = "uuid1"
+        with patch_scale_uuid(scale_url_uuid):
             response = self.api_session.get(self.portal.news1.absolute_url())
 
             self.assertEqual(response.status_code, 200)
@@ -112,7 +112,7 @@ class TestTraversal(unittest.TestCase):
                 "This is an image caption.", response.json()["image_caption"]
             )
             self.assertDictContainsSubset(
-                {"download": self.portal_url + "/news1/@@images/uuid1.png"},  # noqa
+                {"download": self.portal_url + f"/news1/@@images/{scale_url_uuid}.png"},
                 response.json()["image"],
             )
 

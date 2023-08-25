@@ -1,16 +1,19 @@
 from plone.memoize import view
+from plone.restapi.bbb import INonInstallable
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone import PloneMessageFactory as _
-from Products.CMFPlone.interfaces import INonInstallable
-from Products.CMFQuickInstallerTool.interfaces import (
-    INonInstallable as QINonInstallable,
-)
 from Products.GenericSetup import EXTENSION
 from Products.GenericSetup.tool import UNKNOWN
 from zope.component import getAllUtilitiesRegisteredFor
+from zope.i18n import translate
 
 import logging
 import pkg_resources
+
+
+try:
+    from plone.base import PloneMessageFactory as _
+except ImportError:
+    from Products.CMFPlone import PloneMessageFactory as _
 
 
 logger = logging.getLogger("Plone")
@@ -34,8 +37,8 @@ class Addons:
         return {
             "@id": "{}/@addons/{}".format(self.context.absolute_url(), addon["id"]),
             "id": addon["id"],
-            "title": addon["title"],
-            "description": addon["description"],
+            "title": translate(addon["title"], context=self.request),
+            "description": translate(addon["description"], context=self.request),
             "install_profile_id": addon["install_profile_id"],
             "is_installed": addon["is_installed"],
             "profile_type": addon["profile_type"],
@@ -54,11 +57,7 @@ class Addons:
         return self.is_profile_installed(profile["id"])
 
     def _install_profile_info(self, product_id):
-        """List extension profile infos of a given product.
-
-        From CMFQuickInstallerTool/QuickInstallerTool.py
-        _install_profile_info
-        """
+        """List extension profile infos of a given product."""
         profiles = self.ps.listProfileInfo()
         # We are only interested in extension profiles for the product.
         # TODO Remove the manual Products.* check here. It is still needed.
@@ -140,9 +139,6 @@ class Addons:
     def get_install_profile(self, product_id, allow_hidden=False):
         """Return the default install profile.
 
-        From CMFQuickInstallerTool/QuickInstallerTool.py
-        getInstallProfile
-
         :param product_id: id of product/package
         :type product_id: string
         :param allow_hidden: Allow getting otherwise hidden profile.
@@ -169,9 +165,6 @@ class Addons:
     def is_product_installable(self, product_id, allow_hidden=False):
         """Does a product have an installation profile?
 
-        From CMFQuickInstallerTool/QuickInstallerTool.py
-        isProductInstallable (and the deprecated isProductAvailable)
-
         :param allow_hidden: Allow installing otherwise hidden products.
             In the UI this will be False, but you can set it to True in
             for example a call from plone.app.upgrade where you want to
@@ -188,14 +181,6 @@ class Addons:
                 if gnip is None:
                     continue
                 not_installable.extend(gnip())
-            if product_id in not_installable:
-                return False
-            # BBB.  For backwards compatibility, we try the INonInstallable
-            # from the old QI as well.
-            not_installable = []
-            utils = getAllUtilitiesRegisteredFor(QINonInstallable)
-            for util in utils:
-                not_installable.extend(util.getNonInstallableProducts())
             if product_id in not_installable:
                 return False
 
@@ -240,8 +225,6 @@ class Addons:
     def get_product_version(self, product_id):
         """Return the version of the product (package).
 
-        From CMFQuickInstallerTool/QuickInstallerTool
-        getProductVersion
         That implementation used to fall back to getting the version.txt.
         """
         try:
@@ -258,8 +241,6 @@ class Addons:
 
         If anything errors out then go back to "old way" by returning
         'unknown'.
-
-        From CMFPlone/QuickInstallerTool.py getLatestUpgradeStep
         """
         profile_version = UNKNOWN
         try:
@@ -276,8 +257,6 @@ class Addons:
 
         This is a dict with among others two booleans values, stating if
         an upgrade is required and available.
-
-        From CMFPlone/QuickInstaller.py upgradeInfo
 
         :param product_id: id of product/package
         :type product_id: string
@@ -326,8 +305,6 @@ class Addons:
 
     def install_product(self, product_id, allow_hidden=False):
         """Install a product by name.
-
-        From CMFQuickInstallerTool/QuickInstallerTool.py installProduct
 
         :param product_id: id of product/package
         :type product_id: string
@@ -385,6 +362,17 @@ class Addons:
         if install_profile:
             self.ps.unsetLastVersionForProfile(install_profile["id"])
         return True
+
+    def import_profile(self, product_id, profile_id):
+        profile = self._get_profile(
+            product_id, profile_id, strict=True, allow_hidden=True
+        )
+        if not profile:
+            logger.error("Could not find %s: profile", product_id)
+            return False
+        else:
+            self.ps.runAllImportStepsFromProfile("profile-%s" % profile["id"])
+            return True
 
     @view.memoize
     def marshall_addons(self):
@@ -474,8 +462,7 @@ class Addons:
 
     def get_addons(self, apply_filter=None, product_name=None):
         """
-        100% based on generic setup profiles now. Kinda.
-        For products magic, use the zope quickinstaller I guess.
+        Based on generic setup profiles.
 
         @filter:= 'installed': only products that are installed and not hidden
                   'upgrades': only products with upgrades

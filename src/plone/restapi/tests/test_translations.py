@@ -1,14 +1,14 @@
 from plone import api
+from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
+from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.dexterity.utils import createContentInContainer
-from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
-from plone.app.multilingual.interfaces import ITranslationManager
+from plone.restapi import HAS_MULTILINGUAL
+from plone.restapi.bbb import ILanguage
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING
-from Products.CMFPlone.interfaces import ILanguage
-
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
 
@@ -18,10 +18,12 @@ import unittest
 
 
 class TestTranslationInfo(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_MULTILINGUAL:
+            return self.skipTest("The plone.app.multilingual is not installed")
+
         self.portal = self.layer["portal"]
         self.request = self.layer["request"]
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
@@ -36,7 +38,8 @@ class TestTranslationInfo(unittest.TestCase):
 
     def test_translation_info_includes_translations(self):
         tinfo = getMultiAdapter(
-            (self.en_content, self.request), name="GET_application_json_@translations"
+            (self.en_content, self.request),
+            name="GET_application_json_@translations",
         )
 
         info = tinfo.reply()
@@ -45,7 +48,8 @@ class TestTranslationInfo(unittest.TestCase):
 
     def test_correct_translation_information(self):
         tinfo = getMultiAdapter(
-            (self.en_content, self.request), name="GET_application_json_@translations"
+            (self.en_content, self.request),
+            name="GET_application_json_@translations",
         )
 
         info = tinfo.reply()
@@ -55,11 +59,24 @@ class TestTranslationInfo(unittest.TestCase):
             ILanguage(self.es_content).get_language(), tinfo_es["language"]
         )
 
+    def test_translation_info_includes_root_translations(self):
+        tinfo = getMultiAdapter(
+            (self.en_content, self.request),
+            name="GET_application_json_@translations",
+        )
+
+        info = tinfo.reply()
+        self.assertIn("root", info)
+        self.assertEqual(4, len(info["root"]))
+
 
 class TestLinkContentsAsTranslations(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if not HAS_MULTILINGUAL:
+            return self.skipTest("The plone.app.multilingual is not installed")
+
         self.portal = self.layer["portal"]
         self.request = self.layer["request"]
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
@@ -163,11 +180,68 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
         response = response.json()
         self.assertTrue(len(response["items"]) == 0)
 
+    def test_link_translation_with_an_already_translated_content_returns_400(
+        self,
+    ):
+        ITranslationManager(self.en_content).register_translation("es", self.es_content)
+        transaction.commit()
+        response = requests.post(
+            f"{self.en_content.absolute_url()}/@translations",
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"id": self.es_content.absolute_url()},
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            response.json()["error"]["message"],
+            "Source already translated into language es",
+        )
+
+    def test_link_translation_with_target_already_linked_to_other_object_returns_400(
+        self,
+    ):
+        self.en_content_2 = createContentInContainer(
+            self.portal["en"], "Document", title="Test document 2"
+        )
+        ITranslationManager(self.en_content_2).register_translation(
+            "es", self.es_content
+        )
+        transaction.commit()
+        response = requests.post(
+            f"{self.en_content.absolute_url()}/@translations",
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"id": self.es_content.absolute_url()},
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            response.json()["error"]["message"],
+            "Target already translated into language es",
+        )
+
+    def test_link_translation_with_LFRs_not_possible_since_they_are_protected_returns_400(
+        self,
+    ):
+        response = requests.post(
+            f"{self.es_content.absolute_url()}/@translations",
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"id": self.portal["en"].absolute_url()},
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            response.json()["error"]["message"],
+            "Language Root Folders can only be linked between each other",
+        )
+
 
 class TestUnLinkContentTranslations(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if not HAS_MULTILINGUAL:
+            return self.skipTest("The plone.app.multilingual is not installed")
+
         self.portal = self.layer["portal"]
         self.request = self.layer["request"]
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
@@ -192,7 +266,8 @@ class TestUnLinkContentTranslations(unittest.TestCase):
         transaction.begin()
         manager = ITranslationManager(self.en_content)
         self.assertNotIn(
-            ILanguage(self.es_content).get_language(), list(manager.get_translations())
+            ILanguage(self.es_content).get_language(),
+            list(manager.get_translations()),
         )
 
     def test_calling_endpoint_without_language_gives_400(self):
@@ -215,11 +290,27 @@ class TestUnLinkContentTranslations(unittest.TestCase):
         )
         self.assertEqual(400, response.status_code)
 
+    def test_translation_unlinking_a_LRF_errors(self):
+        response = requests.delete(
+            f"{self.portal['en'].absolute_url()}/@translations",
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"language": "es"},
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            response.json()["error"]["message"],
+            "Language Root Folders cannot be unlinked",
+        )
+
 
 class TestCreateContentsAsTranslations(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if not HAS_MULTILINGUAL:
+            return self.skipTest("The plone.app.multilingual is not installed")
+
         self.portal = self.layer["portal"]
         self.request = self.layer["request"]
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
@@ -259,6 +350,9 @@ class TestTranslationLocator(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if not HAS_MULTILINGUAL:
+            return self.skipTest("The plone.app.multilingual is not installed")
+
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
         self.request = self.layer["request"]

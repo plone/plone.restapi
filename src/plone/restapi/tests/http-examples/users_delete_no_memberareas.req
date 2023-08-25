@@ -1,0 +1,6 @@
+DELETE /plone/@users/noam HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/x-www-form-urlencoded
+
+delete_memberareas=0

@@ -19,7 +19,7 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -39,7 +39,7 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn("@id", response.json())
 
-        self.assertEquals(
+        self.assertEqual(
             response.json()["@id"],
             f"{self.portal_url}/copy_of_document",
         )
@@ -58,15 +58,15 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["@id"],
             f"{self.portal_url}/copy_of_document",
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["creator_name"],
             "admin",
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["creator_url"],
             f"{self.portal_url}/author/admin",
         )
@@ -77,19 +77,19 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy_of"]["@id"],
             f"{self.portal_url}/document",
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["@id"],
             f"{self.portal_url}/copy_of_document",
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["creator_name"],
             "admin",
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["creator_url"],
             f"{self.portal_url}/author/admin",
         )
@@ -99,37 +99,37 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
             "/document",
         )
 
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["@id"],
             f"{self.portal_url}/copy_of_document",
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["creator_name"],
             "admin",
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["creator_url"],
             f"{self.portal_url}/author/admin",
         )
-        self.assertEquals(response.json()["working_copy_of"], None)
+        self.assertEqual(response.json()["working_copy_of"], None)
 
         # Serialization on the working copy object
         response = self.api_session.get(
             "/copy_of_document",
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy_of"]["@id"],
             f"{self.portal_url}/document",
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["@id"],
             f"{self.portal_url}/copy_of_document",
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["creator_name"],
             "admin",
         )
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy"]["creator_url"],
             f"{self.portal_url}/author/admin",
         )
@@ -141,7 +141,7 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        self.assertEquals(
+        self.assertEqual(
             response.json()["working_copy_of"],
             None,
         )
@@ -206,7 +206,7 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
             "/document",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEquals(response.json()["title"], "I just changed the title")
+        self.assertEqual(response.json()["title"], "I just changed the title")
 
     def test_workingcopy_patch_on_the_working_copy(self):
         # We create the working copy
@@ -230,4 +230,4 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
             "/document",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEquals(response.json()["title"], "I just changed the title")
+        self.assertEqual(response.json()["title"], "I just changed the title")

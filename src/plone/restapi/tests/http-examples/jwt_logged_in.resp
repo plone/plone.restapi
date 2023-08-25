@@ -6,6 +6,9 @@ Content-Type: application/json
         "actions": {
             "@id": "http://localhost:55001/plone/@actions"
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/@breadcrumbs"
         },
@@ -14,13 +17,29 @@ Content-Type: application/json
         },
         "navigation": {
             "@id": "http://localhost:55001/plone/@navigation"
+        },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/@navroot"
+        },
+        "types": {
+            "@id": "http://localhost:55001/plone/@types"
+        },
+        "workflow": {
+            "@id": "http://localhost:55001/plone/@workflow"
         }
     },
-    "@id": "http://localhost:55001/plone/",
+    "@id": "http://localhost:55001/plone",
     "@type": "Plone Site",
-    "blocks": {},
-    "blocks_layout": {},
+    "UID": "55c25ebc220d400393574f37d648727c",
+    "allow_discussion": null,
+    "contributors": [],
+    "creators": [
+        "admin"
+    ],
     "description": "",
+    "effective": null,
+    "exclude_from_nav": false,
+    "expires": null,
     "id": "plone",
     "is_folderish": true,
     "items": [
@@ -29,10 +48,26 @@ Content-Type: application/json
             "@type": "Document",
             "description": "Congratulations! You have successfully installed Plone.",
             "review_state": "private",
-            "title": "Welcome to Plone"
+            "title": "Welcome to Plone",
+            "type_title": "Page"
         }
     ],
     "items_total": 1,
+    "language": {
+        "title": "English",
+        "token": "en"
+    },
+    "lock": {
+        "locked": false,
+        "stealable": true
+    },
     "parent": {},
-    "title": "Plone site"
+    "relatedItems": [],
+    "review_state": null,
+    "rights": "",
+    "subjects": [],
+    "table_of_contents": null,
+    "text": null,
+    "title": "Plone site",
+    "type_title": "Plone Site"
 }

@@ -5,6 +5,8 @@ from base64 import b64decode
 from email.utils import formatdate
 from fnmatch import fnmatch
 from plone.rest.interfaces import ICORSPolicy
+from plone.restapi.bbb import base_hasattr
+from plone.restapi.bbb import safe_hasattr
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.services import Service
@@ -12,8 +14,6 @@ from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import base_hasattr
-from Products.CMFPlone.utils import safe_hasattr
 from uuid import uuid4
 from zExceptions import Unauthorized
 from zope.component import queryMultiAdapter
@@ -117,9 +117,14 @@ class UploadPost(TUSBaseService):
         tus_upload = TUSUpload(uuid4().hex, metadata=metadata)
 
         self.request.response.setStatus(201)
+        url = self.request.getURL()
+        # Regardless of @tus-upload or @tus-replace the response should return
+        # a Location of @tus-upload
+        if url.endswith("@tus-replace"):
+            url = url.replace("@tus-replace", "@tus-upload")
         self.request.response.setHeader(
             "Location",
-            f"{self.context.absolute_url()}/@tus-upload/{tus_upload.uid}",
+            f"{url}/{tus_upload.uid}",
         )
         self.request.response.setHeader("Upload-Expires", tus_upload.expires())
         self.request.response.setHeader("Tus-Resumable", "1.0.0")

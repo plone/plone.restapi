@@ -65,7 +65,7 @@ class TestTUS(unittest.TestCase):
         self.upload_url = f"{self.folder.absolute_url()}/@tus-upload"
         transaction.commit()
 
-        self.api_session = RelativeSession(self.portal.absolute_url())
+        self.api_session = RelativeSession(self.portal.absolute_url(), test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -541,6 +541,35 @@ class TestTUS(unittest.TestCase):
         sm.unregisterHandler(record_event, (IObjectAddedEvent,))
         sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
 
+    def test_tus_with_api(self):
+        self.upload_url = (
+            f"{self.portal.absolute_url()}/++api++/{self.folder.id}/@tus-upload"
+        )
+        metadata = _prepare_metadata(UPLOAD_FILENAME, UPLOAD_MIMETYPE)
+        response = self.api_session.post(
+            self.upload_url,
+            headers={
+                "Tus-Resumable": "1.0.0",
+                "Upload-Length": str(UPLOAD_LENGTH),
+                "Upload-Metadata": metadata,
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+        location = response.headers["Location"]
+        self.assertEqual("++api++" in location, True)
+
+        # upload the data with PATCH
+        response = self.api_session.patch(
+            location,
+            headers={
+                "Content-Type": "application/offset+octet-stream",
+                "Upload-Offset": "0",
+                "Tus-Resumable": "1.0.0",
+            },
+            data=BytesIO(UPLOAD_DATA),
+        )
+        self.assertEqual(response.status_code, 204)
+
     def tearDown(self):
         self.api_session.close()
         client_home = os.environ.get("CLIENT_HOME")
@@ -576,7 +605,7 @@ class TestTUSUploadWithCORS(unittest.TestCase):
             CORSTestPolicy, adapts=(Interface, IBrowserRequest), provides=ICORSPolicy
         )
         self.portal = self.layer["portal"]
-        self.api_session = RelativeSession(self.portal.absolute_url())
+        self.api_session = RelativeSession(self.portal.absolute_url(), test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         self.upload_url = f"{self.portal.absolute_url()}/@tus-upload"

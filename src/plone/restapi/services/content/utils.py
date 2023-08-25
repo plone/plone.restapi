@@ -33,6 +33,12 @@ def create(container, type_, id_=None, title=None):
     portal_types = getToolByName(container, "portal_types")
     type_info = portal_types.getTypeInfo(type_)
 
+    if not type_info:
+        raise Unauthorized(
+            "Invalid '@type' parameter. No content type with the name '%s' found"
+            % type_
+        )
+
     # Check for add permission
     if not type_info.isConstructionAllowed(container):
         raise Unauthorized("Cannot create %s" % type_info.getId())

@@ -1,15 +1,20 @@
 from datetime import date
 from DateTime import DateTime
+from pkg_resources import get_distribution
+from pkg_resources import parse_version
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
+from plone.restapi.search.query import ZCatalogCompatibleQueryAdapter
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from plone.restapi.tests import PY3_10
 from plone.restapi.tests.helpers import result_paths
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
@@ -19,6 +24,11 @@ from zope.interface import noLongerProvides
 
 import transaction
 import unittest
+
+
+HAS_PLONE_6 = parse_version(
+    get_distribution("Products.CMFPlone").version
+) >= parse_version("6.0.0a1")
 
 
 class TestSearchFunctional(unittest.TestCase):
@@ -32,19 +42,19 @@ class TestSearchFunctional(unittest.TestCase):
         self.request = self.portal.REQUEST
         self.catalog = getToolByName(self.portal, "portal_catalog")
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         api.user.create(
             email="editor@example.com",
             username="editoruser",
-            password="secret",
+            password=TEST_USER_PASSWORD,
         )
         api.user.create(
             email="editor@example.com",
             username="localeditor",
-            password="secret",
+            password=TEST_USER_PASSWORD,
         )
 
         # /plone/folder
@@ -341,6 +351,33 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["items"]), 1)
 
+    def test_search_orphan_brain(self):
+
+        # prevent unindex when deleting self.doc
+        old__unindexObject = self.doc.__class__.unindexObject
+        self.doc.__class__.unindexObject = lambda *args: None
+        self.doc.aq_parent.manage_delObjects([self.doc.getId()])
+        self.doc.__class__.unindexObject = old__unindexObject
+        # doc deleted but still in portal_catalog
+        doc_uid = self.doc.UID()
+        self.assertFalse(self.doc in self.doc.aq_parent)
+        self.assertTrue(self.portal.portal_catalog(UID=doc_uid))
+        transaction.commit()
+
+        # query with fullobjects
+        query = {"portal_type": "DXTestDocument", "fullobjects": True, "UID": doc_uid}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200, response.content)
+        results = response.json()
+        self.assertEqual(len(results["items"]), 0)
+
+        # query without fullobjects
+        query = {"portal_type": "DXTestDocument", "UID": doc_uid}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200, response.content)
+        results = response.json()
+        self.assertEqual(len(results["items"]), 1)
+
     # ZCTextIndex
 
     def test_fulltext_search(self):
@@ -593,17 +630,27 @@ class TestSearchFunctional(unittest.TestCase):
     def test_respect_access_inactive_permission(self):
         # admin can see everything
         response = self.api_session.get("/@search", params={}).json()
-        self.assertEqual(response["items_total"], 6)
+        if HAS_PLONE_6:
+            # Since Plone 6 the Plone site is indexed ...
+            self.assertEqual(response["items_total"], 7)
+        else:
+            # ... before it was not
+            self.assertEqual(response["items_total"], 6)
         response = self.api_session.get(
             "/@search", params={"Title": "Lorem Ipsum"}
         ).json()
         self.assertEqual(response["items_total"], 1)
 
         # not admin users can't see expired items
-        self.api_session.auth = ("editoruser", "secret")
+        self.api_session.auth = ("editoruser", TEST_USER_PASSWORD)
 
         response = self.api_session.get("/@search", params={}).json()
-        self.assertEqual(response["items_total"], 3)
+        if HAS_PLONE_6:
+            # Since Plone 6 the Plone site is indexed ...
+            self.assertEqual(response["items_total"], 4)
+        else:
+            # ... before it was not
+            self.assertEqual(response["items_total"], 3)
         response = self.api_session.get(
             "/@search", params={"Title": "Lorem Ipsum"}
         ).json()
@@ -617,16 +664,26 @@ class TestSearchFunctional(unittest.TestCase):
 
         #  portal-enabled Editor can see expired contents
         response = self.api_session.get("/@search", params={}).json()
-        self.assertEqual(response["items_total"], 6)
+        if HAS_PLONE_6:
+            # Since Plone 6 the Plone site is indexed ...
+            self.assertEqual(response["items_total"], 7)
+        else:
+            # ... before it was not
+            self.assertEqual(response["items_total"], 6)
         response = self.api_session.get(
             "/@search", params={"Title": "Lorem Ipsum"}
         ).json()
         self.assertEqual(response["items_total"], 1)
 
         # local-enabled Editor can only access expired contents inside folder
-        self.api_session.auth = ("localeditor", "secret")
+        self.api_session.auth = ("localeditor", TEST_USER_PASSWORD)
         response = self.api_session.get("/@search", params={}).json()
-        self.assertEqual(response["items_total"], 1)
+        if HAS_PLONE_6:
+            # Since Plone 6 the Plone site is indexed ...
+            self.assertEqual(response["items_total"], 2)
+        else:
+            # ... before it was not
+            self.assertEqual(response["items_total"], 1)
         response = self.api_session.get(
             "/@search", params={"path": "/plone/folder"}
         ).json()
@@ -651,7 +708,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(set(types), {"Folder", "DXTestDocument"})
 
         registry = getUtility(IRegistry)
-        from Products.CMFPlone.interfaces import ISearchSchema
+        from plone.restapi.bbb import ISearchSchema
 
         search_settings = registry.forInterface(ISearchSchema, prefix="plone")
         old = search_settings.types_not_searched
@@ -762,3 +819,22 @@ class TestSearchFunctional(unittest.TestCase):
 
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()
+
+    # BBB: Remove condition when drop Python 3.9 support.
+    @unittest.skipUnless(PY3_10, "assertNoLogs is only in Python >= 3.10")
+    def test_zcatalogcompatiblequeryadapter_log(self):
+        """When we have sort_on or sort_order in the query passed to
+        ZCatalogCompatibleQueryAdapter, warnings should not be issued in the
+        log.
+        """
+        query_adapter = ZCatalogCompatibleQueryAdapter(self.portal, self.request)
+        with self.assertNoLogs("plone.restapi.search.query", level="WARN"):
+            query_adapter(
+                {
+                    "b_size": "50",
+                    "metadata_fields": "_all",
+                    "path": {"depth": "1", "query": "/Plone"},
+                    "sort_on": "getObjPositionInParent",
+                    "sort_order": "ascending",
+                },
+            )

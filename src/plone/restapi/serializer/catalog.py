@@ -8,6 +8,7 @@ from zope.interface import Interface
 
 import logging
 
+
 try:
     from ZTUtils.Lazy import Lazy
 except ImportError:
@@ -41,9 +42,7 @@ class LazyCatalogResultSerializer:
         for brain in batch:
             if fullobjects:
                 try:
-                    result = getMultiAdapter(
-                        (brain.getObject(), self.request), ISerializeToJson
-                    )(include_items=False)
+                    obj = brain.getObject()
                 except KeyError:
                     # Guard in case the brain returned refers to an object that doesn't
                     # exists because it failed to uncatalog itself or the catalog has
@@ -53,6 +52,11 @@ class LazyCatalogResultSerializer:
                             brain.getPath()
                         )
                     )
+                    continue
+
+                result = getMultiAdapter((obj, self.request), ISerializeToJson)(
+                    include_items=False
+                )
             else:
                 result = getMultiAdapter(
                     (brain, self.request), ISerializeToJsonSummary

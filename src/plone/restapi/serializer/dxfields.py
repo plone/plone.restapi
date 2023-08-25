@@ -82,7 +82,15 @@ class CollectionFieldSerializer(DefaultFieldSerializer):
                     term = value_type.vocabulary.getTerm(v)
                     values.append({"token": term.token, "title": term.title})
                 except LookupError:
-                    log.warning("Term lookup error: %r" % v)
+                    log.warning(
+                        "Term lookup error: %r %s (%s:%s)"
+                        % (
+                            v,
+                            self.field.title,
+                            self.context.portal_type,
+                            self.context.absolute_url(1),
+                        )
+                    )
             value = values
         return json_compatible(value)
 
@@ -98,7 +106,10 @@ class ImageFieldSerializer(DefaultFieldSerializer):
 
         url = get_original_image_url(self.context, self.field.__name__, width, height)
 
-        scales = get_scales(self.context, self.field, width, height)
+        if width != -1 and height != -1:
+            scales = get_scales(self.context, self.field, width, height)
+        else:
+            scales = {}
         result = {
             "filename": image.filename,
             "content-type": image.contentType,

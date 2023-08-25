@@ -184,6 +184,16 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertTrue(isinstance(value, float), "Not a <float>")
         self.assertEqual(1.0, value)
 
+    def test_float_deserialization_returns_decimal(self):
+        value = self.deserialize("test_decimal_field", 1.111)
+        self.assertTrue(isinstance(value, Decimal), "Not a <Decimal>")
+        # a float from JSON to decimal can not work properly, so you would get
+        # real floating point precision only
+        self.assertEqual(
+            Decimal("1.1109999999999999875655021241982467472553253173828125"),
+            value,
+        )
+
     def test_frozenset_deserialization_returns_frozenset(self):
         value = self.deserialize("test_frozenset_field", ["foo", "bar"])
         self.assertTrue(isinstance(value, frozenset), "Not a <frozenset>")
@@ -411,7 +421,8 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.deserialize("test_relationchoice_field", 123456789)
         self.assertEqual(
-            str(cm.exception), "Could not resolve object for intid=123456789"
+            str(cm.exception),
+            "Could not resolve object for 123456789 (resolved by intid)",
         )
         self.assertEqual(400, self.request.response.getStatus())
 
@@ -423,7 +434,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             )
         self.assertEqual(
             str(cm.exception),
-            "Could not resolve object for UID=ac12b24913cf45c6863937367aacc263",
+            "Could not resolve object for ac12b24913cf45c6863937367aacc263 (resolved by UID)",
         )
         self.assertEqual(400, self.request.response.getStatus())
 
@@ -435,7 +446,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             )
         self.assertEqual(
             str(cm.exception),
-            "Could not resolve object for URL=http://nohost/plone/doesnotexist",
+            "Could not resolve object for http://nohost/plone/doesnotexist (resolved by URL)",
         )
         self.assertEqual(400, self.request.response.getStatus())
 
@@ -443,8 +454,15 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.deserialize("test_relationchoice_field", "/doesnotexist")
         self.assertEqual(
-            str(cm.exception), "Could not resolve object for path=/doesnotexist"
+            str(cm.exception),
+            "Could not resolve object for /doesnotexist (resolved by path)",
         )
+        self.assertEqual(400, self.request.response.getStatus())
+
+    def test_relationchoice_deserialization_from_wrong_type_raises(self):
+        with self.assertRaises(ValueError) as cm:
+            self.deserialize("test_relationchoice_field", None)
+        self.assertEqual(str(cm.exception), "Could not resolve object for None")
         self.assertEqual(400, self.request.response.getStatus())
 
     def test_relationlist_deserialization_returns_list_of_documents(self):
@@ -487,7 +505,12 @@ class TestDXFieldDeserializer(unittest.TestCase):
         # DefaultFieldDeserializer that the CollectionFieldDeserializer will
         # delegate to for deserializing collection items.
         self.assertEqual("Object is of wrong type.", cm.exception.doc())
-        self.assertEqual((b"2", (int,), ""), cm.exception.args)
+        exception_args = list(cm.exception.args)
+        if isinstance(exception_args[1], tuple):
+            # BBB: since zope.schema >= 7.0.0 the Int field changed its validation `_type`
+            # from (int, ) to int ... we adjust that to work with both versions
+            exception_args[1] = exception_args[1][0]
+        self.assertEqual([b"2", int, ""], exception_args)
 
     def test_dict_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:

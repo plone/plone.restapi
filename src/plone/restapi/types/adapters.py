@@ -3,6 +3,7 @@ from plone.app.textfield.interfaces import IRichText
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.restapi.types.utils import get_multilingual_directives
 from plone.restapi.types.utils import get_querysource_url
 from plone.restapi.types.utils import get_source_url
 from plone.restapi.types.utils import get_vocabulary_url
@@ -32,11 +33,11 @@ from zope.schema.interfaces import IInt
 from zope.schema.interfaces import IList
 from zope.schema.interfaces import IObject
 from zope.schema.interfaces import IPassword
-from zope.schema.interfaces import IURI
 from zope.schema.interfaces import ISet
 from zope.schema.interfaces import IText
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITuple
+from zope.schema.interfaces import IURI
 
 
 @adapter(IField, Interface, Interface)
@@ -83,6 +84,10 @@ class DefaultJsonSchemaProvider:
         if widget_options:
             schema["widgetOptions"] = widget_options
 
+        multilingual_options = self.get_multilingual_directives()
+        if multilingual_options:
+            schema["multilingual_options"] = multilingual_options
+
         if self.field.default is not None:
             schema["default"] = self.field.default
 
@@ -106,6 +111,11 @@ class DefaultJsonSchemaProvider:
             params["vocabulary"] = {
                 "@id": get_vocabulary_url(vocab_name, self.context, self.request)
             }
+        return params
+
+    def get_multilingual_directives(self):
+        all_params = get_multilingual_directives([self.field.interface])
+        params = all_params.get(self.field.getName(), {})
         return params
 
 

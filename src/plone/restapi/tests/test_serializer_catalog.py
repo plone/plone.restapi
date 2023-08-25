@@ -1,4 +1,6 @@
 from DateTime import DateTime
+from pkg_resources import get_distribution
+from pkg_resources import parse_version
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -10,8 +12,12 @@ from zope.component import getMultiAdapter
 import unittest
 
 
-class TestCatalogSerializers(unittest.TestCase):
+HAS_PLONE_6 = parse_version(
+    get_distribution("Products.CMFPlone").version
+) >= parse_version("6.0.0a1")
 
+
+class TestCatalogSerializers(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -43,7 +49,18 @@ class TestCatalogSerializers(unittest.TestCase):
             {"@id": "http://nohost", "items": [], "items_total": 0}, results
         )
 
+    @unittest.skipUnless(HAS_PLONE_6, "Since Plone 6 the Plone site is indexed ...")
     def test_lazy_map_serialization(self):
+        # Test serialization of a Products.ZCatalog.Lazy.LazyMap
+        lazy_map = self.catalog()
+        results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
+
+        self.assertDictContainsSubset({"@id": "http://nohost"}, results)
+        self.assertDictContainsSubset({"items_total": 3}, results)
+        self.assertEqual(3, len(results["items"]))
+
+    @unittest.skipIf(HAS_PLONE_6, "... before it was not")
+    def test_lazy_map_serialization_plone5(self):
         # Test serialization of a Products.ZCatalog.Lazy.LazyMap
         lazy_map = self.catalog()
         results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
@@ -82,6 +99,7 @@ class TestCatalogSerializers(unittest.TestCase):
                 "parent": {
                     "@id": "http://nohost/plone/my-folder",
                     "@type": "Folder",
+                    "type_title": "Folder",
                     "description": "",
                     "review_state": "private",
                     "title": "My Folder",
@@ -107,6 +125,7 @@ class TestCatalogSerializers(unittest.TestCase):
                 "@id": "http://nohost/plone/my-folder/my-document",
                 "@type": "Document",
                 "title": "My Document",
+                "type_title": "Page",
                 "description": "",
                 "review_state": "private",
             },

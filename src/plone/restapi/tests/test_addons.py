@@ -1,18 +1,18 @@
+from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.restapi.bbb import safe_text
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_unicode
 
 import transaction
 import unittest
 
 
 class TestAddons(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -22,7 +22,7 @@ class TestAddons(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -61,7 +61,7 @@ class TestAddons(unittest.TestCase):
 
         response = self.api_session.post("/@addons/plone.session/install")
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(safe_unicode(response.content), "")
+        self.assertEqual(safe_text(response.content), "")
 
         # Check to make sure the addon is currently shown as installed
         self.assertEqual(_get_install_status(self), True)
@@ -69,13 +69,12 @@ class TestAddons(unittest.TestCase):
         # Now uninstall the addon
         response = self.api_session.post("/@addons/plone.session/uninstall")
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(safe_unicode(response.content), "")
+        self.assertEqual(safe_text(response.content), "")
 
         # Check to make sure the addon is currently shown as not installed
         self.assertEqual(_get_install_status(self), False)
 
     def test_install_uninstall_addon_with_representation(self):
-
         # Check to make sure the addon is currently shown as not installed
         response = self.api_session.get("/@addons/plone.session")
         result = response.json()
@@ -130,7 +129,7 @@ class TestAddons(unittest.TestCase):
         # Now call the upgrade
         response = self.api_session.post("/@addons/plone.restapi/upgrade")
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(safe_unicode(response.content), "")
+        self.assertEqual(safe_text(response.content), "")
         self.assertEqual(
             {
                 "available": False,
@@ -175,3 +174,41 @@ class TestAddons(unittest.TestCase):
         session = [a for a in result["items"] if a["id"] == "plone.restapi"]
         self.assertEqual(len(session), 1)
         self.assertEqual(last_version, session[0]["upgrade_info"])
+
+    def test_get_only_upgradeables(self):
+        def _get_upgrade_info(self):
+            response = self.api_session.get("/@addons/plone.restapi")
+            result = response.json()
+            return result["upgrade_info"]
+
+        # Set need upgrade state
+        self.ps.setLastVersionForProfile("plone.restapi:default", "0002")
+        transaction.commit()
+        self.assertEqual(
+            {
+                "available": True,
+                "hasProfile": True,
+                "installedVersion": "0002",
+                "newVersion": "0006",
+                "required": True,
+            },
+            _get_upgrade_info(self),
+        )
+
+        response = self.api_session.get("/@addons?upgradeable=1")
+
+        self.assertEqual(1, len(response.json()["items"]))
+        self.assertEqual("plone.restapi", response.json()["items"][0]["id"])
+
+    def test_install_specific_profile(self):
+        response = self.api_session.post(
+            "/@addons/plone.restapi/import/testing-workflows"
+        )
+        self.assertEqual(response.status_code, 204)
+
+        transaction.commit()
+
+        # This test installs the profile 'testing-workflows', which installs
+        # a workflow named "restriction_workflow", we check for it to be present
+        pw = api.portal.get_tool("portal_workflow")
+        self.assertIn("restriction_workflow", pw.listWorkflows())
