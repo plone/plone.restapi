@@ -37,6 +37,14 @@ In `plone.restapi` 9.0.0, the following response would be returned with a `breac
 ]
 ```
 
+Pull Request: https://github.com/plone/plone.restapi/pull/1636
+
+### Remove plone.tiles and the @tiles endpoint
+
+`plone.restapi` 9 removed the @tiles endpoint and removed the dependency to plone.tiles. The @tiles endpoint was deprecated since `plone.restapi` 8.
+
+Pull Request: https://github.com/plone/plone.restapi/pull/1688
+
 ## Upgrading to `plone.restapi` 8.x
 
 `plone.restapi` 8.x dropped support for Python 2 and Plone 5.1 and 4.3.
