@@ -37,6 +37,18 @@ In `plone.restapi` 9.0.0, the following response would be returned with a `breac
 ]
 ```
 
+### Remove deprecated @unlock, @refresh-lock endpoints
+
+The deprecated @unlock and @refresh-unlock endpoints were removed in `plone.restapi` 9.
+
+Send a DELETE request to the @lock endpoint to release a lock (replaces the @unlock endpoint).
+
+Send a PATCH request to the @lock endpoint to refresh a lock (replaces the @refresh-unlock endpoint).
+
+See the documentation of the `@lock`endpoint for more information: https://plonerestapi.readthedocs.io/en/latest/endpoints/locking.html
+
+Pull Request: https://github.com/plone/plone.restapi/pull/1235
+
 ## Upgrading to `plone.restapi` 8.x
 
 `plone.restapi` 8.x dropped support for Python 2 and Plone 5.1 and 4.3.
