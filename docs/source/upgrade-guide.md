@@ -13,6 +13,14 @@ This upgrade guide lists all breaking changes in `plone.restapi`.
 It explains the steps that are needed to upgrade to the latest version.
 
 
+## Upgrading to `plone.restapi` 8.x
+
+`plone.restapi` 8.x dropped support for Python 2 and Plone 5.1 and 4.3.
+Upgrading to `plone.restapi` 8.x does not require any changes to your code base if you use Python 3 and Plone 5.2 or newer.
+
+If you use Python 2 and a Plone version older than 5.2, stick with `plone.restapi` 7.x.
+
+
 ## Upgrading to `plone.restapi` 7.x
 
 The navigation endpoint has been refactored.
@@ -394,11 +402,11 @@ New response:
 {
   "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes",
   "items": [
-      {
-        "title": "Collection",
-        "token": "Collection"
-      },
-      "…"
+    {
+      "title": "Collection",
+      "token": "Collection"
+    },
+    "…"
   ],
   "items_total": 12
 }
@@ -729,7 +737,7 @@ Pull Request:
   Use top level `@navigation` and `@breadcrumb` endpoints instead. [timo]
 - Remove `sharing` attributes from `GET` response. [timo, jaroel]
 - Convert `richtext` using `.output_relative_to`.
-  Direct conversion from `RichText` is no longer supported as we *always* need a context for the `ITransformer`. [jaroel]
+  Direct conversion from `RichText` is no longer supported as we _always_ need a context for the `ITransformer`. [jaroel]
 
 
 ### Remove @components endpoint
@@ -799,7 +807,7 @@ Use `.output_relative_to` to convert `richtext`.
 Changelog:
 
 - Convert `richtext` using `.output_relative_to.`
-  Direct conversion from `RichText` is no longer supported as we *always* need a context for the `ITransformer`. [jaroel]
+  Direct conversion from `RichText` is no longer supported as we _always_ need a context for the `ITransformer`. [jaroel]
 
 Pull Request:
 

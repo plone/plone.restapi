@@ -25,6 +25,7 @@
   <include package=".history" />
   <include package=".linkintegrity" />
   <include package=".locking" />
+  <include package=".navroot" />
   <include package=".principals" />
   <include package=".querysources" />
   <include package=".querystring" />
@@ -33,6 +34,7 @@
   <include package=".relations" />
   <include package=".roles" />
   <include package=".search" />
+  <include package=".site" />
   <include package=".system" />
   <include package=".sources" />
   <include package=".transactions" />
@@ -46,10 +48,9 @@
       package=".workingcopy"
       zcml:condition="installed plone.app.iterate"
       />
-  <include
-      package=".multilingual"
-      zcml:condition="have plone-5"
-      />
+  <configure zcml:condition="installed plone.app.multilingual">
+    <include package=".multilingual" />
+  </configure>
   <include
       package=".email_notification"
       zcml:condition="have plone-5"

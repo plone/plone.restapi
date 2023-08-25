@@ -1,5 +1,5 @@
-.. image:: https://github.com/plone/plone.restapi/workflows/Plone%20RESTAPI%20CI/badge.svg
-  :target: https://github.com/plone/plone.restapi/actions?query=workflow%3A%22Plone+RESTAPI+CI%22
+.. image:: https://github.com/plone/plone.restapi/actions/workflows/tests.yml/badge.svg?branch=master
+  :target: https://github.com/plone/plone.restapi/actions/workflows/tests.yml
 
 .. image:: https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=master
   :target: https://coveralls.io/github/plone/plone.restapi?branch=master
@@ -112,7 +112,7 @@ If you are having issues, please let us know via the `issue tracker <https://git
 If you require professional support, here is a list of Plone solution providers that contributed significantly to ``plone.restapi`` in the past.
 
 - `kitconcept GmbH <https://kitconcept.com>`_ (Germany)
-- `4teamwork <https://www.4teamwork.ch>`_ (Switzerland)
+- `4teamwork <https://www.4teamwork.ch/en>`_ (Switzerland)
 - `CodeSyntax <https://www.codesyntax.com/en>`_ (Spain)
 
 
