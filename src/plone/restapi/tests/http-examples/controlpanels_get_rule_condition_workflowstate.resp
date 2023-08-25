@@ -1,0 +1,45 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@controlpanels/content-rules/rule-3/condition/2",
+    "@schema": {
+        "fieldsets": [
+            {
+                "behavior": "plone",
+                "fields": [
+                    "wf_states"
+                ],
+                "id": "default",
+                "title": "Default"
+            }
+        ],
+        "properties": {
+            "wf_states": {
+                "additionalItems": true,
+                "description": "The workflow states to check for.",
+                "factory": "Multiple Choice",
+                "items": {
+                    "description": "",
+                    "factory": "Choice",
+                    "title": "",
+                    "type": "string",
+                    "vocabulary": {
+                        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WorkflowStates"
+                    }
+                },
+                "title": "Workflow state",
+                "type": "array",
+                "uniqueItems": true
+            }
+        },
+        "required": [
+            "wf_states"
+        ],
+        "type": "object"
+    },
+    "wf_states": [
+        "pending",
+        "private"
+    ]
+}

@@ -1,17 +1,23 @@
+from contextlib import contextmanager
+from DateTime import DateTime
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_PASSWORD
+from plone.restapi.bbb import ISecuritySchema
+from plone.restapi.services.users.get import UsersGet
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getAdapter
 from zope.component import getUtility
 
+import os
+import re
 import transaction
 import unittest
 
@@ -34,6 +40,12 @@ class TestUsersEndpoint(unittest.TestCase):
         self.anon_api_session = RelativeSession(self.portal_url, test=self)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
+        api.portal.set_registry_record("plone.enable_user_folders", True)
+        api.content.create(
+            container=self.portal, type="Folder", id="Members", title="Members"
+        )
+
+        transaction.commit()
         properties = {
             "email": "noam.chomsky@example.com",
             "username": "noamchomsky",
@@ -59,11 +71,24 @@ class TestUsersEndpoint(unittest.TestCase):
             properties=properties,
             password="otherpassword",
         )
+        api.group.add_user(groupname="Reviewers", username="otheruser")
+
         transaction.commit()
 
     def tearDown(self):
         self.api_session.close()
         self.anon_api_session.close()
+
+    @contextmanager
+    def makeRealImage(self):
+        from Products.PlonePAS.tests import dummy
+
+        import Products.PlonePAS as ppas
+
+        pas_path = os.path.dirname(ppas.__file__)
+        path = os.path.join(pas_path, "tool.gif")
+        with open(path, "rb") as image:
+            yield dummy.FileUpload(dummy.FieldStorage(image))
 
     def test_list_users(self):
         response = self.api_session.get("/@users")
@@ -97,6 +122,20 @@ class TestUsersEndpoint(unittest.TestCase):
         response = self.anon_api_session.get("/@users")
         self.assertEqual(response.status_code, 401)
 
+    def test_list_users_filtered(self):
+        response = self.api_session.get(
+            "/@users?groups-filter:list=Reviewers&groups-filter:list=Administrators"
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, len(response.json()))
+        user_ids = [user["id"] for user in response.json()]
+        self.assertIn("otheruser", user_ids)
+
+        response = self.api_session.get("/@users?groups-filter:list=Administrators")
+        self.assertEqual(200, response.status_code)
+        user_ids = [user["id"] for user in response.json()]
+        self.assertNotIn("otheruser", user_ids)
+
     def test_add_user(self):
         response = self.api_session.post(
             "/@users",
@@ -119,7 +158,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(400, response.status_code)
-        self.assertTrue("Property 'username' is required" in response.text)
+        self.assertTrue("Property 'User Name' is required" in response.text)
 
     def test_add_user_password_is_required(self):
         response = self.api_session.post("/@users", json={"username": "noamchomsky"})
@@ -127,8 +166,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(400, response.status_code)
         self.assertTrue(
-            ("You have to either send a " "password or sendPasswordReset")
-            in response.text
+            "You have to either send a password or sendPasswordReset" in response.text
         )
 
     def test_add_user_email_is_required_if_email_login_is_enabled(self):
@@ -137,11 +175,12 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"username": "noam", "password": "secret"}
+            "/@users",
+            json={"username": "noam", "password": TEST_USER_PASSWORD},
         )
 
         self.assertEqual(400, response.status_code)
-        self.assertTrue("Property 'username' is not allowed" in response.text)
+        self.assertTrue("Property 'User Name' is not allowed" in response.text)
 
     def test_add_user_email_with_email_login_enabled(self):
         # enable use_email_as_login
@@ -149,7 +188,11 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -166,13 +209,13 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "howard",
                 "email": "howard.zinn@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
 
         self.assertEqual(400, response.status_code)
-        self.assertTrue("Property 'username' is not allowed" in response.text)
+        self.assertTrue("Property 'User Name' is not allowed" in response.text)
 
     def test_add_user_with_email_login_enabled(self):
         # enable use_email_as_login
@@ -180,7 +223,11 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -213,7 +260,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "/@users",
             json={
                 "username": "howard",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
                 "email": "howard.zinn@example.com",
                 "fullname": "Howard Zinn",
             },
@@ -273,7 +320,11 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_uuid_as_userid = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -290,7 +341,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual("noam", response.json().get("id"))
         self.assertEqual(
-            self.portal.absolute_url() + "/@users/noam", response.json().get("@id")
+            self.portal.absolute_url() + "/@users/noam",
+            response.json().get("@id"),
         )
         self.assertEqual("noam.chomsky@example.com", response.json().get("email"))
         self.assertEqual("Noam Avram Chomsky", response.json().get("fullname"))
@@ -315,6 +367,17 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
         noam_api_session.close()
 
+    def test_get_user_with_portrait_set(self):
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
+
+        response = self.api_session.get("/@users/noam")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["portrait"].endswith("/@portrait/noam"))
+
     def test_get_search_user_with_filter(self):
         response = self.api_session.post(
             "/@users",
@@ -331,7 +394,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual("noam", response.json()[0].get("id"))
         self.assertEqual(
-            self.portal.absolute_url() + "/@users/noam", response.json()[0].get("@id")
+            self.portal.absolute_url() + "/@users/noam",
+            response.json()[0].get("@id"),
         )
         self.assertEqual("noam.chomsky@example.com", response.json()[0].get("email"))
         self.assertEqual(
@@ -442,7 +506,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_update_user_password(self):
         old_password_hashes = dict(self.portal.acl_users.source_users._user_passwords)
-        payload = {"password": "secret"}
+        payload = {"password": TEST_USER_PASSWORD}
         response = self.api_session.patch("/@users/noam", json=payload)
         transaction.commit()
 
@@ -467,9 +531,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         user = self.api_session.get("/@users/noam").json()
-        self.assertTrue(
-            user.get("portrait").endswith("plone/portal_memberdata/portraits/noam")
-        )
+        self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
 
     def test_update_portrait_with_default_plone_scaling(self):
         payload = {
@@ -488,9 +550,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         user = self.api_session.get("/@users/noam").json()
-        self.assertTrue(
-            user.get("portrait").endswith("plone/portal_memberdata/portraits/noam")
-        )
+        self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
 
     def test_update_portrait_by_manager(self):
         payload = {
@@ -507,9 +567,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         user = self.api_session.get("/@users/noam").json()
-        self.assertTrue(
-            user.get("portrait").endswith("plone/portal_memberdata/portraits/noam")
-        )
+        self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
 
     def test_delete_portrait(self):
         payload = {
@@ -557,7 +615,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "fullname": "Noam A. Chomsky",
             "username": "noam",
             "email": "avram.chomsky@plone.org",
-            "portrait": "http://localhost:55001/plone/portal_memberdata/portraits/noam",
+            "portrait": "http://localhost:55001/plone/@portrait/noam",
         }
         self.api_session.auth = ("noam", "password")
         response = self.api_session.patch("/@users/noam", json=payload)
@@ -566,9 +624,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         user = self.api_session.get("/@users/noam").json()
-        self.assertTrue(
-            user.get("portrait").endswith("plone/portal_memberdata/portraits/noam")
-        )
+        self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
 
     def test_anonymous_user_can_not_update_existing_user(self):
         payload = {
@@ -658,7 +714,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_user_set_own_password_checks_old_password(self):
         self.api_session.auth = ("noam", "password")
-        payload = {"new_password": "new_password", "old_password": "wrong_password"}
+        payload = {
+            "new_password": "new_password",
+            "old_password": "wrong_password",
+        }
         response = self.api_session.post("/@users/noam/reset-password", json=payload)
 
         self.assertEqual(response.status_code, 403)
@@ -686,6 +745,20 @@ class TestUsersEndpoint(unittest.TestCase):
         authed = self.portal.acl_users.authenticate("noam", "new_password", {})
         self.assertTrue(authed)
 
+    def test_reset_with_token_validates_password(self):
+        reset_tool = getToolByName(self.portal, "portal_password_reset")
+        reset_info = reset_tool.requestReset("noam")
+        token = reset_info["randomstring"]
+        transaction.commit()
+
+        payload = {"reset_token": token, "new_password": "foo"}
+        response = self.api_session.post("/@users/noam/reset-password", json=payload)
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 400)
+        authed = self.portal.acl_users.authenticate("noam", "foo", {})
+        self.assertFalse(authed)
+
     def test_reset_with_uuid_as_userid_and_login_email_using_id(self):
         # enable use_email_as_login
         security_settings = getAdapter(self.portal, ISecuritySchema)
@@ -694,7 +767,11 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -723,7 +800,11 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -751,7 +832,11 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -774,6 +859,52 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_delete_user(self):
         response = self.api_session.delete("/@users/noam")
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+    def test_delete_user_but_not_memberareas(self):
+        mtool = getToolByName(self.portal, "portal_membership")
+        mtool.createMemberArea("noam")
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_memberareas": 0}
+        )
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+        memberfolder = self.portal.get("Members", None)
+        self.assertIsNotNone(memberfolder)
+        if memberfolder is not None:
+            self.assertIn("noam", memberfolder)
+
+    def test_delete_user_but_not_localroles(self):
+        self.folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            id="folder",
+            title="My Folder",
+        )
+        api.user.grant_roles(username="noam", roles=["Reviewer"], obj=self.folder)
+
+        self.assertIn("Reviewer", api.user.get_roles(username="noam", obj=self.folder))
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_localroles": 0}
+        )
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+        user_local_roles = self.folder.get_local_roles_for_userid(userid="noam")
+        self.assertIn("Reviewer", user_local_roles)
+
+    def test_delete_deletes_localroles(self):
+        response = self.api_session.delete("/@users/noam?delete_localroles=0")
         transaction.commit()
 
         self.assertEqual(response.status_code, 204)
@@ -802,7 +933,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.anon_api_session.post(
             "/@users",
-            json={"username": "new_user", "email": "avram.chomsky@example.com"},
+            json={
+                "username": "new_user",
+                "email": "avram.chomsky@example.com",
+            },
         )
         transaction.commit()
 
@@ -815,7 +949,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.anon_api_session.post(
             "/@users",
-            json={"username": "new_user", "email": "avram.chomsky@example.com"},
+            json={
+                "username": "new_user",
+                "email": "avram.chomsky@example.com",
+            },
         )
         transaction.commit()
 
@@ -836,13 +973,13 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
 
         self.assertEqual(400, response.status_code)
-        self.assertTrue("Property 'password' is not allowed" in response.text)
+        self.assertTrue("Property 'Password' is not allowed" in response.text)
 
         security_settings.enable_user_pwd_choice = True
         transaction.commit()
@@ -852,7 +989,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
@@ -870,7 +1007,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
@@ -889,7 +1026,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
 
@@ -914,3 +1051,187 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertIn("Member", response["roles"])
         self.assertEqual(1, len(response["roles"]))
+
+    def test_get_own_user_portrait(self):
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
+
+        self.assertEqual("noam", pm.getPersonalPortrait("noam").getId())
+
+        noam_api_session = RelativeSession(self.portal_url, test=self)
+        noam_api_session.headers.update({"Accept": "application/json"})
+        noam_api_session.auth = ("noam", "password")
+
+        response = noam_api_session.get(
+            "/@portrait",
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/gif")
+        noam_api_session.close()
+
+    def test_get_own_user_portrait_logged_out(self):
+        response = self.anon_api_session.get(
+            "/@portrait",
+        )
+
+        self.assertEqual(404, response.status_code)
+
+    def test_get_user_portrait_not_set(self):
+        response = self.anon_api_session.get(
+            "/@portrait/noam",
+        )
+
+        self.assertEqual(404, response.status_code)
+
+    def test_get_user_portrait(self):
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
+
+        response = self.api_session.get(
+            "/@portrait/noam",
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/gif")
+
+    def test_get_user_portrait_anonymous(self):
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "admin")
+            transaction.commit()
+
+        response = self.anon_api_session.get(
+            "/@portrait/admin",
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/gif")
+
+    def test_get_user_portrait_if_email_login_enabled(self):
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        transaction.commit()
+
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "howard.zinn@example.com")
+            transaction.commit()
+
+        response = self.api_session.get("/@users/howard.zinn@example.com")
+        self.assertEqual(200, response.status_code)
+        portrait_url = response.json()["portrait"]
+        urlre = re.match(r".*/@portrait/(.*)", portrait_url)
+        portrait = urlre.group(1)
+
+        response = self.api_session.get(
+            f"/@portrait/{portrait}",
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/gif")
+
+    def test_get_user_default_portrait(self):
+        response = self.anon_api_session.get(
+            "/@portrait/admin",
+        )
+        self.assertEqual(404, response.status_code)
+
+    def test_user_with_datetime(self):
+        """test that when using a datetime field in the user schema
+        the endpoints works correctly
+        """
+        from plone.app.users.browser.schemaeditor import applySchema
+
+        member_schema = """
+            <model xmlns="http://namespaces.plone.org/supermodel/schema"
+                xmlns:form="http://namespaces.plone.org/supermodel/form"
+                xmlns:users="http://namespaces.plone.org/supermodel/users"
+                xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+                i18n:domain="plone">
+              <schema name="member-fields">
+                <field name="birthdate" type="zope.schema.Date"
+                         users:forms="In User Profile">
+                  <description i18n:translate="help_birthdate">
+                    Birthdate
+                  </description>
+                  <required>False</required>
+                  <title i18n:translate="label_birthdate">Birthdate</title>
+                </field>
+                <field name="registration_datetime" type="zope.schema.Datetime"
+                         users:forms="In User Profile">
+                  <description i18n:translate="help_registration_datetime">
+                    Registration datetime
+                  </description>
+                  <required>False</required>
+                  <title i18n:translate="label_registration_datetime">Registration datetime</title>
+                </field>
+              </schema>
+            </model>
+        """
+        applySchema(member_schema)
+        api.user.create(
+            email="donald.duck@example.com",
+            username="donald",
+            properties={
+                "birthdate": DateTime("2022-01-10"),
+                "registration_datetime": DateTime("2022-01-10 14:00:00"),
+            },
+        )
+        transaction.commit()
+
+        response = self.api_session.get("/@users/donald")
+        self.assertEqual(200, response.status_code)
+        self.assertIn("birthdate", response.json())
+        self.assertIn("registration_datetime", response.json())
+
+    # Not testable via the service, hence unittest
+    def test_get_users_filtering(self):
+        class MockUsersGet(UsersGet):
+            def __init__(self):
+                class MockUser(object):
+                    def __init__(self, userid):
+                        self.userid = userid
+
+                    def getProperty(self, key, default):
+                        return "Full Name " + self.userid
+
+                class MockAclUsers(object):
+                    def searchUsers(self, **kw):
+                        return [
+                            {"userid": "user2"},
+                            {"userid": "user1"},
+                            {"userid": "NONEUSER"},
+                        ]
+
+                self.acl_users = MockAclUsers()
+
+                class MockPortalMembership(object):
+                    def getMemberById(self, userid):
+                        if userid == "NONEUSER":
+                            return None
+                        else:
+                            return MockUser(userid)
+
+                self.portal_membership = MockPortalMembership()
+
+        mockService = MockUsersGet()
+        users = mockService._get_users(foo="bar")
+        # Sorted by full name. None does not break and is filtered.
+        self.assertEqual(len(users), 2)
+        self.assertEqual(users[0].userid, "user1")
+        self.assertEqual(users[1].userid, "user2")

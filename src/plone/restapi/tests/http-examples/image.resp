@@ -6,6 +6,9 @@ Content-Type: application/json
         "actions": {
             "@id": "http://localhost:55001/plone/image/@actions"
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/image/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/image/@breadcrumbs"
         },
@@ -14,6 +17,9 @@ Content-Type: application/json
         },
         "navigation": {
             "@id": "http://localhost:55001/plone/image/@navigation"
+        },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/image/@navroot"
         },
         "types": {
             "@id": "http://localhost:55001/plone/image/@types"
@@ -27,7 +33,7 @@ Content-Type: application/json
     "UID": "SomeUUID000000000000000000000002",
     "allow_discussion": false,
     "contributors": [],
-    "created": "1995-07-31T13:45:00",
+    "created": "1995-07-31T13:45:00+00:00",
     "creators": [
         "test_user_1_"
     ],
@@ -42,12 +48,27 @@ Content-Type: application/json
         "filename": "image.png",
         "height": 56,
         "scales": {
+            "great": {
+                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+                "height": 56,
+                "width": 215
+            },
+            "huge": {
+                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+                "height": 56,
+                "width": 215
+            },
             "icon": {
                 "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
                 "height": 8,
                 "width": 32
             },
             "large": {
+                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+                "height": 56,
+                "width": 215
+            },
+            "larger": {
                 "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
                 "height": 56,
                 "width": 215
@@ -63,6 +84,11 @@ Content-Type: application/json
                 "width": 200
             },
             "preview": {
+                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+                "height": 56,
+                "width": 215
+            },
+            "teaser": {
                 "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
                 "height": 56,
                 "width": 215
@@ -85,25 +111,28 @@ Content-Type: application/json
     "language": "",
     "layout": "image_view",
     "lock": {},
-    "modified": "1995-07-31T17:30:00",
+    "modified": "1995-07-31T17:30:00+00:00",
     "next_item": {},
     "parent": {
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
         "description": "",
-        "title": "Plone site"
+        "title": "Plone site",
+        "type_title": "Plone Site"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/front-page",
         "@type": "Document",
         "description": "Congratulations! You have successfully installed Plone.",
-        "title": "Welcome to Plone"
+        "title": "Welcome to Plone",
+        "type_title": "Page"
     },
     "relatedItems": [],
     "review_state": null,
     "rights": "",
     "subjects": [],
     "title": "My Image",
+    "type_title": "Image",
     "version": "current",
     "working_copy": null,
     "working_copy_of": null

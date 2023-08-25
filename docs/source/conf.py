@@ -10,13 +10,15 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import datetime
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # sys.path.insert(0, os.path.abspath("."))
 import os
 import sys
-import datetime
+
 
 sys.path.insert(0, os.path.abspath("../../"))
 
@@ -32,7 +34,7 @@ copyright = "2014-%s, Plone Foundation" % thisyear
 # built documents.
 # TODO: There must be a way to import this from `setup.py` so we don't have to
 # update it manually for each release.
-version = "8.21.3.dev0"
+version = "8.24.2.dev0"
 release = version
 
 # -- General configuration ----------------------------------------------------
@@ -118,6 +120,7 @@ pygments_style = "sphinx"
 linkcheck_ignore = [
     r"https://coveralls.io/repos/github/plone/plone.restapi/badge.svg\?branch=master",  # plone.restapi
     r"https://github.com/plone/plone.restapi/blob/dde57b88e0f1b5f5e9f04e6a21865bc0dde55b1c/src/plone/restapi/services/content/add.py#L35-L61",  # plone.restapi
+    r"https://vhs-ehrenamtsportal.de/",  # cert fix in progress
 ]
 
 
@@ -134,9 +137,9 @@ linkcheck_ignore = [
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 #
 intersphinx_mapping = {
-    "plone": ("https://6.dev-docs.plone.org/", None),
+    "plone": ("https://6.docs.plone.org/", None),
     "python": ("https://docs.python.org/3/", None),
-    "training": ("https://training.plone.org/5/", None),
+    "training": ("https://training.plone.org/", None),
 }
 
 
@@ -144,7 +147,7 @@ intersphinx_mapping = {
 
 ogp_site_url = "https://plonerestapi.readthedocs.org/"
 ogp_description_length = 200
-ogp_image = "https://docs.plone.org/_static/Plone_logo_square.png"
+ogp_image = "https://6.docs.plone.org/_static/Plone_logo_square.png"
 ogp_site_name = "plone.restapi Documentation"
 ogp_type = "website"
 ogp_custom_meta_tags = [
@@ -166,14 +169,12 @@ html_theme = "sphinx_book_theme"
 html_logo = "_static/logo.svg"
 html_favicon = "_static/favicon.ico"
 
-html_css_files = ["custom.css",
-                  ("print.css", {"media": "print"})]
+html_css_files = ["custom.css", ("print.css", {"media": "print"})]
 
 # See http://sphinx-doc.org/ext/todo.html#confval-todo_include_todos
 todo_include_todos = True
 
 html_theme_options = {
-    "google_analytics_id": "G-P8NCTB796E",
     "path_to_docs": "docs",
     "repository_url": "https://github.com/plone/plone.restapi",
     "repository_branch": "master",
@@ -287,19 +288,19 @@ htmlhelp_basename = "plonerestapidoc"
 # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
 myst_enable_extensions = [
     "deflist",  # You will be able to utilise definition lists
-                # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#definition-lists
+    # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#definition-lists
     "linkify",  # Identify “bare” web URLs and add hyperlinks.
     "colon_fence",  # You can also use ::: delimiters to denote code fences,\
-                    #  instead of ```.
+    #  instead of ```.
     "substitution",  # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#substitutions-with-jinja2
 ]
 
 myst_substitutions = {
-    "postman_basic_auth": "![](_static/img/postman_basic_auth.png)",
-    "postman_headers": "![](_static/img/postman_headers.png)",
-    "postman_request": "![](_static/img/postman_request.png)",
-    "postman_response": "![](_static/img/postman_response.png)",
-    "postman_retain_headers": "![](_static/img/postman_retain_headers.png)",
+    "postman_basic_auth": "![](../_static/img/postman_basic_auth.png)",
+    "postman_headers": "![](../_static/img/postman_headers.png)",
+    "postman_request": "![](../_static/img/postman_request.png)",
+    "postman_response": "![](../_static/img/postman_response.png)",
+    "postman_retain_headers": "![](../_static/img/postman_retain_headers.png)",
     "fawrench": '<span class="fa fa-wrench" style="font-size: 1.6em;"></span>',
 }
 
@@ -307,11 +308,11 @@ myst_substitutions = {
 
 latex_elements = {
     # The paper size ("letterpaper" or "a4paper").
-    #"papersize": "letterpaper",
+    # "papersize": "letterpaper",
     # The font size ("10pt", "11pt" or "12pt").
-    #"pointsize": "10pt",
+    # "pointsize": "10pt",
     # Additional stuff for the LaTeX preamble.
-    #"preamble": "",
+    # "preamble": "",
 }
 
 # Grouping the document tree into LaTeX files. List of tuples

@@ -24,11 +24,14 @@ docs/.DS_Store
 /lib
 /lib64
 /local
+/venv
 /.mr.developer.cfg
 *.mo
 docs/_build
 docs/plone.restapi.http-examples
 docs/source/README.rst
+docs/Makefile
+docs/make.bat
 sphinx_build.log
 htmlcov
 npm-debug.log

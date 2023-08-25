@@ -4,6 +4,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.utils import getToolByName
 
+
 try:
     from Products.CMFPlone.controlpanel.browser.overview import OverviewControlPanel
 except ImportError:
@@ -54,3 +55,4 @@ class TestSystemFunctional(unittest.TestCase):
         )
         self.assertEqual(results["plone_version"], self.core_versions.get("Plone"))
         self.assertEqual(results["zope_version"], self.core_versions.get("Zope"))
+        self.assertFalse(results["upgrade"])

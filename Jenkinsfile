@@ -2,7 +2,9 @@
 
 pipeline {
 
-  agent any
+  agent {
+    label 'jmeter'
+  }
 
   triggers{
     cron('H 23 * * *')
@@ -18,15 +20,13 @@ pipeline {
 
     // Performance Tests
     stage('Performance Tests') {
-      agent {
-        label 'jmeter'
-      }
+
       steps {
         deleteDir()
         checkout scm
         sh "python3 -m venv ."
-        sh "bin/pip install -r requirements.txt"
-        sh "bin/buildout -c plone-5.2.x-performance.cfg"
+        sh "bin/pip install -r requirements-6.0.txt"
+        sh "bin/buildout -c plone-6.0.x-performance.cfg"
         sh "bin/instance start"
         sh "sleep 20"
 
@@ -54,6 +54,7 @@ pipeline {
       post {
         always {
           perfReport '**/performance-*.csv'
+          archiveArtifacts artifacts: '**/performance-*.csv', fingerprint: true, allowEmptyArchive: true
         }
       }
     }

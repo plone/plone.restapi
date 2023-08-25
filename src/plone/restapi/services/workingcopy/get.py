@@ -1,5 +1,5 @@
-from plone.restapi.services import Service
 from plone.restapi.serializer.working_copy import WorkingCopyInfo
+from plone.restapi.services import Service
 
 
 class GetWorkingCopy(Service):

@@ -1,17 +1,19 @@
 from plone.dexterity.interfaces import IDexterityContent
+from plone.restapi.bbb import IConstrainTypes
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
-from plone.restapi.types.utils import get_info_for_type
 from plone.restapi.types.utils import get_info_for_field
 from plone.restapi.types.utils import get_info_for_fieldset
+from plone.restapi.types.utils import get_info_for_type
 from Products.CMFCore.interfaces import IFolderish
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import IConstrainTypes
 from zExceptions import Unauthorized
 from zope.component import adapter
-from zope.component import getMultiAdapter, queryMultiAdapter
+from zope.component import getMultiAdapter
 from zope.component import getUtility
+from zope.component import queryMultiAdapter
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
@@ -71,6 +73,7 @@ class TypesInfo:
         result["types"] = [
             {
                 "@id": f"{portal_url}/@types/{fti.getId()}",
+                "id": fti.getId(),
                 "title": translate(fti.Title(), context=self.request),
                 "addable": fti.getId() in allowed_types if can_add else False,
                 "immediately_addable": fti.getId() in immediately_types
@@ -81,6 +84,12 @@ class TypesInfo:
         ]
 
         return result
+
+
+@implementer(IExpandableElement)
+@adapter(IPloneSiteRoot, Interface)
+class TypesInfoRoot(TypesInfo):
+    pass
 
 
 @implementer(IPublishTraverse)

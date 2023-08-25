@@ -3,6 +3,7 @@ from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.app.dexterity.behaviors.nextprevious import NextPreviousBase
 from plone.registry.interfaces import IRegistry
+from plone.restapi.serializer.utils import get_portal_type_title
 from zope.component import getUtility
 
 
@@ -40,6 +41,7 @@ class NextPrevious:
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
+            "type_title": get_portal_type_title(data.get("portal_type")),
             "title": data["title"],
             "description": data["description"],
         }
@@ -56,6 +58,7 @@ class NextPrevious:
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
+            "type_title": get_portal_type_title(data.get("portal_type")),
             "title": data["title"],
             "description": data["description"],
         }
