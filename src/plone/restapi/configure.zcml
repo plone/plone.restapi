@@ -97,6 +97,7 @@
   <include package=".deserializer" />
   <include package=".types" />
   <include package=".search" />
+  <include package=".cache" />
 
   <include package=".upgrades" />
 
@@ -114,12 +115,40 @@
         provides=".behaviors.IBlocks"
         />
 
+    <plone:behavior
+        name="volto.blocks.editable.layout"
+        title="Blocks (Editable Layout)"
+        description="Enables Volto Blocks (editable layout) support"
+        provides=".behaviors.IBlocksEditableLayout"
+        />
+
   </configure>
 
   <utility
       factory=".setuphandlers.HiddenProfiles"
       provides="Products.CMFPlone.interfaces.INonInstallable"
       name="plone.restapi"
+      />
+
+  <subscriber
+      factory=".blocks.NestedBlocksVisitor"
+      provides="plone.restapi.interfaces.IBlockVisitor"
+      />
+
+  <!-- blocks link integrity -->
+  <adapter factory=".blocks_linkintegrity.BlocksRetriever" />
+
+  <subscriber
+      factory=".blocks_linkintegrity.TextBlockLinksRetriever"
+      provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
+      />
+  <subscriber
+      factory=".blocks_linkintegrity.GenericBlockLinksRetriever"
+      provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
+      />
+  <subscriber
+      factory=".blocks_linkintegrity.SlateBlockLinksRetriever"
+      provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
       />
 
 </configure>

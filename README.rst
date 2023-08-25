@@ -1,5 +1,5 @@
-.. image:: https://github.com/plone/plone.restapi/workflows/Plone%20RESTAPI%20CI/badge.svg
-  :target: https://github.com/plone/plone.restapi/actions?query=workflow%3A%22Plone+RESTAPI+CI%22
+.. image:: https://github.com/plone/plone.restapi/actions/workflows/tests.yml/badge.svg?branch=master
+  :target: https://github.com/plone/plone.restapi/actions/workflows/tests.yml
 
 .. image:: https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=master
   :target: https://coveralls.io/github/plone/plone.restapi?branch=master
@@ -28,22 +28,21 @@ Getting started
 
 A live demo of Plone 6 with the latest ``plone.restapi`` release is available at:
 
-https://6.demo.plone.org/
+https://demo.plone.org/
 
 An example GET request on the portal root is the following.
 
 .. code-block:: shell
 
-    curl -i https://6.demo.plone.org/ -H "Accept: application/json"
+    curl -i https://demo.plone.org/++api++ -H "Accept: application/json"
 
 An example POST request to create a new document is the following.
 
 .. code-block:: shell
 
-    curl -i -X POST https://6.demo.plone.org/ \
+    curl -i -X POST https://demo.plone.org/++api++ \
         -H "Accept: application/json" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Basic YOUR_BASIC_AUTH_TOKEN" \
         --data-raw '{"@type": "Document", "title": "My Document"}' \
         --user admin:admin
 
@@ -70,6 +69,19 @@ Install ``plone.restapi`` by adding it to your buildout.
 
 
 …and then running ``bin/buildout``.
+
+
+Python / Plone Compatibility
+============================
+
+plone.restapi 8 requires Python 3 and works with Plone 5.2 and Plone 6.x.
+
+plone.restapi 8 does not officially support Python 3.6.
+
+Python versions that reached their `end-of-life <https://devguide.python.org/versions/>`_,
+including Python 3.6, might still work, but the maintainers do not guarantee this in any way.
+
+Use plone.restapi 7 if you are running Python 2.7 or Plone versions below 5.2.
 
 
 Contribute
@@ -100,7 +112,7 @@ If you are having issues, please let us know via the `issue tracker <https://git
 If you require professional support, here is a list of Plone solution providers that contributed significantly to ``plone.restapi`` in the past.
 
 - `kitconcept GmbH <https://kitconcept.com>`_ (Germany)
-- `4teamwork <https://www.4teamwork.ch>`_ (Switzerland)
+- `4teamwork <https://www.4teamwork.ch/en>`_ (Switzerland)
 - `CodeSyntax <https://www.codesyntax.com/en>`_ (Spain)
 
 

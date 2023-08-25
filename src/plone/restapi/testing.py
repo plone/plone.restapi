@@ -30,6 +30,7 @@ from zope.component import getUtility
 from zope.configuration import xmlconfig
 from zope.interface import implementer
 
+
 import collective.MockMailHost
 import os
 import re
@@ -114,7 +115,6 @@ DATE_TIME_FIXTURE = DateTimeFixture()
 
 
 class PloneRestApiDXLayer(PloneSandboxLayer):
-
     defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE)
 
     def setUpZope(self, app, configurationContext):
@@ -158,7 +158,6 @@ PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
 
 
 class PloneRestApiTestWorkflowsLayer(PloneSandboxLayer):
-
     defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
 
     def setUpPloneSite(self, portal):
@@ -173,7 +172,6 @@ PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING = IntegrationTesting(
 
 
 class PloneRestApiDXPAMLayer(PloneSandboxLayer):
-
     defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE)
 
     def setUpZope(self, app, configurationContext):
@@ -205,7 +203,8 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
 
 PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
 PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,), name="PloneRestApiDXPAMLayer:Integration"
+    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,),
+    name="PloneRestApiDXPAMLayer:Integration",
 )
 PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, zope.WSGI_SERVER_FIXTURE),
@@ -215,7 +214,6 @@ PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
 if PloneAppCachingBase is not None:
     # condition and fallback can be removed in a Plone 6.0 only scenario
     class PloneRestApiCachingLayer(PloneAppCachingBase):
-
         defaultBases = [
             PLONE_RESTAPI_DX_PAM_FIXTURE,
         ]
@@ -238,7 +236,6 @@ else:
 
 
 class PloneRestApiDXIterateLayer(PloneSandboxLayer):
-
     defaultBases = (PLONEAPPITERATEDEX_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
@@ -262,7 +259,6 @@ PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING = FunctionalTesting(
 
 
 class PloneRestApIBlocksLayer(PloneSandboxLayer):
-
     defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
 
     def setUpPloneSite(self, portal):
@@ -271,7 +267,8 @@ class PloneRestApIBlocksLayer(PloneSandboxLayer):
 
 PLONE_RESTAPI_BLOCKS_FIXTURE = PloneRestApIBlocksLayer()
 PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE,), name="PloneRestApIBlocksLayer:Integration"
+    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE,),
+    name="PloneRestApIBlocksLayer:Integration",
 )
 PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_BLOCKS_FIXTURE, zope.WSGI_SERVER_FIXTURE),
@@ -342,3 +339,19 @@ def register_static_uuid_utility(prefix):
     prefix = re.sub(r"[^a-zA-Z0-9\-_]", "", prefix)
     generator = StaticUUIDGenerator(prefix)
     getGlobalSiteManager().registerUtility(component=generator)
+
+
+def normalize_html(value):
+    # Strip all white spaces of every line, then join on one line.
+    # But try to avoid getting 'Go to<a href' instead of 'Go to <a href'.
+    lines = []
+    for line in value.splitlines():
+        line = line.strip()
+        if (
+            line.startswith("<")
+            and not line.startswith("</")
+            and not line.startswith("<br")
+        ):
+            line = " " + line
+        lines.append(line)
+    return "".join(lines).strip()

@@ -104,10 +104,10 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertTrue(isinstance(value, str), "Not an <unicode>")
         self.assertEqual("2015-06-20T13:22:04", value)
 
-    def test_decimal_field_serialization_returns_unicode(self):
-        value = self.serialize("test_decimal_field", Decimal("1.1"))
-        self.assertTrue(isinstance(value, str), "Not an <unicode>")
-        self.assertEqual("1.1", value)
+    def test_decimal_field_serialization_returns_str(self):
+        value = self.serialize("test_decimal_field", Decimal("1.111"))
+        self.assertTrue(isinstance(value, str), "Not an <str>")
+        self.assertEqual("1.111", value)
 
     def test_dict_field_serialization_returns_dict(self):
         value = self.serialize(
@@ -273,7 +273,9 @@ class TestDexterityFieldSerializing(TestCase):
             {
                 "@id": "http://nohost/plone/doc2",
                 "@type": "DXTestDocument",
+                "UID": doc2.UID(),
                 "title": "Referenceable Document",
+                "type_title": "DX Test Document",
                 "description": "Description 2",
                 "review_state": "private",
             },
@@ -304,14 +306,18 @@ class TestDexterityFieldSerializing(TestCase):
                 {
                     "@id": "http://nohost/plone/doc2",
                     "@type": "DXTestDocument",
+                    "UID": doc2.UID(),
                     "title": "Referenceable Document",
                     "description": "Description 2",
+                    "type_title": "DX Test Document",
                     "review_state": "private",
                 },
                 {
                     "@id": "http://nohost/plone/doc3",
                     "@type": "DXTestDocument",
+                    "UID": doc3.UID(),
                     "title": "Referenceable Document",
+                    "type_title": "DX Test Document",
                     "description": "Description 3",
                     "review_state": "private",
                 },
@@ -405,7 +411,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
 
             scale_download_url = "{}/@@images/{}.{}".format(
-                obj_url, scale_url_uuid, "png"
+                obj_url, scale_url_uuid, "gif" if HAS_PLONE_6 else "png"
             )
             scales = {
                 "listing": {
@@ -532,7 +538,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
 
             scale_download_url = "{}/@@images/{}.{}".format(
-                obj_url, scale_url_uuid, "png"
+                obj_url, scale_url_uuid, "gif" if HAS_PLONE_6 else "png"
             )
             scales = {
                 "listing": {

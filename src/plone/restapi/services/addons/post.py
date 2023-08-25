@@ -28,7 +28,8 @@ class AddonsPost(Service):
         return self
 
     def reply(self):
-        addon, action = self.params
+        # Unpack taking into account that third argument might not be present
+        addon, action, profile = (self.params + [None] * 3)[:3]
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
@@ -40,6 +41,8 @@ class AddonsPost(Service):
             result = self.addons.uninstall_product(addon)
         elif action == "upgrade":
             result = self.addons.upgrade_product(addon)
+        elif action == "import":
+            result = self.addons.import_profile(addon, profile)
         else:
             raise Exception(f"Unknown action {action}")
 

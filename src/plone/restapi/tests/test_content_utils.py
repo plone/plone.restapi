@@ -1,8 +1,8 @@
 from Acquisition import aq_parent
+from plone.restapi.bbb import ISelectableConstrainTypes
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from Products.CMFPlone.interfaces import ISelectableConstrainTypes
 from zExceptions import Unauthorized
 from zope.component import getGlobalSiteManager
 from zope.event import notify
@@ -92,9 +92,10 @@ class TestAddContent(unittest.TestCase):
 
         sm.registerHandler(move_object, (IObjectAddedEvent,))
 
-        obj = create(self.folder, "Document", "my-document")
-        notify(ObjectCreatedEvent(obj))
-        obj = add(self.folder, obj)
-        self.assertEqual(aq_parent(obj), self.portal)
-
-        sm.unregisterHandler(move_object, (IObjectAddedEvent,))
+        try:
+            obj = create(self.folder, "Document", "my-document")
+            notify(ObjectCreatedEvent(obj))
+            obj = add(self.folder, obj)
+            self.assertEqual(aq_parent(obj), self.portal)
+        finally:
+            sm.unregisterHandler(move_object, (IObjectAddedEvent,))

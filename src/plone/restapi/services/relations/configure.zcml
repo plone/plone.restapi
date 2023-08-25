@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
+
+  <plone:service
+      method="GET"
+      accept="application/json,application/schema+json"
+      factory=".get.GetRelations"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@relations"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".add.PostRelations"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ModifyPortalContent"
+      name="@relations"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".delete.DeleteRelations"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ModifyPortalContent"
+      name="@relations"
+      />
+
+</configure>

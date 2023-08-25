@@ -8,7 +8,7 @@ Content-Type: application/json
         "email": "noam.chomsky@example.com",
         "fullname": "Noam Avram Chomsky",
         "groups": {
-            "@id": "http://localhost:55001/plone/@users?query=noa",
+            "@id": "http://localhost:55001/plone/@users?query=oam",
             "items": [
                 {
                     "id": "AuthenticatedUsers",
@@ -26,8 +26,8 @@ Content-Type: application/json
         "location": "Cambridge, MA",
         "portrait": null,
         "roles": [
-            "Reviewer",
-            "Member"
+            "Member",
+            "Reviewer"
         ],
         "username": "noam"
     }
