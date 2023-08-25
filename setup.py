@@ -47,7 +47,6 @@ TEST_REQUIRES = [
     "plone.app.testing [robot] >= 4.2.2",  # ROBOT_TEST_LEVEL added
     "plone.api",
     "requests",
-    "plone.tiles",
     "mock",
 ]
 
