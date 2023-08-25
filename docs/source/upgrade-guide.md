@@ -531,7 +531,7 @@ If you have implemented custom content deserializers, you have to handle the new
 
 Deserializers should only fire an `IObjectModifiedEvent` event if an object has been updated. They should not fire it when a new object has been created.
 
-See [Dexterity content deserializer](https://github.com/plone/plone.restapi/blob/master/src/plone/restapi/deserializer/dxcontent.py) for an example.
+See [Dexterity content deserializer](https://github.com/plone/plone.restapi/blob/main/src/plone/restapi/deserializer/dxcontent.py) for an example.
 
 ## Upgrading to `plone.restapi` 2.x
 
