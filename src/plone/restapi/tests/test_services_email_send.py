@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -13,15 +12,6 @@ import transaction
 import unittest
 
 
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
-
-
-@unittest.skipIf(not PLONE5, "email send not implemented for Plone < 5.")  # noqa
 class EmailSendEndpoint(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -36,12 +26,12 @@ class EmailSendEndpoint(unittest.TestCase):
 
         registry = getUtility(IRegistry)
         registry["plone.email_from_address"] = "info@plone.org"
-        registry["plone.email_from_name"] = u"Plone test site"
+        registry["plone.email_from_name"] = "Plone test site"
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        self.anon_api_session = RelativeSession(self.portal_url)
+        self.anon_api_session = RelativeSession(self.portal_url, test=self)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
         transaction.commit()

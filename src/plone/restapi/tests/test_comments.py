@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from OFS.Image import Image
 from plone import api
 from plone.app.discussion.interfaces import IConversation
@@ -8,6 +7,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.testing import normalize_html
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
 from Products.PlonePAS.tests import dummy
@@ -58,7 +58,7 @@ class TestCommentsSerializers(TestCase):
         )
 
         output = serializer()
-        self.assertEqual(set(output), set(["@id", "items_total", "items"]))
+        self.assertEqual(set(output), {"@id", "permissions", "items_total", "items"})
 
     def test_conversation_batched(self):
         self.request.form["b_size"] = 1
@@ -89,10 +89,11 @@ class TestCommentsSerializers(TestCase):
             "modification_date",
             "is_editable",
             "is_deletable",
+            "can_reply",
         ]
         self.assertEqual(set(output), set(expected))
 
-        self.assertEqual(set(output["text"]), set(["data", "mime-type"]))
+        self.assertEqual(set(output["text"]), {"data", "mime-type"})
 
     def test_comment_with_author_image(self):
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
@@ -110,7 +111,7 @@ class TestCommentsSerializers(TestCase):
 
         serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
         self.assertEqual(
-            "{}/portal_memberdata/portraits/test_user_1_".format(self.portal_url),
+            f"{self.portal_url}/@portrait/test_user_1_",
             serializer().get("author_image"),
         )
 
@@ -166,7 +167,7 @@ class TestCommentsSerializers(TestCase):
         self.assertEqual(
             'Go to <a href="https://www.plone.org" '
             + 'rel="nofollow">https://www.plone.org</a>',
-            serializer()["text"]["data"],
+            normalize_html(serializer()["text"]["data"]),
         )
         # serializer should return mimetype = text/html
         self.assertEqual("text/html", serializer()["text"]["mime-type"])
@@ -189,7 +190,7 @@ class TestCommentsSerializers(TestCase):
         # serializer should return HTML
         self.assertEqual(
             'Go to <a href="https://www.plone.org">Plone</a>',
-            serializer()["text"]["data"],
+            normalize_html(serializer()["text"]["data"]),
         )
         # serializer should return mimetype = text/html
         self.assertEqual("text/html", serializer()["text"]["mime-type"])

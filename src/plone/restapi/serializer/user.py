@@ -1,30 +1,20 @@
-# -*- coding: utf-8 -*-
+from plone.app.users.browser.userdatapanel import getUserDataSchema
+from plone.restapi.batching import HypermediaBatch
+from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.services.users.get import getPortraitUrl
 from Products.CMFCore.interfaces._tools import IMemberData
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
-from zope.component import getUtility
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 from zope.schema import getFieldNames
 
 
-try:
-    # Plone 5
-    from plone.app.users.browser.userdatapanel import getUserDataSchema
-
-    HAS_TTW_SCHEMAS = True
-except ImportError:
-    # Plone 4.3
-    from plone.app.users.userdataschema import IUserDataSchemaProvider
-
-    HAS_TTW_SCHEMAS = False
-
-
-class BaseSerializer(object):
+class BaseSerializer:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -37,30 +27,20 @@ class BaseSerializer(object):
         roles = user.getRoles()
         # Anonymous and Authenticated are pseudo roles assign automatically
         # to logged-in or logged-out users. They should not be exposed here
-        roles = list(set(roles) - set(["Anonymous", "Authenticated"]))
+        roles = sorted(list(set(roles) - {"Anonymous", "Authenticated"}))
 
         data = {
-            "@id": "{}/@users/{}".format(portal.absolute_url(), user.id),
+            "@id": f"{portal.absolute_url()}/@users/{user.id}",
             "id": user.id,
             "username": user.getUserName(),
             "roles": roles,
         }
 
-        if HAS_TTW_SCHEMAS:
-            schema = getUserDataSchema()
-        else:
-            util = getUtility(IUserDataSchemaProvider)
-            schema = util.getSchema()
+        schema = getUserDataSchema()
 
         for name in getFieldNames(schema):
             if name == "portrait":
-                memberdata = getToolByName(portal, "portal_memberdata")
-                if user.id in memberdata.portraits:
-                    value = "{}/portal_memberdata/portraits/{}".format(
-                        portal.absolute_url(), user.id
-                    )
-                else:
-                    value = None
+                value = getPortraitUrl(user)
             elif name == "pdelete":
                 continue
             else:
@@ -68,19 +48,39 @@ class BaseSerializer(object):
                 if value == "":
                     value = None
                 if value:
-                    value = safe_unicode(value)
-            data[name] = value
+                    value = safe_text(value)
+            data[name] = json_compatible(value)
 
+        return data
+
+
+@implementer(ISerializeToJsonSummary)
+@adapter(IMemberData, IRequest)
+class SerializeUserToJsonSummary(BaseSerializer):
+    def __call__(self):
+        data = super().__call__()
         return data
 
 
 @implementer(ISerializeToJson)
 @adapter(IMemberData, IRequest)
 class SerializeUserToJson(BaseSerializer):
-    pass
+    def __call__(self):
+        data = super().__call__()
+        user = self.context
+        gtool = getToolByName(self.context, "portal_groups", None)
+        if gtool:
+            groupIds = user.getGroups()
+            groups = [gtool.getGroupById(grp) for grp in groupIds]
+            groups = [{"id": grp.id, "title": grp.title or grp.id} for grp in groups]
 
-
-@implementer(ISerializeToJsonSummary)
-@adapter(IMemberData, IRequest)
-class SerializeUserToJsonSummary(BaseSerializer):
-    pass
+            batch = HypermediaBatch(self.request, groups)
+            groups_data = {
+                "@id": batch.canonical_url,
+                "items_total": batch.items_total,
+                "items": sorted(batch, key=lambda x: x["title"]),
+            }
+            if batch.links:
+                groups_data["batching"] = batch.links
+            data["groups"] = groups_data
+        return data

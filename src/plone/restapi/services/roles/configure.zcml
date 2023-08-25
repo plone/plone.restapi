@@ -1,13 +1,14 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:plone="http://namespaces.plone.org/plone">
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
 
   <plone:service
-    method="GET"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".get.RolesGet"
-    name="@roles"
-    permission="cmf.ManagePortal"
-    />
+      method="GET"
+      factory=".get.RolesGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@roles"
+      />
 
 </configure>

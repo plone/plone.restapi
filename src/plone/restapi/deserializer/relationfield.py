@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
 from plone.restapi.interfaces import IFieldDeserializer
@@ -11,14 +10,13 @@ from zope.interface import implementer
 from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-import six
-
 
 @implementer(IFieldDeserializer)
 @adapter(IRelationChoice, IDexterityContent, IBrowserRequest)
 class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
         obj = None
+        resolved_by = None
 
         if isinstance(value, dict):
             # We are trying to deserialize the output of a serialization
@@ -30,9 +28,7 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
             intids = queryUtility(IIntIds)
             obj = intids.queryObject(value)
             resolved_by = "intid"
-        elif isinstance(value, six.string_types):
-            if six.PY2 and isinstance(value, six.text_type):
-                value = value.encode("utf8")
+        elif isinstance(value, str):
             portal = getMultiAdapter(
                 (self.context, self.request), name="plone_portal_state"
             ).portal()
@@ -55,9 +51,10 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
 
         if obj is None:
             self.request.response.setStatus(400)
-            raise ValueError(
-                u"Could not resolve object for {}={}".format(resolved_by, value)
-            )
+            msg = f"Could not resolve object for {value}"
+            if resolved_by:
+                msg += f" (resolved by {resolved_by})"
+            raise ValueError(msg)
 
         self.field.validate(obj)
         return obj

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Products.CMFPlone.utils import base_hasattr
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
@@ -10,16 +8,19 @@ from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.interfaces import IPrimaryFieldTarget
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
+from plone.restapi.services.locking import lock_info
+from plone.restapi.serializer.utils import get_portal_type_title
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import base_hasattr
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
@@ -30,9 +31,17 @@ from zope.schema import getFields
 from zope.security.interfaces import IPermission
 
 
+try:
+    # plone.app.iterate is by intend not part of Products.CMFPlone dependencies
+    # so we can not rely on having it
+    from plone.restapi.serializer.working_copy import WorkingCopyInfo
+except ImportError:
+    WorkingCopyInfo = None
+
+
 @implementer(ISerializeToJson)
 @adapter(IDexterityContent, Interface)
-class SerializeToJson(object):
+class SerializeToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -54,11 +63,13 @@ class SerializeToJson(object):
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary
         )()
+
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             "@id": obj.absolute_url(),
             "id": obj.id,
             "@type": obj.portal_type,
+            "type_title": get_portal_type_title(obj.portal_type),
             "parent": parent_summary,
             "created": json_compatible(obj.created()),
             "modified": json_compatible(obj.modified()),
@@ -70,10 +81,25 @@ class SerializeToJson(object):
         }
 
         # Insert next/prev information
-        nextprevious = NextPrevious(obj)
-        result.update(
-            {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
-        )
+        try:
+            nextprevious = NextPrevious(obj)
+            result.update(
+                {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
+            )
+        except ValueError:
+            # If we're serializing an old version that was renamed or moved,
+            # then its id might not be found inside the current object's container.
+            result.update({"previous_item": {}, "next_item": {}})
+
+        # Insert working copy information
+        if WorkingCopyInfo is not None:
+            baseline, working_copy = WorkingCopyInfo(
+                self.context
+            ).get_working_copy_info()
+            result.update({"working_copy": working_copy, "working_copy_of": baseline})
+
+        # Insert locking information
+        result.update({"lock": lock_info(obj)})
 
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))
@@ -83,7 +109,6 @@ class SerializeToJson(object):
             read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
-
                 if not self.check_permission(read_permissions.get(name), obj):
                     continue
 
@@ -139,7 +164,7 @@ class SerializeFolderToJson(SerializeToJson):
         return query
 
     def __call__(self, version=None, include_items=True):
-        folder_metadata = super(SerializeFolderToJson, self).__call__(version=version)
+        folder_metadata = super().__call__(version=version)
 
         folder_metadata.update({"is_folderish": True})
         result = folder_metadata
@@ -172,7 +197,7 @@ class SerializeFolderToJson(SerializeToJson):
 
 @adapter(IDexterityContent, Interface)
 @implementer(IObjectPrimaryFieldTarget)
-class DexterityObjectPrimaryFieldTarget(object):
+class DexterityObjectPrimaryFieldTarget:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -185,7 +210,6 @@ class DexterityObjectPrimaryFieldTarget(object):
             read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
-
                 if not self.check_permission(read_permissions.get(name), self.context):
                     continue
 

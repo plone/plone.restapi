@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -22,7 +21,7 @@ class TestGroupsEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -66,11 +65,10 @@ class TestGroupsEndpoint(unittest.TestCase):
 
         self.assertEqual(ptgroup.get("roles"), ["Authenticated"])
 
-        # We don't want the group members listed in the overview as there
-        # might be loads.
+        # # Assert batched list of group members
         self.assertTrue(
-            not any(["users" in group for group in response.json()]),
-            "Users key found in groups listing",
+            all(["members" in group for group in response.json()]),
+            "Members key found in groups listing",
         )
 
     def test_add_group(self):
@@ -92,7 +90,7 @@ class TestGroupsEndpoint(unittest.TestCase):
         fwt = self.gtool.getGroupById("fwt")
         self.assertEqual("fwt@plone.org", fwt.getProperty("email"))
         self.assertTrue(
-            set([SITE_OWNER_NAME, TEST_USER_ID]).issubset(set(fwt.getGroupMemberIds())),
+            {SITE_OWNER_NAME, TEST_USER_ID}.issubset(set(fwt.getGroupMemberIds())),
             "Userids not found in group",
         )
 
@@ -116,7 +114,7 @@ class TestGroupsEndpoint(unittest.TestCase):
         self.assertEqual("ploneteam@plone.org", response.json().get("email"))
         self.assertEqual("Plone Team", response.json().get("title"))
         self.assertEqual("We are Plone", response.json().get("description"))
-        self.assertIn("users", response.json())
+        self.assertIn("members", response.json())
 
     def test_get_search_group_with_filter(self):
         response = self.api_session.get("/@groups", params={"query": "plo"})

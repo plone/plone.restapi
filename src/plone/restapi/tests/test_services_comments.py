@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -39,17 +39,19 @@ class TestCommentsEndpoint(unittest.TestCase):
         )
         api.content.transition(self.doc, "publish")
 
-        api.user.create(username="jos", password="josjos", email="jos@plone.org")
+        api.user.create(
+            username="jos", password=TEST_USER_PASSWORD, email="jos@plone.org"
+        )
 
         # Admin session
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         # User session
-        self.user_session = RelativeSession(self.portal_url)
+        self.user_session = RelativeSession(self.portal_url, test=self)
         self.user_session.headers.update({"Accept": "application/json"})
-        self.user_session.auth = ("jos", "jos")
+        self.user_session.auth = ("jos", TEST_USER_PASSWORD)
 
         transaction.commit()
 
@@ -58,15 +60,15 @@ class TestCommentsEndpoint(unittest.TestCase):
         self.user_session.close()
 
     def test_list_datastructure(self):
-        url = "{}/@comments".format(self.doc.absolute_url())
+        url = f"{self.doc.absolute_url()}/@comments"
         response = self.api_session.get(url)
 
         self.assertEqual(200, response.status_code)
         data = response.json()
-        self.assertEqual(set(["items_total", "items", "@id"]), set(data))
+        self.assertEqual({"items_total", "items", "permissions", "@id"}, set(data))
 
     def test_list_batching(self):
-        url = "{}/@comments".format(self.doc.absolute_url())
+        url = f"{self.doc.absolute_url()}/@comments"
 
         self.api_session.post(url, json={"text": "comment 1"})
         self.api_session.post(url, json={"text": "comment 2"})
@@ -77,7 +79,7 @@ class TestCommentsEndpoint(unittest.TestCase):
         self.assertIn("batching", data)
 
     def test_add_comment_to_root(self):
-        url = "{}/@comments".format(self.doc.absolute_url())
+        url = f"{self.doc.absolute_url()}/@comments"
 
         response = self.api_session.get(url)
         self.assertEqual(0, response.json()["items_total"])
@@ -93,7 +95,7 @@ class TestCommentsEndpoint(unittest.TestCase):
         self.assertIsNone(data["items"][0]["@parent"])
 
     def test_add_comment_to_comment(self):
-        url = "{}/@comments".format(self.doc.absolute_url())
+        url = f"{self.doc.absolute_url()}/@comments"
 
         response = self.api_session.post(url, json={"text": "comment 1"})
         self.assertEqual(204, response.status_code)
@@ -114,7 +116,7 @@ class TestCommentsEndpoint(unittest.TestCase):
         self.assertEqual(parent_id, sub["in_reply_to"])
 
     def test_update(self):
-        url = "{}/@comments".format(self.doc.absolute_url())
+        url = f"{self.doc.absolute_url()}/@comments"
         OLD_TEXT = "comment 1"
         NEW_TEXT = "new text"
 
@@ -139,7 +141,7 @@ class TestCommentsEndpoint(unittest.TestCase):
         self.assertNotIn(OLD_TEXT, item_texts)
 
     def test_permissions_delete_comment(self):
-        url = "{}/@comments".format(self.doc.absolute_url())
+        url = f"{self.doc.absolute_url()}/@comments"
 
         response = self.api_session.post(url, json={"text": "comment"})
         self.assertEqual(204, response.status_code)
@@ -161,7 +163,7 @@ class TestCommentsEndpoint(unittest.TestCase):
         self.assertEqual(204, response.status_code)
 
     def test_permissions_update_comment(self):
-        url = "{}/@comments".format(self.doc.absolute_url())
+        url = f"{self.doc.absolute_url()}/@comments"
 
         response = self.api_session.post(url, json={"text": "comment"})
         self.assertEqual(204, response.status_code)

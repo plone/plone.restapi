@@ -1,16 +1,19 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:plone="http://namespaces.plone.org/plone">
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
 
-<adapter factory=".get.ContextNavigation" name="contextnavigation"/>
+  <adapter
+      factory=".get.ContextNavigation"
+      name="contextnavigation"
+      />
 
   <plone:service
-    method="GET"
-    for="zope.interface.Interface"
-    factory=".get.ContextNavigationGet"
-    name="@contextnavigation"
-    permission="zope2.View"
-    />
+      method="GET"
+      factory=".get.ContextNavigationGet"
+      for="zope.interface.Interface"
+      permission="zope2.View"
+      name="@contextnavigation"
+      />
 
 </configure>
-

@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 from base64 import b64encode
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import RelativeSession
@@ -36,7 +36,7 @@ class TestCopyMove(unittest.TestCase):
         request.environ["PATH_TRANSLATED"] = path
         request.environ["HTTP_ACCEPT"] = accept
         request.environ["REQUEST_METHOD"] = method
-        auth = "%s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        auth = f"{SITE_OWNER_NAME}:{SITE_OWNER_PASSWORD}"
         request._auth = "Basic %s" % b64encode(auth.encode("utf8")).decode("utf8")
         notify(PubStart(request))
         return request.traverse(path)
@@ -80,10 +80,12 @@ class TestCopyMoveFunctional(unittest.TestCase):
         ]
 
         api.user.create(
-            email="memberuser@example.com", username="memberuser", password="secret"
+            email="memberuser@example.com",
+            username="memberuser",
+            password=TEST_USER_PASSWORD,
         )
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -146,7 +148,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
         self.assertIn("copy_of_doc2", self.portal.objectIds())
 
     def test_copy_single_object_no_permissions_raises_403(self):
-        self.api_session.auth = ("memberuser", "secret")
+        self.api_session.auth = ("memberuser", TEST_USER_PASSWORD)
         response = self.api_session.post(
             "/@copy", json={"source": self.doc1.absolute_url()}
         )
@@ -154,7 +156,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_copy_single_object_no_auth_raises_401(self):
-        self.api_session.auth = ("nonexistent", "secret")
+        self.api_session.auth = ("nonexistent", TEST_USER_PASSWORD)
         response = self.api_session.post(
             "/@copy", json={"source": self.doc1.absolute_url()}
         )
@@ -162,7 +164,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_move_single_object_no_permissions_raises_403(self):
-        self.api_session.auth = ("memberuser", "secret")
+        self.api_session.auth = ("memberuser", TEST_USER_PASSWORD)
         response = self.api_session.post(
             "/@move", json={"source": self.doc1.absolute_url()}
         )
@@ -170,7 +172,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_move_single_object_no_auth_raises_401(self):
-        self.api_session.auth = ("nonexistent", "secret")
+        self.api_session.auth = ("nonexistent", TEST_USER_PASSWORD)
         response = self.api_session.post(
             "/@move", json={"source": self.doc1.absolute_url()}
         )
@@ -182,7 +184,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
         api.content.transition(obj=self.doc1, transition="publish")
         transaction.commit()
 
-        self.api_session.auth = ("memberuser", "secret")
+        self.api_session.auth = ("memberuser", TEST_USER_PASSWORD)
         response = self.api_session.post(
             "/folder1/@move", json={"source": self.doc1.absolute_url()}
         )

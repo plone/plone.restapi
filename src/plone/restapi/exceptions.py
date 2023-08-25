@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 class APIError(Exception):
     """Base class for exceptions raised by plone.restapi."""
 

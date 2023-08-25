@@ -1,0 +1,25 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <include package="Products.CMFEditions" />
+
+  <plone:service
+      method="GET"
+      factory=".get.TransactionsGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ListUndoableChanges"
+      name="@transactions"
+      />
+
+  <plone:service
+      method="PATCH"
+      factory=".patch.TransactionsPatch"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.Undo"
+      name="@transactions"
+      />
+
+</configure>

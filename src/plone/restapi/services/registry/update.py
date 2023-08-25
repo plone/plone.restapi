@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
+from plone.registry import field
 from plone.registry.interfaces import IRegistry
 from plone.restapi.services import Service
 from zope.component import getUtility
 from zope.interface import alsoProvides
+from zope.schema.interfaces import WrongType
 
 import json
 import plone.protect.interfaces
@@ -21,7 +22,14 @@ class RegistryUpdate(Service):
             if key not in registry:
                 raise NotImplementedError(
                     "This endpoint is only intended to update existing "
-                    "records! Couldn't find key %r" % key
+                    f"records! Couldn't find key {key}"
                 )
-            registry[key] = value
+            # Issue 1575: Deal with tuple values
+            try:
+                registry[key] = value
+            except WrongType as exc:
+                if isinstance(exc.field, field.Tuple) and isinstance(value, list):
+                    registry[key] = tuple(value)
+                else:
+                    raise exc
         return self.reply_no_content()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -19,7 +18,7 @@ class TestDatabaseServiceFunctional(unittest.TestCase):
         self.request = self.portal.REQUEST
         self.catalog = getToolByName(self.portal, "portal_catalog")
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -33,7 +32,7 @@ class TestDatabaseServiceFunctional(unittest.TestCase):
         self.assertEqual(response.headers.get("Content-Type"), "application/json")
 
         results = response.json()
-        self.assertEqual(results[u"@id"], self.portal.absolute_url() + "/@database")
+        self.assertEqual(results["@id"], self.portal.absolute_url() + "/@database")
         self.assertTrue("cache_length" in results.keys())
         self.assertTrue("cache_length_bytes" in results.keys())
         self.assertTrue("cache_detail_length" in results.keys())

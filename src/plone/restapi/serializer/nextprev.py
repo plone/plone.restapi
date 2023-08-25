@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.app.dexterity.behaviors.nextprevious import NextPreviousBase
 from plone.registry.interfaces import IRegistry
+from plone.restapi.serializer.utils import get_portal_type_title
 from zope.component import getUtility
 
 
@@ -21,7 +21,7 @@ class NextPreviousFixed(NextPreviousBase):
         self.order = self.context.objectIds()
 
 
-class NextPrevious(object):
+class NextPrevious:
     """Facade with more pythonic interface"""
 
     def __init__(self, context):
@@ -31,7 +31,7 @@ class NextPrevious(object):
 
     @property
     def next(self):
-        """ return info about the next item in the container """
+        """return info about the next item in the container"""
         if getattr(self.parent, "_ordering", "") == "unordered":
             # Unordered folder
             return {}
@@ -41,13 +41,14 @@ class NextPrevious(object):
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
+            "type_title": get_portal_type_title(data.get("portal_type")),
             "title": data["title"],
             "description": data["description"],
         }
 
     @property
     def previous(self):
-        """ return info about the previous item in the container """
+        """return info about the previous item in the container"""
         if getattr(self.parent, "_ordering", "") == "unordered":
             # Unordered folder
             return {}
@@ -57,6 +58,7 @@ class NextPrevious(object):
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
+            "type_title": get_portal_type_title(data.get("portal_type")),
             "title": data["title"],
             "description": data["description"],
         }

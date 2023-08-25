@@ -1,13 +1,21 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:plone="http://namespaces.plone.org/plone">
+    xmlns:cache="http://namespaces.zope.org/cache"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
   <plone:service
-    method="GET"
-    for="zope.interface.Interface"
-    factory=".get.SearchGet"
-    name="@search"
-    permission="zope2.View"
-    />
+      method="GET"
+      factory=".get.SearchGet"
+      for="zope.interface.Interface"
+      permission="zope2.View"
+      name="@search"
+      />
+  <cache:ruleset
+      for=".get.SearchGet"
+      ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
+      />
 
 </configure>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.imaging import get_actual_scale
 from unittest import TestCase
 

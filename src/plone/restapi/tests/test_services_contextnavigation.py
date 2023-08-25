@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -10,7 +8,7 @@ from plone.restapi.services.contextnavigation.get import ContextNavigation
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFPlone.tests import dummy
-from six.moves.urllib.parse import urlencode
+from urllib.parse import urlencode
 from zope.component import getUtility
 from zope.interface import directlyProvides
 from zope.interface import noLongerProvides
@@ -38,7 +36,7 @@ class TestServicesContextNavigation(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -181,6 +179,20 @@ class TestServicesContextNavigation(unittest.TestCase):
         )
 
     def test_contextnavigation_with_no_params_gets_only_top_level_mixed_content(self):
+        # Use default setting of Plone 6
+        from plone.restapi.bbb import INavigationSchema  # noqa
+
+        registry = getUtility(IRegistry)
+        navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
+        navigation_settings.displayed_types = (
+            "Link",
+            "News Item",
+            "Folder",
+            "Document",
+            "Event",
+            "Collection",
+        )
+        transaction.commit()
         # With the context set to folder2 it should return a dict with
         # currentItem set to True
         response = self.api_session.get("/folder2/@contextnavigation")
@@ -189,8 +201,8 @@ class TestServicesContextNavigation(unittest.TestCase):
 
         res = {
             "@id": "%s/folder2/@contextnavigation" % base,
-            "has_custom_name": False,
             "available": True,
+            "has_custom_name": False,
             "items": [
                 {
                     "@id": "%s/folder2/doc21" % base,
@@ -238,21 +250,6 @@ class TestServicesContextNavigation(unittest.TestCase):
                     "type": "document",
                 },
                 {
-                    "@id": "%s/folder2/file21/view" % base,
-                    "description": "",
-                    "href": "%s/folder2/file21/view" % base,
-                    "icon": None,
-                    "is_current": False,
-                    "is_folderish": False,
-                    "is_in_path": False,
-                    "items": [],
-                    "normalized_id": "file21",
-                    "review_state": "",
-                    "thumb": "",
-                    "title": "file21",
-                    "type": "file",
-                },
-                {
                     "@id": "%s/folder2/folder21" % base,
                     "description": "",
                     "href": "%s/folder2/folder21" % base,
@@ -260,7 +257,38 @@ class TestServicesContextNavigation(unittest.TestCase):
                     "is_current": False,
                     "is_folderish": True,
                     "is_in_path": False,
-                    "items": [],
+                    "items": [
+                        {
+                            "@id": "%s/folder2/folder21/doc211" % base,
+                            "description": "",
+                            "href": "%s/folder2/folder21/doc211" % base,
+                            "icon": "",
+                            "is_current": False,
+                            "is_folderish": False,
+                            "is_in_path": False,
+                            "items": [],
+                            "normalized_id": "doc211",
+                            "review_state": "private",
+                            "thumb": "",
+                            "title": "doc211",
+                            "type": "document",
+                        },
+                        {
+                            "@id": "%s/folder2/folder21/doc212" % base,
+                            "description": "",
+                            "href": "%s/folder2/folder21/doc212" % base,
+                            "icon": "",
+                            "is_current": False,
+                            "is_folderish": False,
+                            "is_in_path": False,
+                            "items": [],
+                            "normalized_id": "doc212",
+                            "review_state": "private",
+                            "thumb": "",
+                            "title": "doc212",
+                            "type": "document",
+                        },
+                    ],
                     "normalized_id": "folder21",
                     "review_state": "private",
                     "thumb": "",
@@ -271,13 +299,8 @@ class TestServicesContextNavigation(unittest.TestCase):
             "title": "Navigation",
             "url": "%s/sitemap" % base,
         }
-        self.assertEqual(
-            response.json(),
-            res,
-        )
 
-        # self.assertTrue(tree)
-        # self.assertEqual(tree["children"][-1]["currentItem"], True)
+        self.assertEqual(res, response.json())
 
     def testHeadingLinkRooted(self):
         """
@@ -293,7 +316,7 @@ class TestServicesContextNavigation(unittest.TestCase):
         }
         qs = urlencode(q)
 
-        response = self.api_session.get("/folder2/@contextnavigation?{}".format(qs))
+        response = self.api_session.get(f"/folder2/@contextnavigation?{qs}")
         self.assertEqual(response.status_code, 200)
         res = response.json()
         base = self.portal.absolute_url()
@@ -519,21 +542,32 @@ class TestServicesContextNavigation(unittest.TestCase):
             self.portal.folder1.ns_folder, opts(includeTop=True, topLevel=0)
         )
         tree = view.getNavTree()
-        self.assertEqual(
-            tree["items"][3]["items"][3]["href"],
-            "%s/folder1/ns_folder" % base,
-        )
-        self.assertEqual(len(tree["items"][3]["items"][3]["items"]), 0)
+        if tree["items"][3]["items"][0]["href"]:
+            self.assertEqual(
+                tree["items"][3]["items"][0]["href"],
+                "%s/folder1/ns_folder" % base,
+            )
+            self.assertEqual(len(tree["items"][3]["items"][0]["items"]), 0)
 
     def testTopLevel(self):
+        # Use default setting of Plone 6
+        registry = getUtility(IRegistry)
+        registry["plone.displayed_types"] = (
+            "Link",
+            "News Item",
+            "Folder",
+            "Document",
+            "Event",
+            "Collection",
+        )
         base = self.portal.absolute_url()
         view = self.renderer(self.portal.folder2.file21, opts(topLevel=1))
         tree = view.getNavTree()
         self.assertTrue(tree)
-
+        # before Plone 6.0.0a4 files and images were displayed in navigation.
         self.assertEqual(
             tree["items"][-1]["href"],
-            "%s/folder2/folder21" % base,
+            "%s/folder2/file21/view" % base,
         )
 
     def testTopLevelWithContextAboveLevel(self):
@@ -563,7 +597,7 @@ class TestServicesContextNavigation(unittest.TestCase):
             self.portal.folder2.folder21,
             opts(
                 topLevel=1,
-                root_path=u"/folder2"
+                root_path="/folder2"
                 # self.portal.folder2.UID()
             ),
         )
@@ -586,11 +620,11 @@ class TestServicesContextNavigation(unittest.TestCase):
 
         view1 = self.renderer(
             self.portal.abc,
-            opts(topLevel=0, root_path=u"/abc"),
+            opts(topLevel=0, root_path="/abc"),
         )
         view2 = self.renderer(
             self.portal.abc,
-            opts(topLevel=0, root_path=u"/abcde"),
+            opts(topLevel=0, root_path="/abcde"),
         )
 
         tree1 = view1.getNavTree()
@@ -600,12 +634,12 @@ class TestServicesContextNavigation(unittest.TestCase):
 
         view1 = self.renderer(
             self.portal.abcde,
-            opts(topLevel=0, root_path=u"/abc"),
+            opts(topLevel=0, root_path="/abc"),
         )
 
         view2 = self.renderer(
             self.portal.abcde,
-            opts(topLevel=0, root_path=u"/abcde"),
+            opts(topLevel=0, root_path="/abcde"),
         )
 
         tree1 = view1.getNavTree()
@@ -699,7 +733,7 @@ class TestServicesContextNavigation(unittest.TestCase):
             self.portal.folder2.folder21,
             opts(
                 topLevel=1,
-                root_path=u"/folder2",
+                root_path="/folder2",
             ),
         )
         tree = view.getNavTree()
@@ -709,7 +743,7 @@ class TestServicesContextNavigation(unittest.TestCase):
         base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path=u"", topLevel=0),
+            opts(root_path="", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -719,16 +753,16 @@ class TestServicesContextNavigation(unittest.TestCase):
         base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path=u"/folder2", topLevel=0),
+            opts(root_path="/folder2", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
-        self.assertEqual(tree["items"][0]["href"], "%s/folder2/doc21" % base)
+        self.assertEqual(tree["items"][0]["href"], "%s/folder2/file21/view" % base)
 
     def testRootDoesNotExist(self):
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path=u"DOESNT_EXIST", topLevel=0),
+            opts(root_path="DOESNT_EXIST", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -736,13 +770,8 @@ class TestServicesContextNavigation(unittest.TestCase):
 
     def testAboveRoot(self):
         base = self.portal.absolute_url()
-        try:
-            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
-        except ImportError:
-            return  # skip test in Plone 4
-
         registry = getUtility(IRegistry)
-        registry["plone.root"] = u"/folder2"
+        registry["plone.root"] = "/folder2"
         view = self.renderer(self.portal, opts(topLevel=0))
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -752,7 +781,7 @@ class TestServicesContextNavigation(unittest.TestCase):
         base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder1,
-            opts(root_path=u"/folder2", topLevel=0),
+            opts(root_path="/folder2", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -812,11 +841,7 @@ class TestServicesContextNavigation(unittest.TestCase):
 
     def testStateFiltering(self):
         # Test Navtree workflow state filtering
-
-        try:
-            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
-        except ImportError:
-            return  # skip test in Plone 4
+        from plone.restapi.bbb import INavigationSchema  # noqa
 
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         registry = getUtility(IRegistry)
@@ -843,14 +868,9 @@ class TestServicesContextNavigation(unittest.TestCase):
         self.assertEqual(len(tree["items"]), 2)
 
     def testPrunedRootNode(self):
-        try:
-            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
-        except ImportError:
-            return  # skip test in Plone 4
-
         # This test has been changed to conform to reality
         registry = self.portal.portal_registry
-        registry["plone.parent_types_not_to_query"] = [u"Folder"]
+        registry["plone.parent_types_not_to_query"] = ["Folder"]
 
         view = self.renderer(self.portal.folder1, opts(topLevel=0))
         tree = view.getNavTree()
@@ -858,13 +878,8 @@ class TestServicesContextNavigation(unittest.TestCase):
         self.assertEqual(len(tree["items"][4]["items"]), 0)
 
     def testPrunedRootNodeShowsAllParents(self):
-        try:
-            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
-        except ImportError:
-            return  # skip test in Plone 4
-
         registry = self.portal.portal_registry
-        registry["plone.parent_types_not_to_query"] = [u"Folder"]
+        registry["plone.parent_types_not_to_query"] = ["Folder"]
 
         view = self.renderer(self.portal.folder1.doc11, opts(topLevel=1))
         tree = view.getNavTree()
@@ -940,7 +955,7 @@ class TestServicesContextNavigation(unittest.TestCase):
         # make a navigation portlet with navigation root set
         view = self.renderer(
             self.portal.folder1.folder1_1,
-            opts(bottomLevel=0, topLevel=0, root_path=u"/folder1/folder1_1"),
+            opts(bottomLevel=0, topLevel=0, root_path="/folder1/folder1_1"),
         )
         tree = view(expand=True)["contextnavigation"]
 
@@ -961,7 +976,7 @@ class TestServicesContextNavigation(unittest.TestCase):
     def testServiceId(self):
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path=u"", topLevel=0),
+            opts(root_path="", topLevel=0),
         )
         portlet = view(expand=True)
 

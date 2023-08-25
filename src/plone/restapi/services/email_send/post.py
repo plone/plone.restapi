@@ -1,20 +1,26 @@
-# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from AccessControl.Permissions import use_mailhost_services
-from email.mime.text import MIMEText
 from plone.registry.interfaces import IRegistry
 from plone.restapi import _
+from plone.restapi.bbb import IMailSchema
+from plone.restapi.bbb import ISiteSchema
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import ISiteSchema
-from Products.CMFPlone.interfaces.controlpanel import IMailSchema
 from smtplib import SMTPException
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import alsoProvides
 
 import plone
+
+try:
+    # Products.MailHost has a patch to fix quoted-printable soft line breaks.
+    # See https://github.com/zopefoundation/Products.MailHost/issues/35
+    from Products.MailHost.MailHost import message_from_string
+except ImportError:
+    # If the patch is ever removed, we fall back to the standard library.
+    from email import message_from_string
 
 
 class EmailSendPost(Service):
@@ -73,14 +79,14 @@ class EmailSendPost(Service):
             if not sender_fullname:
                 subject = self.context.translate(
                     _(
-                        u"A portal user via ${portal_title}",
+                        "A portal user via ${portal_title}",
                         mapping={"portal_title": portal_title},
                     )
                 )
             else:
                 subject = self.context.translate(
                     _(
-                        u"${sender_fullname} via ${portal_title}",
+                        "${sender_fullname} via ${portal_title}",
                         mapping={
                             "sender_fullname": sender_fullname,
                             "portal_title": portal_title,
@@ -90,7 +96,7 @@ class EmailSendPost(Service):
 
         message_intro = self.context.translate(
             _(
-                u"You are receiving this mail because ${sender_fullname} sent this message via the site ${portal_title}:",  # noqa
+                "You are receiving this mail because ${sender_fullname} sent this message via the site ${portal_title}:",  # noqa
                 mapping={
                     "sender_fullname": sender_fullname or "a portal user",
                     "portal_title": portal_title,
@@ -98,9 +104,9 @@ class EmailSendPost(Service):
             )
         )
 
-        message = u"{} \n {}".format(message_intro, message)
+        message = f"{message_intro} \n {message}"
 
-        message = MIMEText(message, "plain", encoding)
+        message = message_from_string(message)
         message["Reply-To"] = sender_from_address
         try:
             host.send(
@@ -114,7 +120,7 @@ class EmailSendPost(Service):
         except (SMTPException, RuntimeError):
             plone_utils = getToolByName(self.context, "plone_utils")
             exception = plone_utils.exceptionString()
-            message = "Unable to send mail: {}".format(exception)
+            message = f"Unable to send mail: {exception}"
 
             self.request.response.setStatus(500)
             return dict(error=dict(type="InternalServerError", message=message))

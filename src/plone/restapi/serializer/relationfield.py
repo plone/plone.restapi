@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IJsonCompatible
@@ -19,9 +18,9 @@ from zope.interface import Interface
 @implementer(IJsonCompatible)
 def relationvalue_converter(value):
     if value.to_object:
-        summary = getMultiAdapter(
-            (value.to_object, getRequest()), ISerializeToJsonSummary
-        )()
+        request = getRequest()
+        request.form["metadata_fields"] = ["UID"]
+        summary = getMultiAdapter((value.to_object, request), ISerializeToJsonSummary)()
         return json_compatible(summary)
 
 

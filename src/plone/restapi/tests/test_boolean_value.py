@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 

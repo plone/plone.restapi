@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.services import Service
@@ -16,7 +15,7 @@ DEFAULT_SEARCH_RESULTS_LIMIT = 25
 @implementer(IPublishTraverse)
 class GroupsGet(Service):
     def __init__(self, context, request):
-        super(GroupsGet, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
         self.query = self.request.form.copy()
 
@@ -66,9 +65,7 @@ class GroupsGet(Service):
         if len(self.params) == 0:
             result = []
             for group in self._get_groups():
-                serializer = queryMultiAdapter(
-                    (group, self.request), ISerializeToJsonSummary
-                )
+                serializer = queryMultiAdapter((group, self.request), ISerializeToJson)
                 result.append(serializer())
             return result
         # we retrieve the user on the user id not the username

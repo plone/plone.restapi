@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
-from zope.interface import implementer
-from zope.publisher.interfaces import NotFound
 from plone.restapi.controlpanels.interfaces import IControlpanel
 from Products.CMFCore.utils import getToolByName
+from zope.interface import implementer
+from zope.publisher.interfaces import NotFound
 
 
 @implementer(IControlpanel)
-class RegistryConfigletPanel(object):
+class RegistryConfigletPanel:
     configlet = None
     configlet_id = None
     configlet_category_id = None

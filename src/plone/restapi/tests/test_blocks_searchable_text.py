@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -30,7 +29,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -40,7 +39,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
         fti.behaviors = tuple(behavior_list)
 
         self.doc = createContentInContainer(
-            self.portal, u"Document", id=u"doc", title=u"A document"
+            self.portal, "Document", id="doc", title="A document"
         )
         transaction.commit()
 
@@ -51,6 +50,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
         response = self.api_session.patch(
             "/doc",
             json={
+                "blocks_layout": {"items": ["uuid1", "uuid2"]},
                 "blocks": {
                     "uuid1": {
                         "@type": "text",
@@ -86,7 +86,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
                             "entityMap": {},
                         },
                     },
-                }
+                },
             },
         )
 
@@ -98,7 +98,11 @@ class TestSearchTextInBlocks(unittest.TestCase):
         self.assertEqual(json_response["items_total"], 1)
         self.assertEqual(json_response["items"][0]["Title"], "A document")
 
-        query = {"SearchableText": "Plone", "metadata_fields": "Title"}
+        query = {
+            "SearchableText": "Plone",
+            "metadata_fields": "Title",
+            "portal_type": "Document",
+        }
         response = self.api_session.get("/@search", params=query)
         json_response = response.json()
         self.assertEqual(json_response["items_total"], 1)
@@ -107,7 +111,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
     def test_register_block_searchabletext(self):
         @implementer(IBlockSearchableText)
         @adapter(IBlocks, IBrowserRequest)
-        class TestSearchableTextAdapter(object):
+        class TestSearchableTextAdapter:
             def __init__(self, context, request):
                 self.context = context
                 self.request = request
@@ -144,8 +148,9 @@ class TestSearchTextInBlocks(unittest.TestCase):
         }
 
         self.doc.blocks = blocks
-        from zope.component import queryMultiAdapter
+        self.doc.blocks_layout = {"items": ["uuid1", "uuid3"]}
         from plone.indexer.interfaces import IIndexableObject
+        from zope.component import queryMultiAdapter
 
         wrapper = queryMultiAdapter(
             (self.doc, self.portal.portal_catalog), IIndexableObject
@@ -157,6 +162,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
         response = self.api_session.patch(
             "/doc",
             json={
+                "blocks_layout": {"items": ["uuid1", "uuid2"]},
                 "blocks": {
                     "uuid1": {
                         "@type": "text",
@@ -179,25 +185,181 @@ class TestSearchTextInBlocks(unittest.TestCase):
                         "@type": "custom_type",
                         "searchableText": "custom text foo",
                     },
-                }
+                },
             },
         )
 
         self.assertEqual(response.status_code, 204)
 
-        query = {"SearchableText": "Volto", "metadata_fields": "Title"}
+        query = {
+            "SearchableText": "Volto",
+            "metadata_fields": "Title",
+            "portal_type": "Document",
+        }
         response = self.api_session.get("/@search", params=query)
         json_response = response.json()
         self.assertEqual(json_response["items_total"], 0)
 
-        query = {"SearchableText": "Plone", "metadata_fields": "Title"}
+        query = {
+            "SearchableText": "Plone",
+            "metadata_fields": "Title",
+            "portal_type": "Document",
+        }
         response = self.api_session.get("/@search", params=query)
         json_response = response.json()
         self.assertEqual(json_response["items_total"], 1)
         self.assertEqual(json_response["items"][0]["Title"], "A document")
 
-        query = {"SearchableText": "custom", "metadata_fields": "Title"}
+        query = {
+            "SearchableText": "custom",
+            "metadata_fields": "Title",
+            "portal_type": "Document",
+        }
         response = self.api_session.get("/@search", params=query)
         json_response = response.json()
         self.assertEqual(json_response["items_total"], 1)
         self.assertEqual(json_response["items"][0]["Title"], "A document")
+
+    def test_search_slate_text(self):
+        """test_search_text."""
+        self.doc.blocks = {
+            "38541872-06c2-41c9-8709-37107e597b18": {
+                "@type": "slate",
+                "plaintext": "Under a new climatic regime, therefore",
+                "value": [],
+            },
+            "4fcfeb9b-f73e-427c-9e06-2e4d53b06865": {
+                "@type": "slate",
+                "searchableText": "EEA Climate Change data centre",
+                "value": [],
+            },
+        }
+        self.doc.blocks_layout = {
+            "items": [
+                "38541872-06c2-41c9-8709-37107e597b18",
+                "4fcfeb9b-f73e-427c-9e06-2e4d53b06865",
+            ]
+        }
+        self.portal.portal_catalog.indexObject(self.doc)
+
+        query = {"SearchableText": "climatic"}
+        results = self.portal.portal_catalog.searchResults(**query)
+        self.assertEqual(len(results), 1)
+
+        brain = results[0]
+        self.assertEqual(brain.Title, "A document")
+
+        query = {"SearchableText": "EEA"}
+        results = self.portal.portal_catalog.searchResults(**query)
+        self.assertEqual(len(results), 1)
+
+        brain = results[0]
+        self.assertEqual(brain.Title, "A document")
+
+    def test_search_table_text(self):
+        """Test text in tables is indexed"""
+        self.doc.blocks = {
+            "uuid1": {
+                "@type": "table",
+                "table": {
+                    "rows": [
+                        {
+                            "cells": [
+                                {
+                                    "key": "3dli7",
+                                    "type": "header",
+                                    "value": {
+                                        "blocks": [
+                                            {
+                                                "key": "1kh23",
+                                                "text": "First header",
+                                                "type": "unstyled",
+                                                "depth": 0,
+                                                "inlineStyleRanges": [],
+                                                "entityRanges": [],
+                                                "data": {},
+                                            }
+                                        ],
+                                        "entityMap": {},
+                                    },
+                                },
+                                {
+                                    "key": "3dli8",
+                                    "type": "header",
+                                    "value": {
+                                        "blocks": [
+                                            {
+                                                "key": "1kh23",
+                                                "text": "Second header",
+                                                "type": "unstyled",
+                                                "depth": 0,
+                                                "inlineStyleRanges": [],
+                                                "entityRanges": [],
+                                                "data": {},
+                                            }
+                                        ],
+                                        "entityMap": {},
+                                    },
+                                },
+                            ],
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "key": "3dli9",
+                                    "type": "data",
+                                    "value": {
+                                        "blocks": [
+                                            {
+                                                "key": "1kh23",
+                                                "text": "Data foo",
+                                                "type": "unstyled",
+                                                "depth": 0,
+                                                "inlineStyleRanges": [],
+                                                "entityRanges": [],
+                                                "data": {},
+                                            }
+                                        ],
+                                        "entityMap": {},
+                                    },
+                                },
+                                {
+                                    "key": "3dl29",
+                                    "type": "data",
+                                    "value": {
+                                        "blocks": [
+                                            {
+                                                "key": "1kh23",
+                                                "text": "Data bar",
+                                                "type": "unstyled",
+                                                "depth": 0,
+                                                "inlineStyleRanges": [],
+                                                "entityRanges": [],
+                                                "data": {},
+                                            }
+                                        ],
+                                        "entityMap": {},
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            }
+        }
+        self.doc.blocks_layout = {"items": ["uuid1"]}
+        self.portal.portal_catalog.indexObject(self.doc)
+
+        query = {"SearchableText": "foo"}
+        results = self.portal.portal_catalog.searchResults(**query)
+        self.assertEqual(len(results), 1)
+
+        brain = results[0]
+        self.assertEqual(brain.Title, "A document")
+
+        query = {"SearchableText": "first"}
+        results = self.portal.portal_catalog.searchResults(**query)
+        self.assertEqual(len(results), 1)
+
+        brain = results[0]
+        self.assertEqual(brain.Title, "A document")

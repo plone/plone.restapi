@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
 from plone.app.multilingual.interfaces import ITranslatable
 from plone.app.multilingual.interfaces import ITranslationManager
+from plone.restapi.bbb import ILanguage
+from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import ILanguage
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
@@ -13,21 +13,19 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 import plone.protect.interfaces
-import six
+import transaction
 
 
 @implementer(IExpandableElement)
 @adapter(ITranslatable, Interface)
-class Translations(object):
+class Translations:
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, expand=False):
         result = {
-            "translations": {
-                "@id": "{}/@translations".format(self.context.absolute_url())
-            }
+            "translations": {"@id": f"{self.context.absolute_url()}/@translations"}
         }
         if not expand:
             return result
@@ -40,7 +38,25 @@ class Translations(object):
                     {"@id": translation.absolute_url(), "language": language}
                 )
 
+        portal_state = getMultiAdapter(
+            (self.context, self.request), name="plone_portal_state"
+        )
+        current_lang_nav_root = portal_state.navigation_root()
+
+        if IPloneSiteRoot.providedBy(current_lang_nav_root):
+            # We are not inside a LRF, bail off
+            return result
+
+        nav_root_manager = ITranslationManager(current_lang_nav_root)
+        nav_root_translations = {}
+        for (
+            language,
+            translation,
+        ) in nav_root_manager.get_restricted_translations().items():
+            nav_root_translations[language] = translation.absolute_url()
+
         result["translations"]["items"] = translations
+        result["translations"]["root"] = nav_root_translations
         return result
 
 
@@ -56,7 +72,7 @@ class LinkTranslations(Service):
     """Link two content objects as translations of each other"""
 
     def __init__(self, context, request):
-        super(LinkTranslations, self).__init__(context, request)
+        super().__init__(context, request)
         self.portal = getMultiAdapter(
             (self.context, self.request), name="plone_portal_state"
         ).portal()
@@ -80,22 +96,48 @@ class LinkTranslations(Service):
         if target is None:
             self.request.response.setStatus(400)
             return dict(error=dict(type="BadRequest", message="Content does not exist"))
+        elif target.portal_type == "LRF":
+            self.request.response.setStatus(400)
+            return dict(
+                error=dict(
+                    type="BadRequest",
+                    message="Language Root Folders can only be linked between each other",
+                )
+            )
 
         target_language = ILanguage(target).get_language()
         manager = ITranslationManager(self.context)
         current_translation = manager.get_translation(target_language)
+        target_manager = ITranslationManager(target)
+        target_translation = target_manager.get_translation(self.context.language)
         if current_translation is not None:
             self.request.response.setStatus(400)
             return dict(
                 error=dict(
                     type="BadRequest",
-                    message="Already translated into language {}".format(
+                    message="Source already translated into language {}".format(
+                        target_language
+                    ),
+                )
+            )
+        if target_translation is not None:
+            self.request.response.setStatus(400)
+            return dict(
+                error=dict(
+                    type="BadRequest",
+                    message="Target already translated into language {}".format(
                         target_language
                     ),
                 )
             )
 
         manager.register_translation(target_language, target)
+        # We want to leave a log in the transaction that the link has been executed
+        ts = transaction.get()
+        ts.note(
+            f'Linked translation {"/".join(self.context.getPhysicalPath())} ({self.context.language}) -> {"/".join(target.getPhysicalPath())} ({target_language})'
+        )
+
         self.request.response.setStatus(201)
         self.request.response.setHeader("Location", self.context.absolute_url())
         return {}
@@ -104,12 +146,8 @@ class LinkTranslations(Service):
         if key.startswith(self.portal_url):
             # Resolve by URL
             key = key[len(self.portal_url) + 1 :]
-            if six.PY2:
-                key = key.encode("utf8")
             return self.portal.restrictedTraverse(key, None)
         elif key.startswith("/"):
-            if six.PY2:
-                key = key.encode("utf8")
             # Resolve by path
             return self.portal.restrictedTraverse(key.lstrip("/"), None)
         else:
@@ -138,15 +176,28 @@ class UnlinkTranslations(Service):
                     message="You need to provide the language to unlink",
                 )
             )
-
-        if language not in list(manager.get_translations()):
+        elif language not in list(manager.get_translations()):
             self.request.response.setStatus(400)
             return dict(
                 error=dict(
                     type="BadRequest",
-                    message="This objects is not translated into {}".format(language),
+                    message=f"This objects is not translated into {language}",
+                )
+            )
+        elif self.context.portal_type == "LRF":
+            self.request.response.setStatus(400)
+            return dict(
+                error=dict(
+                    type="BadRequest",
+                    message="Language Root Folders cannot be unlinked",
                 )
             )
 
         manager.remove_translation(language)
+        # We want to leave a log in the transaction that the unlink has been executed
+        ts = transaction.get()
+        ts.note(
+            f'Unlinked translation for {language} in {"/".join(self.context.getPhysicalPath())} ({self.context.language})'
+        )
+
         return self.reply_no_content()

@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+
 import unittest
 
 
@@ -19,7 +19,7 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -46,6 +46,7 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
                 for x in self.api_session.get("/@controlpanels/dexterity-types")
                 .json()
                 .get("items")
+                if x.get("id") != "Plone Site"
             ],
         )
 
@@ -53,7 +54,7 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
         response = self.api_session.get("/@controlpanels/dexterity-types/Document")
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            "{}/@controlpanels/dexterity-types/Document".format(self.portal_url),
+            f"{self.portal_url}/@controlpanels/dexterity-types/Document",
             response.json().get("@id"),
         )
         self.assertEqual("Page", response.json().get("title"))
@@ -116,5 +117,6 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
                 for x in self.api_session.get("/@controlpanels/dexterity-types")
                 .json()
                 .get("items")
+                if x.get("id") != "Plone Site"
             ],
         )

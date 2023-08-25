@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
-from DateTime import DateTime
 from datetime import datetime
+from datetime import timezone
+from DateTime import DateTime
 from plone.app.discussion.comment import Comment
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.dexterity.content import DexterityContent
 from plone.locking.lockable import TTWLockable
+from plone.restapi.serializer.working_copy import WorkingCopyInfo
 from Products.CMFCore.WorkflowTool import _marker
 from Products.CMFCore.WorkflowTool import WorkflowTool
 
@@ -13,10 +14,11 @@ _originals = {
     "WorkflowTool.getInfoFor": WorkflowTool.getInfoFor,
     "ContentHistoryViewlet.fullHistory": ContentHistoryViewlet.fullHistory,
     "TTWLockable.lock_info": TTWLockable.lock_info,
+    "WorkingCopyInfo.created": WorkingCopyInfo.created,
 }
 
 
-class StaticTime(object):
+class StaticTime:
     """ContextManager to patch accessor methods that return dynamic timestamps,
     like creation and modification dates, with ones that return static
     timestamps.
@@ -69,8 +71,8 @@ class StaticTime(object):
 
     def __init__(
         self,
-        created=datetime(1995, 7, 31, 13, 45),
-        modified=datetime(1995, 7, 31, 17, 30),
+        created=datetime(1995, 7, 31, 13, 45, tzinfo=timezone.utc),
+        modified=datetime(1995, 7, 31, 17, 30, tzinfo=timezone.utc),
     ):
         self.static_created = created
         self.static_modified = modified
@@ -126,6 +128,8 @@ class StaticTime(object):
 
         TTWLockable.lock_info = static_lock_info_factory(self.static_modified)
 
+        WorkingCopyInfo.created = static_wc_info_factory(self.static_created)
+
     def stop(self):
         """Undo all the patches."""
         TTWLockable.lock_info = _originals["TTWLockable.lock_info"]
@@ -136,6 +140,8 @@ class StaticTime(object):
 
         Comment.modification_date = None
         Comment.creation_date = None
+
+        WorkingCopyInfo.created = _originals["WorkingCopyInfo.created"]
 
         del DexterityContent.modification_date
         del DexterityContent.creation_date
@@ -294,6 +300,23 @@ def static_lock_info_factory(dt_value):
         return infos
 
     return static_lock_info
+
+
+def static_wc_info_factory(dt_value, type_=DateTime):
+    """Returns a static time replacement for creation date accessors,
+    configured with the given datetime value and the indicated type_ for
+    working copy support.
+    """
+    if isinstance(dt_value, datetime) and type_ is DateTime:
+        dt_value = DateTime(dt_value)
+
+    elif isinstance(dt_value, DateTime) and type_ is datetime:
+        dt_value = dt_value.asdatetime()
+
+    def static_wc_info(self):
+        return dt_value
+
+    return static_wc_info
 
 
 def nop_setter(self, value):

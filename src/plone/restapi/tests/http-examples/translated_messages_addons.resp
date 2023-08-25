@@ -1,0 +1,91 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "items": [
+        {
+            "@id": "http://localhost:55001/plone/@addons/Products.CMFPlacefulWorkflow",
+            "description": "Agrega a Plone la capacidad de cambiar las cadenas de flujo de trabajo para los tipos en cada objeto. Tiene dependencias de los tipos b\u00e1sicos de Plone.",
+            "id": "Products.CMFPlacefulWorkflow",
+            "install_profile_id": "Products.CMFPlacefulWorkflow:CMFPlacefulWorkflow",
+            "is_installed": false,
+            "profile_type": "default",
+            "title": "Soporte de Pol\u00edtica de Flujo de trabajo (CMFPlacefulWorkflow)",
+            "uninstall_profile_id": "Products.CMFPlacefulWorkflow:uninstall",
+            "upgrade_info": {},
+            "version": "1.2.3"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@addons/collective.MockMailHost",
+            "description": "Installs the collective.MockMailHost package",
+            "id": "collective.MockMailHost",
+            "install_profile_id": "collective.MockMailHost:default",
+            "is_installed": true,
+            "profile_type": "default",
+            "title": "collective.MockMailHost",
+            "uninstall_profile_id": "",
+            "upgrade_info": {
+                "available": false,
+                "hasProfile": true,
+                "installedVersion": "2.0.0",
+                "newVersion": "1.2.3",
+                "required": true
+            },
+            "version": "1.2.3"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@addons/plone.app.iterate",
+            "description": "A\u00f1ade soporte de copia de trabajo (modificaciones in situ) a Plone.",
+            "id": "plone.app.iterate",
+            "install_profile_id": "plone.app.iterate:default",
+            "is_installed": false,
+            "profile_type": "default",
+            "title": "Soporte de Copia de Trabajo (Repetir)",
+            "uninstall_profile_id": "plone.app.iterate:uninstall",
+            "upgrade_info": {},
+            "version": "1.2.3"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@addons/plone.app.multilingual",
+            "description": "Instalar para activar el soporte de contenido multiling\u00fce con plone.app.multilingual",
+            "id": "plone.app.multilingual",
+            "install_profile_id": "plone.app.multilingual:default",
+            "is_installed": false,
+            "profile_type": "default",
+            "title": "Soporte Multiidioma",
+            "uninstall_profile_id": "plone.app.multilingual:uninstall",
+            "upgrade_info": {},
+            "version": "1.2.3"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@addons/plone.restapi",
+            "description": "RESTful hypermedia API for Plone.",
+            "id": "plone.restapi",
+            "install_profile_id": "plone.restapi:default",
+            "is_installed": true,
+            "profile_type": "default",
+            "title": "plone.restapi",
+            "uninstall_profile_id": "plone.restapi:uninstall",
+            "upgrade_info": {
+                "available": false,
+                "hasProfile": true,
+                "installedVersion": "0006",
+                "newVersion": "0006",
+                "required": false
+            },
+            "version": "1.2.3"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@addons/plone.session",
+            "description": "Soporte opcional de refresco de plone.session.",
+            "id": "plone.session",
+            "install_profile_id": "plone.session:default",
+            "is_installed": false,
+            "profile_type": "default",
+            "title": "Soporte de actualizaci\u00f3n de sesi\u00f3n",
+            "uninstall_profile_id": "plone.session:uninstall",
+            "upgrade_info": {},
+            "version": "1.2.3"
+        }
+    ]
+}

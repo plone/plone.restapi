@@ -1,46 +1,67 @@
-# -*- coding: utf-8 -*-
 from plone.app.contentlisting.interfaces import IContentListingObject
+from plone.restapi.bbb import IPloneSiteRoot
+from plone.restapi.deserializer import json_body
+from plone.restapi.interfaces import IJSONSummarySerializerMetadata
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.serializer.utils import get_portal_type_title
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
+from zope.component import getAllUtilitiesRegisteredFor
 from zope.interface import implementer
 from zope.interface import Interface
 
-# fmt: off
-DEFAULT_METADATA_FIELDS = set([
-    '@id',
-    '@type',
-    'description',
-    'review_state',
-    'title',
-])
 
-FIELD_ACCESSORS = {
-    "@id": "getURL",
-    "@type": "PortalType",
-    "description": "Description",
-    "title": "Title",
-}
+@implementer(IJSONSummarySerializerMetadata)
+class JSONSummarySerializerMetadata:
+    def default_metadata_fields(self):
+        return {"@id", "@type", "description", "review_state", "title", "type_title"}
 
-NON_METADATA_ATTRIBUTES = set([
-    "getPath",
-    "getURL",
-])
+    def field_accessors(self):
+        return {
+            "@id": "getURL",
+            "@type": "PortalType",
+            "description": "Description",
+            "title": "Title",
+        }
 
-BLACKLISTED_ATTRIBUTES = set([
-    'getDataOrigin',
-    'getObject',
-    'getUserData',
-])
-# fmt: on
+    def non_metadata_attributes(self):
+        return {
+            "getPath",
+            "getURL",
+        }
+
+    def blocklisted_attributes(self):
+        return {
+            "getDataOrigin",
+            "getObject",
+            "getUserData",
+        }
+
+
+def merge_serializer_metadata_utilities_data():
+    """Merge data returned by utilities registered for IJSONSummarySerializerMetadata."""
+    serializer_metadata = {
+        "default_metadata_fields": set(),
+        "field_accessors": {},
+        "non_metadata_attributes": set(),
+        "blocklisted_attributes": set(),
+    }
+    utils = getAllUtilitiesRegisteredFor(IJSONSummarySerializerMetadata)
+    for name in serializer_metadata.keys():
+        for util in utils:
+            method = getattr(util, name, None)
+            if not method:
+                continue
+            value = method()
+            serializer_metadata[name].update(value)
+    return serializer_metadata
 
 
 @implementer(ISerializeToJsonSummary)
 @adapter(Interface, Interface)
-class DefaultJSONSummarySerializer(object):
+class DefaultJSONSummarySerializer:
     """Default ISerializeToJsonSummary adapter.
 
     Requires context to be adaptable to IContentListingObject, which is
@@ -50,16 +71,29 @@ class DefaultJSONSummarySerializer(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        # Cache summary_serializer_metadata on request
+        metadata = self.request.form.get("summary_serializer_metadata", None)
+        if not metadata:
+            metadata = merge_serializer_metadata_utilities_data()
+            self.request.set("summary_serializer_metadata", metadata)
+
+        self.default_metadata_fields = metadata["default_metadata_fields"]
+        self.field_accessors = metadata["field_accessors"]
+        self.non_metadata_attributes = metadata["non_metadata_attributes"]
+        self.blocklisted_attributes = metadata["blocklisted_attributes"]
 
     def __call__(self):
         obj = IContentListingObject(self.context)
 
         summary = {}
         for field in self.metadata_fields():
-            if field.startswith("_") or field in BLACKLISTED_ATTRIBUTES:
+            if field.startswith("_") or field in self.blocklisted_attributes:
                 continue
-            accessor = FIELD_ACCESSORS.get(field, field)
-            value = getattr(obj, accessor, None)
+            accessor = self.field_accessors.get(field, field)
+            if field == "type_title":
+                value = get_portal_type_title(self.context.portal_type)
+            else:
+                value = getattr(obj, accessor, None)
             try:
                 if callable(value):
                     value = value()
@@ -70,7 +104,11 @@ class DefaultJSONSummarySerializer(object):
         return summary
 
     def metadata_fields(self):
-        additional_metadata_fields = self.request.form.get("metadata_fields", [])
+        query = self.request.form
+        if not query:
+            # maybe its a POST request
+            query = json_body(self.request)
+        additional_metadata_fields = query.get("metadata_fields", [])
         if not isinstance(additional_metadata_fields, list):
             additional_metadata_fields = [additional_metadata_fields]
         additional_metadata_fields = set(additional_metadata_fields)
@@ -79,16 +117,16 @@ class DefaultJSONSummarySerializer(object):
             fields_cache = self.request.get("_summary_fields_cache", None)
             if fields_cache is None:
                 catalog = getToolByName(self.context, "portal_catalog")
-                fields_cache = set(catalog.schema()) | NON_METADATA_ATTRIBUTES
+                fields_cache = set(catalog.schema()) | self.non_metadata_attributes
                 self.request.set("_summary_fields_cache", fields_cache)
             additional_metadata_fields = fields_cache
 
-        return DEFAULT_METADATA_FIELDS | additional_metadata_fields
+        return self.default_metadata_fields | additional_metadata_fields
 
 
 @implementer(ISerializeToJsonSummary)
 @adapter(IPloneSiteRoot, Interface)
-class SiteRootJSONSummarySerializer(object):
+class SiteRootJSONSummarySerializer:
     """ISerializeToJsonSummary adapter for the Plone Site root."""
 
     def __init__(self, context, request):
@@ -100,6 +138,7 @@ class SiteRootJSONSummarySerializer(object):
             {
                 "@id": self.context.absolute_url(),
                 "@type": self.context.portal_type,
+                "type_title": get_portal_type_title(self.context.portal_type),
                 "title": self.context.title,
                 "description": self.context.description,
             }

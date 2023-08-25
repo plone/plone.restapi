@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.SecurityManagement import getSecurityManager
 from plone.rest import Service as RestService
 from plone.restapi.permissions import UseRESTAPI

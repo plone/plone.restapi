@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-
 """ A flexible navigation service that uses class navigation portlet semantics
 """
 
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from collections import UserDict
 from plone import api
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.layout.navigation.navtree import buildFolderTree
@@ -13,16 +12,21 @@ from plone.app.layout.navigation.root import getNavigationRoot
 from plone.i18n.normalizer.interfaces import IIDNormalizer
 from plone.memoize.instance import memoize
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import INavigationSchema
+from plone.restapi.bbb import INonStructuralFolder
+from plone.restapi.bbb import is_default_page
+from plone.restapi.bbb import ISiteSchema
+from plone.restapi.bbb import safe_callable
+from plone.restapi.bbb import safe_hasattr
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.utils import getToolByName
 from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
-from Products.CMFPlone import utils
 from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
-from Products.CMFPlone.interfaces import INonStructuralFolder
+from Products.CMFPlone.utils import normalizeString
+from Products.CMFPlone.utils import typesToList
 from Products.MimetypesRegistry.MimeTypeItem import guess_icon_path
-from six.moves import UserDict
 from zExceptions import NotFound
 from zope import schema
 from zope.component import adapter
@@ -35,17 +39,7 @@ from zope.interface import Interface
 from zope.schema.interfaces import IFromUnicode
 
 import os
-import six
 
-
-IS_PLONE4 = False
-
-try:
-    from Products.CMFPlone.defaultpage import is_default_page
-    from Products.CMFPlone.interfaces import INavigationSchema
-    from Products.CMFPlone.interfaces import ISiteSchema
-except ImportError:
-    IS_PLONE4 = True
 
 _ = MessageFactory("plone.restapi")
 
@@ -54,19 +48,19 @@ class INavigationPortlet(Interface):
     """A portlet which can render the navigation tree"""
 
     name = schema.TextLine(
-        title=_(u"label_navigation_title", default=u"Title"),
+        title=_("label_navigation_title", default="Title"),
         description=_(
-            u"help_navigation_title", default=u"The title of the navigation tree."
+            "help_navigation_title", default="The title of the navigation tree."
         ),
-        default=u"",
+        default="",
         required=False,
     )
 
     root_path = schema.TextLine(
-        title=_(u"label_navigation_root_path", default=u"Root node"),
+        title=_("label_navigation_root_path", default="Root node"),
         description=_(
-            u"help_navigation_root",
-            default=u"You may search for and choose a folder "
+            "help_navigation_root",
+            default="You may search for and choose a folder "
             "to act as the root of the navigation tree. "
             "Leave blank to use the Plone site root.",
         ),
@@ -74,10 +68,10 @@ class INavigationPortlet(Interface):
     )
 
     includeTop = schema.Bool(
-        title=_(u"label_include_top_node", default=u"Include top node"),
+        title=_("label_include_top_node", default="Include top node"),
         description=_(
-            u"help_include_top_node",
-            default=u"Whether or not to show the top, or 'root', "
+            "help_include_top_node",
+            default="Whether or not to show the top, or 'root', "
             "node in the navigation tree. This is affected "
             "by the 'Start level' setting.",
         ),
@@ -87,12 +81,12 @@ class INavigationPortlet(Interface):
 
     currentFolderOnly = schema.Bool(
         title=_(
-            u"label_current_folder_only",
-            default=u"Only show the contents of the current folder.",
+            "label_current_folder_only",
+            default="Only show the contents of the current folder.",
         ),
         description=_(
-            u"help_current_folder_only",
-            default=u"If selected, the navigation tree will "
+            "help_current_folder_only",
+            default="If selected, the navigation tree will "
             "only show the current folder and its "
             "children at all times.",
         ),
@@ -101,10 +95,10 @@ class INavigationPortlet(Interface):
     )
 
     topLevel = schema.Int(
-        title=_(u"label_navigation_startlevel", default=u"Start level"),
+        title=_("label_navigation_startlevel", default="Start level"),
         description=_(
-            u"help_navigation_start_level",
-            default=u"An integer value that specifies the number of folder "
+            "help_navigation_start_level",
+            default="An integer value that specifies the number of folder "
             "levels below the site root that must be exceeded "
             "before the navigation tree will display. 0 means "
             "that the navigation tree should be displayed "
@@ -118,10 +112,10 @@ class INavigationPortlet(Interface):
     )
 
     bottomLevel = schema.Int(
-        title=_(u"label_navigation_tree_depth", default=u"Navigation tree depth"),
+        title=_("label_navigation_tree_depth", default="Navigation tree depth"),
         description=_(
-            u"help_navigation_tree_depth",
-            default=u"How many folders should be included "
+            "help_navigation_tree_depth",
+            default="How many folders should be included "
             "before the navigation tree stops. 0 "
             "means no limit. 1 only includes the "
             "root folder.",
@@ -131,27 +125,27 @@ class INavigationPortlet(Interface):
     )
 
     no_icons = schema.Bool(
-        title=_(u"Suppress Icons"),
-        description=_(u"If enabled, the portlet will not show document type icons."),
+        title=_("Suppress Icons"),
+        description=_("If enabled, the portlet will not show document type icons."),
         required=True,
         default=False,
     )
 
     thumb_scale = schema.TextLine(
-        title=_(u"Override thumb scale"),
+        title=_("Override thumb scale"),
         description=_(
-            u"Enter a valid scale name"
-            u" (see 'Image Handling' control panel) to override"
-            u" (e.g. icon, tile, thumb, mini, preview, ... )."
-            u" Leave empty to use default (see 'Site' control panel)."
+            "Enter a valid scale name"
+            " (see 'Image Handling' control panel) to override"
+            " (e.g. icon, tile, thumb, mini, preview, ... )."
+            " Leave empty to use default (see 'Site' control panel)."
         ),
         required=False,
-        default=u"",
+        default="",
     )
 
     no_thumbs = schema.Bool(
-        title=_(u"Suppress thumbs"),
-        description=_(u"If enabled, the portlet will not show thumbs."),
+        title=_("Suppress thumbs"),
+        description=_("If enabled, the portlet will not show thumbs."),
         required=True,
         default=False,
     )
@@ -167,7 +161,7 @@ class ContextNavigationGet(Service):
 
 @implementer(IExpandableElement)
 @adapter(Interface, Interface)
-class ContextNavigation(object):
+class ContextNavigation:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -175,7 +169,7 @@ class ContextNavigation(object):
     def __call__(self, expand=False, prefix="expand.contextnavigation."):
         result = {
             "contextnavigation": {
-                "@id": "{}/@contextnavigation".format(self.context.absolute_url())
+                "@id": f"{self.context.absolute_url()}/@contextnavigation"
             }
         }
         if not expand:
@@ -192,9 +186,8 @@ class ContextNavigation(object):
         return self.__call__(expand=True)["contextnavigation"]
 
 
-class NavigationPortletRenderer(object):
+class NavigationPortletRenderer:
     def __init__(self, context, request, data):
-
         self.context = context
         self.request = request
         self.data = data
@@ -248,7 +241,7 @@ class NavigationPortletRenderer(object):
 
         # Root content item gone away or similar issue
         if not nav_root:
-            return None
+            return
 
         if INavigationRoot.providedBy(nav_root) or ISiteRoot.providedBy(nav_root):
             # For top level folders go to the sitemap
@@ -265,11 +258,7 @@ class NavigationPortletRenderer(object):
         context = aq_inner(self.context)
         root = self.getNavRoot()
         container = aq_parent(context)
-        is_default = False
-        if IS_PLONE4:
-            is_default = _is_default_page(container, context)
-        else:
-            is_default = is_default_page(container, context)
+        is_default = is_default_page(container, context)
         if aq_base(root) is aq_base(context) or (
             aq_base(root) is aq_base(container) and is_default
         ):
@@ -312,7 +301,7 @@ class NavigationPortletRenderer(object):
         portal = self.urltool.getPortalObject()
         rootPath = self.getNavRootPath()
         if rootPath is None:
-            return None
+            return
 
         if rootPath == self.urltool.getPortalPath():
             return portal
@@ -347,25 +336,22 @@ class NavigationPortletRenderer(object):
         """
         if getattr(self.data, "no_thumbs", False):
             # Individual setting overrides
-            return None
+            return
         thsize = getattr(self.data, "thumb_scale", None)
         if thsize:
             return thsize
 
-        if IS_PLONE4:
-            return None  # no support in Plone 4 to override the thumb scale
-        else:
-            registry = getUtility(IRegistry)
-            settings = registry.forInterface(ISiteSchema, prefix="plone", check=False)
-            if settings.no_thumbs_portlet:
-                return "none"
-            thumb_scale_portlet = settings.thumb_scale_portlet
-            return thumb_scale_portlet
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(ISiteSchema, prefix="plone", check=False)
+        if settings.no_thumbs_portlet:
+            return "none"
+        thumb_scale_portlet = settings.thumb_scale_portlet
+        return thumb_scale_portlet
 
     def getMimeTypeIcon(self, node):
         try:
             if not node["normalized_portal_type"] == "file":
-                return None
+                return
             fileo = node["item"].getObject().file
             portal_url = getNavigationRoot(self.context)
             mtt = getToolByName(self.context, "mimetypes_registry")
@@ -373,8 +359,7 @@ class NavigationPortletRenderer(object):
                 ctype = mtt.lookup(fileo.contentType)
                 return os.path.join(portal_url, guess_icon_path(ctype[0]))
         except AttributeError:
-            return None
-        return None
+            pass
 
     def render(self):
         res = {
@@ -395,7 +380,7 @@ class NavigationPortletRenderer(object):
                 root = self.urltool.getPortalObject()
                 root_is_portal = True
 
-            if utils.safe_hasattr(self.context, "getRemoteUrl"):
+            if safe_hasattr(self.context, "getRemoteUrl"):
                 root_url = root.getRemoteUrl()
             else:
                 # cid, root_url = get_view_url(root)
@@ -406,9 +391,9 @@ class NavigationPortletRenderer(object):
             root_type = (
                 "plone-site"
                 if root_is_portal
-                else utils.normalizeString(root.portal_type, context=root)
+                else normalizeString(root.portal_type, context=root)
             )
-            normalized_id = utils.normalizeString(root.Title(), context=root)
+            normalized_id = normalizeString(root.Title(), context=root)
 
             if root_is_portal:
                 state = ""
@@ -507,7 +492,7 @@ class NavigationPortletRenderer(object):
 
 def get_url(item):
     if not item:
-        return None
+        return
 
     if hasattr(aq_base(item), "getURL"):
         # Looks like a brain
@@ -519,10 +504,10 @@ def get_url(item):
 
 def get_id(item):
     if not item:
-        return None
+        return
     getId = getattr(item, "getId")
 
-    if not utils.safe_callable(getId):
+    if not safe_callable(getId):
         # Looks like a brain
 
         return getId
@@ -583,15 +568,15 @@ def getRootPath(context, currentFolderOnly, topLevel, root_path):
     if topLevel > 0:
         contextPath = "/".join(context.getPhysicalPath())
         if not contextPath.startswith(rootPath):
-            return None
+            return
         contextSubPathElements = contextPath[len(rootPath) + 1 :]
         if contextSubPathElements:
             contextSubPathElements = contextSubPathElements.split("/")
             if len(contextSubPathElements) < topLevel:
-                return None
+                return
             rootPath = rootPath + "/" + "/".join(contextSubPathElements[:topLevel])
         else:
-            return None
+            return
 
     return rootPath
 
@@ -608,9 +593,6 @@ def extract_data(schema, raw_data, prefix):
         field = schema[name]
         raw_value = raw_data.get(prefix + name, field.default)
 
-        if isinstance(raw_value, six.string_types):
-            raw_value = six.ensure_text(raw_value)
-
         value = IFromUnicode(field).fromUnicode(raw_value)
         data[name] = value  # convert(raw_value, field)
 
@@ -619,7 +601,7 @@ def extract_data(schema, raw_data, prefix):
 
 def get_root(context, root_path):
     if root_path is None:
-        return None
+        return
 
     urltool = getToolByName(context, "portal_url")
     portal = urltool.getPortalObject()
@@ -634,7 +616,7 @@ def get_root(context, root_path):
     return root
 
 
-class QueryBuilder(object):
+class QueryBuilder:
     """Build a navtree query based on the settings in INavigationSchema
     and those set on the portlet.
     """
@@ -648,7 +630,7 @@ class QueryBuilder(object):
 
         # Acquire a custom nav query if available
         customQuery = getattr(context, "getCustomNavQuery", None)
-        if customQuery is not None and utils.safe_callable(customQuery):
+        if customQuery is not None and safe_callable(customQuery):
             query = customQuery()
         else:
             query = {}
@@ -666,10 +648,15 @@ class QueryBuilder(object):
         # nothing (since we explicitly start from the root always). Hence,
         # use a regular depth-1 query in this case.
 
+        depth = data.bottomLevel
+
+        if depth == 0:
+            depth = 999
+
         if currentPath != rootPath and not currentPath.startswith(rootPath + "/"):
-            query["path"] = {"query": rootPath, "depth": 1}
+            query["path"] = {"query": rootPath, "depth": depth}
         else:
-            query["path"] = {"query": currentPath, "navtree": 1}
+            query["path"] = {"query": currentPath, "depth": depth, "navtree": 1}
 
         topLevel = data.topLevel
         if topLevel and topLevel > 0:
@@ -679,7 +666,7 @@ class QueryBuilder(object):
         # seem to work with EPI.
 
         # Only list the applicable types
-        query["portal_type"] = utils.typesToList(context)
+        query["portal_type"] = typesToList(context)
 
         # Apply the desired sort
         sortAttribute = navtree_properties.getProperty("sortAttribute", None)
@@ -690,19 +677,10 @@ class QueryBuilder(object):
                 query["sort_order"] = sortOrder
 
         # Filter on workflow states, if enabled
-        if IS_PLONE4:
-            # code copied from plone.app.portlets 2.5.2
-            if navtree_properties.getProperty("enable_wf_state_filtering", False):
-                query["review_state"] = navtree_properties.getProperty(
-                    "wf_states_to_show", ()
-                )
-        else:
-            registry = getUtility(IRegistry)
-            navigation_settings = registry.forInterface(
-                INavigationSchema, prefix="plone"
-            )
-            if navigation_settings.filter_on_workflow:
-                query["review_state"] = navigation_settings.workflow_states_to_show
+        registry = getUtility(IRegistry)
+        navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
+        if navigation_settings.filter_on_workflow:
+            query["review_state"] = navigation_settings.workflow_states_to_show
 
         self.query = query
 
@@ -734,6 +712,12 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
             return False
         else:
             return True
+
+    def decoratorFactory(self, node):
+        new_node = SitemapNavtreeStrategy.decoratorFactory(self, node)
+        if getattr(new_node["item"], "nav_title", False):
+            new_node["nav_title"] = new_node["item"].nav_title
+        return new_node
 
     # def nodeFilter(self, node):
     #     exclude = getattr(node["item"], "exclude_from_nav", False)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.dexterity.interfaces import IDexterityContent
 from plone.registry.interfaces import IRegistry
 from plone.restapi.controlpanels import IControlpanel
@@ -16,13 +15,13 @@ from zope.schema.interfaces import ValidationError
 
 
 @implementer(IDexterityContent)
-class FakeDXContext(object):
+class FakeDXContext:
     """Fake DX content class, so we can re-use the DX field deserializers"""
 
 
 @implementer(IDeserializeFromJson)
 @adapter(IControlpanel)
-class ControlpanelDeserializeFromJson(object):
+class ControlpanelDeserializeFromJson:
     def __init__(self, controlpanel):
         self.controlpanel = controlpanel
         self.schema = self.controlpanel.schema

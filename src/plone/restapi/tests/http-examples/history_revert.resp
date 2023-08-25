@@ -2,5 +2,5 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "message": "Welcome to Plone has been reverted to revision 0."
+    "message": "Welcome to Plone has been reverted to revision 0."
 }

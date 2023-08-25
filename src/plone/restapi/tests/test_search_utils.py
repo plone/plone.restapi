@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.search.utils import unflatten_dotted_dict
 
 import unittest

@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
 from plone.restapi.deserializer import json_body
 from plone.restapi.deserializer.controlpanels import ControlpanelDeserializeFromJson
 from plone.restapi.interfaces import IDeserializeFromJson
-from zope.component import adapter, queryMultiAdapter
+from zope.component import adapter
+from zope.component import queryMultiAdapter
 from zope.interface import implementer
 
 
@@ -20,4 +20,4 @@ class DexterityTypesControlpanelDeserializeFromJson(ControlpanelDeserializeFromJ
     def __call__(self, item=None):
         if item is not None:
             return self.deserialize_item(item)
-        return super(DexterityTypesControlpanelDeserializeFromJson, self).__call__()
+        return super().__call__()

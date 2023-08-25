@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.2.1">
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.1">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Volto" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -75,6 +75,8 @@
         <hashTree/>
         <com.blazemeter.jmeter.controller.ParallelSampler guiclass="com.blazemeter.jmeter.controller.ParallelControllerGui" testclass="com.blazemeter.jmeter.controller.ParallelSampler" testname="Volto Page 30 Images" enabled="true">
           <boolProp name="PARENT_SAMPLE">false</boolProp>
+          <intProp name="MAX_THREAD_NUMBER">6</intProp>
+          <boolProp name="LIMIT_MAX_THREAD_NUMBER">false</boolProp>
         </com.blazemeter.jmeter.controller.ParallelSampler>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Image 01 (Large)" enabled="true">
@@ -800,6 +802,8 @@
         <hashTree/>
         <com.blazemeter.jmeter.controller.ParallelSampler guiclass="com.blazemeter.jmeter.controller.ParallelControllerGui" testclass="com.blazemeter.jmeter.controller.ParallelSampler" testname="Volto 30 News Items" enabled="true">
           <boolProp name="PARENT_SAMPLE">false</boolProp>
+          <intProp name="MAX_THREAD_NUMBER">6</intProp>
+          <boolProp name="LIMIT_MAX_THREAD_NUMBER">false</boolProp>
         </com.blazemeter.jmeter.controller.ParallelSampler>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="News Item 01 (Image 1600px)" enabled="true">

@@ -1,20 +1,46 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:plone="http://namespaces.plone.org/plone">
+    xmlns:cache="http://namespaces.zope.org/cache"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
   <plone:service
-    method="POST"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".get.QuerystringSearchPost"
-    name="@querystring-search"
-    permission="zope2.View"
-    />
+      method="POST"
+      factory=".get.QuerystringSearchPost"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@querystring-search"
+      />
 
   <plone:service
-    method="POST"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".get.QuerystringSearchPost"
-    name="@querystring-search"
-    permission="zope2.View"
-    />
+      method="POST"
+      factory=".get.QuerystringSearchPost"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@querystring-search"
+      />
+
+  <plone:service
+      method="GET"
+      factory=".get.QuerystringSearchGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@querystring-search"
+      />
+
+  <plone:service
+      method="GET"
+      factory=".get.QuerystringSearchGet"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@querystring-search"
+      />
+
+  <cache:ruleset
+      for=".get.QuerystringSearchGet"
+      ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
+      />
+
 </configure>

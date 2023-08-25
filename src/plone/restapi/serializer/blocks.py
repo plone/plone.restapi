@@ -1,53 +1,22 @@
-# -*- coding: utf-8 -*-
-from copy import deepcopy
-from plone.outputfilters.browser.resolveuid import uuidToObject
-from plone.outputfilters.browser.resolveuid import uuidToURL
+from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
+from plone.restapi.blocks import visit_blocks, iter_block_transform_handlers
+from plone.restapi.deserializer.blocks import iterate_children
+from plone.restapi.deserializer.blocks import SlateBlockTransformer
+from plone.restapi.deserializer.blocks import transform_links
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
-from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
+from plone.restapi.serializer.utils import resolve_uid, uid_to_url
 from plone.schema import IJSONField
-from Products.CMFPlone.interfaces import IPloneSiteRoot
-from six import string_types
 from zope.component import adapter
-from zope.component import queryMultiAdapter
-from zope.component import subscribers
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import copy
 import os
-import re
-
-
-RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
-
-
-def uid_to_url(path):
-    if not path:
-        return ""
-    match = RESOLVEUID_RE.match(path)
-    if match is None:
-        return path
-
-    uid, suffix = match.groups()
-    href = uuidToURL(uid)
-    if href is None:
-        return path
-    if suffix:
-        href += "/" + suffix
-    else:
-        target_object = uuidToObject(uid)
-        if target_object:
-            adapter = queryMultiAdapter(
-                (target_object, target_object.REQUEST), IObjectPrimaryFieldTarget
-            )
-            if adapter and adapter():
-                href = adapter()
-    return href
 
 
 @adapter(IJSONField, IBlocks, Interface)
@@ -57,54 +26,61 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
         value = copy.deepcopy(self.get_value())
 
         if self.field.getName() == "blocks":
-            for id, block_value in value.items():
-                block_type = block_value.get("@type", "")
-                handlers = []
-                for h in subscribers(
-                    (self.context, self.request), IBlockFieldSerializationTransformer
+            for block in visit_blocks(self.context, value):
+                new_block = block.copy()
+                for handler in iter_block_transform_handlers(
+                    self.context, block, IBlockFieldSerializationTransformer
                 ):
-                    if h.block_type == block_type or h.block_type is None:
-                        handlers.append(h)
-
-                for handler in sorted(handlers, key=lambda h: h.order):
-                    if not getattr(handler, "disabled", False):
-                        block_value = handler(block_value)
-
-                value[id] = block_value
-
+                    new_block = handler(new_block)
+                block.clear()
+                block.update(new_block)
         return json_compatible(value)
 
 
-class ResolveUIDSerializerBase(object):
+class ResolveUIDSerializerBase:
     order = 1
     block_type = None
+    fields = ["url", "href"]
     disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
-    def __call__(self, value):
-        for field in ["url", "href"]:
-            if field in value.keys():
-                link = value.get(field, "")
-                if isinstance(link, string_types):
-                    value[field] = uid_to_url(link)
-                elif isinstance(link, list):
-                    if len(link) > 0 and isinstance(link[0], dict) and "@id" in link[0]:
-                        result = []
-                        for item in link:
-                            item_clone = deepcopy(item)
-                            item_clone["@id"] = uid_to_url(item_clone["@id"])
-                            result.append(item_clone)
+    def __call__(self, block):
+        return self._process_data(block)
 
-                        value[field] = result
-                    elif len(link) > 0 and isinstance(link[0], string_types):
-                        value[field] = [uid_to_url(item) for item in link]
-        return value
+    def _process_data(self, data, field=None):
+        if isinstance(data, str) and field in self.fields:
+            return uid_to_url(data)
+        if isinstance(data, list):
+            return [self._process_data(data=value, field=field) for value in data]
+        if isinstance(data, dict):
+            fields = ["value"] if data.get("@type") == "URL" else []
+            fields.append("@id")
+            fields.extend(self.fields)
+            newdata = {}
+            for field in fields:
+                if field not in data or not isinstance(data[field], str):
+                    continue
+                newdata[field], brain = resolve_uid(data[field])
+                if brain is not None and "image_scales" not in newdata:
+                    newdata["image_scales"] = getattr(brain, "image_scales", None)
+            result = {
+                field: (
+                    newdata[field]
+                    if field in newdata
+                    else self._process_data(data=newdata.get(field, value), field=field)
+                )
+                for field, value in data.items()
+            }
+            if newdata.get("image_scales"):
+                result["image_scales"] = newdata["image_scales"]
+            return result
+        return data
 
 
-class TextBlockSerializerBase(object):
+class TextBlockSerializerBase:
     order = 100
     block_type = "text"
     disabled = os.environ.get("disable_transform_resolveuid", False)
@@ -129,22 +105,89 @@ class TextBlockSerializerBase(object):
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IBlocks, IBrowserRequest)
 class ResolveUIDSerializer(ResolveUIDSerializerBase):
-    """ Serializer for content-types with IBlocks behavior """
+    """Serializer for content-types with IBlocks behavior"""
 
 
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IPloneSiteRoot, IBrowserRequest)
 class ResolveUIDSerializerRoot(ResolveUIDSerializerBase):
-    """ Serializer for site root """
+    """Serializer for site root"""
 
 
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IBlocks, IBrowserRequest)
 class TextBlockSerializer(TextBlockSerializerBase):
-    """ Serializer for content-types with IBlocks behavior """
+    """Serializer for content-types with IBlocks behavior"""
 
 
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IPloneSiteRoot, IBrowserRequest)
 class TextBlockSerializerRoot(TextBlockSerializerBase):
-    """ Serializer for site root """
+    """Serializer for site root"""
+
+
+class SlateBlockSerializerBase(SlateBlockTransformer):
+    """SlateBlockSerializerBase."""
+
+    order = 100
+    block_type = "slate"
+    disabled = os.environ.get("disable_transform_resolveuid", False)
+
+    def _uid_to_url(self, context, path):
+        return uid_to_url(path)
+
+    def handle_a(self, child):
+        transform_links(self.context, child, transformer=self._uid_to_url)
+
+    def handle_link(self, child):
+        if child.get("data", {}).get("url"):
+            child["data"]["url"] = uid_to_url(child["data"]["url"])
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IBlocks, IBrowserRequest)
+class SlateBlockSerializer(SlateBlockSerializerBase):
+    """Serializer for content-types with IBlocks behavior"""
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IPloneSiteRoot, IBrowserRequest)
+class SlateBlockSerializerRoot(SlateBlockSerializerBase):
+    """Serializer for site root"""
+
+
+class SlateTableBlockSerializerBase(SlateBlockSerializerBase):
+    """SlateBlockSerializerBase."""
+
+    order = 100
+    block_type = "slateTable"
+
+    def __call__(self, block):
+        """call"""
+        rows = block.get("table", {}).get("rows", [])
+        for row in rows:
+            cells = row.get("cells", [])
+
+            for cell in cells:
+                cellvalue = cell.get("value", [])
+                children = iterate_children(cellvalue or [])
+                for child in children:
+                    node_type = child.get("type")
+                    if node_type:
+                        handler = getattr(self, f"handle_{node_type}", None)
+                        if handler:
+                            handler(child)
+
+        return block
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IBlocks, IBrowserRequest)
+class SlateTableBlockSerializer(SlateTableBlockSerializerBase):
+    """Serializer for content-types with IBlocks behavior"""
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IPloneSiteRoot, IBrowserRequest)
+class SlateTableBlockSerializerRoot(SlateTableBlockSerializerBase):
+    """Serializer for site root"""

@@ -1,35 +1,37 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:zcml="http://namespaces.zope.org/zcml"
-    i18n_domain="plone.restapi">
+    i18n_domain="plone.restapi"
+    >
 
-    <adapter factory=".adapters.DefaultJsonSchemaProvider" />
-    <adapter factory=".adapters.BytesLineJsonSchemaProvider" />
-    <adapter factory=".adapters.TextLineJsonSchemaProvider" />
-    <adapter factory=".adapters.TextJsonSchemaProvider" />
-    <adapter factory=".adapters.ASCIIJsonSchemaProvider" />
-    <adapter factory=".adapters.ASCIILineJsonSchemaProvider" />
-    <adapter factory=".adapters.EmailJsonSchemaProvider" />
-    <adapter factory=".adapters.PasswordJsonSchemaProvider" />
-    <adapter factory=".adapters.URIJsonSchemaProvider" />
-    <adapter factory=".adapters.FloatJsonSchemaProvider" />
-    <adapter factory=".adapters.DecimalJsonSchemaProvider" />
-    <adapter factory=".adapters.IntegerJsonSchemaProvider" />
-    <adapter factory=".adapters.BoolJsonSchemaProvider" />
-    <adapter factory=".adapters.CollectionJsonSchemaProvider" />
-    <adapter factory=".adapters.ListJsonSchemaProvider" />
-    <adapter
-        zcml:condition="installed z3c.relationfield"
-        factory=".z3crelationadapter.ChoiceslessRelationListSchemaProvider"
-        name="IRelatedItems.relatedItems" />
-    <adapter factory=".adapters.SetJsonSchemaProvider" />
-    <adapter factory=".adapters.TupleJsonSchemaProvider" />
-    <adapter factory=".adapters.ChoiceJsonSchemaProvider" />
-    <adapter factory=".adapters.ObjectJsonSchemaProvider" />
-    <adapter factory=".adapters.DictJsonSchemaProvider" />
-    <adapter factory=".adapters.RichTextJsonSchemaProvider" />
-    <adapter factory=".adapters.DateJsonSchemaProvider" />
-    <adapter factory=".adapters.DatetimeJsonSchemaProvider" />
-    <adapter factory=".adapters.JSONFieldSchemaProvider" />
+  <adapter factory=".adapters.DefaultJsonSchemaProvider" />
+  <adapter factory=".adapters.BytesLineJsonSchemaProvider" />
+  <adapter factory=".adapters.TextLineJsonSchemaProvider" />
+  <adapter factory=".adapters.TextJsonSchemaProvider" />
+  <adapter factory=".adapters.ASCIIJsonSchemaProvider" />
+  <adapter factory=".adapters.ASCIILineJsonSchemaProvider" />
+  <adapter factory=".adapters.EmailJsonSchemaProvider" />
+  <adapter factory=".adapters.PasswordJsonSchemaProvider" />
+  <adapter factory=".adapters.URIJsonSchemaProvider" />
+  <adapter factory=".adapters.FloatJsonSchemaProvider" />
+  <adapter factory=".adapters.DecimalJsonSchemaProvider" />
+  <adapter factory=".adapters.IntegerJsonSchemaProvider" />
+  <adapter factory=".adapters.BoolJsonSchemaProvider" />
+  <adapter factory=".adapters.CollectionJsonSchemaProvider" />
+  <adapter factory=".adapters.ListJsonSchemaProvider" />
+  <adapter
+      factory=".z3crelationadapter.ChoiceslessRelationListSchemaProvider"
+      name="IRelatedItems.relatedItems"
+      zcml:condition="installed z3c.relationfield"
+      />
+  <adapter factory=".adapters.SetJsonSchemaProvider" />
+  <adapter factory=".adapters.TupleJsonSchemaProvider" />
+  <adapter factory=".adapters.ChoiceJsonSchemaProvider" />
+  <adapter factory=".adapters.ObjectJsonSchemaProvider" />
+  <adapter factory=".adapters.DictJsonSchemaProvider" />
+  <adapter factory=".adapters.RichTextJsonSchemaProvider" />
+  <adapter factory=".adapters.DateJsonSchemaProvider" />
+  <adapter factory=".adapters.DatetimeJsonSchemaProvider" />
+  <adapter factory=".adapters.JSONFieldSchemaProvider" />
 
 </configure>

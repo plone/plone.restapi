@@ -1,9 +1,15 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="plone.restapi">
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="plone.restapi"
+    >
 
-    <adapter factory=".ControlpanelSerializeToJson" />
-    <adapter factory=".ControlpanelSummarySerializeToJson" />
-    <adapter factory=".types.DexterityTypesControlpanelSerializeToJson" />
+  <adapter factory=".ControlpanelSerializeToJson" />
+  <adapter factory=".ControlpanelSummarySerializeToJson" />
+  <adapter factory=".types.DexterityTypesControlpanelSerializeToJson" />
+  <adapter
+      factory=".rules.ContentRulesControlpanelSerializeToJson"
+      zcml:condition="installed plone.app.contentrules"
+      />
 
 </configure>

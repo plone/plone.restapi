@@ -1,22 +1,20 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime as dt
+from datetime import timezone
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
+from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
-from Products.CMFPlone.utils import safe_unicode
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-import six
-
 
 @implementer(IPublishTraverse)
 class HistoryGet(Service):
     def __init__(self, context, request):
-        super(HistoryGet, self).__init__(context, request)
+        super().__init__(context, request)
         self.version = None
 
     def publishTraverse(self, request, name):
@@ -40,6 +38,8 @@ class HistoryGet(Service):
         content_history_viewlet.navigation_root_url = site_url
         content_history_viewlet.site_url = site_url
         history = content_history_viewlet.fullHistory()
+        if history is None:
+            history = []
 
         unwanted_keys = [
             "diff_current_url",
@@ -71,8 +71,10 @@ class HistoryGet(Service):
 
             # Versioning entries use a timestamp,
             # workflow ISO formatted string
-            if not isinstance(item["time"], six.string_types):
-                item["time"] = dt.fromtimestamp(item["time"]).isoformat()
+            if not isinstance(item["time"], str):
+                item["time"] = dt.fromtimestamp(
+                    int(item["time"]), tz=timezone.utc
+                ).isoformat(timespec="seconds")
 
             # The create event has an empty 'action', but we like it to say
             # 'Create', alike the transition_title
@@ -82,17 +84,17 @@ class HistoryGet(Service):
             # We want action, state and transition names translated
             if "state_title" in item:
                 item["state_title"] = self.context.translate(
-                    safe_unicode(item["state_title"]), context=self.request
+                    safe_text(item["state_title"]), context=self.request
                 )
 
             if "transition_title" in item:
                 item["transition_title"] = self.context.translate(
-                    safe_unicode(item["transition_title"]), context=self.request
+                    safe_text(item["transition_title"]), context=self.request
                 )
 
             if "action" in item:
                 item["action"] = self.context.translate(
-                    safe_unicode(item["action"]), context=self.request
+                    safe_text(item["action"]), context=self.request
                 )
 
             # clean up

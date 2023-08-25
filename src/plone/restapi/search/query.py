@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 The adapters in this module are responsible for turning back a catalog query
 that has been serialized (to a HTTP query string or JSON) into a query that is
@@ -60,7 +59,7 @@ ANY_TYPE = object()
 
 @implementer(IZCatalogCompatibleQuery)
 @adapter(Interface, Interface)
-class ZCatalogCompatibleQueryAdapter(object):
+class ZCatalogCompatibleQueryAdapter:
     """Converts a Python dictionary representing a catalog query, but with
     possibly wrong value types, to a ZCatalog compatible query dict suitable
     for passing to catalog.searchResults().
@@ -69,12 +68,17 @@ class ZCatalogCompatibleQueryAdapter(object):
     """
 
     global_query_params = {
-        "sort_on": str,
-        "sort_order": str,
         "sort_limit": int,
         "b_start": int,
         "b_size": int,
     }
+
+    multiple_types_global_query_params = {
+        "sort_on": {list: list, tuple: list, str: str},
+        "sort_order": {list: list, tuple: list, str: str},
+    }
+
+    ignore_query_params = ["metadata_fields"]
 
     def __init__(self, context, request):
         self.context = context
@@ -88,11 +92,22 @@ class ZCatalogCompatibleQueryAdapter(object):
         _type = self.global_query_params[idx_name]
         return _type(idx_query)
 
+    def parse_multiple_types_param(self, idx_name, idx_query):
+        """these indexes can contain single str values or a list of strings"""
+        possible_values = self.multiple_types_global_query_params[idx_name]
+        for current_value, future_value in possible_values.items():
+            if isinstance(idx_query, current_value):
+                return future_value(idx_query)
+
     def __call__(self, query):
         for idx_name, idx_query in query.items():
             if idx_name in self.global_query_params:
-                # It's a query-wide parameter like 'sort_on'
+                # It's a query-wide parameter like 'sort_limit'
                 query[idx_name] = self.parse_query_param(idx_name, idx_query)
+                continue
+
+            if idx_name in self.multiple_types_global_query_params:
+                query[idx_name] = self.parse_multiple_types_param(idx_name, idx_query)
                 continue
 
             # Then check for each index present in the query if there is an
@@ -100,7 +115,8 @@ class ZCatalogCompatibleQueryAdapter(object):
             # that could not be serialized in a query string or JSON
             index = self.get_index(idx_name)
             if index is None:
-                log.warning("No such index: %r" % idx_name)
+                if idx_name not in self.ignore_query_params:
+                    log.warning("No such index: %r" % idx_name)
                 continue
 
             query_opts_parser = getMultiAdapter(
@@ -114,7 +130,7 @@ class ZCatalogCompatibleQueryAdapter(object):
         return query
 
 
-class BaseIndexQueryParser(object):
+class BaseIndexQueryParser:
     """Base class for IIndexQueryParser adapters.
 
     See the IIndexQueryParser interface documentation for details.
@@ -175,7 +191,7 @@ class BaseIndexQueryParser(object):
                     )
             else:
                 log.warning(
-                    "Unrecognized query option %r for index %r" % (opt_key, self.index)
+                    f"Unrecognized query option {opt_key!r} for index {self.index!r}"
                 )
                 # Pass along unknown option without modification
                 parsed_query[opt_key] = opt_value

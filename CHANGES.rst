@@ -8,6 +8,1275 @@ Changelog
 
 .. towncrier release notes start
 
+8.43.0 (2023-08-23)
+-------------------
+
+New features:
+
+
+- Allow passing additional parameters to the delete users endpoint to request not to delete local roles and memberareas
+  [erral] (#1598)
+
+
+8.42.1 (2023-08-23)
+-------------------
+
+Bug fixes:
+
+
+- Fix broken relations info. @ksuess (#1673)
+
+
+Internal:
+
+
+- Fix test cleanup. @davisagli (#1680)
+
+
+Documentation:
+
+
+- Move expansion docs from endpoints to usage, and add a list of all expandable components. Fixes #1677. @stevepiercy (#1678)
+
+
+8.42.0 (2023-07-17)
+-------------------
+
+New features:
+
+
+- When serializing blocks, `image_scales` is now added to blocks that contain a resolveuid-based `url`.
+  When deserializing blocks, `image_scales` is removed. @davisagli (#1642)
+
+
+Bug fixes:
+
+
+- Remove the hard code dependency by plone.app.multilingual, use it conditionaly instead
+  [@folix-01] (#1639)
+- Fix timezone of dates for revisions in the `@history` service. @davisagli (#1647)
+- Fix types expander in root for Plone 5.2 (for non-Dexterity Plone Site Root) @sneridagh (#1669)
+
+
+Internal:
+
+
+- Updated package installation to use constraints.txt for black package, ensuring compatibility and consistent versions. @Akshat2Jain (#1671)
+- Update Makefile and buildout to use Plone 6.0.6. @davisagli (#1672)
+
+
+Documentation:
+
+
+- added instruction to ensure consistent code formatting. @Akshat2Jain (#1664)
+
+
+8.41.0 (2023-06-29)
+-------------------
+
+New features:
+
+
+- Add `visit_blocks` util for finding all nested blocks. @davisagli (#1648)
+
+
+Bug fixes:
+
+
+- Fix path2uid method, to handle suffix with non-traversable objects. @cekk @mamico (#1649)
+
+
+Internal:
+
+
+- Allow GHA tests to run on PRs from forks. @Akshat2Jain (#1656)
+
+
+Documentation:
+
+
+- Fix html_meta tags, and remove stray spaces that prevented the glossary from rendering. @stevepiercy (#1663)
+
+
+8.40.0 (2023-06-06)
+-------------------
+
+New features:
+
+
+- Added `@site` and `@navroot` endpoints. @erral (#1464)
+
+
+Bug fixes:
+
+
+- Validate input to the `@querystring-search` service. Input which can't be processed now results in a 400 response instead of 500. @davisagli (#1653)
+
+
+8.39.2 (2023-06-01)
+-------------------
+
+Bug fixes:
+
+
+- Fix content serializer with an old version of an item that was renamed. @davisagli (#1651)
+
+
+8.39.1 (2023-05-30)
+-------------------
+
+Bug fixes:
+
+
+- Fix possible startup error by explicitly loading ``plone.app.contentrules`` zcml.
+  Also: only load code related to contentrules when this package is available.
+  [maurits] (#1644)
+
+
+8.39.0 (2023-05-23)
+-------------------
+
+New features:
+
+
+- Create relations service. Query, add, delete. @ksuess (#1432)
+
+
+8.38.0 (2023-05-19)
+-------------------
+
+New features:
+
+
+- Add portal_type title (`type_title`) to content response @razvanMiu @nileshgulia1 (#1355)
+- Added support for nested schemas with resolveuid deserializer @JeffersonBledsoe (#1595)
+
+
+Bug fixes:
+
+
+- Fix missing metadata_fields in Response via GET Request to Endpoint /@querystring-search @1letter (#1628)
+- Respect Password Policy @tschorr (#1630)
+
+
+Internal:
+
+
+- Update buildout and requirements to Plone-6.0.4 @1letter (#1632)
+
+
+8.37.0 (2023-04-19)
+-------------------
+
+New features:
+
+
+- Apply a cache ruleset to the /@querystring-search endpoint.
+  [ericof] (#1626)
+
+
+8.36.1 (2023-04-17)
+-------------------
+
+Bug fixes:
+
+
+- Fix bugs in handling parameters when the `@querystringsearch` endpoint is called with the GET method. @davisagli (#1621)
+
+
+8.36.0 (2023-04-07)
+-------------------
+
+New features:
+
+
+- Add UID to relationvalue_converter summary. [ksuess] (#1605)
+- Add querystring_search get method. [robgietema] (#1616)
+
+
+Bug fixes:
+
+
+- Fix a bunch of deprecation warnings in a Plone 5.2 compatible way.
+  Applied proper isort.
+  Fixed unclosed file issues in a test.
+  Added Python 3.11 to test matrix.
+  [jensens] (#1606)
+- No longer declare support for Python 3.6 (it was already not tested). [davisagli] (#1615)
+- Fixed encoding issue on Python 3 for some mail servers.
+  This could result in missing characters in an email body.
+  [maurits] (#3754)
+
+
+8.35.3 (2023-03-23)
+-------------------
+
+Bug fixes:
+
+
+- Fix UnboundLocalError in RelationChoice deserializer. @davisagli (#1600)
+
+
+Internal:
+
+
+- Fixed tests in combination with newer ``plone.app.z3cform``.
+  [maurits] (#162)
+
+
+Documentation:
+
+
+- Update intersphinx_mapping for training @ksuess (#1596)
+
+
+8.35.2 (2023-03-10)
+-------------------
+
+Bug fixes:
+
+
+- Fix missing `Decimal` field deserializer.
+  [jensens] (#903)
+- Fix translation of the error message for a password that is too short while
+  adding a user. [davisagli] (#4395)
+
+
+8.35.1 (2023-03-02)
+-------------------
+
+Bug fixes:
+
+
+- Provide slateTable block serializer/deserializer to properly convert URLs to uids (#1590)
+
+
+8.35.0 (2023-02-18)
+-------------------
+
+New features:
+
+
+- Request of own user data provides joined groups @ksuess (#1581)
+- Implement IPurgePaths for RestAPI traversal (++api++) @ericof (#1587)
+
+
+8.34.0 (2023-02-06)
+-------------------
+
+New features:
+
+
+- Implement IRuleAction and IRuleCondition schema serialization in `@controlpanels/content-rules/` endpoint. [ericof] (#1579)
+
+
+Bug fixes:
+
+
+- Fix Plone Site serialization not returning the review_state in Plone 6. [ericof] (#1574)
+- Fix bug with registry service that would not support tuple records. [ericof] (#1575)
+
+
+8.33.3 (2023-01-29)
+-------------------
+
+Bug fixes:
+
+
+- Fix bug where the `@login` endpoint did not set the correct `__ac` cookie for Zope users. [davisagli] (#1572)
+
+
+8.33.2 (2023-01-19)
+-------------------
+
+Bug fixes:
+
+
+- Fix context navigation endpoint @contextnavigation to serve the navigation tree based on depth (bottomLevel).
+  [andreiggr] (#1562)
+- Fix tests for `zope.schema >= 7.0.0`
+  [petschki] (#1567)
+
+
+8.33.1 (2023-01-10)
+-------------------
+
+Bug fixes:
+
+
+- Fix blocks linkintegrity to find some links in `url` and `href` fields that were previously ignored. [davisagli] (#1565)
+
+
+Documentation:
+
+
+- Pin Sphinx<5,>=3 due to sphinx-book-theme 0.3.3 requirement. [stevepiercy] (#1563)
+
+
+8.33.0 (2022-12-29)
+-------------------
+
+New features:
+
+
+- Internationalization of ``@users`` endpoint error messages. [wesleybl] (#1548)
+- Add pt_BR translation. [wesleybl] (#1557)
+- Add fr translation. [jimbiscuit] (#1560)
+
+
+Bug fixes:
+
+
+- Fix mistaken warnings about sort_on and sort_order parameters in the @query
+  service. [davisagli] (#1558)
+
+
+Documentation:
+
+
+- Update links to the demo site in the README. [davisagli] (#1555)
+- Fix ogp_image URL. [stevepiercy] (#1556)
+- Update makefile to use Vale for spell, grammar, and style checking. Fix linkcheckbroken to return the correct exit code for broken links. Prepare links ot use 5.docs.plone.org in preparation for Plone 6 docs launch. [stevepiercy] (#1561)
+
+
+8.32.6 (2022-12-10)
+-------------------
+
+Bug fixes:
+
+
+- Fix an error when saving content with a slate block that includes an empty link. [davisagli] (#1553)
+
+
+8.32.5 (2022-12-08)
+-------------------
+
+Bug fixes:
+
+
+- Fix timezone for Locking creation date @iFlameing (#1551)
+
+
+8.32.4 (2022-12-01)
+-------------------
+
+Bug fixes:
+
+
+- Allow multiple values for sort_on and sort_order parameters in @search
+  [erral] (#1532)
+- Mock addon versions in documentation
+  [erral] (#1538)
+- Add "UID" to content type endpoint response of "Plone Site"
+  [ksuess] (#1546)
+
+
+8.32.3 (2022-11-22)
+-------------------
+
+Bug fixes:
+
+
+- Fortify user api against missing user data (None) @reebalazs (#1534)
+
+
+8.32.2 (2022-11-18)
+-------------------
+
+Bug fixes:
+
+
+- Fix AttributeError for ``REQUEST`` in linkintegrity when pasting nested content.
+  [maurits] (#1536)
+
+
+8.32.1 (2022-11-14)
+-------------------
+
+Bug fixes:
+
+
+- Fix time to be returned with a timezone specifier in history endpoint [reebalazs] (#1530)
+
+
+8.32.0 (2022-11-03)
+-------------------
+
+New features:
+
+
+- Add @upgrade endpoint to preview or run an upgrade of a Plone instance [ericof] (#1525)
+
+
+Bug fixes:
+
+
+- Added url field to Actions (#817)
+- Update statictime tests following changes to p.a.disucssion (see 
+  https://github.com/plone/plone.app.discussion/pull/204) - [instification] (#1520)
+- Update @portrait endpoint to use sanitized user id [instification] (#1524)
+
+
+8.31.0 (2022-10-20)
+-------------------
+
+New features:
+
+
+- Added @rules endpoint with GET/POST/DELETE/PATCH
+  [valipod] (#1397)
+- Add link integrity support for slate blocks
+  [sneridagh] (#1522)
+
+
+Bug fixes:
+
+
+- New behavior `volto.blocks.editable.layout` to be used with Volto DX Editable Layout
+  [avoinea] (#1476)
+- Fixed the `description` field not being included in fieldsets
+  [JeffersonBledsoe] (#1499)
+- Fix passwords used in tests. [davisagli] (#1513)
+
+
+Internal:
+
+
+- Remove plone.recipe.codeanalysis from buildout. [tisto] (#1507)
+- Don't use -latest when installing Plone for tests. [tisto] (#1512)
+- Cache buildout eggs between Github Actions runs. [davisagli] (#1515)
+- Use specific version of Plone in requirements.txt. Remove unnecessary pins. [wesleybl] (#1516)
+- Remove code-analysis from Makefile. [wesleybl] (#1517)
+
+
+Documentation:
+
+
+- Merge glossary terms into main plone/documentation. [stevepiercy] (#1508)
+- Fix linkintegrity documentation, add missing a response file, and use MyST syntax. [stevepiercy] (#1509)
+- Add Matomo Analytics, Remove Google Analytics. [stevepiercy] (#1518)
+- Trigger a new deploy core Plone documentation when Volto documentation is updated [esteele] (#1519)
+
+
+8.30.0 (2022-10-02)
+-------------------
+
+New features:
+
+
+- Add link integrity support for blocks
+  [cekk] (#953)
+
+
+Internal:
+
+
+- Plone 6 as first class citizen in builds and CI. Remove non-supported Python versions. Add 3.10 for Plone 6.
+  [sneridagh] (#1503)
+
+
+8.29.0 (2022-10-01)
+-------------------
+
+New features:
+
+
+- Add @userschema endpoint for getting the user schema.
+  [sneridagh] (#706)
+- Add @transactions endpoint to fetch transactions that have been made through the Plone website.
+  [@MdSahil-oss] (#1505)
+
+
+Bug fixes:
+
+
+- The ``@controlpanels/usergroup`` does not work for Plone 5 since it does not exist there. Bring back the missing `title` just for Plone 5.
+  [sneridagh] (#1501)
+
+
+8.28.0 (2022-09-29)
+-------------------
+
+New features:
+
+
+- Improve performance of serializing image scales. [davisagli] (#1498)
+
+
+Bug fixes:
+
+
+- Revert "When an id is specified explicitly in the content POST endpoint,
+  return a 400 error response if it is invalid or unavailable."
+  The fix was incorrect and disallowing ids that should be allowed.
+  [davisagli] (#1488)
+- Increase the length of passwords used in tests. [davisagli] (#1492)
+- Use json_compatible when serializing users in @users endpoint
+  [erral] (#1493)
+
+
+Documentation:
+
+
+- Reorganize navigation. [stevepiercy] (#1486)
+- Fix Google redirect and hyphenation of word. [stevepiercy] (#1495)
+
+
+8.27.0 (2022-09-14)
+-------------------
+
+New features:
+
+
+- Added @aliases endpoint with GET/POST/DELETE
+  [iulianpetchesi] (#1393)
+
+
+Bug fixes:
+
+
+- When an `id` is specified explicitly in the content POST endpoint,
+  return a 400 error response if it is invalid or unavailable.
+  [davisagli] (#1487)
+
+
+8.26.0 (2022-09-10)
+-------------------
+
+New features:
+
+
+- Add @portrait endpoint
+  [sneridagh] (#1480)
+
+
+Bug fixes:
+
+
+- Add portrait to the docs toctree to fix build warning. [stevepiercy] (#1485)
+
+
+8.25.1 (2022-09-02)
+-------------------
+
+Bug fixes:
+
+
+- Fix the category of the 'Users and groups settings' controlpanel adapter
+  [sneridagh] (#1482)
+
+
+8.25.0 (2022-08-31)
+-------------------
+
+New features:
+
+
+- Add support for importing profiles in @addons endpoint
+  [sneridagh] (#1479)
+
+
+Bug fixes:
+
+
+- Fix @registry endpoint Object of type datetime is not JSON serializable
+  [iulianpetchesi] (#1189)
+- Fixed small documentation for error code 404
+  [rohnsha] (#1430)
+- Handle subblocks in site root serializer for Plone 5.x
+  [erral] (#1449)
+- Do not hard depend on `plone.app.iterate`. It is not an direct core package and might not be available.
+  [jensens] (#1461)
+- Sanitise user id when checking for portrait [instification] (#1466)
+
+
+8.24.1 (2022-08-04)
+-------------------
+
+Bug fixes:
+
+
+- Fix of users endpoint for Membrane users. [ksuess] (#1459)
+
+
+8.24.0 (2022-07-15)
+-------------------
+
+New features:
+
+
+- Add support to search for fullname, email, id on the @users endpoint with "?search=" [ksuess] (#1443)
+
+Bug fixes:
+
+
+- Tests: add names to behaviors.  [maurits] (#169)
+
+
+8.23.0 (2022-06-23)
+-------------------
+
+New features:
+
+
+- Include users data in groups while retrieving @groups
+  [@nileshgulia1] (#1325)
+- Added 'View comments' and 'Reply to item' permission to discussion [@razvanMiu] (#1327)
+- better error logging for term lookup errors
+  [ajung] (#1365)
+- Documentation was converted to MyST from reStructuredText. [stevepiercy] (#1375)
+- Move caching rulesets to the ZCML where the endpoints are defined.
+  [jensens] (#1414)
+- List Users (@users): Add groups [ksuess]
+  List Users (@users): Support filtering by groups [ksuess] (#1419)
+- Fix: Update group: Preserve title and description. [ksuess] (#1424)
+- Add UsersGroupsSettings to set of control panels. [ksuess]
+  Move configlet UsersGroupsSettings to correct group (Volto control panel group "Users and Groups") [ksuess] (#1436)
+
+
+Bug fixes:
+
+
+- Test-only fix: normalize white space in html in some tests.
+  Needed to not fail with newer plone.outputfilters.
+  [maurits] (#49)
+- Tests: patch unique url for scale in old or new way.
+  This is only in serializer tests for images.
+  [maurits] (#57)
+- Make the PAS plugin compatible with ``PyJWT`` 1 and 2.
+  [jensens, maurits] (#1193)
+- Fix tests for changes in displayed_types. See https://github.com/plone/Products.CMFPlone/issues/3486
+  [pbauer] (#1359)
+- Use JSON instead of JSON Schema for code samples. [stevepiercy] (#1379)
+- Control panels and translations are supported in Plone 5 or greater. [stevepiercy] (#1380)
+- Add html_meta tags and values for better SEO. [stevepiercy] (#1382)
+- Update demo site to 6.demo.plone.org in README.rst. [stevepiercy] (#1383)
+- Fixed timestamp calculation in history service on Python 3.10.
+  [maurits] (#1391)
+- Fix empty .resp in docs of PATCH controlpanel (#1396)
+- Translate addon titles on @addon controlpanel
+  [erral] (#1412)
+- Do not break path2uid with some edge-cases.
+  [cekk] (#1428)
+- Sort the roles in the user serializer.
+  [maurits] (#1452)
+
+
+Internal:
+
+
+- Add naming best practices for URL Attributes (singular vs plural) to the docs
+  [tisto] (#1295)
+- Enable Google Analytics 4 [stevepiercy] (#1404)
+- fixed broken make task docs-linkcheckbroken (#1421)
+- Fix broken link to Python requests library docs. [stevepiercy] (#1438)
+
+
+8.22.0 (2022-04-08)
+-------------------
+
+New features:
+
+
+- Fix broken links. Add `make netlify` as a build target to preview changes to docs only. Prepare docs for import into main Plone documentation without significant changes. Use sphinx-book-them as theme. [stevepiercy] (#1337)
+
+
+Bug fixes:
+
+
+- Return proper error message when trying to create a content object with a wrong @type parameter. [tisto] (#1188)
+- Fix the link in the GitHub menu item "suggest edit" to point to master branch. [stevepiercy] (#1346)
+- Fix the redirect link for upc.edu to /en. [stevepiercy] (#1351)
+- Fix testing matrix to use correct combos of Python and Plone.
+  [maurits] (#1356)
+
+
+8.21.2 (2022-02-21)
+-------------------
+
+Bug fixes:
+
+
+- Restrict unlinking on Language Root Folders
+  [sneridagh] (#1332)
+
+
+8.21.1 (2022-02-21)
+-------------------
+
+Bug fixes:
+
+
+- Improve handling of linking translations taking into account the state of the target. Restricting it completely for LRFs. Adding a transaction note to the action if it succeeds.
+  [sneridagh] (#1329)
+
+
+8.21.0 (2022-01-25)
+-------------------
+
+New features:
+
+
+- Enhance @addons endpoint to return a list of upgradeable addons.
+  [sneridagh] (#1319)
+
+
+8.20.0 (2022-01-19)
+-------------------
+
+New features:
+
+
+- Add support for DX Plone Site root in Plone 6. Remove blocks behavior hack for site root in Plone 6.
+  [sneridagh] (#1219)
+
+
+8.19.0 (2022-01-19)
+-------------------
+
+New features:
+
+
+- Add support for multilingual language independent fields in field serialization
+  [sneridagh] (#1316)
+
+
+Internal:
+
+
+- Update build to Plone 6 alpha 2
+  [sneridagh] (#1312)
+
+
+8.18.1 (2022-01-06)
+-------------------
+
+Internal:
+
+
+- Be permissive when testing the schema of the querystring endpoint [reebalazs] (#1307)
+
+
+8.18.0 (2022-01-03)
+-------------------
+
+New features:
+
+
+- Improve vocabulary endpoint when asking for a list of tokens adding resilience and deprecation warning
+  [sneridagh] (#1298)
+- Expandable params as list and deprecations for list as comma separated
+  [sneridagh] (#1300)
+
+
+Bug fixes:
+
+
+- Do not break in recursive transition when children already are in destination state. [cekk] (#1291)
+- Resolve the bulk of deprecation and resource leak warnings when running the full test
+  suite.
+  [rpatterson] (#1302)
+
+
+8.17.0 (2021-12-21)
+-------------------
+
+New features:
+
+
+- Enhance the vocabularies serializer to accept a list of tokens
+  [sneridagh] (#1294)
+
+
+Bug fixes:
+
+
+- SearchableText indexer should maintain the order of the blocks
+  [ericof] (#1292)
+
+
+8.16.2 (2021-12-03)
+-------------------
+
+Bug fixes:
+
+
+- Revert "Improve support for missing_value and default story" because it breaks multilingual
+  [timo] (#1289)
+
+
+8.16.1 (2021-11-30)
+-------------------
+
+Bug fixes:
+
+
+- Improve support and meaning for `default` and `missing_value` in serializers/deserializers
+  [sneridagh] (#1282)
+
+
+8.16.0 (2021-11-29)
+-------------------
+
+New features:
+
+
+- Enable table blocks indexing [cekk] (#1281)
+
+
+8.15.3 (2021-11-29)
+-------------------
+
+Bug fixes:
+
+
+- Types service: Do not consider TypeSchemaContext as a valid context
+  [ericof] (#1278)
+- Improve error status code in vocabularies endpoint refactor
+  [sneridagh] (#1284)
+
+
+8.15.2 (2021-11-24)
+-------------------
+
+Bug fixes:
+
+
+- Adjust restrictions of vocabularies endpoint [ksuess] (#1258)
+
+
+8.15.1 (2021-11-24)
+-------------------
+
+Bug fixes:
+
+
+- Fix schema generation when /@types/ is used in a context. [ericof] (#1271)
+
+
+8.15.0 (2021-11-23)
+-------------------
+
+New features:
+
+
+- Return non-batched vocabularies given a query param ``b_size=-1``
+  [sneridagh] (#1264)
+
+
+Bug fixes:
+
+
+- Remove all traces of ``Products.CMFQuickInstaller``.
+  It was removed in Plone 5.2.
+  BBB code was in ``plone.app.upgrade`` only.
+  Plone with Restapi broke if ``plone.app.upgrade` was not available, like when dependening on ``Products.CMFPlone`` only.
+  [jensens] (#1267)
+- Fix installation of JWT PAS plugin with default profile. [jensens] (#1269)
+
+
+8.14.0 (2021-11-11)
+-------------------
+
+New features:
+
+
+- Add root (INavigationRoot) for the current object information in @translations endpoint
+  [sneridagh] (#1263)
+
+
+8.13.0 (2021-11-05)
+-------------------
+
+New features:
+
+
+- Implement IJSONSummarySerializerMetadata allowing addons to extend the metadata returned by Summary serializer.
+  [ericof] (#1250)
+- Enable usage of metadata_fields also for POST calls [cekk] (#1253)
+
+
+8.12.1 (2021-10-14)
+-------------------
+
+Bug fixes:
+
+
+- Fix wrong @id attribute on the Plone root serialization when using the new ++api++ traversal (introduced in plone.rest 2.0.0)
+  [sneridagh] (#1248)
+
+
+8.12.0 (2021-10-11)
+-------------------
+
+New features:
+
+
+- Add missing backend logout actions for the @logout endpoint (delete cookie, etc)
+  [sneridagh] (#1239)
+
+
+8.11.0 (2021-09-29)
+-------------------
+
+New features:
+
+
+- Make masking specific validation errors configurable in DX DeserializeFromJson. [fredvd] (#1211)
+
+
+Bug fixes:
+
+
+- Normalize unstable generated behavior names in http-examples output.
+  No longer hardcode port 55001 for the tests.
+  [maurits] (#1226)
+- Avoid `UnboundLocalError` or duplicates in results when using `@search` endpoint and a brain is orphan or a `KeyError` occurs during result serialization.
+  [gbastien] (#1231)
+
+
+8.10.0 (2021-09-24)
+-------------------
+
+New features:
+
+
+- Update default allow_headers CORS to include: Lock-Token [@avoinea] (#1181)
+- @types endpoint also returns if a content type is immediately addable in the given context
+  [ericof] (#1228)
+
+
+Bug fixes:
+
+
+- Fix @users endpoint to use acl_users.searchResults instead of portal_membership.listMembers
+  [ericof] (#1199)
+- Fix testing of a checkout instead of a released package.
+  [maurits] (#1213)
+- Fix @users endpoint to return list of users ordered by fullname property
+  [ericof] (#1222)
+
+
+8.9.1 (2021-08-27)
+------------------
+
+Bug fixes:
+
+
+- Fixes values not being stored during content creation if value is equal to the one returned by defaultFactory.
+  [ericof] (#1207)
+
+
+8.9.0 (2021-08-25)
+------------------
+
+New features:
+
+
+- Refactor `@lock` endpoint based on CRUD operations [@avoinea] (#1181)
+
+
+8.8.1 (2021-08-20)
+------------------
+
+Bug fixes:
+
+
+- Fix @vocabularies endpoint to search in translated term titles
+  [sneridagh] (#1204)
+
+
+8.8.0 (2021-08-20)
+------------------
+
+New features:
+
+
+- Add resolveuid support to Link content type ``remoteUrl`` field.
+  [sneridagh] (#1197)
+
+
+Bug fixes:
+
+
+- Updated tests to not fail when the Plone Site root is dexterity.
+  [jaroel] (#2454)
+
+
+8.7.1 (2021-08-03)
+------------------
+
+Bug fixes:
+
+
+- Do not break @workflow endpoint for contents without workflow [cekk] (#1184)
+- Do not break @workflow endpoint when trying to change the state of a content without workflow [cekk] (#1190)
+
+
+8.7.0 (2021-07-19)
+------------------
+
+New features:
+
+
+- Improve extensibility story for resolveUID field serializer/deserializer
+  [sneridagh] (#1179)
+
+
+8.6.1 (2021-07-16)
+------------------
+
+Bug fixes:
+
+
+- Wrong deserialization if the path does not exist but is matched via acquisition
+  [sneridagh] (#1176)
+
+
+8.6.0 (2021-07-13)
+------------------
+
+New features:
+
+
+- Set UID of a content during creation if the user has Manage Portal permission.
+  [ericof] (#497)
+
+
+8.5.0 (2021-07-09)
+------------------
+
+New features:
+
+
+- Remove Python 2, Plone 4.3, and 5.1 code.
+  [ericof] (#1140)
+
+
+8.4.2 (2021-07-08)
+------------------
+
+Bug fixes:
+
+
+- In src run `find . -name "*.py"|xargs pyupgrade --py36-plus`.
+  Then run black and remove six import leftovers.
+  [jensens] (#1162)
+- Fix link content serialization when url points to local content but it does not exist
+  [sneridagh] (#1167)
+- Fix navigation service not using nav_title metadata.
+  [ericof] (#1169)
+
+
+8.4.1 (2021-07-07)
+------------------
+
+Bug fixes:
+
+
+- Fix interpolation variable present in response after serialization
+  [sneridagh] (#1164)
+
+
+8.4.0 (2021-07-06)
+------------------
+
+New features:
+
+
+- Pass through field attribute 'widget' for field Dict [ksuess] (#1153)
+
+
+Bug fixes:
+
+
+- Use security decorators in PAS plugin. [jensens] (#1155)
+- Drop coding magic first line. Coding magic is no longer needed in Python 3, except if different from utf-8. [jensens] (#1156)
+- Fix PAS plugin ZMI markup for Zope4+. [jensens] (#1157)
+- Eliminate non-pythonic 'return None' usage. [jensens] (#1158)
+- Provide value_type of plone.schema / zope.schema Dict field [ksuess] (#1159)
+
+
+8.3.2 (2021-07-05)
+------------------
+
+Bug fixes:
+
+
+- Fix navigation endpoint sort by adding default `sort_on='getObjPositionInParent'` to the query.  @valipod @tiberiuichim (#1107)
+
+
+8.3.1 (2021-07-02)
+------------------
+
+Bug fixes:
+
+
+- Unify ZMI, HTML form, and API login. @rpatterson (#1141)
+
+
+8.3.0 (2021-06-07)
+------------------
+
+New features:
+
+
+- Add current state and translation to the @workflow endpoint
+  [sneridagh] (#1146)
+
+
+Bug fixes:
+
+
+- Remove code to support Python 2, Plone 4.3/5.0/5.1 [timo] (#1140)
+- Remove unecessary check for plone.app.iterate which breaks the @components attributes. [timo] (#1148)
+
+
+8.2.0 (2021-06-02)
+------------------
+
+New features:
+
+
+- Add working copy (p.a.iterate) support
+  [sneridagh] (#1132)
+
+
+8.1.0 (2021-05-27)
+------------------
+
+New features:
+
+
+- Add support for volto-slate blocks: use resolveuid for internal links, index slate blocks in the catalog, support block transforms. @tiberiuichim (#1125)
+
+
+Bug fixes:
+
+
+- Fixed a deprecation warning when importing UnrestrictedUser from AccessControl (#1129)
+
+
+
+Internal:
+
+- Format zcml files with collective.zpretty. Add zpretty Github workflow. @tiberiuichim
+
+
+8.0.0 (2021-05-14)
+------------------
+
+Breaking changes:
+
+
+- Drop support for Python 2 and Plone 5.1 and 4.3. Plone RESTAPI >= 8 supports Python 3 and Plone 5.2/6.x only. [timo] (#1121)
+
+
+7.3.5 (2021-05-03)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@workflow`` when executing user has no permissions to access ``review_history`` in target state.
+  [deiferni] (#999)
+
+
+7.3.4 (2021-04-30)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@history`` when full history is empty.
+  [deiferni] (#1113)
+
+
+7.3.3 (2021-04-29)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@querystring-search`` endpoint with correct sort_order
+  @mamico (#1108)
+
+
+7.3.2 (2021-04-07)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@search`` endpoint with use_site_search_settings flag, for VHM PhysicalRoot
+  scenarios
+  @tiberiuichim (#1105)
+
+
+7.3.1 (2021-03-27)
+------------------
+
+Bug fixes:
+
+
+- Fixes if old p.schema is used
+  [sneridagh] (#1103)
+
+
+7.3.0 (2021-03-25)
+------------------
+
+New features:
+
+
+- Adjust JSONField adapter to include widget name to use in serialization
+  [sneridagh] (#1089)
+
+
+Bug fixes:
+
+
+- Fixes build was using the released version
+  [sneridagh] (#1090)
+
+
+7.2.1 (2021-03-22)
+------------------
+
+Bug fixes:
+
+
+- @contextnavigation endpoint does not honor nav_title index
+  [sneridagh] (#1092)
+
+
+7.2.0 (2021-03-18)
+------------------
+
+New features:
+
+
+- Allow block transforms to run in "subblocks", discovered as the ``blocks`` field (or alternatively, ``data.blocks``) in a block value. (#1085)
+
+
+7.1.0 (2021-03-17)
+------------------
+
+New features:
+
+
+- Allow passing ``use_site_search_settings=1`` in the ``@search`` endpoint request, to follow Plone's ``ISearchSchema`` settings. (#1081)
+
+
+Bug fixes:
+
+
+- Do not log "No such index" warnings for knonw indexes like metadata_fields @cekk (#987)
+- Respect "Access inactive portal content" permission in @search endpoint [cekk] (#1066)
+- Add GSM unsubscribe for test registered adapters in block transformer tests @tiberiuichim (#1083)
+- Pin some package versions to fix buildout @tiberiuichim (#1086)
+
+
 7.0.0 (2021-02-20)
 ------------------
 

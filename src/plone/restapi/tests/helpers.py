@@ -1,6 +1,9 @@
-# -*- coding: utf-8 -*-
+from contextlib import contextmanager
+from plone.restapi.services.addons.addons import Addons
+from plone.scale import storage
 from Products.CMFCore.utils import getToolByName
-from six.moves.urllib.parse import urlparse
+from unittest.mock import patch
+from urllib.parse import urlparse
 
 import quopri
 
@@ -44,3 +47,41 @@ def ascii_token(text):
     bytestring that is safe to use in term tokens.
     """
     return quopri.encodestring(text.encode("utf-8"))
+
+
+@contextmanager
+def patch_scale_uuid(value):
+    """Patch plone.scale to use a hard coded value as unique id.
+
+    Until plone.scale 4.0.0a3 (2022-05-09) this goes via the uuid4 function.
+    For later versions we need to patch the new hash_key method.
+
+    We also patch the _modified_since method to always return True.
+    Otherwise you may get info from a different scale back,
+    precisely because we give all scales the same "unique" id,
+    which then is of course no longer unique, making the logic unstable.
+    This is needed for the newer plone.scale versions,
+    but should be perfectly fine for the older ones.
+    """
+    if hasattr(storage.AnnotationStorage, "hash_key"):
+        to_patch = storage.AnnotationStorage
+        name = "hash_key"
+    else:
+        to_patch = storage
+        name = "uuid4"
+    with patch.object(to_patch, name, return_value=value):
+        with patch.object(
+            storage.AnnotationStorage, "_modified_since", return_value=True
+        ):
+            yield
+
+
+@contextmanager
+def patch_addon_versions(value):
+    """Patch the method that extracts the version of each of the addons.
+    Without this patch we get version errors each time an addon is upgraded
+    which is really annoying when a new version of plone.restapi is released
+    because all PRs need to be updated
+    """
+    with patch.object(Addons, "get_product_version", return_value=value):
+        yield

@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.utils import getToolByName
+
 
 try:
     from Products.CMFPlone.controlpanel.browser.overview import OverviewControlPanel
@@ -24,7 +24,7 @@ class TestSystemFunctional(unittest.TestCase):
         self.request = self.portal.REQUEST
         self.catalog = getToolByName(self.portal, "portal_catalog")
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         overview_control_panel = OverviewControlPanel(self.portal, self.request)
@@ -40,7 +40,7 @@ class TestSystemFunctional(unittest.TestCase):
         self.assertEqual(response.headers.get("Content-Type"), "application/json")
 
         results = response.json()
-        self.assertEqual(results[u"@id"], self.portal.absolute_url() + "/@system")
+        self.assertEqual(results["@id"], self.portal.absolute_url() + "/@system")
         self.assertEqual(results["cmf_version"], self.core_versions.get("CMF"))
         self.assertEqual(results["debug_mode"], self.core_versions.get("Debug mode"))
         self.assertEqual(results["pil_version"], self.core_versions.get("PIL"))
@@ -55,3 +55,4 @@ class TestSystemFunctional(unittest.TestCase):
         )
         self.assertEqual(results["plone_version"], self.core_versions.get("Plone"))
         self.assertEqual(results["zope_version"], self.core_versions.get("Zope"))
+        self.assertFalse(results["upgrade"])

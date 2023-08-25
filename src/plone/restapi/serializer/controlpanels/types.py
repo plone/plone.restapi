@@ -1,19 +1,18 @@
-# -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from plone.dexterity.interfaces import IDexterityFTI
-from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
-from plone.restapi.serializer.controlpanels import SERVICE_ID
+from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.controlpanels import ControlpanelSerializeToJson
 from plone.restapi.serializer.controlpanels import get_jsonschema_for_controlpanel
+from plone.restapi.serializer.controlpanels import SERVICE_ID
 from plone.restapi.serializer.converters import json_compatible
+from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getAllUtilitiesRegisteredFor
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
-from zope.interface import implementer
 from zope.i18n import translate
+from zope.interface import implementer
 
 
 @implementer(ISerializeToJson)
@@ -92,7 +91,7 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
         if item is not None:
             return self.serialize_item(item)
 
-        json = super(DexterityTypesControlpanelSerializeToJson, self).__call__()
+        json = super().__call__()
         json["items"] = []
 
         portal = getSite()

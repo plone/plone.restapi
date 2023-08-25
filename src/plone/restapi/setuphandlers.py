@@ -1,24 +1,25 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from plone.restapi.bbb import INonInstallable
 from plone.restapi.pas.plugin import JWTAuthenticationPlugin
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import INonInstallable
 from Products.PluggableAuthService.interfaces.authservice import (
     IPluggableAuthService,
 )  # noqa: E501
+from zope.component.hooks import getSite
 from zope.interface import implementer
 
 
 @implementer(INonInstallable)
-class HiddenProfiles(object):
+class HiddenProfiles:
     def getNonInstallableProfiles(self):  # pragma: no cover
         """Do not show on Plone's list of installable profiles."""
         return [
-            u"plone.restapi:performance",
-            u"plone.restapi:testing",
-            u"plone.restapi:blocks",
-            u"plone.restapi:uninstall",
+            "plone.restapi:blocks",
+            "plone.restapi:performance",
+            "plone.restapi:testing",
+            "plone.restapi:testing-workflows",
+            "plone.restapi:uninstall",
         ]
 
     def getNonInstallableProducts(self):  # pragma: no cover
@@ -26,7 +27,7 @@ class HiddenProfiles(object):
 
         This method is only used in Plone 5.1+.
         """
-        return [u"plone.restapi.upgrades"]
+        return ["plone.restapi.upgrades"]
 
 
 def install_pas_plugin(context):
@@ -45,10 +46,7 @@ def install_pas_plugin(context):
         uf_parent = aq_parent(uf_parent)
 
 
-def import_various(context):
-    """Miscellanous steps import handle"""
-    if context.readDataFile("plone.restapi_various.txt") is None:
-        return
-
-    site = context.getSite()
+def post_install_default(context):
+    """Post install of default profile"""
+    site = getSite()
     install_pas_plugin(site)

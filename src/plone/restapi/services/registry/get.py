@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -11,7 +11,7 @@ from zope.publisher.interfaces import IPublishTraverse
 @implementer(IPublishTraverse)
 class RegistryGet(Service):
     def __init__(self, context, request):
-        super(RegistryGet, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):
@@ -33,7 +33,7 @@ class RegistryGet(Service):
         registry = getUtility(IRegistry)
         if self.params:
             value = registry[self._get_record_name]
-            return value
+            return json_compatible(value)
         else:  # batched listing
             serializer = getMultiAdapter((registry, self.request), ISerializeToJson)
             return serializer()

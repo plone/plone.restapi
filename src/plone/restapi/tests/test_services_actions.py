@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -28,7 +27,14 @@ class TestActions(unittest.TestCase):
         return category
 
     def add_action(
-        self, category, name, title, icon_expr="", available_expr="", permissions=()
+        self,
+        category,
+        name,
+        title,
+        icon_expr="",
+        available_expr="",
+        permissions=(),
+        url="",
     ):
         action = Action(
             name,
@@ -36,6 +42,7 @@ class TestActions(unittest.TestCase):
             icon_expr=icon_expr,
             available_expr=available_expr,
             permissions=permissions,
+            url_expr=url,
         )
         action.id = name
         category._setObject(name, action)
@@ -47,11 +54,11 @@ class TestActions(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-        self.anon_api_session = RelativeSession(self.portal_url)
+        self.anon_api_session = RelativeSession(self.portal_url, test=self)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
         self.portal_actions = api.portal.get_tool(name="portal_actions")
@@ -63,18 +70,21 @@ class TestActions(unittest.TestCase):
             "member_action",
             "Members only",
             available_expr="python:member is not None",
+            url="string:${globals_view/navigationRootUrl}/sitemap",
         )
         self.add_action(
             self.cat1,
             "view_action",
             "Action with view permission",
             permissions=(permissions.View,),
+            url="string:${globals_view/navigationRootUrl}/accessibility-info",
         )
         self.add_action(
             self.cat1,
             "manage_action",
             "Action with Manage Portal Content permission",
             permissions=(permissions.ManagePortal,),
+            url="",
         )
         self.cat2 = self.add_category("category2")
         self.cat3 = self.add_category("category3")
@@ -106,24 +116,33 @@ class TestActions(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         response = response.json()
+
+        self.maxDiff = None
         self.assertEqual(
             response,
             {
-                u"category1": [
-                    {u"title": u"Members only", u"id": u"member_action", u"icon": u""},
+                "category1": [
                     {
-                        u"title": u"Action with view permission",
-                        u"id": u"view_action",
-                        u"icon": u"",
+                        "title": "Members only",
+                        "id": "member_action",
+                        "icon": "",
+                        "url": self.portal_url + "/sitemap",
                     },
                     {
-                        u"title": u"Action with Manage Portal Content permission",
-                        u"id": u"manage_action",
-                        u"icon": u"",
+                        "title": "Action with view permission",
+                        "id": "view_action",
+                        "icon": "",
+                        "url": self.portal_url + "/accessibility-info",
+                    },
+                    {
+                        "title": "Action with Manage Portal Content permission",
+                        "id": "manage_action",
+                        "icon": "",
+                        "url": "",
                     },
                 ],
-                u"category2": [],
-                u"category3": [],
+                "category2": [],
+                "category3": [],
             },
         )
 
@@ -135,15 +154,16 @@ class TestActions(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"category1": [
+                "category1": [
                     {
-                        u"title": u"Action with view permission",
-                        u"id": u"view_action",
-                        u"icon": u"",
+                        "title": "Action with view permission",
+                        "id": "view_action",
+                        "icon": "",
+                        "url": self.portal_url + "/accessibility-info",
                     }
                 ],
-                u"category2": [],
-                u"category3": [],
+                "category2": [],
+                "category3": [],
             },
         )
 
@@ -157,9 +177,9 @@ class TestActions(unittest.TestCase):
         response = self.api_session.get(url)
         self.assertEqual(response.status_code, 200)
         response = response.json()
-        object_action_ids = [action[u"id"] for action in response["object"]]
-        self.assertTrue(u"view" in object_action_ids)
-        self.assertTrue(u"edit" in object_action_ids)
+        object_action_ids = [action["id"] for action in response["object"]]
+        self.assertTrue("view" in object_action_ids)
+        self.assertTrue("edit" in object_action_ids)
 
     def test_actions_on_content_object_anon(self):
         self.portal.invokeFactory("Document", id="doc1", title="My Document")
@@ -172,6 +192,6 @@ class TestActions(unittest.TestCase):
         response = self.anon_api_session.get(url)
         self.assertEqual(response.status_code, 200)
         response = response.json()
-        object_action_ids = [action[u"id"] for action in response["object"]]
-        self.assertTrue(u"view" in object_action_ids)
-        self.assertTrue(u"edit" not in object_action_ids)
+        object_action_ids = [action["id"] for action in response["object"]]
+        self.assertTrue("view" in object_action_ids)
+        self.assertTrue("edit" not in object_action_ids)
