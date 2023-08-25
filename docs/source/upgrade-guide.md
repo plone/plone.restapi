@@ -12,6 +12,31 @@ myst:
 This upgrade guide lists all breaking changes in `plone.restapi`.
 It explains the steps that are needed to upgrade to the latest version.
 
+## Upgrading to `plone.restapi` 9.x
+
+### Link Integrity
+
+When calling the @linkintegrity endpoint in `plone.restapi` before 9.0.0, a content object with no link integrity breaches would return just an empty list in the response body:
+
+`[]`
+
+In `plone.restapi` 9.0.0, the following response would be returned with a `breaches` attribute with an empty list:
+
+```
+[
+    {
+        "@id": "http://localhost:55001/plone/doc-2",
+        "@type": "Document",
+        "breaches": [],
+        "description": "",
+        "items_total": 0,
+        "review_state": "private",
+        "title": "Second document",
+        "type_title": "Page"
+    }
+]
+```
+
 ## Upgrading to `plone.restapi` 8.x
 
 `plone.restapi` 8.x dropped support for Python 2 and Plone 5.1 and 4.3.
