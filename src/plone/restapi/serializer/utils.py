@@ -8,7 +8,7 @@ from zope.globalrequest import getRequest
 import re
 
 
-RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
+RESOLVEUID_RE = re.compile("^(?:|.*/)resolve[Uu]id/([^/]*)/?(.*)$")
 
 
 def uid_to_url(path):
