@@ -56,6 +56,7 @@ The server will return a {term}`401 Unauthorized` status code.
 :language: http
 ```
 
+
 ### Filtering the list of users
 
 The endpoint supports some basic filtering.
@@ -88,6 +89,7 @@ The server will respond with a list of users where the users are member of one o
 
 The endpoint also takes a `limit` parameter.
 Its default is a maximum of 25 users at a time for performance reasons.
+
 
 ### Search users
 
@@ -130,6 +132,7 @@ The `Location` header contains the URL of the newly created user, and the resour
 ```
 
 If no roles have been specified, then a `Member` role is added as a sensible default.
+
 
 ## Read User
 
@@ -247,6 +250,49 @@ A successful response will be indicated by a {term}`204 No Content` response:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_delete.resp
 :language: http
+```
+
+When deleting a user in large sites with a lot of users and content, the `delete` operation may take a lot of time to the extent that the site enters an unresponsive state.
+
+There is a workaround for this.
+You may request Plone not to delete the member areas or the local roles that may have been granted in the past.
+
+To mark such a behavior, we need to pass specific parameters to the `delete` endpoint.
+
+In this case, we request not to delete the local roles:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/users_delete_no_localroles.req
+```
+
+A successful response will be indicated by a {term}`204 No Content` response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_delete_no_localroles.resp
+:language: http
+```
+
+In this case we request not to delete the member areas:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/users_delete_no_memberareas.req
+```
+
+A successful response will be indicated by a {term}`204 No Content` response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_delete_no_memberareas.resp
+:language: http
+```
+
+Both parameters can be added in the same request.
+
+```{warning}
+These two specific requests should be made with special care because they may leave traces of the deleted users in the Plone database.
+
+Specifically, although the user is deleted, the reference of its permissions stay in the database.
+
+This means that if in the future you add a new user with the same `userid`, it may get the local roles and member area previously created for the old user.
 ```
 
 

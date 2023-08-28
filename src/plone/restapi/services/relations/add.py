@@ -25,7 +25,7 @@ except ImportError:
 
 @implementer(IPublishTraverse)
 class PostRelations(Service):
-    """Create new relations."""
+    """Create new relations or rebuild relations."""
 
     def __init__(self, context, request):
         super().__init__(context, request)

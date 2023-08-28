@@ -4,6 +4,13 @@ from plone.restapi.pas import plugin
 from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin
 from zope.i18nmessageid import MessageFactory
 
+import pkg_resources
+
+try:
+    pkg_resources.get_distribution("plone.app.multilingual")
+    HAS_MULTILINGUAL = True
+except pkg_resources.DistributionNotFound:
+    HAS_MULTILINGUAL = False
 
 _ = MessageFactory("plone.restapi")
 PROJECT_NAME = "plone.restapi"

@@ -231,3 +231,16 @@ This adapter needs to be registered as a named adapter, where the name is the sa
 ```xml
 <adapter name="image" factory=".indexers.ImageBlockSearchableText" />
 ```
+
+## Visit all blocks
+
+Since blocks can be contained inside other blocks,
+it is not always obvious how to find all of the blocks stored on a content item.
+The `visit_blocks` utility function will iterate over all blocks:
+
+```python
+from plone.restapi.blocks import visit_blocks
+
+for block in visit_blocks(context, context.blocks):
+    print(block)
+```

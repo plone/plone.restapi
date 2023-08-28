@@ -9,6 +9,12 @@ myst:
 
 # Contributing to `plone.restapi`
 
+We use GNU `make` when developing `plone.restapi`.
+To install this package, its dependencies, and its documentation, code formatting, and testing tools, run the following command in the root of the project.
+
+```shell
+make
+```
 
 ## Generating documentation examples
 
@@ -37,7 +43,6 @@ Include them in the documentation using MyST syntax:
 Build the documentation locally to test the rendering by running `./bin/sphinxbuilder`.
 Alternatively, you can use Makefile targets:
 
-
 `docs-clean`
 : Clean current and legacy docs build directories, and Python virtual environment
 
@@ -58,9 +63,8 @@ Alternatively, you can use Makefile targets:
 
 `docs`
 : Build Docs
- 
-Make sure you add and commit the generated files in `http-examples`.
 
+Make sure you add and commit the generated files in `http-examples`.
 
 ## Conventions
 
@@ -68,4 +72,22 @@ Make sure you add and commit the generated files in `http-examples`.
 :maxdepth: 2
 
 conventions
+```
+
+## Code formatting and testing
+
+To ensure consistent code formatting, we use [Black](https://black.readthedocs.io/en/stable/index.html).
+All pull requests must pass code formatting checks.
+We recommend that you run Black locally.
+You can use the following command to automatically format the code.
+
+```shell
+make black
+```
+
+To run tests locally and ensure your changes don't introduce any issues, use the following command.
+This will execute the test suite and provide test feedback.
+
+```shell
+make test
 ```

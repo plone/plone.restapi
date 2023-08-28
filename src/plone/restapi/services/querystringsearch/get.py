@@ -2,9 +2,11 @@ from pkg_resources import get_distribution
 from pkg_resources import parse_version
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
+from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from urllib import parse
+from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 
 
@@ -23,17 +25,30 @@ class QuerystringSearch:
         self.request = request
 
     def __call__(self):
-        data = json_body(self.request)
+        try:
+            data = json_body(self.request)
+        except DeserializationError as err:
+            raise BadRequest(str(err))
+
         query = data.get("query", None)
-        b_start = int(data.get("b_start", 0))
-        b_size = int(data.get("b_size", 25))
+        try:
+            b_start = int(data.get("b_start", 0))
+        except ValueError:
+            raise BadRequest("Invalid b_start")
+        try:
+            b_size = int(data.get("b_size", 25))
+        except ValueError:
+            raise BadRequest("Invalid b_size")
         sort_on = data.get("sort_on", None)
         sort_order = data.get("sort_order", None)
-        limit = int(data.get("limit", 1000))
-        fullobjects = data.get("fullobjects", False)
+        try:
+            limit = int(data.get("limit", 1000))
+        except ValueError:
+            raise BadRequest("Invalid limit")
+        fullobjects = bool(data.get("fullobjects", False))
 
-        if query is None:
-            raise Exception("No query supplied")
+        if not query:
+            raise BadRequest("No query supplied")
 
         if sort_order:
             sort_order = "descending" if sort_order == "descending" else "ascending"
@@ -59,7 +74,13 @@ class QuerystringSearch:
                 dict(custom_query={"UID": {"not": self.context.UID()}})
             )
 
-        results = querybuilder(**querybuilder_parameters)
+        try:
+            results = querybuilder(**querybuilder_parameters)
+        except KeyError:
+            # This can happen if the query has an invalid operation,
+            # but plone.app.querystring doesn't raise an exception
+            # with specific info.
+            raise BadRequest("Invalid query.")
 
         results = getMultiAdapter((results, self.request), ISerializeToJson)(
             fullobjects=fullobjects

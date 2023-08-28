@@ -1,6 +1,7 @@
 """ Locking
 """
 from datetime import datetime
+from datetime import timezone
 from plone import api
 from plone.locking.interfaces import ILockable
 
@@ -20,7 +21,9 @@ def creation_date(timestamp):
     # timezone specifier causes Intl (and derivative libraries) in the browser not to
     # use local time, which is considered a bug in applications. Therefore we add the Z
     # to the end to make sure that the date will be interpreted properly by the client.
-    return datetime.utcfromtimestamp(timestamp).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.fromtimestamp(timestamp, tz=timezone.utc).isoformat(
+        timespec="seconds"
+    )
 
 
 def lock_info(obj):

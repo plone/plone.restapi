@@ -5,10 +5,10 @@
 
   <plone:service
       method="GET"
-      factory=".get.TilesGet"
+      factory=".get.SiteGet"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="zope2.View"
-      name="@tiles"
+      name="@site"
       />
 
 </configure>

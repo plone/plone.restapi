@@ -8,6 +8,120 @@ Changelog
 
 .. towncrier release notes start
 
+8.43.0 (2023-08-23)
+-------------------
+
+New features:
+
+
+- Allow passing additional parameters to the delete users endpoint to request not to delete local roles and memberareas
+  [erral] (#1598)
+
+
+8.42.1 (2023-08-23)
+-------------------
+
+Bug fixes:
+
+
+- Fix broken relations info. @ksuess (#1673)
+
+
+Internal:
+
+
+- Fix test cleanup. @davisagli (#1680)
+
+
+Documentation:
+
+
+- Move expansion docs from endpoints to usage, and add a list of all expandable components. Fixes #1677. @stevepiercy (#1678)
+
+
+8.42.0 (2023-07-17)
+-------------------
+
+New features:
+
+
+- When serializing blocks, `image_scales` is now added to blocks that contain a resolveuid-based `url`.
+  When deserializing blocks, `image_scales` is removed. @davisagli (#1642)
+
+
+Bug fixes:
+
+
+- Remove the hard code dependency by plone.app.multilingual, use it conditionaly instead
+  [@folix-01] (#1639)
+- Fix timezone of dates for revisions in the `@history` service. @davisagli (#1647)
+- Fix types expander in root for Plone 5.2 (for non-Dexterity Plone Site Root) @sneridagh (#1669)
+
+
+Internal:
+
+
+- Updated package installation to use constraints.txt for black package, ensuring compatibility and consistent versions. @Akshat2Jain (#1671)
+- Update Makefile and buildout to use Plone 6.0.6. @davisagli (#1672)
+
+
+Documentation:
+
+
+- added instruction to ensure consistent code formatting. @Akshat2Jain (#1664)
+
+
+8.41.0 (2023-06-29)
+-------------------
+
+New features:
+
+
+- Add `visit_blocks` util for finding all nested blocks. @davisagli (#1648)
+
+
+Bug fixes:
+
+
+- Fix path2uid method, to handle suffix with non-traversable objects. @cekk @mamico (#1649)
+
+
+Internal:
+
+
+- Allow GHA tests to run on PRs from forks. @Akshat2Jain (#1656)
+
+
+Documentation:
+
+
+- Fix html_meta tags, and remove stray spaces that prevented the glossary from rendering. @stevepiercy (#1663)
+
+
+8.40.0 (2023-06-06)
+-------------------
+
+New features:
+
+
+- Added `@site` and `@navroot` endpoints. @erral (#1464)
+
+
+Bug fixes:
+
+
+- Validate input to the `@querystring-search` service. Input which can't be processed now results in a 400 response instead of 500. @davisagli (#1653)
+
+
+8.39.2 (2023-06-01)
+-------------------
+
+Bug fixes:
+
+
+- Fix content serializer with an old version of an item that was renamed. @davisagli (#1651)
+
+
 8.39.1 (2023-05-30)
 -------------------
 
