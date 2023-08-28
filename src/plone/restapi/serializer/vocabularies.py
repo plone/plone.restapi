@@ -28,30 +28,21 @@ class SerializeVocabLikeToJson:
     def __call__(self, vocabulary_id):
         vocabulary = self.context
         title = safe_text(self.request.form.get("title", ""))
-        token = self.request.form.get("token", "")
         tokens = self.request.form.get("tokens", [])
         b_size = self.request.form.get("b_size", "")
 
         terms = []
         for term in vocabulary:
-            if title and token:
+            if title and tokens:
                 self.request.response.setStatus(400)
                 return dict(
                     error=dict(
                         type="Invalid parameters",
-                        message="You can not filter by title and token at the same time.",
+                        message="You can not filter by title and tokens at the same time.",
                     )  # noqa
                 )
 
-            if token:
-                warnings.warn(
-                    "``token`` parameter is deprecated and will be removed in plone.restapi 9.0. Use ``tokens`` parameter instead.",
-                    DeprecationWarning,
-                )
-                if token.lower() != term.token.lower():
-                    continue
-                terms.append(term)
-            elif tokens:
+            if tokens:
                 if isinstance(tokens, str):
                     tokens = [tokens]
                 for item in tokens:
