@@ -1,0 +1,1 @@
+Change the @linkintegrity endpoint to add `items_total`, the number of contained items which would be deleted. @davisagli, @danalvrz, @pgrunewald

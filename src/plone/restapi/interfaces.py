@@ -83,41 +83,47 @@ class IFieldDeserializer(Interface):
         """Convert the provided JSON value to a field value."""
 
 
-class IBlockFieldDeserializationTransformer(Interface):
+class IBlockTransformer(Interface):
+    """Transform a block value.
+
+    Meant to be looked up as an adapter of context and request.
+    The list of transformers is filtered by block_type and sorted by order.
+    Disabled transformers are ignored.
+
+    Block transformers for specific use cases extend this interface.
+    """
+
+    block_type = Attribute(
+        "A string with the type of block, the @type from the block value"
+    )
+    order = Attribute(
+        "A number used in sorting value transformers. Smaller is executed first"
+    )
+    disabled = Attribute("Boolean that disables the transformer if required")
+
+    def __call__(value):
+        """Do the transform."""
+
+
+class IBlockFieldDeserializationTransformer(IBlockTransformer):
     """Convert/adjust raw block deserialized value into block value."""
 
-    block_type = Attribute(
-        "A string with the type of block, the @type from " "the block value"
-    )
-    order = Attribute(
-        "A number used in sorting value transformers. " "Smaller is executed first"
-    )
-    disabled = Attribute("Boolean that disables the transformer if required")
-
-    def __init__(field, context, request):
-        """Adapts context and the request."""
-
     def __call__(value):
         """Convert the provided raw Python value to a block value."""
 
 
-class IBlockFieldSerializationTransformer(Interface):
+class IBlockFieldSerializationTransformer(IBlockTransformer):
     """Transform block value before final JSON serialization"""
 
-    block_type = Attribute(
-        "A string with the type of block, the @type from " "the block value"
-    )
-    order = Attribute(
-        "A number used in sorting value transformers for the "
-        "same block. Smaller is executed first"
-    )
-    disabled = Attribute("Boolean that disables the transformer if required")
-
-    def __init__(field, context, request):
-        """Adapts context and the request."""
-
     def __call__(value):
         """Convert the provided raw Python value to a block value."""
+
+
+class IBlockFieldLinkIntegrityRetriever(Interface):
+    """Retrieve internal links set in current block."""
+
+    def __call__(value):
+        """Return a list of internal links set in this block."""
 
 
 class IExpandableElement(Interface):
@@ -210,20 +216,6 @@ class IBlockSearchableText(Interface):
         """Extract text from the block value. Returns text"""
 
 
-class IBlockFieldLinkIntegrityRetriever(Interface):
-    """Retrieve internal links set in current block."""
-
-    block_type = Attribute(
-        "A string with the type of block, the @type from " "the block value"
-    )
-
-    def __init__(field, context, request):
-        """Adapts context and the request."""
-
-    def __call__(value):
-        """Return a list of internal links set in this block."""
-
-
 class IJSONSummarySerializerMetadata(Interface):
     """Configure JSONSummary serializer."""
 
@@ -238,3 +230,13 @@ class IJSONSummarySerializerMetadata(Interface):
 
     def blocklisted_attributes():
         """Returns a set with attributes blocked during serialization."""
+
+
+class IBlockVisitor(Interface):
+    """Find sub-blocks
+
+    Used by the visit_blocks utility.
+    """
+
+    def __call__(self, block):
+        """Return an iterable of sub-blocks found inside `block`."""

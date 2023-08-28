@@ -4,7 +4,7 @@ from setuptools import setup
 import sys
 
 
-version = "8.39.2.dev0"
+version = "8.43.2.dev0"
 
 if sys.version_info.major == 2:
     raise ValueError(
@@ -47,7 +47,6 @@ TEST_REQUIRES = [
     "plone.app.testing [robot] >= 4.2.2",  # ROBOT_TEST_LEVEL added
     "plone.api",
     "requests",
-    "plone.tiles",
     "mock",
 ]
 

@@ -338,8 +338,94 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("types", list(response.json().get("@components")))
 
+    def test_types_is_expandable_in_root(self):
+        response = self.api_session.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("types", list(response.json().get("@components")))
+
     def test_types_expanded(self):
         response = self.api_session.get("/folder", params={"expand": "types"})
+
+        self.assertEqual(response.status_code, 200)
+
+        # XXX: Note: The @types endpoint currently doesn't conform to JSON-LD
+        # because it's directly returning a list, and does not have an @id
+        # property.
+
+        base_url = self.portal.absolute_url()
+
+        self.assertEqual(
+            [
+                {
+                    "@id": "/".join((base_url, "@types/Collection")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Collection",
+                    "id": "Collection",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/DXTestDocument")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "DX Test Document",
+                    "id": "DXTestDocument",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/Event")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Event",
+                    "id": "Event",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/File")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "File",
+                    "id": "File",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/Folder")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Folder",
+                    "id": "Folder",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/Image")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Image",
+                    "id": "Image",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/Link")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Link",
+                    "id": "Link",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/News Item")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "News Item",
+                    "id": "News Item",
+                },
+                {
+                    "@id": "/".join((base_url, "@types/Document")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Page",
+                    "id": "Document",
+                },
+            ],
+            response.json().get("@components").get("types"),
+        )
+
+    def test_types_expanded_in_root(self):
+        response = self.api_session.get("/", params={"expand": "types"})
 
         self.assertEqual(response.status_code, 200)
 
