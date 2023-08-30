@@ -49,12 +49,13 @@ class TestLinkIntegrity(unittest.TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_return_empty_list_for_non_referenced_objects(self):
+    def test_return_no_breaches_for_non_referenced_objects(self):
         response = self.api_session.get(
             "/@linkintegrity", params={"uids": [self.doc1.UID()]}
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), [])
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]["breaches"], [])
 
     def test_return_right_breaches_for_reference_field(self):
         intids = getUtility(IIntIds)
@@ -95,8 +96,9 @@ class TestLinkIntegrity(unittest.TestCase):
         response = self.api_session.get(
             "/@linkintegrity", params={"uids": [self.doc2.UID()]}
         )
-        breaches = response.json()
-        self.assertEqual(breaches, [])
+        result = response.json()
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["breaches"], [])
 
         # create a new content with relations
         uid = IUUID(self.doc2)
@@ -188,3 +190,23 @@ class TestLinkIntegrity(unittest.TestCase):
         self.assertEqual(len(breaches), 1)
         self.assertEqual(breaches[0]["uid"], IUUID(doc_in_folder))
         self.assertEqual(breaches[0]["@id"], doc_in_folder.absolute_url())
+
+    def test_return_items_total_in_subfolders(self):
+        # create a folder structure
+        level1 = createContentInContainer(self.portal, "Folder", id="level1")
+        createContentInContainer(self.portal["level1"], "Folder", id="level2")
+        transaction.commit()
+
+        # get linkintegrity info for the folder
+        response = self.api_session.get(
+            "/@linkintegrity", params={"uids": [level1.UID()]}
+        )
+
+        # we don't expect any links but we still want information
+        # about how many contained items will be deleted
+        result = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["@id"], level1.absolute_url())
+        self.assertEqual(result[0]["breaches"], [])
+        self.assertEqual(result[0]["items_total"], 1)

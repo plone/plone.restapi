@@ -46,7 +46,6 @@ roles
 searching
 site
 system
-tiles
 transactions
 translations
 tusupload

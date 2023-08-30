@@ -1,8 +1,8 @@
-.. image:: https://github.com/plone/plone.restapi/actions/workflows/tests.yml/badge.svg?branch=master
+.. image:: https://github.com/plone/plone.restapi/actions/workflows/tests.yml/badge.svg?branch=main
   :target: https://github.com/plone/plone.restapi/actions/workflows/tests.yml
 
-.. image:: https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=master
-  :target: https://coveralls.io/github/plone/plone.restapi?branch=master
+.. image:: https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=main
+  :target: https://coveralls.io/github/plone/plone.restapi?branch=main
 
 .. image:: https://readthedocs.org/projects/pip/badge
   :target: https://plonerestapi.readthedocs.io/en/latest/
