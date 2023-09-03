@@ -24,7 +24,6 @@ import transaction
 
 
 class TestBlocksResolveUIDFunctional(TestCase):
-
     layer = PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -698,3 +697,9 @@ class TestBlocksResolveUID(TestCase):
             ]["url"],
             self.doc2.absolute_url() + "/view",
         )
+
+    def test_resolveuid_handle_link_style_formats(self):
+        uid = IUUID(self.doc2)
+        blocks = {"aaa": {"@type": "foo", "url": f"/plone/resolveuid/{uid}"}}
+        value = self.serialize("blocks", blocks)
+        self.assertEqual(value["aaa"]["url"], self.doc2.absolute_url())
