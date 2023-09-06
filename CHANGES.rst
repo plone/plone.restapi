@@ -14,7 +14,6 @@ Changelog
 New features:
 
 
-- Add Spanish translation. [macagua] (#1684)
 - Allow passing additional parameters to the delete users endpoint to request not to delete local roles and memberareas
   [erral] (#1598)
 
