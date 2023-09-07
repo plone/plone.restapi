@@ -1,1 +1,1 @@
-Add Spanish translation (#1684) @macagua
+Add Spanish translation @macagua
