@@ -8,6 +8,25 @@ Changelog
 
 .. towncrier release notes start
 
+8.43.1 (2023-08-25)
+-------------------
+
+Bug fixes:
+
+
+- Use incoming request to produce location for @tus-upload
+  [instification] (#1570)
+
+
+Documentation:
+
+
+- Added translation code through expansion. @Akshat2Jain (#1374)
+- Restores formatting and fixes some MyST syntax from #1689. @stevepiercy (#1691)
+- Documentation fixes for #1599. @stevepiercy (#1692)
+- Fix linkcheckbroken 301 redirect to https://www.4teamwork.ch/en. @stevepiercy (#1693)
+
+
 8.43.0 (2023-08-23)
 -------------------
 
