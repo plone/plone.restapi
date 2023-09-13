@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.43.2 (2023-09-14)
+-------------------
+
+Bug fixes:
+
+
+- Make new release to add missing changelog entries for 8.43.1.
+  [maurits] (#8431)
+
+
 8.43.1 (2023-08-25)
 -------------------
 
