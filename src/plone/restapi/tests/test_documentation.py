@@ -8,7 +8,7 @@ from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
-from plone.app.testing import applyProfile
+
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
@@ -33,9 +33,6 @@ from six.moves import range
 from zope.component import createObject
 from zope.component import getUtility
 from zope.interface import alsoProvides
-from plone.app.testing import popGlobalRegistry
-from plone.app.testing import pushGlobalRegistry
-from plone.restapi.testing import register_static_uuid_utility
 from zope.component.hooks import getSite
 import collections
 import json
