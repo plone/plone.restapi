@@ -8,9 +8,6 @@ Content-Type: application/json
             "actions": {
                 "@id": "http://localhost:55001/plone/en/@actions"
             },
-            "aliases": {
-                "@id": "http://localhost:55001/plone/en/@aliases"
-            },
             "breadcrumbs": {
                 "@id": "http://localhost:55001/plone/en/@breadcrumbs"
             },
@@ -54,16 +51,14 @@ Content-Type: application/json
                 "@type": "LIF",
                 "description": "",
                 "review_state": "published",
-                "title": "Assets",
-                "type_title": "Language Independent Folder"
+                "title": "Assets"
             },
             {
                 "@id": "http://localhost:55001/plone/en/test-document",
                 "@type": "Document",
                 "description": "",
                 "review_state": "private",
-                "title": "Test document",
-                "type_title": "Page"
+                "title": "Test document"
             }
         ],
         "items_total": 2,
@@ -78,24 +73,19 @@ Content-Type: application/json
             "@id": "http://localhost:55001/plone/de",
             "@type": "LRF",
             "description": "",
-            "title": "Deutsch",
-            "type_title": "Language Root Folder"
+            "title": "Deutsch"
         },
         "parent": {
             "@id": "http://localhost:55001/plone",
             "@type": "Plone Site",
             "description": "",
-            "title": "Plone site",
-            "type_title": "Plone Site"
+            "title": "Plone site"
         },
         "previous_item": {},
         "review_state": "published",
         "rights": "",
         "subjects": [],
         "title": "English",
-        "type_title": "Language Root Folder",
-        "version": "current",
-        "working_copy": null,
-        "working_copy_of": null
+        "version": "current"
     }
 }
