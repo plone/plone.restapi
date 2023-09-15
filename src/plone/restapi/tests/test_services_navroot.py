@@ -41,7 +41,7 @@ class TestServicesNavroot(unittest.TestCase):
         api.content.transition(obj=self.portal.news.document, transition="publish")
         transaction.commit()
 
-        self.api_session = RelativeSession(self.portal_url, test=self)
+        self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})
 
     def test_get_navroot(self):
@@ -143,7 +143,7 @@ class TestServicesNavrootMultilingual(unittest.TestCase):
         api.content.transition(obj=self.portal.en.news, transition="publish")
         api.content.transition(obj=self.portal.en.news.document, transition="publish")
 
-        self.api_session = RelativeSession(self.portal_url, test=self)
+        self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})
 
         transaction.commit()
