@@ -244,7 +244,7 @@ class UsersPost(Service):
     @property
     def can_manage_users(self):
         sm = getSecurityManager()
-        return sm.checkPermission("plone.app.controlpanel.UsersAndGroups", self.context)
+        return sm.checkPermission("Plone Site Setup: Users and Groups", self.context)
 
     @property
     def can_set_own_password(self):

@@ -177,11 +177,11 @@ class UsersGet(Service):
 
     def has_permission_to_query(self):
         sm = getSecurityManager()
-        return sm.checkPermission("Manage portal", self.context)
+        return sm.checkPermission("Plone Site Setup: Users and Groups", self.context)
 
     def has_permission_to_enumerate(self):
         sm = getSecurityManager()
-        return sm.checkPermission("Manage portal", self.context)
+        return sm.checkPermission("Plone Site Setup: Users and Groups", self.context)
 
     def has_permission_to_access_user_info(self):
         sm = getSecurityManager()
