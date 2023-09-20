@@ -1719,6 +1719,11 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get(url)
         save_request_and_response_for_docs("querystring_get", response)
 
+    def test_querystring_get_contextual(self):
+        url = f"{self.document.absolute_url()}/@querystring"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("querystring_get_contextual", response)
+
     def test_querystringsearch_post(self):
         url = "/@querystring-search"
 
