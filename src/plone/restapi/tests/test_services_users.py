@@ -1365,3 +1365,12 @@ class TestUsersEndpoint(unittest.TestCase):
 
         noam = api.user.get(userid="noam")
         self.assertIn("Manager", noam.getRoles())
+
+    def test_siteadm_not_delete_manager(self):
+        self.set_siteadm()
+        api.user.grant_roles(username="noam", roles=["Manager"])
+        transaction.commit()
+        self.api_session.delete("/@users/noam")
+        transaction.commit()
+
+        self.assertIsNotNone(api.user.get(userid="noam"))
