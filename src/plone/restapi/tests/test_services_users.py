@@ -102,6 +102,20 @@ class TestUsersEndpoint(unittest.TestCase):
         with open(path, "rb") as image:
             yield dummy.FileUpload(dummy.FieldStorage(image))
 
+    def set_siteadm(self):
+        siteadm_username = "siteadm"
+        siteadm_password = "siteadmpassword"
+        api.user.create(
+            email="siteadm@example.com",
+            roles=["Site Administrator"],
+            username=siteadm_username,
+            password=siteadm_password,
+        )
+        self.api_session = RelativeSession(self.portal_url, test=self)
+        self.api_session.headers.update({"Accept": "application/json"})
+        self.api_session.auth = (siteadm_username, siteadm_password)
+        transaction.commit()
+
     def test_list_users(self):
         response = self.api_session.get("/@users")
 
@@ -1312,3 +1326,42 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(len(users), 2)
         self.assertEqual(users[0].userid, "user1")
         self.assertEqual(users[1].userid, "user2")
+
+    def test_siteadm_not_update_manager(self):
+        self.set_siteadm()
+        payload = {
+            "roles": {
+                "Contributor": False,
+                "Editor": False,
+                "Reviewer": False,
+                "Manager": True,
+                "Member": True,
+                "Reader": False,
+                "Site Administrator": False,
+            }
+        }
+
+        self.api_session.patch("/@users/noam", json=payload)
+        transaction.commit()
+
+        noam = api.user.get(userid="noam")
+        self.assertNotIn("Manager", noam.getRoles())
+
+    def test_manager_update_manager(self):
+        payload = {
+            "roles": {
+                "Contributor": False,
+                "Editor": False,
+                "Reviewer": False,
+                "Manager": True,
+                "Member": True,
+                "Reader": False,
+                "Site Administrator": False,
+            }
+        }
+
+        self.api_session.patch("/@users/noam", json=payload)
+        transaction.commit()
+
+        noam = api.user.get(userid="noam")
+        self.assertIn("Manager", noam.getRoles())

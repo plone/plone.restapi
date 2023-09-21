@@ -5,6 +5,7 @@ from OFS.Image import Image
 from plone.restapi import _
 from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.services import Service
+from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import set_own_login_name
@@ -29,6 +30,17 @@ class UsersPatch(Service):
     def __init__(self, context, request):
         super().__init__(context, request)
         self.params = []
+
+    @property
+    def is_zope_manager(self):
+        return getSecurityManager().checkPermission(ManagePortal, self.context)
+
+    def can_change_manager_role(self, target_roles, current_roles):
+        if self.is_zope_manager:
+            return True
+        if "Manager" not in current_roles:
+            return "Manager" not in list(target_roles)
+        return "Manager" in list(target_roles)
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
@@ -85,8 +97,16 @@ class UsersPatch(Service):
                 to_add = [key for key, enabled in roles.items() if enabled]
                 to_remove = [key for key, enabled in roles.items() if not enabled]
 
-                target_roles = set(user.getRoles()) - set(to_remove)
+                current_roles = user.getRoles()
+                target_roles = set(current_roles) - set(to_remove)
                 target_roles = target_roles | set(to_add)
+
+                if not self.can_change_manager_role(target_roles, current_roles):
+                    return self._error(
+                        403,
+                        "Forbidden",
+                        _("You can't update roles of this user"),
+                    )
 
                 acl_users = getToolByName(self.context, "acl_users")
                 acl_users.userFolderEditUser(
