@@ -8,6 +8,19 @@ Changelog
 
 .. towncrier release notes start
 
+8.43.3 (2023-09-21)
+-------------------
+
+Bug fixes:
+
+
+- Fix stored XSS (Cross Site Scripting) for SVG image in user portrait.
+  Done by forcing a download instead of displaying inline.
+  Normal accessing via an image tag is not affected and is safe.
+  See `security advisory <https://github.com/plone/plone.restapi/security/advisories/GHSA-hc5c-r8m5-2gfh>`_.
+  [maurits] (#1)
+
+
 8.43.2 (2023-09-14)
 -------------------
 

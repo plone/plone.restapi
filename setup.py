@@ -4,7 +4,7 @@ from setuptools import setup
 import sys
 
 
-version = "8.43.3.dev0"
+version = "8.43.3"
 
 if sys.version_info.major == 2:
     raise ValueError(
