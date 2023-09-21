@@ -39,6 +39,7 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+          architecture: x86
 
       # python cache
       - uses: actions/cache@v1
