@@ -16,6 +16,7 @@ from Products.MailHost.interfaces import IMailHost
 from zope.component import getAdapter
 from zope.component import getUtility
 
+import base64
 import os
 import re
 import transaction
@@ -529,6 +530,30 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 204)
         transaction.commit()
+
+    def _update_portrait_with_svg(self):
+        here = os.path.dirname(__file__)
+        # icon from https://icons.getbootstrap.com/icons/person/
+        path = os.path.join(here, "image.svg")
+        with open(path, "rb") as image:
+            data = base64.encodebytes(image.read())
+
+        payload = {
+            "portrait": {
+                "filename": "image.svg",
+                "encoding": "base64",
+                "data": data,
+                "content-type": "image/svg+xml",
+            }
+        }
+        self.api_session.auth = ("noam", "password")
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+    def test_update_portrait_with_svg(self):
+        self._update_portrait_with_svg()
 
         user = self.api_session.get("/@users/noam").json()
         self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
@@ -1072,6 +1097,23 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.headers["Content-Type"], "image/gif")
         noam_api_session.close()
 
+    def test_get_own_user_portrait_with_svg(self):
+        self._update_portrait_with_svg()
+
+        noam_api_session = RelativeSession(self.portal_url, test=self)
+        noam_api_session.headers.update({"Accept": "application/json"})
+        noam_api_session.auth = ("noam", "password")
+
+        response = noam_api_session.get("/@portrait")
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/svg+xml")
+        self.assertEqual(
+            response.headers["Content-Disposition"],
+            "attachment; filename*=UTF-8''noam.svg",
+        )
+        noam_api_session.close()
+
     def test_get_own_user_portrait_logged_out(self):
         response = self.anon_api_session.get(
             "/@portrait",
@@ -1089,6 +1131,9 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_get_user_portrait(self):
         with self.makeRealImage() as image:
             pm = api.portal.get_tool("portal_membership")
+            # Note: if you would set an SVG in this way, this would give a
+            # PIL.UnidentifiedImageError, which is what happens in ClassicUI
+            # as well.
             pm.changeMemberPortrait(image, "noam")
             transaction.commit()
 
@@ -1098,6 +1143,26 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.headers["Content-Type"], "image/gif")
+        self.assertIsNone(response.headers.get("Content-Disposition"))
+
+    def test_get_user_portrait_with_svg(self):
+        # If we would upload an SVG in the same way as in
+        # test_get_user_portrait, with pm.changeMemberPortrait,
+        # this would actually give PIL.UnidentifiedImageError,
+        # which is what happens in ClassicUI as well.
+        # So update it with a restapi call instead.
+        self._update_portrait_with_svg()
+
+        response = self.api_session.get(
+            "/@portrait/noam",
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/svg+xml")
+        self.assertEqual(
+            response.headers["Content-Disposition"],
+            "attachment; filename*=UTF-8''noam.svg",
+        )
 
     def test_get_user_portrait_anonymous(self):
         with self.makeRealImage() as image:
@@ -1111,6 +1176,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.headers["Content-Type"], "image/gif")
+        self.assertIsNone(response.headers.get("Content-Disposition"))
 
     def test_get_user_portrait_if_email_login_enabled(self):
         # enable use_email_as_login
