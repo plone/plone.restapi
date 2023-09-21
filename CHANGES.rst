@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+7.8.3 (2023-09-21)
+------------------
+
+Bug fixes:
+
+
+- Fix content serializer with an old version of an item that was renamed. @davisagli (#1651)
+
+
 7.8.2 (2023-04-19)
 ------------------
 
