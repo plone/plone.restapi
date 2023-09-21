@@ -22,5 +22,6 @@ exclude docs/Makefile
 prune docs/Makefile
 prune src/plone/restapi/tests/images
 prune news
+prune performance
 global-exclude *.pyc
 include pyproject.toml
