@@ -12,6 +12,15 @@
       permission="zope2.View"
       name="@querystring"
       />
+
+  <plone:service
+      method="GET"
+      factory=".get.QuerystringGet"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@querystring"
+      />
+
   <cache:ruleset
       for=".get.QuerystringGet"
       ruleset="plone.content.dynamic"
