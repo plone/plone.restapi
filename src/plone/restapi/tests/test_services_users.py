@@ -1374,3 +1374,18 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertIsNotNone(api.user.get(userid="noam"))
+
+    def test_siteadm_not_add_manager(self):
+        self.set_siteadm()
+        self.api_session.post(
+            "/@users",
+            json={
+                "username": "howard",
+                "email": "howard.zinn2@example.com",
+                "password": "peopleshistory",
+                "roles": ["Manager"],
+            },
+        )
+        transaction.commit()
+
+        self.assertIsNone(api.user.get(userid="howard"))
