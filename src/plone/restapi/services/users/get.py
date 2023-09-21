@@ -2,6 +2,9 @@ from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from itertools import chain
 from plone.app.workflow.browser.sharing import merge_search_results
+from plone.namedfile.browser import ALLOWED_INLINE_MIMETYPES
+from plone.namedfile.browser import DISALLOWED_INLINE_MIMETYPES
+from plone.namedfile.browser import USE_DENYLIST
 from plone.namedfile.utils import stream_data
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
@@ -13,6 +16,7 @@ from Products.PlonePAS.utils import decleanId
 from typing import Iterable
 from typing import Sequence
 from urllib.parse import parse_qs
+from urllib.parse import quote
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
@@ -220,6 +224,14 @@ class UsersGet(Service):
 
 @implementer(IPublishTraverse)
 class PortraitGet(Service):
+    # You can control which mimetypes may be shown inline
+    # and which must always be downloaded, for security reasons.
+    # Make the configuration available on the class.
+    # Then subclasses can override this.
+    allowed_inline_mimetypes = ALLOWED_INLINE_MIMETYPES
+    disallowed_inline_mimetypes = DISALLOWED_INLINE_MIMETYPES
+    use_denylist = USE_DENYLIST
+
     def __init__(self, context, request):
         super().__init__(context, request)
         self.params = []
@@ -237,6 +249,18 @@ class PortraitGet(Service):
             raise Exception("Must supply exactly one parameter (user id)")
         return self.params[0]
 
+    def _should_force_download(self, portrait):
+        # If this returns True, the caller should set the Content-Disposition header.
+        mimetype = portrait.content_type
+        if not mimetype:
+            return False
+        if self.use_denylist:
+            # We explicitly deny a few mimetypes, and allow the rest.
+            return mimetype in self.disallowed_inline_mimetypes
+        # Use the allowlist.
+        # We only explicitly allow a few mimetypes, and deny the rest.
+        return mimetype not in self.allowed_inline_mimetypes
+
     def render(self):
         if len(self.params) == 1:
             # Retrieve the user portrait
@@ -253,6 +277,15 @@ class PortraitGet(Service):
         if not portrait or isDefaultPortrait(portrait):
             self.request.response.setStatus(404)
             return None
+
+        if self._should_force_download(portrait):
+            # We need a filename, even a dummy one if needed.
+            ext = portrait.content_type.split("/")[-1].split("+")[0]
+            filename = f"{portrait.getId()}.{ext}"
+            filename = quote(filename.encode("utf8"))
+            self.request.response.setHeader(
+                "Content-Disposition", f"attachment; filename*=UTF-8''{filename}"
+            )
 
         self.request.response.setStatus(200)
         self.request.response.setHeader("Content-Type", portrait.content_type)
