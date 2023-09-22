@@ -236,3 +236,10 @@ class TestGroupsEndpoint(unittest.TestCase):
 
         fwt = self.gtool.getGroupById("fwt")
         self.assertIsNone(fwt)
+
+    def test_siteadm_not_delete_group_with_manager_role(self):
+        self.set_siteadm()
+        self.api_session.delete("/@groups/Administrators")
+        transaction.commit()
+
+        self.assertIsNotNone(self.gtool.getGroupById("Administrators"))
