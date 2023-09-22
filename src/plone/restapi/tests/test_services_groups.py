@@ -44,6 +44,20 @@ class TestGroupsEndpoint(unittest.TestCase):
     def tearDown(self):
         self.api_session.close()
 
+    def set_siteadm(self):
+        siteadm_username = "siteadm"
+        siteadm_password = "siteadmpassword"
+        api.user.create(
+            email="siteadm@example.com",
+            roles=["Site Administrator"],
+            username=siteadm_username,
+            password=siteadm_password,
+        )
+        self.api_session = RelativeSession(self.portal_url, test=self)
+        self.api_session.headers.update({"Accept": "application/json"})
+        self.api_session.auth = (siteadm_username, siteadm_password)
+        transaction.commit()
+
     def test_list_groups(self):
         response = self.api_session.get("/@groups")
 
@@ -173,3 +187,14 @@ class TestGroupsEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(response.status_code, 404)
+
+    def test_siteadm_not_add_user_to_group_with_manager_role(self):
+        self.set_siteadm()
+        payload = {
+            "users": {TEST_USER_ID: True, SITE_OWNER_NAME: False},
+        }
+        self.api_session.patch("/@groups/Administrators", json=payload)
+        transaction.commit()
+
+        administrators = self.gtool.getGroupById("Administrators")
+        self.assertNotIn(TEST_USER_ID, administrators.getGroupMemberIds())

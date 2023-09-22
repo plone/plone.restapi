@@ -1,5 +1,7 @@
+from AccessControl import getSecurityManager
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component.hooks import getSite
@@ -34,6 +36,16 @@ class GroupsPatch(Service):
         super().__init__(context, request)
         self.params = []
 
+    @property
+    def is_zope_manager(self):
+        return getSecurityManager().checkPermission(ManagePortal, self.context)
+
+    def can_update(self, group, users):
+        if self.is_zope_manager:
+            return True
+        if "Manager" in group.getRoles() and users:
+            return False
+
     def publishTraverse(self, request, name):
         # Consume any path segments after /@groups as parameters
         self.params.append(name)
@@ -57,9 +69,13 @@ class GroupsPatch(Service):
         if not group:
             raise BadRequest("Trying to update a non-existing group.")
 
+        users = data.get("users", {})
+
+        if not self.can_update(group, users):
+            return self.reply_no_content(status=403)
+
         roles = data.get("roles", None)
         groups = data.get("groups", None)
-        users = data.get("users", {})
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
