@@ -14,6 +14,10 @@ It explains the steps that are needed to upgrade to the latest version.
 
 ## Upgrading to `plone.restapi` 9.x
 
+`plone.restapi` 9.x dropped support for Python 3.7, which reached its `end-of-life <https://devguide.python.org/versions/>`_ in July 2023.
+
+Upgrading to `plone.restapi` 9.x might require minor changes to your code base that are described in this section. If you are using a recent version of Volto, there are no changes necessary.
+
 ### Link Integrity
 
 When calling the @linkintegrity endpoint in `plone.restapi` before 9.0.0, a content object with no link integrity breaches would return just an empty list in the response body:
