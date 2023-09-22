@@ -40,15 +40,31 @@ class GroupsPatch(Service):
     def is_zope_manager(self):
         return getSecurityManager().checkPermission(ManagePortal, self.context)
 
-    def can_update(self, group, users, roles):
+    def can_update(self, group, users, roles, groups):
+        # Manager can update
         if self.is_zope_manager:
             return True
+        # Does not allow an Site Administrator to add users to groups
+        # with the Manager role
         current_group_roles = group.getRoles()
         if "Manager" in current_group_roles and users:
             return False
-        if "Manager" in roles:
-            return "Manager" in current_group_roles
-        return "Manager" not in current_group_roles
+        # Does not allow an Site Administrator set Manager to group
+        result_roles = True
+        if roles:
+            if "Manager" in roles:
+                result_roles = "Manager" in current_group_roles
+            else:
+                result_roles = "Manager" not in current_group_roles
+        # Does not allow an Site Administrator add group to group with Manager role
+        result_groups = True
+        if groups:
+            for assign_group_id in groups:
+                assign_group = self._get_group(assign_group_id)
+                if "Manager" in assign_group.getRoles():
+                    result_groups = False
+                    break
+        return result_roles and result_groups
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@groups as parameters
@@ -75,11 +91,10 @@ class GroupsPatch(Service):
 
         users = data.get("users", {})
         roles = data.get("roles", None)
-
-        if not self.can_update(group, users, roles):
-            return self.reply_no_content(status=403)
-
         groups = data.get("groups", None)
+
+        if not self.can_update(group, users, roles, groups):
+            return self.reply_no_content(status=403)
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):

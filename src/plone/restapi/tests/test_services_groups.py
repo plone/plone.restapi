@@ -199,6 +199,19 @@ class TestGroupsEndpoint(unittest.TestCase):
         administrators = self.gtool.getGroupById("Administrators")
         self.assertNotIn(TEST_USER_ID, administrators.getGroupMemberIds())
 
+    def test_siteadm_not_add_group_to_group_with_manager_role(self):
+        self.set_siteadm()
+        transaction.commit()
+
+        payload = {
+            "groups": ["Administrators"],
+        }
+        self.api_session.patch("/@groups/ploneteam", json=payload)
+        transaction.commit()
+
+        administrators = self.gtool.getGroupById("Administrators")
+        self.assertNotIn("ploneteam", administrators.getGroupMemberIds())
+
     def test_siteadm_not_set_manager_to_group(self):
         self.set_siteadm()
         payload = {
