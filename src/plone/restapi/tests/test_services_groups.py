@@ -209,3 +209,17 @@ class TestGroupsEndpoint(unittest.TestCase):
 
         ploneteam = self.gtool.getGroupById("ploneteam")
         self.assertNotIn("Manager", ploneteam.getRoles())
+
+    def test_siteadm_not_add_group_with_manager_role(self):
+        self.set_siteadm()
+        self.api_session.post(
+            "/@groups",
+            json={
+                "groupname": "fwt",
+                "roles": ["Manager"],
+            },
+        )
+        transaction.commit()
+
+        fwt = self.gtool.getGroupById("fwt")
+        self.assertIsNone(fwt)
