@@ -40,11 +40,15 @@ class GroupsPatch(Service):
     def is_zope_manager(self):
         return getSecurityManager().checkPermission(ManagePortal, self.context)
 
-    def can_update(self, group, users):
+    def can_update(self, group, users, roles):
         if self.is_zope_manager:
             return True
-        if "Manager" in group.getRoles() and users:
+        current_group_roles = group.getRoles()
+        if "Manager" in current_group_roles and users:
             return False
+        if "Manager" in roles:
+            return "Manager" in current_group_roles
+        return "Manager" not in current_group_roles
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@groups as parameters
@@ -70,11 +74,11 @@ class GroupsPatch(Service):
             raise BadRequest("Trying to update a non-existing group.")
 
         users = data.get("users", {})
+        roles = data.get("roles", None)
 
-        if not self.can_update(group, users):
+        if not self.can_update(group, users, roles):
             return self.reply_no_content(status=403)
 
-        roles = data.get("roles", None)
         groups = data.get("groups", None)
 
         # Disable CSRF protection

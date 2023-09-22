@@ -198,3 +198,14 @@ class TestGroupsEndpoint(unittest.TestCase):
 
         administrators = self.gtool.getGroupById("Administrators")
         self.assertNotIn(TEST_USER_ID, administrators.getGroupMemberIds())
+
+    def test_siteadm_not_set_manager_to_group(self):
+        self.set_siteadm()
+        payload = {
+            "roles": ["Manager"],
+        }
+        self.api_session.patch("/@groups/ploneteam", json=payload)
+        transaction.commit()
+
+        ploneteam = self.gtool.getGroupById("ploneteam")
+        self.assertNotIn("Manager", ploneteam.getRoles())
