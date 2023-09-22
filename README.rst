@@ -78,8 +78,6 @@ plone.restapi 9 requires Python 3 and works with Plone 5.2 and Plone 6.x.
 
 plone.restapi 8 entered "maintenance" mode with the release of plone.restapi 9 (September 2023).
 It is not planned to backport any features to this version and we highly recommend to upgrade to plone.restapi 9.
-plone.restapi 8 will receive security releases (if they are any) for the next two years (until September 2025).
-After September 2025 it will be unsupported.
 
 Python versions that reached their `end-of-life <https://devguide.python.org/versions/>`_,
 including Python 3.6 and Python 3.7 are not supported any longer.
