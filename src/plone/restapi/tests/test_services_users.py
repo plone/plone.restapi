@@ -133,6 +133,22 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual("web.mit.edu/chomsky", noam.get("home_page"))  # noqa
         self.assertEqual("Professor of Linguistics", noam.get("description"))  # noqa
         self.assertEqual("Cambridge, MA", noam.get("location"))
+        self.assertTrue(noam.get("can_delete"))
+
+    def test_siteadm_can_delete(self):
+        self.set_siteadm()
+        api.user.create(
+            email="manager@example.com",
+            roles=["Manager"],
+            username="manager",
+            password="managerpassword",
+        )
+        transaction.commit()
+
+        response = self.api_session.get("/@users")
+
+        manager = [x for x in response.json() if x.get("username") == "manager"][0]
+        self.assertFalse(manager.get("can_delete"))
 
     def test_list_users_without_being_manager(self):
         noam_api_session = RelativeSession(self.portal_url, test=self)

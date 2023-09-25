@@ -8,6 +8,7 @@ from plone.namedfile.browser import USE_DENYLIST
 from plone.namedfile.utils import stream_data
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
 from Products.PlonePAS.tools.memberdata import MemberData
@@ -84,6 +85,10 @@ class UsersGet(Service):
         self.acl_users = getToolByName(portal, "acl_users")
         self.query = parse_qs(self.request["QUERY_STRING"])
         self.search_term = self.query.get("search", [""])[0]
+
+    @property
+    def is_zope_manager(self):
+        return getSecurityManager().checkPermission(ManagePortal, self.context)
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
@@ -189,7 +194,13 @@ class UsersGet(Service):
             "plone.restapi: Access Plone user information", self.context
         )
 
+    def can_delete(self, is_zope_manager, roles):
+        if is_zope_manager:
+            return True
+        return "Manager" not in roles
+
     def reply(self):
+        is_zope_manager = self.is_zope_manager
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
             groups_filter = self.query.get("groups-filter:list", [])
@@ -204,7 +215,11 @@ class UsersGet(Service):
                         serializer = queryMultiAdapter(
                             (user, self.request), ISerializeToJson
                         )
-                        result.append(serializer())
+                        user_serializer = serializer()
+                        user_serializer["can_delete"] = self.can_delete(
+                            is_zope_manager, user_serializer["roles"]
+                        )
+                        result.append(user_serializer)
                     return result
                 else:
                     self.request.response.setStatus(401)
@@ -220,7 +235,11 @@ class UsersGet(Service):
                     serializer = queryMultiAdapter(
                         (user, self.request), ISerializeToJson
                     )
-                    result.append(serializer())
+                    user_serializer = serializer()
+                    user_serializer["can_delete"] = self.can_delete(
+                        is_zope_manager, user_serializer["roles"]
+                    )
+                    result.append(user_serializer)
                 return result
             else:
                 self.request.response.setStatus(401)
@@ -239,7 +258,11 @@ class UsersGet(Service):
                 self.request.response.setStatus(404)
                 return
             serializer = queryMultiAdapter((user, self.request), ISerializeToJson)
-            return serializer()
+            user_serializer = serializer()
+            user_serializer["can_delete"] = self.can_delete(
+                is_zope_manager, user_serializer["roles"]
+            )
+            return user_serializer
         else:
             self.request.response.setStatus(401)
             return
