@@ -84,6 +84,16 @@ class TestGroupsEndpoint(unittest.TestCase):
             all(["members" in group for group in response.json()]),
             "Members key found in groups listing",
         )
+        self.assertTrue(ptgroup.get("can_delete"))
+
+    def test_siteadm_groups_can_delete(self):
+        self.set_siteadm()
+        response = self.api_session.get("/@groups")
+
+        administrators = [
+            x for x in response.json() if x.get("groupname") == "Administrators"
+        ][0]
+        self.assertFalse(administrators.get("can_delete"))
 
     def test_add_group(self):
         response = self.api_session.post(
