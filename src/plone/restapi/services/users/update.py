@@ -42,6 +42,11 @@ class UsersPatch(Service):
             return "Manager" not in list(target_roles)
         return "Manager" in list(target_roles)
 
+    def can_change(self, current_roles):
+        if self.is_zope_manager:
+            return True
+        return "Manager" not in current_roles
+
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
         self.params.append(name)
@@ -79,7 +84,15 @@ class UsersPatch(Service):
         security = getAdapter(self.context, ISecuritySchema)
 
         if self.can_manage_users:
+            current_roles = user.getRoles()
             for key, value in user_settings_to_update.items():
+                if key in ["password", "email"]:
+                    if not self.can_change(current_roles):
+                        return self._error(
+                            403,
+                            "Forbidden",
+                            _("You can't update this user"),
+                        )
                 if key == "password":
                     self._change_user_password(user, value)
                 elif key == "username":
@@ -97,7 +110,6 @@ class UsersPatch(Service):
                 to_add = [key for key, enabled in roles.items() if enabled]
                 to_remove = [key for key, enabled in roles.items() if not enabled]
 
-                current_roles = user.getRoles()
                 target_roles = set(current_roles) - set(to_remove)
                 target_roles = target_roles | set(to_add)
 

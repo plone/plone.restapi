@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-09-21 15:17+0000\n"
+"POT-Creation-Date: 2023-09-25 20:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: Timo Stollenwerk <tisto@plone.org>\n"
 "Language-Team: German <DE@li.org>\n"
@@ -147,7 +147,7 @@ msgstr ""
 msgid "Volto Blocks"
 msgstr ""
 
-#: plone/restapi/services/users/update.py:139
+#: plone/restapi/services/users/update.py:151
 msgid "You are not authorized to perform this action"
 msgstr ""
 
@@ -163,12 +163,16 @@ msgstr ""
 msgid "You can't set a password without a password reset token."
 msgstr ""
 
-#: plone/restapi/services/users/update.py:108
+#: plone/restapi/services/users/update.py:120
 msgid "You can't update roles of this user"
 msgstr ""
 
-#: plone/restapi/services/users/update.py:145
+#: plone/restapi/services/users/update.py:157
 msgid "You can't update the properties of this user"
+msgstr ""
+
+#: plone/restapi/services/users/update.py:94
+msgid "You can't update this user"
 msgstr ""
 
 #: plone/restapi/services/users/add.py:284

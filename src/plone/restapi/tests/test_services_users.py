@@ -116,6 +116,15 @@ class TestUsersEndpoint(unittest.TestCase):
         self.api_session.auth = (siteadm_username, siteadm_password)
         transaction.commit()
 
+    def create_manager(self):
+        api.user.create(
+            email="manager@example.com",
+            roles=["Manager"],
+            username="manager",
+            password="managerpassword",
+        )
+        transaction.commit()
+
     def test_list_users(self):
         response = self.api_session.get("/@users")
 
@@ -1405,3 +1414,41 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertIsNone(api.user.get(userid="howard"))
+
+    def test_siteadm_not_change_manager_password(self):
+        self.set_siteadm()
+        self.create_manager()
+        self.api_session.patch(
+            "/@users/manager",
+            json={
+                "password": "newmanagerpassword",
+            },
+        )
+        transaction.commit()
+
+        response = self.api_session.post(
+            "/@login",
+            json={
+                "login": "manager",
+                "password": "newmanagerpassword",
+            },
+        )
+
+        self.assertEqual(
+            "Wrong login and/or password.", response.json()["error"]["message"]
+        )
+
+    def test_siteadm_not_change_manager_email(self):
+        self.set_siteadm()
+        self.create_manager()
+        self.api_session.patch(
+            "/@users/manager",
+            json={
+                "email": "newmanageremail@test.com",
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(
+            "manager@example.com", api.user.get(userid="manager").getProperty("email")
+        )
