@@ -34,16 +34,21 @@ class LinkIntegrityGet(Service):
             item = uuidToObject(uid)
             item_path = "/".join(item.getPhysicalPath())
             links_info = item.restrictedTraverse("@@delete_confirmation_info")
-            breaches = links_info.get_breaches()
             data = getMultiAdapter((item, self.request), ISerializeToJsonSummary)()
-            data["breaches"] = []
-            for breach in breaches:
-                for source in breach.get("sources", []):
-                    # remove unwanted data
-                    source["@id"] = source["url"]
-                    del source["url"]
-                    del source["accessible"]
-                    data["breaches"].append(source)
+            data["breaches"] = [
+                {
+                    "target": result["target"],
+                    "sources": [
+                        {
+                            "@id": source["url"],
+                            "uid": source["uid"],
+                            "title": source["title"],
+                        }
+                        for source in result["sources"]
+                    ],
+                }
+                for result in links_info.get_breaches()
+            ]
             # subtract one because we don't want to count item_path itself
             data["items_total"] = len(catalog(path=item_path)) - 1
             result.append(data)

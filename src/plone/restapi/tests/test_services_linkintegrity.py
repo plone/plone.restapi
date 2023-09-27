@@ -20,7 +20,6 @@ import unittest
 
 
 class TestLinkIntegrity(unittest.TestCase):
-
     layer = PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -210,3 +209,130 @@ class TestLinkIntegrity(unittest.TestCase):
         self.assertEqual(result[0]["@id"], level1.absolute_url())
         self.assertEqual(result[0]["breaches"], [])
         self.assertEqual(result[0]["items_total"], 1)
+
+    def test_tree_breaches_no_duplicates(self):
+        # /target_parent/target_child
+        target_parent = createContentInContainer(
+            self.portal, "Folder", id="target-parent"
+        )
+        target_child = createContentInContainer(
+            target_parent, "Document", id="target-child"
+        )
+        target_parent_uid = IUUID(target_parent)
+        target_child_uid = IUUID(target_child)
+
+        source_a = createContentInContainer(
+            self.portal,
+            "Document",
+            id="source_a",
+            blocks={
+                "block-uuid1": {
+                    "@type": "text",
+                    "text": {
+                        "blocks": [{"text": "some link"}],
+                        "entityMap": {
+                            "0": {
+                                "data": {
+                                    "href": f"../resolveuid/{target_parent_uid}",
+                                    "rel": "nofollow",
+                                    "url": f"../resolveuid/{target_parent_uid}",
+                                },
+                                "mutability": "MUTABLE",
+                                "type": "LINK",
+                            }
+                        },
+                    },
+                },
+                "block-uuid2": {
+                    "@type": "text",
+                    "text": {
+                        "blocks": [{"text": "some other link"}],
+                        "entityMap": {
+                            "0": {
+                                "data": {
+                                    "href": f"../resolveuid/{target_child_uid}",
+                                    "rel": "nofollow",
+                                    "url": f"../resolveuid/{target_child_uid}",
+                                },
+                                "mutability": "MUTABLE",
+                                "type": "LINK",
+                            }
+                        },
+                    },
+                },
+            },
+        )
+
+        source_b = createContentInContainer(
+            self.portal,
+            "Document",
+            id="source_b",
+            blocks={
+                "block-uuid3": {
+                    "@type": "text",
+                    "text": {
+                        "blocks": [{"text": "some link"}],
+                        "entityMap": {
+                            "0": {
+                                "data": {
+                                    "href": f"../resolveuid/{target_parent_uid}",
+                                    "rel": "nofollow",
+                                    "url": f"../resolveuid/{target_parent_uid}",
+                                },
+                                "mutability": "MUTABLE",
+                                "type": "LINK",
+                            }
+                        },
+                    },
+                }
+            },
+        )
+
+        source_c = createContentInContainer(
+            self.portal,
+            "Document",
+            id="source_c",
+            blocks={
+                "block-uuid4": {
+                    "@type": "text",
+                    "text": {
+                        "blocks": [{"text": "some other link"}],
+                        "entityMap": {
+                            "0": {
+                                "data": {
+                                    "href": f"../resolveuid/{target_child_uid}",
+                                    "rel": "nofollow",
+                                    "url": f"../resolveuid/{target_child_uid}",
+                                },
+                                "mutability": "MUTABLE",
+                                "type": "LINK",
+                            }
+                        },
+                    },
+                },
+            },
+        )
+
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/@linkintegrity", params={"uids": [target_parent_uid]}
+        )
+
+        result = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["@id"], target_parent.absolute_url())
+
+        breaches = result[0]["breaches"]
+        self.assertEqual(breaches[0]["target"]["uid"], target_parent_uid)
+        self.assertEqual(
+            [source["uid"] for source in breaches[0]["sources"]],
+            [IUUID(source_a), IUUID(source_b)],
+        )
+        self.assertEqual(breaches[1]["target"]["uid"], target_child_uid)
+        self.assertEqual(
+            [source["uid"] for source in breaches[1]["sources"]],
+            [IUUID(source_a), IUUID(source_c)],
+        )
+        self.assertEqual(len(breaches), 3)
