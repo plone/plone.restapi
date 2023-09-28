@@ -38,9 +38,9 @@ class LinkIntegrityGet(Service):
             data["breaches"] = [
                 {
                     "target": {
-                      "@id": result["target"]["url"],
-                      "uid": result["target"]["uid"],
-                      "title": result["target"]["title"],
+                        "@id": result["target"]["url"],
+                        "uid": result["target"]["uid"],
+                        "title": result["target"]["title"],
                     },
                     "sources": [
                         {
