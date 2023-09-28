@@ -65,15 +65,17 @@ class TestLinkIntegrity(unittest.TestCase):
         response = self.api_session.get(
             "/@linkintegrity", params={"uids": [self.doc2.UID()]}
         )
+
         result = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["@id"], self.doc2.absolute_url())
+        self.assertEqual(len(result), 1)
 
         breaches = result[0]["breaches"]
+        self.assertEqual(breaches[0]["sources"][0]["uid"], IUUID(self.doc1))
+        self.assertEqual(breaches[0]["sources"][0]["@id"], self.doc1.absolute_url())
         self.assertEqual(len(breaches), 1)
-        self.assertEqual(breaches[0]["uid"], IUUID(self.doc1))
-        self.assertEqual(breaches[0]["@id"], self.doc1.absolute_url())
+        self.assertEqual(len(breaches[0]["sources"]), 1)
 
     def test_do_not_return_breaches_if_check_is_disabled(self):
         registry = getUtility(IRegistry)
@@ -134,13 +136,14 @@ class TestLinkIntegrity(unittest.TestCase):
 
         result = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["@id"], self.doc2.absolute_url())
+        self.assertEqual(len(result), 1)
 
         breaches = result[0]["breaches"]
+        self.assertEqual(breaches[0]["sources"][0]["uid"], IUUID(doc_with_rel))
+        self.assertEqual(breaches[0]["sources"][0]["@id"], doc_with_rel.absolute_url())
         self.assertEqual(len(breaches), 1)
-        self.assertEqual(breaches[0]["uid"], IUUID(doc_with_rel))
-        self.assertEqual(breaches[0]["@id"], doc_with_rel.absolute_url())
+        self.assertEqual(len(breaches[0]["sources"]), 1)
 
     def test_return_breaches_for_contents_in_subfolders(self):
         # create a folder structure
@@ -182,13 +185,14 @@ class TestLinkIntegrity(unittest.TestCase):
 
         result = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["@id"], self.doc2.absolute_url())
+        self.assertEqual(len(result), 1)
 
         breaches = result[0]["breaches"]
+        self.assertEqual(breaches[0]["sources"][0]["uid"], IUUID(doc_in_folder))
+        self.assertEqual(breaches[0]["sources"][0]["@id"], doc_in_folder.absolute_url())
         self.assertEqual(len(breaches), 1)
-        self.assertEqual(breaches[0]["uid"], IUUID(doc_in_folder))
-        self.assertEqual(breaches[0]["@id"], doc_in_folder.absolute_url())
+        self.assertEqual(len(breaches[0]["sources"]), 1)
 
     def test_return_items_total_in_subfolders(self):
         # create a folder structure
@@ -335,4 +339,5 @@ class TestLinkIntegrity(unittest.TestCase):
             [source["uid"] for source in breaches[1]["sources"]],
             [IUUID(source_a), IUUID(source_c)],
         )
-        self.assertEqual(len(breaches), 3)
+        # target parent + target child
+        self.assertEqual(len(breaches), 2)
