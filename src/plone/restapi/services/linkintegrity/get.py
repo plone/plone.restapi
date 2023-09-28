@@ -37,7 +37,11 @@ class LinkIntegrityGet(Service):
             data = getMultiAdapter((item, self.request), ISerializeToJsonSummary)()
             data["breaches"] = [
                 {
-                    "target": result["target"],
+                    "target": {
+                      "@id": result["target"]["url"],
+                      "uid": result["target"]["uid"],
+                      "title": result["target"]["title"],
+                    },
                     "sources": [
                         {
                             "@id": source["url"],
