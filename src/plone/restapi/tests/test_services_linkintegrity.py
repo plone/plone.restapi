@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from pkg_resources import get_distribution
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -17,6 +18,8 @@ from zope.lifecycleevent import ObjectModifiedEvent
 
 import transaction
 import unittest
+
+linkintegrity_version = get_distribution("plone.app.linkintegrity").version
 
 
 class TestLinkIntegrity(unittest.TestCase):
@@ -214,6 +217,10 @@ class TestLinkIntegrity(unittest.TestCase):
         self.assertEqual(result[0]["breaches"], [])
         self.assertEqual(result[0]["items_total"], 1)
 
+    @unittest.skipUnless(
+        linkintegrity_version > "4.0.2",
+        "Remove this skipUnless after release of p.a.linkintegrity.",
+    )
     def test_tree_breaches_no_duplicates(self):
         # /target_parent/target_child
         target_parent = createContentInContainer(
@@ -340,4 +347,6 @@ class TestLinkIntegrity(unittest.TestCase):
             [IUUID(source_a), IUUID(source_c)],
         )
         # target parent + target child
+        # p.a.linkintegrity > 4.0.2 deduplicates breaches, so if you see 3
+        # instead of 2, that's why.
         self.assertEqual(len(breaches), 2)
