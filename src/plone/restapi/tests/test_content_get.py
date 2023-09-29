@@ -176,3 +176,62 @@ class TestContentGet(unittest.TestCase):
             ],
             response.json()["relatedItems"],
         )
+
+    def test_image_scales_get(self):
+        from zope.component import getMultiAdapter
+        from plone.restapi.interfaces import ISerializeToJson
+        from plone.app.testing import applyProfile
+
+        applyProfile(self.portal, "plone.restapi:blocks")
+
+        def serialize(self, obj=None):
+            if obj is None:
+                obj = self.portal.doc1
+                serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
+                return serializer()
+
+        intids = getUtility(IIntIds)
+
+        self.portal.invokeFactory("Image", id="imagewf")
+        self.portal.imagewf.title = "Image without workflow"
+        self.portal.imagewf.description = "This is an image"
+        image_file = os.path.join(os.path.dirname(__file__), "image.png")
+        with open(image_file, "rb") as f:
+            image_data = f.read()
+        self.portal.imagewf.image = NamedBlobImage(
+            data=image_data, contentType="image/png", filename="image.png"
+        )
+        transaction.commit()
+
+        # self.portal.folder1.doc1.relatedItems = [
+        #     RelationValue(intids.getId(self.portal.imagewf))
+        # ]
+        image_uid = self.portal.imagewf.UID()
+        blocks = {"123": {"@type": "image", "url": f"../resolveuid/{image_uid}"}}
+        self.portal.invokeFactory("Document", id="doc_with_blocks")
+        self.portal.doc_with_blocks.blocks = blocks
+
+        transaction.commit()
+
+        response_image = requests.get(
+            self.portal.imagewf.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertEqual(response_image.status_code, 200)
+        response_image = response_image.json()
+        # serialize(obj=self.portal.imagewf)
+
+        response = requests.get(
+            self.portal.doc_with_blocks.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(
+            response.json()["blocks"]["123"]["image_scales"]["image"][0][
+                "download"
+            ].split("@@images/")[-1],
+            response_image["image"]["download"].split("@@images/")[-1],
+        )
