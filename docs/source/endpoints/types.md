@@ -107,7 +107,7 @@ To get the schema of a content type, access the `/@types` endpoint with the name
 :language: http
 ```
 
-The content type schema uses the [JSON Schema](http://json-schema.org/) format.
+The content type schema uses the [JSON Schema](https://json-schema.org/) format.
 The tagged values for the widgets are also exposed in the `properties` attribute of the schema.
 
 For `Choice` fields, their vocabulary or source will be linked to in a `vocabulary` or `querysource` property (one or the other, never both):
