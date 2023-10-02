@@ -68,17 +68,15 @@ class TestLinkIntegrity(unittest.TestCase):
         response = self.api_session.get(
             "/@linkintegrity", params={"uids": [self.doc2.UID()]}
         )
-
         result = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result[0]["@id"], self.doc2.absolute_url())
         self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["@id"], self.doc2.absolute_url())
 
         breaches = result[0]["breaches"]
-        self.assertEqual(breaches[0]["sources"][0]["uid"], IUUID(self.doc1))
-        self.assertEqual(breaches[0]["sources"][0]["@id"], self.doc1.absolute_url())
         self.assertEqual(len(breaches), 1)
-        self.assertEqual(len(breaches[0]["sources"]), 1)
+        self.assertEqual(breaches[0]["uid"], IUUID(self.doc1))
+        self.assertEqual(breaches[0]["@id"], self.doc1.absolute_url())
 
     def test_do_not_return_breaches_if_check_is_disabled(self):
         registry = getUtility(IRegistry)
@@ -139,14 +137,13 @@ class TestLinkIntegrity(unittest.TestCase):
 
         result = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result[0]["@id"], self.doc2.absolute_url())
         self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["@id"], self.doc2.absolute_url())
 
         breaches = result[0]["breaches"]
-        self.assertEqual(breaches[0]["sources"][0]["uid"], IUUID(doc_with_rel))
-        self.assertEqual(breaches[0]["sources"][0]["@id"], doc_with_rel.absolute_url())
         self.assertEqual(len(breaches), 1)
-        self.assertEqual(len(breaches[0]["sources"]), 1)
+        self.assertEqual(breaches[0]["uid"], IUUID(doc_with_rel))
+        self.assertEqual(breaches[0]["@id"], doc_with_rel.absolute_url())
 
     def test_return_breaches_for_contents_in_subfolders(self):
         # create a folder structure
@@ -188,14 +185,13 @@ class TestLinkIntegrity(unittest.TestCase):
 
         result = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(result[0]["@id"], self.doc2.absolute_url())
         self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["@id"], self.doc2.absolute_url())
 
         breaches = result[0]["breaches"]
-        self.assertEqual(breaches[0]["sources"][0]["uid"], IUUID(doc_in_folder))
-        self.assertEqual(breaches[0]["sources"][0]["@id"], doc_in_folder.absolute_url())
         self.assertEqual(len(breaches), 1)
-        self.assertEqual(len(breaches[0]["sources"]), 1)
+        self.assertEqual(breaches[0]["uid"], IUUID(doc_in_folder))
+        self.assertEqual(breaches[0]["@id"], doc_in_folder.absolute_url())
 
     def test_return_items_total_in_subfolders(self):
         # create a folder structure
@@ -235,7 +231,8 @@ class TestLinkIntegrity(unittest.TestCase):
         source_a = createContentInContainer(
             self.portal,
             "Document",
-            id="source_a",
+            id="source-a",
+            title="Source A",
             blocks={
                 "block-uuid1": {
                     "@type": "text",
@@ -277,7 +274,8 @@ class TestLinkIntegrity(unittest.TestCase):
         source_b = createContentInContainer(
             self.portal,
             "Document",
-            id="source_b",
+            id="source-b",
+            title="Source B",
             blocks={
                 "block-uuid3": {
                     "@type": "text",
@@ -302,7 +300,8 @@ class TestLinkIntegrity(unittest.TestCase):
         source_c = createContentInContainer(
             self.portal,
             "Document",
-            id="source_c",
+            id="source-c",
+            title="Source C",
             blocks={
                 "block-uuid4": {
                     "@type": "text",
@@ -330,23 +329,51 @@ class TestLinkIntegrity(unittest.TestCase):
             "/@linkintegrity", params={"uids": [target_parent_uid]}
         )
 
-        result = response.json()
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]["@id"], target_parent.absolute_url())
-
-        breaches = result[0]["breaches"]
-        self.assertEqual(breaches[0]["target"]["uid"], target_parent_uid)
+        results = response.json()
         self.assertEqual(
-            [source["uid"] for source in breaches[0]["sources"]],
-            [IUUID(source_a), IUUID(source_b)],
+            [
+                {
+                    "@id": target_parent.absolute_url(),
+                    "@type": "Folder",
+                    "breaches": [
+                        {
+                            "@id": source_a.absolute_url(),
+                            "title": "Source A",
+                            "uid": IUUID(source_a),
+                        },
+                        {
+                            "@id": source_b.absolute_url(),
+                            "title": "Source B",
+                            "uid": IUUID(source_b),
+                        },
+                    ],
+                    "description": "",
+                    "items_total": 1,
+                    "review_state": "private",
+                    "title": "",
+                    "type_title": "Folder",
+                },
+                {
+                    "@id": target_child.absolute_url(),
+                    "@type": "Document",
+                    "breaches": [
+                        {
+                            "@id": source_a.absolute_url(),
+                            "title": "Source A",
+                            "uid": IUUID(source_a),
+                        },
+                        {
+                            "@id": source_c.absolute_url(),
+                            "title": "Source C",
+                            "uid": IUUID(source_c),
+                        },
+                    ],
+                    "description": "",
+                    "items_total": 0,
+                    "review_state": "private",
+                    "title": "",
+                    "type_title": "Page",
+                },
+            ],
+            results,
         )
-        self.assertEqual(breaches[1]["target"]["uid"], target_child_uid)
-        self.assertEqual(
-            [source["uid"] for source in breaches[1]["sources"]],
-            [IUUID(source_a), IUUID(source_c)],
-        )
-        # target parent + target child
-        # p.a.linkintegrity > 4.0.2 deduplicates breaches, so if you see 3
-        # instead of 2, that's why.
-        self.assertEqual(len(breaches), 2)

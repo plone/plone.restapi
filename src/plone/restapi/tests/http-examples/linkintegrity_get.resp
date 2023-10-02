@@ -7,18 +7,9 @@ Content-Type: application/json
         "@type": "Document",
         "breaches": [
             {
-                "sources": [
-                    {
-                        "@id": "http://localhost:55001/plone/doc-1",
-                        "title": "First document",
-                        "uid": "SomeUUID000000000000000000000001"
-                    }
-                ],
-                "target": {
-                    "@id": "http://localhost:55001/plone/doc-2",
-                    "title": "Second document",
-                    "uid": "SomeUUID000000000000000000000002"
-                }
+                "@id": "http://localhost:55001/plone/doc-1",
+                "title": "First document",
+                "uid": "SomeUUID000000000000000000000001"
             }
         ],
         "description": "",

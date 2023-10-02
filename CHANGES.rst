@@ -19,7 +19,6 @@ Breaking changes:
 - Change the @linkintegrity endpoint to add `items_total`, the number of contained items which would be deleted. @davisagli, @danalvrz, @pgrunewald (#1636)
 - The default branch was renamed from `master` to `main`. @tisto, @davisagli (#1695)
 - Drop support for Python 3.7. Set python_requires to >= 3.8 @tisto (#1709)
-- Expose the sources + their target instead of just some sources in "breaches" attribute in @linkintegrity endpoint response. [jaroel]
 
 
 New features:
