@@ -55,8 +55,8 @@ class TestCatalogSerializers(unittest.TestCase):
         lazy_map = self.catalog()
         results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
 
-        self.assertDictContainsSubset({"@id": "http://nohost"}, results)
-        self.assertDictContainsSubset({"items_total": 3}, results)
+        self.assertEqual(results["@id"], "http://nohost")
+        self.assertEqual(results["@items_total"], 3)
         self.assertEqual(3, len(results["items"]))
 
     @unittest.skipIf(HAS_PLONE_6, "... before it was not")
@@ -65,8 +65,8 @@ class TestCatalogSerializers(unittest.TestCase):
         lazy_map = self.catalog()
         results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
 
-        self.assertDictContainsSubset({"@id": "http://nohost"}, results)
-        self.assertDictContainsSubset({"items_total": 2}, results)
+        self.assertEqual(results["@id"], "http://nohost")
+        self.assertEqual(results["@items_total"], 2)
         self.assertEqual(2, len(results["items"]))
 
     def test_lazy_map_serialization_with_fullobjects(self):
@@ -76,45 +76,43 @@ class TestCatalogSerializers(unittest.TestCase):
             fullobjects=True
         )
 
-        self.assertDictContainsSubset({"@id": "http://nohost"}, results)
-        self.assertDictContainsSubset({"items_total": 1}, results)
+        self.assertEqual(results["@id"], "http://nohost")
+        self.assertEqual(results["@items_total"], 1)
         self.assertEqual(1, len(results["items"]))
         result_item = results["items"][0]
 
-        self.assertDictContainsSubset(
-            {
-                "@id": "http://nohost/plone/my-folder/my-document",
-                "@type": "Document",
-                "changeNote": "",
-                "contributors": [],
-                "creators": ["test_user_1_"],
+        expected = {
+            "@id": "http://nohost/plone/my-folder/my-document",
+            "@type": "Document",
+            "changeNote": "",
+            "contributors": [],
+            "creators": ["test_user_1_"],
+            "description": "",
+            "effective": None,
+            "exclude_from_nav": False,
+            "expires": None,
+            "id": "my-document",
+            "is_folderish": False,
+            "language": "",
+            "layout": "document_view",
+            "parent": {
+                "@id": "http://nohost/plone/my-folder",
+                "@type": "Folder",
+                "type_title": "Folder",
                 "description": "",
-                "effective": None,
-                "exclude_from_nav": False,
-                "expires": None,
-                "id": "my-document",
-                "is_folderish": False,
-                "language": "",
-                "layout": "document_view",
-                "parent": {
-                    "@id": "http://nohost/plone/my-folder",
-                    "@type": "Folder",
-                    "type_title": "Folder",
-                    "description": "",
-                    "review_state": "private",
-                    "title": "My Folder",
-                },
-                "relatedItems": [],
                 "review_state": "private",
-                "rights": "",
-                "subjects": [],
-                "table_of_contents": None,
-                "text": None,
-                "title": "My Document",
-                "version": "current",
+                "title": "My Folder",
             },
-            result_item,
-        )
+            "relatedItems": [],
+            "review_state": "private",
+            "rights": "",
+            "subjects": [],
+            "table_of_contents": None,
+            "text": None,
+            "title": "My Document",
+            "version": "current",
+        }
+        self.assertEqual(result_item, {**result_item, **expected})
 
     def test_brain_summary_representation(self):
         lazy_map = self.catalog(path="/plone/my-folder/my-document")
