@@ -37,7 +37,7 @@ jobs:
       # python setup
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
-        if: ${{ matrix.python-version }} != 2.7
+        if: ${{ matrix.python-version != 2.7 }}
         with:
           python-version: ${{ matrix.python-version }}
 
