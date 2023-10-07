@@ -44,7 +44,7 @@ TEST_REQUIRES = [
     "plone.app.caching",
     "plone.app.contenttypes",
     "plone.app.robotframework",
-    "plone.app.testing [robot] >= 4.2.2",  # ROBOT_TEST_LEVEL added
+    "plone.app.testing",
     "plone.api",
     "requests",
     "mock",
