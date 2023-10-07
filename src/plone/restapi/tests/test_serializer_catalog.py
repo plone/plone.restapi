@@ -56,7 +56,7 @@ class TestCatalogSerializers(unittest.TestCase):
         results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
 
         self.assertEqual(results["@id"], "http://nohost")
-        self.assertEqual(results["@items_total"], 3)
+        self.assertEqual(results["items_total"], 3)
         self.assertEqual(3, len(results["items"]))
 
     @unittest.skipIf(HAS_PLONE_6, "... before it was not")
@@ -66,7 +66,7 @@ class TestCatalogSerializers(unittest.TestCase):
         results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
 
         self.assertEqual(results["@id"], "http://nohost")
-        self.assertEqual(results["@items_total"], 2)
+        self.assertEqual(results["items_total"], 2)
         self.assertEqual(2, len(results["items"]))
 
     def test_lazy_map_serialization_with_fullobjects(self):
@@ -77,7 +77,7 @@ class TestCatalogSerializers(unittest.TestCase):
         )
 
         self.assertEqual(results["@id"], "http://nohost")
-        self.assertEqual(results["@items_total"], 1)
+        self.assertEqual(results["items_total"], 1)
         self.assertEqual(1, len(results["items"]))
         result_item = results["items"][0]
 
