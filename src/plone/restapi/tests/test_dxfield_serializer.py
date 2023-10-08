@@ -49,7 +49,9 @@ class TestDexterityFieldSerializing(TestCase):
         if field is not None:
             dm = getMultiAdapter((self.doc1, field), IDataManager)
             dm.set(value)
-            serializer = getMultiAdapter((field, self.doc1, self.request), IFieldSerializer)
+            serializer = getMultiAdapter(
+                (field, self.doc1, self.request), IFieldSerializer
+            )
             return serializer()
 
         return None
