@@ -26,7 +26,7 @@ class TestServicesTypes(unittest.TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         self.api_session.post(
-            "/@types/DXTestDocument",
+            "/@types/Document",
             json={
                 "factory": "fieldset",
                 "title": "Contact Info",
@@ -35,7 +35,7 @@ class TestServicesTypes(unittest.TestCase):
         )
 
         self.api_session.post(
-            "/@types/DXTestDocument",
+            "/@types/Document",
             json={
                 "factory": "fieldset",
                 "title": "Location",
@@ -44,7 +44,7 @@ class TestServicesTypes(unittest.TestCase):
         )
 
         self.api_session.post(
-            "/@types/DXTestDocument",
+            "/@types/Document",
             json={
                 "factory": "Email",
                 "title": "Author email",
@@ -53,7 +53,7 @@ class TestServicesTypes(unittest.TestCase):
         )
 
         self.api_session.post(
-            "/@types/DXTestDocument",
+            "/@types/Document",
             json={
                 "factory": "URL",
                 "title": "Author url",
@@ -63,7 +63,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def tearDown(self):
         # Remove all custom changed on Document
-        self.api_session.put("/@types/DXTestDocument", json={})
+        self.api_session.put("/@types/Document", json={})
         self.api_session.close()
 
     def test_get_types(self):
@@ -84,7 +84,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_get_types_document(self):
         response = self.api_session.get(
-            "{}/@types/DXTestDocument".format(self.portal.absolute_url())
+            "{}/@types/Document".format(self.portal.absolute_url())
         )
 
         self.assertEqual(response.status_code, 200)
@@ -97,7 +97,7 @@ class TestServicesTypes(unittest.TestCase):
         )
 
     def test_get_types_document_edit(self):
-        response = self.api_session.get("/@types/DXTestDocument")
+        response = self.api_session.get("/@types/Document")
 
         self.assertEqual(response.status_code, 200)
 
@@ -114,7 +114,7 @@ class TestServicesTypes(unittest.TestCase):
         )  # noqa
 
     def test_types_document_get_fieldset(self):
-        response = self.api_session.get("/@types/DXTestDocument/contact_info")
+        response = self.api_session.get("/@types/Document/contact_info")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual("Contact Info", response.json().get("title"))
@@ -125,7 +125,7 @@ class TestServicesTypes(unittest.TestCase):
         self.assertEqual([], response.json().get("fields"))
 
     def test_types_document_get_field(self):
-        response = self.api_session.get("/@types/DXTestDocument/author_email")
+        response = self.api_session.get("/@types/Document/author_email")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual("Author email", response.json().get("title"))  # noqa
@@ -142,7 +142,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_document_post_fieldset(self):
         response = self.api_session.post(
-            "/@types/DXTestDocument",
+            "/@types/Document",
             json={
                 "factory": "fieldset",
                 "title": "Foo bar",
@@ -158,7 +158,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_document_post_field(self):
         response = self.api_session.post(
-            "/@types/DXTestDocument",
+            "/@types/Document",
             json={
                 "factory": "Email",
                 "title": "Email",
@@ -180,7 +180,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_document_patch_properties(self):
         response = self.api_session.patch(
-            "/@types/DXTestDocument",
+            "/@types/Document",
             json={
                 "properties": {
                     "author_email": {
@@ -194,7 +194,7 @@ class TestServicesTypes(unittest.TestCase):
         # PATCH returns no content
         self.assertEqual(response.status_code, 204)
 
-        response = self.api_session.get("/@types/DXTestDocument/author_email")
+        response = self.api_session.get("/@types/Document/author_email")
         self.assertEqual(200, response.status_code)
         self.assertEqual("foo@bar.com", response.json().get("default"))
         self.assertEqual(5, response.json().get("minLength"))
@@ -202,7 +202,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_document_patch_fieldsets(self):
         response = self.api_session.patch(
-            "/@types/DXTestDocument",
+            "/@types/Document",
             json={
                 "fieldsets": [
                     {
@@ -215,14 +215,14 @@ class TestServicesTypes(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 204)
 
-        response = self.api_session.get("/@types/DXTestDocument/contact_info")
+        response = self.api_session.get("/@types/Document/contact_info")
         self.assertEqual(200, response.status_code)
         self.assertEqual("Contact information", response.json().get("title"))
         self.assertEqual(["author_email"], response.json().get("fields"))
 
     def test_types_document_patch_one_fieldset(self):
         response = self.api_session.patch(
-            "/@types/DXTestDocument/contact_info",
+            "/@types/Document/contact_info",
             json={
                 "title": "Contact the author",
                 "description": "Reach the author",
@@ -234,7 +234,7 @@ class TestServicesTypes(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 204)
 
-        response = self.api_session.get("/@types/DXTestDocument/contact_info")
+        response = self.api_session.get("/@types/Document/contact_info")
         self.assertEqual(200, response.status_code)
         self.assertEqual("Contact the author", response.json().get("title"))
         self.assertEqual("Reach the author", response.json().get("description"))  # noqa
@@ -244,7 +244,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_document_patch_one_field(self):
         response = self.api_session.patch(
-            "/@types/DXTestDocument/author_email",
+            "/@types/Document/author_email",
             json={
                 "title": "Author e-mail",
                 "description": "The e-mail address of the author",
@@ -255,7 +255,7 @@ class TestServicesTypes(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 204)
 
-        response = self.api_session.get("/@types/DXTestDocument/author_email")
+        response = self.api_session.get("/@types/Document/author_email")
         self.assertEqual(200, response.status_code)
         self.assertEqual("Author e-mail", response.json().get("title"))
         self.assertEqual(
@@ -266,7 +266,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_document_patch_create_missing(self):
         response = self.api_session.patch(
-            "/@types/DXTestDocument",
+            "/@types/Document",
             json={
                 "fieldsets": [
                     {"title": "Layout", "fields": ["blocks", "blocks_layout"]}
@@ -319,7 +319,7 @@ class TestServicesTypes(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 204)
 
-        response = self.api_session.get("/@types/DXTestDocument")
+        response = self.api_session.get("/@types/Document")
         self.assertEqual(200, response.status_code)
 
         self.assertIn("blocks", response.json().get("properties"))
@@ -332,7 +332,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_document_update_min_max(self):
         response = self.api_session.patch(
-            "/@types/DXTestDocument",
+            "/@types/Document",
             json={
                 "properties": {
                     "custom_text": {
@@ -352,18 +352,18 @@ class TestServicesTypes(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 204)
 
-        response = self.api_session.get("/@types/DXTestDocument/custom_text")
+        response = self.api_session.get("/@types/Document/custom_text")
         self.assertEqual(200, response.status_code)
         self.assertEqual(2, response.json().get("minLength"))
         self.assertEqual(20, response.json().get("maxLength"))
 
-        response = self.api_session.get("/@types/DXTestDocument/custom_float")
+        response = self.api_session.get("/@types/Document/custom_float")
         self.assertEqual(200, response.status_code)
         self.assertEqual(2, response.json().get("minimum"))
         self.assertEqual(14.0, response.json().get("maximum"))
 
     def test_types_document_put(self):
-        response = self.api_session.get("/@types/DXTestDocument")
+        response = self.api_session.get("/@types/Document")
         doc_json = response.json()
         doc_json["layouts"] = ["thumbnail_view", "table_view"]
         doc_json["fieldsets"] = [
@@ -388,10 +388,10 @@ class TestServicesTypes(unittest.TestCase):
             "default": None,
         }
 
-        response = self.api_session.put("/@types/DXTestDocument", json=doc_json)
+        response = self.api_session.put("/@types/Document", json=doc_json)
         self.assertEqual(response.status_code, 204)
 
-        response = self.api_session.get("/@types/DXTestDocument")
+        response = self.api_session.get("/@types/Document")
         self.assertEqual(200, response.status_code)
 
         # Layouts updated
@@ -427,22 +427,22 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_document_remove_field(self):
         response = self.api_session.delete(
-            "/@types/DXTestDocument/author_email",
+            "/@types/Document/author_email",
         )
         self.assertEqual(response.status_code, 204)
 
-        response = self.api_session.get("/@types/DXTestDocument")
+        response = self.api_session.get("/@types/Document")
         self.assertEqual(200, response.status_code)
 
         self.assertTrue("author_email" not in response.json().get("properties"))  # noqa
 
     def test_types_document_remove_fieldset(self):
         response = self.api_session.delete(
-            "/@types/DXTestDocument/contact_info",
+            "/@types/Document/contact_info",
         )
         self.assertEqual(response.status_code, 204)
 
-        response = self.api_session.get("/@types/DXTestDocument")
+        response = self.api_session.get("/@types/Document")
         self.assertEqual(200, response.status_code)
 
         self.assertTrue(
