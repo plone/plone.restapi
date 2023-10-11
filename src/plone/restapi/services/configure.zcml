@@ -61,8 +61,8 @@
       zcml:condition="have plone-5"
       />
   <include
-      package=".tiles"
-      zcml:condition="installed plone.tiles"
+      package=".rules"
+      zcml:condition="installed plone.app.contentrules"
       />
   <include
       package=".rules"

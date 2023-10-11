@@ -11,8 +11,6 @@ from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary
 
-import warnings
-
 
 @implementer(ISerializeToJson)
 class SerializeVocabLikeToJson:
@@ -44,10 +42,8 @@ class SerializeVocabLikeToJson:
                 )
 
             if token:
-                warnings.warn(
-                    "``token`` parameter is deprecated and will be removed in plone.restapi 9.0. Use ``tokens`` parameter instead.",
-                    DeprecationWarning,
-                )
+                # the token parameter was deprecated in plone.restapi 8
+                # undeprecated in plone.restapi 9
                 if token.lower() != term.token.lower():
                     continue
                 terms.append(term)

@@ -247,15 +247,11 @@ class TestSearchFunctional(unittest.TestCase):
         }
         response = self.api_session.get("/@search", params=query)
 
-        self.assertDictContainsSubset(
-            {
-                "@id": self.portal_url + "/folder/doc",
-                "title": "Lorem Ipsum",
-                "portal_type": "DXTestDocument",
-                "review_state": "private",
-            },
-            response.json()["items"][0],
-        )
+        item = response.json()["items"][0]
+        self.assertEqual(item["@id"], self.portal_url + "/folder/doc")
+        self.assertEqual(item["title"], "Lorem Ipsum")
+        self.assertEqual(item["portal_type"], "DXTestDocument")
+        self.assertEqual(item["review_state"], "private")
 
     def test_full_metadata_retrieval(self):
         query = {"SearchableText": "lorem", "metadata_fields": "_all"}

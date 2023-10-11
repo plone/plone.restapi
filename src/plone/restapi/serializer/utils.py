@@ -1,14 +1,14 @@
-from plone.dexterity.schema import lookup_fti
 from plone.app.uuid.utils import uuidToCatalogBrain
+from plone.dexterity.schema import lookup_fti
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from zope.component import queryMultiAdapter
-from zope.i18n import translate
 from zope.globalrequest import getRequest
+from zope.i18n import translate
 
 import re
 
 
-RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
+RESOLVEUID_RE = re.compile("^(?:|.*/)resolve[Uu]id/([^/]*)/?(.*)$")
 
 
 def resolve_uid(path):

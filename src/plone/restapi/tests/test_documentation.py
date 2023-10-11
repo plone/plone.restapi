@@ -8,6 +8,8 @@ from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import applyProfile
+from plone.app.testing import popGlobalRegistry
+from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -22,20 +24,22 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
+from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import patch_addon_versions
 from plone.restapi.tests.helpers import patch_scale_uuid
 from plone.restapi.tests.statictime import StaticTime
 from plone.testing.zope import Browser
 from plone.uuid.interfaces import IUUID
+from z3c.relationfield import RelationValue
 from zope.component import createObject
 from zope.component import getMultiAdapter
 from zope.component import getUtility
-from zope.interface import alsoProvides
-from plone.app.testing import popGlobalRegistry
-from plone.app.testing import pushGlobalRegistry
-from plone.restapi.testing import register_static_uuid_utility
 from zope.component.hooks import getSite
+from zope.event import notify
+from zope.interface import alsoProvides
+from zope.intid.interfaces import IIntIds
+from zope.lifecycleevent import ObjectModifiedEvent
 
 import collections
 import json
@@ -1107,6 +1111,48 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.delete("/@users/noam")
         save_request_and_response_for_docs("users_delete", response)
 
+    def test_documentation_users_delete_no_localroles(self):
+        properties = {
+            "email": "noam.chomsky@example.com",
+            "username": "noamchomsky",
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
+        )
+        transaction.commit()
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_localroles": 0}
+        )
+        save_request_and_response_for_docs("users_delete_no_localroles", response)
+
+    def test_documentation_users_delete_no_memberareas(self):
+        properties = {
+            "email": "noam.chomsky@example.com",
+            "username": "noamchomsky",
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
+        )
+        transaction.commit()
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_memberareas": 0}
+        )
+        save_request_and_response_for_docs("users_delete_no_memberareas", response)
+
     def test_documentation_groups(self):
         gtool = api.portal.get_tool("portal_groups")
         properties = {
@@ -1673,6 +1719,11 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get(url)
         save_request_and_response_for_docs("querystring_get", response)
 
+    def test_querystring_get_contextual(self):
+        url = f"{self.document.absolute_url()}/@querystring"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("querystring_get_contextual", response)
+
     def test_querystringsearch_post(self):
         url = "/@querystring-search"
 
@@ -2224,6 +2275,22 @@ class TestPAMDocumentation(TestDocumentationBase):
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
         )
         save_request_and_response_for_docs("translation_locator", response)
+
+    def test_documentation_translations_unexpanded_get(self):
+        response = self.api_session.get(
+            f"{self.en_content.absolute_url()}",
+        )
+        save_request_and_response_for_docs("translations_unexpanded_get", response)
+
+    def test_documentation_translations_expand_get(self):
+        self.api_session.post(
+            f"{self.en_content.absolute_url()}/@translations",
+            json={"id": self.es_content.absolute_url()},
+        )
+        response = self.api_session.get(
+            f"{self.en_content.absolute_url()}?expand=translations",
+        )
+        save_request_and_response_for_docs("translations_expand_get", response)
 
     def test_site_navroot_get(self):
         response = self.api_session.get("/@navroot")
@@ -2795,3 +2862,27 @@ class TestRules(TestDocumentationBase):
         url = "/@controlpanels/content-rules/rule-3"
         response = self.api_session.delete(url)
         save_request_and_response_for_docs("controlpanels_delete_rule", response)
+
+
+class TestLinkintegrity(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super().setUp()
+
+        # Create one document with a reference to another
+        self.doc1 = createContentInContainer(
+            self.portal, "Document", id="doc-1", title="First document"
+        )
+        self.doc2 = createContentInContainer(
+            self.portal, "Document", id="doc-2", title="Second document"
+        )
+        intids = getUtility(IIntIds)
+        self.doc1.relatedItems = [RelationValue(intids.getId(self.doc2))]
+        notify(ObjectModifiedEvent(self.doc1))
+        transaction.commit()
+
+    def test_linkintegrity_get(self):
+        response = self.api_session.get("/@linkintegrity?uids=" + self.doc2.UID())
+        save_request_and_response_for_docs("linkintegrity_get", response)

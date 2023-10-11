@@ -163,8 +163,6 @@ class Navigation:
 
         item.update({"items": sub})
 
-        if "title" in item and item["title"]:
-            item["title"] = item["title"]
         if "path" in item:
             del item["path"]
         return item

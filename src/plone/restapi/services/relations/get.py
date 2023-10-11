@@ -31,14 +31,6 @@ except ImportError:
     except ImportError:
         get_relations_stats = None
 
-try:
-    from Products.CMFPlone.relationhelper import rebuild_relations
-except ImportError:
-    try:
-        from collective.relationhelpers.api import rebuild_relations
-    except ImportError:
-        rebuild_relations = None
-
 
 def make_summary(obj, request):
     """Add UID to metadata_fields."""
@@ -100,7 +92,8 @@ def get_relations(
         except TypeError as e:
             raise ValueError(str(e))
     count = 0
-    relations = relation_catalog.findRelations(query)
+    relations = list(relation_catalog.findRelations(query))
+
     for relation in relations:
         if relation.isBroken():
             if not onlyBroken:
@@ -125,11 +118,15 @@ def get_relations(
         if onlyBroken:
             results[relation.from_attribute].append(
                 [
-                    source_obj and source_obj.absolute_url() or "",
-                    target_obj and target_obj.absolute_url() or "",
+                    source_obj and source_obj.absolute_url() or relation.from_path,
+                    target_obj and target_obj.absolute_url() or relation.to_path,
                 ]
             )
         else:
+            # Exclude relations without source or target.
+            # Dispensable with https://github.com/zopefoundation/z3c.relationfield/pull/24
+            if not source_obj or not target_obj:
+                continue
             results[relation.from_attribute].append(
                 {
                     "source": make_summary(source_obj, request),
@@ -174,8 +171,6 @@ class GetRelations(Service):
         onlyBroken: boolean: dictionary with broken relations per relation type
         query_source: Restrict relations by path or SearchableText
         query_target: Restrict relations by path or SearchableText
-        rebuild: Rebuild relations
-        flush: If rebuild, then this also flushes the intIds
 
     Returns:
         stats if no parameter, else relations
@@ -188,7 +183,6 @@ class GetRelations(Service):
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
-
         source = self.request.get("source", None)
         target = self.request.get("target", None)
         relationship = self.request.get("relation", None)
@@ -209,14 +203,14 @@ class GetRelations(Service):
             if len(relationNames) == 0:
                 return self.reply_no_content(status=204)
             result = {
-                "@id": f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}',
+                "@id": f"{self.context.absolute_url()}/@relations?onlyBroken=true",
                 "relations": {},
             }
             for relationName in relationNames:
                 rels = get_relations(relationship=relationName, onlyBroken=True)
                 result["relations"][relationName] = {
                     "items": rels[relationName],
-                    "items_total": len(rels),
+                    "items_total": len(rels[relationName]),
                 }
             return result
 
@@ -224,9 +218,7 @@ class GetRelations(Service):
         if not source and not target and not relationship:
             try:
                 stats = relation_stats()
-                stats[
-                    "@id"
-                ] = f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}'
+                stats["@id"] = f"{self.context.absolute_url()}/@relations"
                 return stats
             except ImportError:
                 self.request.response.setStatus(501)
@@ -287,7 +279,7 @@ class GetRelations(Service):
         )
 
         result = {
-            "@id": f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}',
+            "@id": f"{self.context.absolute_url()}/@relations?{self.request['QUERY_STRING']}",
             "relations": {},
         }
         if relationship and not data:

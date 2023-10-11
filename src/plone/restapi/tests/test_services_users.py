@@ -16,6 +16,7 @@ from Products.MailHost.interfaces import IMailHost
 from zope.component import getAdapter
 from zope.component import getUtility
 
+import base64
 import os
 import re
 import transaction
@@ -40,6 +41,12 @@ class TestUsersEndpoint(unittest.TestCase):
         self.anon_api_session = RelativeSession(self.portal_url, test=self)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
+        api.portal.set_registry_record("plone.enable_user_folders", True)
+        api.content.create(
+            container=self.portal, type="Folder", id="Members", title="Members"
+        )
+
+        transaction.commit()
         properties = {
             "email": "noam.chomsky@example.com",
             "username": "noamchomsky",
@@ -66,6 +73,7 @@ class TestUsersEndpoint(unittest.TestCase):
             password="otherpassword",
         )
         api.group.add_user(groupname="Reviewers", username="otheruser")
+
         transaction.commit()
 
     def tearDown(self):
@@ -159,8 +167,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(400, response.status_code)
         self.assertTrue(
-            ("You have to either send a " "password or sendPasswordReset")
-            in response.text
+            "You have to either send a password or sendPasswordReset" in response.text
         )
 
     def test_add_user_email_is_required_if_email_login_is_enabled(self):
@@ -169,7 +176,8 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"username": "noam", "password": TEST_USER_PASSWORD}
+            "/@users",
+            json={"username": "noam", "password": TEST_USER_PASSWORD},
         )
 
         self.assertEqual(400, response.status_code)
@@ -182,7 +190,10 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -214,7 +225,10 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -308,7 +322,10 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -325,7 +342,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual("noam", response.json().get("id"))
         self.assertEqual(
-            self.portal.absolute_url() + "/@users/noam", response.json().get("@id")
+            self.portal.absolute_url() + "/@users/noam",
+            response.json().get("@id"),
         )
         self.assertEqual("noam.chomsky@example.com", response.json().get("email"))
         self.assertEqual("Noam Avram Chomsky", response.json().get("fullname"))
@@ -377,7 +395,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual("noam", response.json()[0].get("id"))
         self.assertEqual(
-            self.portal.absolute_url() + "/@users/noam", response.json()[0].get("@id")
+            self.portal.absolute_url() + "/@users/noam",
+            response.json()[0].get("@id"),
         )
         self.assertEqual("noam.chomsky@example.com", response.json()[0].get("email"))
         self.assertEqual(
@@ -511,6 +530,30 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 204)
         transaction.commit()
+
+    def _update_portrait_with_svg(self):
+        here = os.path.dirname(__file__)
+        # icon from https://icons.getbootstrap.com/icons/person/
+        path = os.path.join(here, "image.svg")
+        with open(path, "rb") as image:
+            data = base64.encodebytes(image.read())
+
+        payload = {
+            "portrait": {
+                "filename": "image.svg",
+                "encoding": "base64",
+                "data": data,
+                "content-type": "image/svg+xml",
+            }
+        }
+        self.api_session.auth = ("noam", "password")
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+    def test_update_portrait_with_svg(self):
+        self._update_portrait_with_svg()
 
         user = self.api_session.get("/@users/noam").json()
         self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
@@ -696,7 +739,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_user_set_own_password_checks_old_password(self):
         self.api_session.auth = ("noam", "password")
-        payload = {"new_password": "new_password", "old_password": "wrong_password"}
+        payload = {
+            "new_password": "new_password",
+            "old_password": "wrong_password",
+        }
         response = self.api_session.post("/@users/noam/reset-password", json=payload)
 
         self.assertEqual(response.status_code, 403)
@@ -747,7 +793,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -777,7 +826,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -806,7 +858,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -829,6 +884,52 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_delete_user(self):
         response = self.api_session.delete("/@users/noam")
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+    def test_delete_user_but_not_memberareas(self):
+        mtool = getToolByName(self.portal, "portal_membership")
+        mtool.createMemberArea("noam")
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_memberareas": 0}
+        )
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+        memberfolder = self.portal.get("Members", None)
+        self.assertIsNotNone(memberfolder)
+        if memberfolder is not None:
+            self.assertIn("noam", memberfolder)
+
+    def test_delete_user_but_not_localroles(self):
+        self.folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            id="folder",
+            title="My Folder",
+        )
+        api.user.grant_roles(username="noam", roles=["Reviewer"], obj=self.folder)
+
+        self.assertIn("Reviewer", api.user.get_roles(username="noam", obj=self.folder))
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_localroles": 0}
+        )
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+        user_local_roles = self.folder.get_local_roles_for_userid(userid="noam")
+        self.assertIn("Reviewer", user_local_roles)
+
+    def test_delete_deletes_localroles(self):
+        response = self.api_session.delete("/@users/noam?delete_localroles=0")
         transaction.commit()
 
         self.assertEqual(response.status_code, 204)
@@ -857,7 +958,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.anon_api_session.post(
             "/@users",
-            json={"username": "new_user", "email": "avram.chomsky@example.com"},
+            json={
+                "username": "new_user",
+                "email": "avram.chomsky@example.com",
+            },
         )
         transaction.commit()
 
@@ -870,7 +974,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.anon_api_session.post(
             "/@users",
-            json={"username": "new_user", "email": "avram.chomsky@example.com"},
+            json={
+                "username": "new_user",
+                "email": "avram.chomsky@example.com",
+            },
         )
         transaction.commit()
 
@@ -990,6 +1097,23 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.headers["Content-Type"], "image/gif")
         noam_api_session.close()
 
+    def test_get_own_user_portrait_with_svg(self):
+        self._update_portrait_with_svg()
+
+        noam_api_session = RelativeSession(self.portal_url, test=self)
+        noam_api_session.headers.update({"Accept": "application/json"})
+        noam_api_session.auth = ("noam", "password")
+
+        response = noam_api_session.get("/@portrait")
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/svg+xml")
+        self.assertEqual(
+            response.headers["Content-Disposition"],
+            "attachment; filename*=UTF-8''noam.svg",
+        )
+        noam_api_session.close()
+
     def test_get_own_user_portrait_logged_out(self):
         response = self.anon_api_session.get(
             "/@portrait",
@@ -1007,6 +1131,9 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_get_user_portrait(self):
         with self.makeRealImage() as image:
             pm = api.portal.get_tool("portal_membership")
+            # Note: if you would set an SVG in this way, this would give a
+            # PIL.UnidentifiedImageError, which is what happens in ClassicUI
+            # as well.
             pm.changeMemberPortrait(image, "noam")
             transaction.commit()
 
@@ -1016,6 +1143,26 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.headers["Content-Type"], "image/gif")
+        self.assertIsNone(response.headers.get("Content-Disposition"))
+
+    def test_get_user_portrait_with_svg(self):
+        # If we would upload an SVG in the same way as in
+        # test_get_user_portrait, with pm.changeMemberPortrait,
+        # this would actually give PIL.UnidentifiedImageError,
+        # which is what happens in ClassicUI as well.
+        # So update it with a restapi call instead.
+        self._update_portrait_with_svg()
+
+        response = self.api_session.get(
+            "/@portrait/noam",
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/svg+xml")
+        self.assertEqual(
+            response.headers["Content-Disposition"],
+            "attachment; filename*=UTF-8''noam.svg",
+        )
 
     def test_get_user_portrait_anonymous(self):
         with self.makeRealImage() as image:
@@ -1029,6 +1176,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.headers["Content-Type"], "image/gif")
+        self.assertIsNone(response.headers.get("Content-Disposition"))
 
     def test_get_user_portrait_if_email_login_enabled(self):
         # enable use_email_as_login
@@ -1038,7 +1186,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
