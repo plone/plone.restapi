@@ -50,4 +50,9 @@
       name="types"
       />
 
+  <adapter
+      factory=".get.TypesInfoRoot"
+      name="types"
+      />
+
 </configure>

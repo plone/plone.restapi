@@ -23,7 +23,6 @@ The API consumer can create, read, update, and delete a content-type lock.
 | `PATCH`  | `/@lock` | Refresh existing lock                  |
 | `DELETE` | `/@lock` | Unlock an object                       |
 
-
 ## Locking an object
 
 To lock an object, send a `POST` request to the `/@lock` endpoint that is available on any content object in Plone:
@@ -59,7 +58,6 @@ The server responds with status {term}`200 OK` and returns the lock information:
 :language: http
 ```
 
-
 ## Unlocking an object
 
 To unlock an object, send a `DELETE` request to the `/@lock` endpoint:
@@ -88,11 +86,6 @@ The server responds with status {term}`200 OK` and returns the lock information:
 :language: http
 ```
 
-```{warning}
-The `@unlock` endpoint is deprecated and will be removed in `plone.restapi` 9.0.
-```
-
-
 ## Refreshing a lock
 
 An existing lock can be refreshed by sending a `PATCH` request to the `@lock` endpoint:
@@ -108,11 +101,6 @@ The server responds with status {term}`200 OK` and returns the lock information 
 :language: http
 ```
 
-```{warning}
-The `@refresh-lock` endpoint is deprecated and will be removed in `plone.restapi` 9.0.
-```
-
-
 ## Getting lock information
 
 To find out if an object is locked or to get information about the current lock, you can send a `GET` request to the `@lock` endpoint:
@@ -127,7 +115,6 @@ The server responds with status {term}`200 OK` and returns the information about
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/lock_get.resp
 :language: http
 ```
-
 
 ## Updating a locked object
 

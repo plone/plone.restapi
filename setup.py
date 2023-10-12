@@ -4,7 +4,7 @@ from setuptools import setup
 import sys
 
 
-version = "8.40.1.dev0"
+version = "9.0.1.dev0"
 
 if sys.version_info.major == 2:
     raise ValueError(
@@ -47,7 +47,6 @@ TEST_REQUIRES = [
     "plone.app.testing [robot] >= 4.2.2",  # ROBOT_TEST_LEVEL added
     "plone.api",
     "requests",
-    "plone.tiles",
     "mock",
 ]
 
@@ -68,7 +67,6 @@ setup(
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -84,7 +82,7 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     namespace_packages=["plone"],
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     include_package_data=True,
     zip_safe=False,
     install_requires=[
