@@ -6,27 +6,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.7, 3.6, 2.7]
-        plone-version: [5.2, 5.1, 4.3]
-        exclude:
-          - python-version: 3.6
-            plone-version: 4.3
-          - python-version: 3.6
-            plone-version: 5.0
-          - python-version: 3.6
-            plone-version: 5.1
-          - python-version: 3.7
-            plone-version: 4.3
-          - python-version: 3.7
-            plone-version: 5.0
-          - python-version: 3.7
-            plone-version: 5.1
-          - python-version: 3.8
-            plone-version: 4.3
-          - python-version: 3.8
-            plone-version: 5.0
-          - python-version: 3.8
-            plone-version: 5.1
+        python-version: [3.8, 3.7]
+        plone-version: [5.2]
 
     steps:
       # git checkout
@@ -42,7 +23,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -64,7 +45,7 @@ jobs:
 
       # build sphinx
       - name: sphinx
-        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/sphinxbuilder; fi
+        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.8' ]; then bin/sphinxbuilder; fi
 
       # test
       - name: test
@@ -79,4 +60,53 @@ jobs:
 
       # test sphinx warnings
       - name: sphinx
-        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/test-no-sphinx-warnings; fi
+        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.8' ]; then bin/test-no-sphinx-warnings; fi
+
+  build-py2:
+    runs-on: ubuntu-20.04
+    container:
+      image: python:2.7.18-buster
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [2.7]
+        plone-version: [5.2, 5.1, 4.3]
+
+    steps:
+      # git checkout
+      - uses: actions/checkout@v2
+
+      # python cache
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # python install
+      - run: pip install virtualenv
+      - run: pip install wheel
+      - name: pip install
+        run: pip install -r requirements.txt
+
+      # buildout
+      - name: buildout
+        run: buildout -t 10 -c plone-${{ matrix.plone-version }}.x.cfg code-analysis:return-status-codes=True
+        env:
+          CI: true
+
+      # code analysis
+      - name: code analysis
+        run: bin/code-analysis
+
+      # test
+      - name: test
+        run: bin/test
+
+      # test no uncommited changes
+      - name: test no uncommited changes
+        run: bin/test-no-uncommitted-doc-changes
+        env:
+          PYTHON_VERSION: ${{ matrix.python-version }}
+          PLONE_VERSION: ${{ matrix.plone-version }}
