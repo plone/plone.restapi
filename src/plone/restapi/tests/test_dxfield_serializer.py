@@ -41,14 +41,20 @@ class TestDexterityFieldSerializing(TestCase):
         ]
 
     def serialize(self, fieldname, value):
+        field = None
         for schema in iterSchemata(self.doc1):
             if fieldname in schema:
                 field = schema.get(fieldname)
                 break
-        dm = getMultiAdapter((self.doc1, field), IDataManager)
-        dm.set(value)
-        serializer = getMultiAdapter((field, self.doc1, self.request), IFieldSerializer)
-        return serializer()
+        if field is not None:
+            dm = getMultiAdapter((self.doc1, field), IDataManager)
+            dm.set(value)
+            serializer = getMultiAdapter(
+                (field, self.doc1, self.request), IFieldSerializer
+            )
+            return serializer()
+
+        return None
 
     def test_ascii_field_serialization_returns_unicode(self):
         value = self.serialize("test_ascii_field", "foo")
