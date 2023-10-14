@@ -42,8 +42,7 @@ long_description = (
 TEST_REQUIRES = [
     "collective.MockMailHost",
     "plone.app.caching",
-    "plone.app.contenttypes",
-    "plone.app.robotframework",
+    "plone.app.contenttypes[test]",
     "plone.app.testing",
     "plone.api",
     "requests",
