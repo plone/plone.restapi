@@ -42,7 +42,7 @@ long_description = (
 TEST_REQUIRES = [
     "collective.MockMailHost",
     "plone.app.caching",
-    "plone.app.contenttypes",
+    "plone.app.contenttypes[test]",
     "plone.app.testing",
     "plone.api",
     "requests",
@@ -70,6 +70,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
