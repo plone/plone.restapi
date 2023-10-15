@@ -20,7 +20,7 @@ class Site:
         self.request = request
 
     def __call__(self, expand=False):
-        result = {"site": {"@id": f"{self.context.absolute_url()}/@site"}}
+        result = {"site": {"@id": "{}/@site".format(self.context.absolute_url())}}
         if not expand:
             return result
 
