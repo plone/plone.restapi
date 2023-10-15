@@ -21,6 +21,7 @@
       for="Products.CMFCore.interfaces.IContentish"
       permission="zope2.View"
       name="@translations"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       />
   <cache:ruleset
       for=".pam.TranslationInfo"
@@ -34,6 +35,7 @@
       for="Products.CMFCore.interfaces.IContentish"
       permission="plone.app.multilingual.ManageTranslations"
       name="@translations"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       />
 
   <plone:service
@@ -42,6 +44,7 @@
       for="Products.CMFCore.interfaces.IContentish"
       permission="plone.app.multilingual.ManageTranslations"
       name="@translations"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       />
 
   <plone:service
@@ -50,6 +53,7 @@
       for="Products.CMFCore.interfaces.IContentish"
       permission="plone.app.multilingual.ManageTranslations"
       name="@translation-locator"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       />
 
 </configure>

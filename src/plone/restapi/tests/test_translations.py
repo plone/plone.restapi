@@ -9,6 +9,7 @@ from plone.restapi import HAS_MULTILINGUAL
 from plone.restapi.bbb import ILanguage
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
 
@@ -374,3 +375,30 @@ class TestTranslationLocator(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
         self.assertEqual(self.portal_url + "/de", response.json().get("@id"))
+
+
+class TestPAMNotinstalled(unittest.TestCase):
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
+        login(self.portal, SITE_OWNER_NAME)
+        self.folder = createContentInContainer(self.portal, "Folder", title="Folder")
+        transaction.commit()
+
+    def test_translations(self):
+        response = requests.get(
+            f"{self.folder.absolute_url()}/@translations",
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertEqual(404, response.status_code)
+
+    def test_translation_locator(self):
+        response = requests.get(
+            f"{self.folder.absolute_url()}/@translation-locator",
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertEqual(404, response.status_code)
