@@ -20,6 +20,7 @@
       factory=".pam.TranslationInfo"
       for="Products.CMFCore.interfaces.IContentish"
       permission="zope2.View"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       name="@translations"
       />
   <cache:ruleset
@@ -33,6 +34,7 @@
       factory=".pam.LinkTranslations"
       for="Products.CMFCore.interfaces.IContentish"
       permission="plone.app.multilingual.ManageTranslations"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       name="@translations"
       />
 
@@ -41,6 +43,7 @@
       factory=".pam.UnlinkTranslations"
       for="Products.CMFCore.interfaces.IContentish"
       permission="plone.app.multilingual.ManageTranslations"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       name="@translations"
       />
 
@@ -49,6 +52,7 @@
       factory=".locator.TranslationLocator"
       for="Products.CMFCore.interfaces.IContentish"
       permission="plone.app.multilingual.ManageTranslations"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       name="@translation-locator"
       />
 
