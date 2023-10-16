@@ -80,13 +80,8 @@ class TestQuerystringEndpoint(unittest.TestCase):
         indexes = response.json()["indexes"]
         idx = indexes["review_state"]
 
-        self.assertDictContainsSubset(
-            {
-                "title": "Review state",
-                "vocabulary": "plone.app.vocabularies.WorkflowStates",
-            },
-            idx,
-        )
+        self.assertEqual(idx["title"], "Review state")
+        self.assertEqual(idx["vocabulary"], "plone.app.vocabularies.WorkflowStates")
 
         expected_vocab_values = {
             "external": {"title": "Externally visible [external]"},
@@ -110,15 +105,13 @@ class TestQuerystringEndpoint(unittest.TestCase):
         indexes = response.json()["indexes"]
         idx = indexes["isDefaultPage"]
 
-        self.assertDictContainsSubset(
-            {
-                "title": "Default Page",
-                "operations": [
-                    "plone.app.querystring.operation.boolean.isTrue",
-                    "plone.app.querystring.operation.boolean.isFalse",
-                ],
-            },
-            idx,
+        self.assertEqual(idx["title"], "Default Page")
+        self.assertEqual(
+            idx["operations"],
+            [
+                "plone.app.querystring.operation.boolean.isTrue",
+                "plone.app.querystring.operation.boolean.isFalse",
+            ],
         )
 
         expected_operators = {
@@ -144,16 +137,14 @@ class TestQuerystringEndpoint(unittest.TestCase):
         indexes = response.json()["indexes"]
         idx = indexes["getObjPositionInParent"]
 
-        self.assertDictContainsSubset(
-            {
-                "title": "Order in folder",
-                "operations": [
-                    "plone.app.querystring.operation.int.is",
-                    "plone.app.querystring.operation.int.lessThan",
-                    "plone.app.querystring.operation.int.largerThan",
-                ],
-            },
-            idx,
+        self.assertEqual(idx["title"], "Order in folder")
+        self.assertEqual(
+            idx["operations"],
+            [
+                "plone.app.querystring.operation.int.is",
+                "plone.app.querystring.operation.int.lessThan",
+                "plone.app.querystring.operation.int.largerThan",
+            ],
         )
 
         ops = idx["operators"]
