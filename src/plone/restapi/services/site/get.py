@@ -2,13 +2,16 @@
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
-from Products.CMFPlone.utils import getSiteLogo
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.interface import Interface
 
+try:
+    from Products.CMFPlone.utils import getSiteLogo
+except ImportError:
+    getSiteLogo = None
 try:
     from Products.CMFPlone.interfaces import IImagingSchema
 except ImportError:
