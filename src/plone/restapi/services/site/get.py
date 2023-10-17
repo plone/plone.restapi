@@ -37,24 +37,34 @@ class Site:
         registry = getUtility(IRegistry)
 
         if ISiteSchema is not None:
-            site_settings = registry.forInterface(ISiteSchema, prefix="plone", check=False)
-            result["site"].update({
-                "plone.site_logo": site_settings.site_logo and getSiteLogo() or None,
-                "plone.robots_txt": site_settings.robots_txt,
-            })
+            site_settings = registry.forInterface(
+                ISiteSchema, prefix="plone", check=False
+            )
+            result["site"].update(
+                {
+                    "plone.site_logo": site_settings.site_logo
+                    and getSiteLogo()
+                    or None,
+                    "plone.robots_txt": site_settings.robots_txt,
+                }
+            )
 
         if IImagingSchema is not None:
             image_settings = registry.forInterface(
                 IImagingSchema, prefix="plone", check=False
             )
-            result["site"].update({
-                "plone.allowed_sizes": image_settings.allowed_sizes,
-            })
+            result["site"].update(
+                {
+                    "plone.allowed_sizes": image_settings.allowed_sizes,
+                }
+            )
 
-        result["site"].update({
+        result["site"].update(
+            {
                 "plone.site_title": portal_state.portal_title(),
                 "plone.allowed_sizes": image_settings.allowed_sizes,
-            })
+            }
+        )
 
         return result
 
