@@ -47,18 +47,14 @@ class Site:
             image_settings = registry.forInterface(
                 IImagingSchema, prefix="plone", check=False
             )
-            result["site"].update(
-            {
+            result["site"].update({
                 "plone.allowed_sizes": image_settings.allowed_sizes,
-            }
-        )
+            })
 
-        result["site"].update(
-            {
+        result["site"].update({
                 "plone.site_title": portal_state.portal_title(),
                 "plone.allowed_sizes": image_settings.allowed_sizes,
-            }
-        )
+            })
 
         return result
 
