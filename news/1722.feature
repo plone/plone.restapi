@@ -1,1 +1,1 @@
-Add support for Python 3.12 @tisto
+Add support for Python 3.12. @tisto
