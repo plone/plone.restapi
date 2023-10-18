@@ -5,6 +5,7 @@ from plone.restapi.testing import (
     PLONE_RESTAPI_DX_FUNCTIONAL_TESTING,
     PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING,
 )
+from plone.restapi.testing import PAM_INSTALLED
 from plone.restapi.testing import RelativeSession
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
@@ -117,7 +118,9 @@ class TestServicesNavroot(unittest.TestCase):
             portal_state.navigation_root_url(),
         )
 
-
+@unittest.skipUnless(
+    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
+)  # NOQA
 class TestServicesNavrootMultilingual(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
