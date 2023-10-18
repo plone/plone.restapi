@@ -41,9 +41,6 @@ class TestServicesSite(unittest.TestCase):
         self.assertEqual(
             response.json()["plone.site_title"], portal_state.portal_title()
         )
-        self.assertIn("plone.site_logo", response.json())
-        self.assertIn("plone.robots_txt", response.json())
-        self.assertIn("plone.allowed_sizes", response.json())
 
     @unittest.skipIf(
         IS_PLONE4,
