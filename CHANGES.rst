@@ -462,7 +462,7 @@ Bug fixes:
 
 - Added url field to Actions (#817)
 - Updated ``statictime`` tests following changes to ``p.a.discussion`` (see
-  https://github.com/plone/plone.app.discussion/pull/204) - @instification (#1520)
+  https://github.com/plone/plone.app.discussion/pull/204). @instification (#1520)
 - Updated ``@portrait`` endpoint to use sanitized user id. @instification (#1524)
 
 
