@@ -65,7 +65,6 @@ class Site:
         result["site"].update(
             {
                 "plone.site_title": portal_state.portal_title(),
-                "plone.allowed_sizes": image_settings.allowed_sizes,
             }
         )
 
