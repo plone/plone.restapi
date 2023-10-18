@@ -118,6 +118,7 @@ class TestServicesNavroot(unittest.TestCase):
             portal_state.navigation_root_url(),
         )
 
+
 @unittest.skipUnless(
     PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
 )  # NOQA
