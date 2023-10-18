@@ -10,9 +10,8 @@ import unittest
 IS_PLONE4 = False
 
 try:
-    from Products.CMFPlone.defaultpage import is_default_page
-    from Products.CMFPlone.interfaces import INavigationSchema
-    from Products.CMFPlone.interfaces import ISiteSchema
+    from Products.CMFPlone.interfaces import IImagingSchema  # noqa
+    from Products.CMFPlone.interfaces import ISiteSchema  # noqa
 except ImportError:
     IS_PLONE4 = True
 
