@@ -7,6 +7,15 @@ from zope.component import getMultiAdapter
 
 import unittest
 
+IS_PLONE4 = False
+
+try:
+    from Products.CMFPlone.defaultpage import is_default_page
+    from Products.CMFPlone.interfaces import INavigationSchema
+    from Products.CMFPlone.interfaces import ISiteSchema
+except ImportError:
+    IS_PLONE4 = True
+
 
 class TestServicesSite(unittest.TestCase):
 
@@ -21,7 +30,7 @@ class TestServicesSite(unittest.TestCase):
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})
 
-    def test_get_site(self):
+    def test_get_site_title(self):
         response = self.api_session.get(
             "/@site",
         )
@@ -33,6 +42,20 @@ class TestServicesSite(unittest.TestCase):
         self.assertEqual(
             response.json()["plone.site_title"], portal_state.portal_title()
         )
+        self.assertIn("plone.site_logo", response.json())
+        self.assertIn("plone.robots_txt", response.json())
+        self.assertIn("plone.allowed_sizes", response.json())
+
+    @unittest.skipIf(
+        IS_PLONE4,
+        "The information can only be extracted from the ISiteSchema and IImagingSchema values in registry, which are only available in Plone 5",
+    )  # NOQA
+    def test_get_site_other(self):
+        response = self.api_session.get(
+            "/@site",
+        )
+
+        self.assertEqual(response.status_code, 200)
         self.assertIn("plone.site_logo", response.json())
         self.assertIn("plone.robots_txt", response.json())
         self.assertIn("plone.allowed_sizes", response.json())
