@@ -8,6 +8,36 @@ Changelog
 
 .. towncrier release notes start
 
+9.1.0 (2023-10-18)
+------------------
+
+New features:
+
+
+- Add support for Python 3.12. @tisto (#1722)
+
+
+Bug fixes:
+
+
+- Treat sub-items like items in ``@linkintegrity`` endpoint. @jaroel (#1714)
+- Limits the use of multilingual services only if multilingual is actually installed. @mamico (#1723)
+
+
+Internal:
+
+
+- Remove unused code. @davisagli (#1703)
+- Replace deprecated assert methods. @gforcada (#1719)
+- Drop, already unused plone.app.robotframework test. @gforcada (#1720)
+
+
+Documentation:
+
+
+- Fix redirect for https://json-schema.org/. @stevepiercy (#1718)
+
+
 9.0.0 (2023-09-23)
 ------------------
 
