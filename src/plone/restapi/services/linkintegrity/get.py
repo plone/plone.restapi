@@ -38,6 +38,9 @@ class LinkIntegrityGet(Service):
             data = getMultiAdapter((item, self.request), ISerializeToJsonSummary)()
             data["breaches"] = []
             for breach in breaches:
+                if breach["target"]["uid"] not in uids:
+                    uids.append(breach["target"]["uid"])
+                    continue
                 for source in breach.get("sources", []):
                     # remove unwanted data
                     source["@id"] = source["url"]

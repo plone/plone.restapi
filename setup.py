@@ -4,7 +4,7 @@ from setuptools import setup
 import sys
 
 
-version = "9.0.1.dev0"
+version = "9.1.1.dev0"
 
 if sys.version_info.major == 2:
     raise ValueError(
@@ -42,9 +42,8 @@ long_description = (
 TEST_REQUIRES = [
     "collective.MockMailHost",
     "plone.app.caching",
-    "plone.app.contenttypes",
-    "plone.app.robotframework",
-    "plone.app.testing [robot] >= 4.2.2",  # ROBOT_TEST_LEVEL added
+    "plone.app.contenttypes[test]",
+    "plone.app.testing",
     "plone.api",
     "requests",
     "mock",
@@ -71,6 +70,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
