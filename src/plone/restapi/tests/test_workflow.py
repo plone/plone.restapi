@@ -163,6 +163,7 @@ class TestWorkflowTransition(TestCase):
         service.reply()
         self.assertTrue(isinstance(doc1.effective_date, DateTime))
         self.assertTrue(doc1.effective_date >= now)
+        self.assertFalse(doc1.effective_date.timezoneNaive())
 
     def test_calling_endpoint_without_transition_gives_400(self):
         service = self.traverse("/plone/doc1/@workflow")
@@ -197,6 +198,7 @@ class TestWorkflowTransition(TestCase):
         self.assertEqual(
             "2018-06-24T09:17:00+00:00", self.portal.doc1.effective().ISO8601()
         )
+        self.assertFalse(self.portal.doc1.effective_date.timezoneNaive())
 
     def test_transition_with_expiration_date(self):
         self.request["BODY"] = '{"expires": "2019-06-20T18:00:00"}'
@@ -205,6 +207,7 @@ class TestWorkflowTransition(TestCase):
         self.assertEqual(
             "2019-06-20T18:00:00+00:00", self.portal.doc1.expires().ISO8601()
         )
+        self.assertFalse(self.portal.doc1.expiration_date.timezoneNaive())
 
     def test_invalid_transition_results_in_400(self):
         service = self.traverse("/plone/doc1/@workflow/foo")

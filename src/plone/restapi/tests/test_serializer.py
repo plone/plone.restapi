@@ -92,15 +92,15 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         )
 
     def test_serialize_returns_effective(self):
-        self.portal.doc1.setEffectiveDate(DateTime("2014/04/04"))
+        self.portal.doc1.setEffectiveDate(DateTime("2014/04/04 UTC"))
         self.assertEqual(
-            self.serialize(self.portal.doc1)["effective"], "2014-04-04T00:00:00"
+            self.serialize(self.portal.doc1)["effective"], "2014-04-04T00:00:00+00:00"
         )
 
     def test_serialize_returns_expires(self):
-        self.portal.doc1.setExpirationDate(DateTime("2017/01/01"))
+        self.portal.doc1.setExpirationDate(DateTime("2017/01/01 UTC"))
         self.assertEqual(
-            self.serialize(self.portal.doc1)["expires"], "2017-01-01T00:00:00"
+            self.serialize(self.portal.doc1)["expires"], "2017-01-01T00:00:00+00:00"
         )
 
     def test_serialize_on_folder_returns_items_attr(self):

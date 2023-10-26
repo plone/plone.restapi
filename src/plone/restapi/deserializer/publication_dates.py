@@ -35,7 +35,10 @@ class PublicationDateDataManager(AttributeField):
         if not self.is_api_request:
             return super().set(value)
         if value is not None:
-            value = DateTime(value)
+            if value.tzinfo is None:
+                value = DateTime(value.year, value.month, value.day, value.hour, value.minute)
+            else:
+                value = DateTime(value)
         setattr(self.context, self.name, value)
 
 

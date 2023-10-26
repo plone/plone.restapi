@@ -1,4 +1,5 @@
 from AccessControl import getSecurityManager
+from DateTime import DateTime
 from plone.app.contenttypes.interfaces import ILink
 from plone.app.contenttypes.utils import replace_link_variables_by_paths
 from plone.app.dexterity.behaviors.metadata import IPublication
@@ -213,10 +214,18 @@ class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
 @adapter(getSpecification(IPublication["effective"]), IDexterityContent, Interface)
 class EffectiveDateSerializer(DefaultFieldSerializer):
     def get_value(self, default=None):
-        return getattr(self.context, "effective_date", default)
+        value = getattr(self.context, "effective_date", default)
+        if value is not None and value.timezoneNaive():
+            # convert to tz-aware DT in UTC
+            value = value.toZone("UTC")
+        return value
 
 
 @adapter(getSpecification(IPublication["expires"]), IDexterityContent, Interface)
 class ExpirationDateSerializer(DefaultFieldSerializer):
     def get_value(self, default=None):
-        return getattr(self.context, "expiration_date", default)
+        value = getattr(self.context, "expiration_date", default)
+        if value is not None and value.timezoneNaive():
+            # convert to tz-aware DT in UTC
+            value = value.toZone("UTC")
+        return value
