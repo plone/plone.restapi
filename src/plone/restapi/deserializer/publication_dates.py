@@ -36,7 +36,9 @@ class PublicationDateDataManager(AttributeField):
             return super().set(value)
         if value is not None:
             if value.tzinfo is None:
-                value = DateTime(value.year, value.month, value.day, value.hour, value.minute)
+                value = DateTime(
+                    value.year, value.month, value.day, value.hour, value.minute
+                )
             else:
                 value = DateTime(value)
         setattr(self.context, self.name, value)

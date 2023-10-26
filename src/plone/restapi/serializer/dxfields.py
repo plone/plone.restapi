@@ -1,5 +1,4 @@
 from AccessControl import getSecurityManager
-from DateTime import DateTime
 from plone.app.contenttypes.interfaces import ILink
 from plone.app.contenttypes.utils import replace_link_variables_by_paths
 from plone.app.dexterity.behaviors.metadata import IPublication
