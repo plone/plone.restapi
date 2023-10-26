@@ -1,6 +1,7 @@
 from AccessControl import getSecurityManager
 from plone.app.contenttypes.interfaces import ILink
 from plone.app.contenttypes.utils import replace_link_variables_by_paths
+from plone.app.dexterity.behaviors.metadata import IPublication
 from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedFileField
@@ -12,6 +13,7 @@ from plone.restapi.interfaces import IPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.utils import uid_to_url
 from Products.CMFCore.permissions import ModifyPortalContent
+from z3c.form.util import getSpecification
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
@@ -206,3 +208,15 @@ class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
         return "/".join(
             (self.context.absolute_url(), "@@download", self.field.__name__)
         )
+
+
+@adapter(getSpecification(IPublication["effective"]), IDexterityContent, Interface)
+class EffectiveDateSerializer(DefaultFieldSerializer):
+    def get_value(self, default=None):
+        return getattr(self.context, "effective_date", default)
+
+
+@adapter(getSpecification(IPublication["expires"]), IDexterityContent, Interface)
+class ExpirationDateSerializer(DefaultFieldSerializer):
+    def get_value(self, default=None):
+        return getattr(self.context, "expiration_date", default)

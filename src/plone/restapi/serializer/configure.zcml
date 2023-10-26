@@ -25,6 +25,8 @@
   <adapter factory=".dxfields.DefaultPrimaryFieldTarget" />
   <adapter factory=".dxfields.PrimaryFileFieldTarget" />
   <adapter factory=".dxfields.TextLineFieldSerializer" />
+  <adapter factory=".dxfields.EffectiveDateSerializer" />
+  <adapter factory=".dxfields.ExpirationDateSerializer" />
 
   <adapter factory=".blocks.BlocksJSONFieldSerializer" />
   <subscriber

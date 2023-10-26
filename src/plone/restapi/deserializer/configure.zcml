@@ -21,6 +21,9 @@
   <adapter factory=".dxfields.DecimalFieldDeserializer" />
   <adapter factory=".blocks.BlocksJSONFieldDeserializer" />
 
+  <adapter factory=".publication_dates.EffectiveDateDataManager" />
+  <adapter factory=".publication_dates.ExpirationDateDataManager" />
+
   <subscriber
       factory=".blocks.TextBlockDeserializer"
       provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
