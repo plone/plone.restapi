@@ -29,7 +29,7 @@ class PublicationDateDataManager(AttributeField):
             return super().get()
         value = getattr(self.context, self.name)
         if value is not None:
-            return value.asdatetime()
+            return value.toZone("UTC").asdatetime()
 
     def set(self, value):
         if not self.is_api_request:
