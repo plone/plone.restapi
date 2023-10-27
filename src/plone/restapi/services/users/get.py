@@ -27,6 +27,28 @@ from zope.publisher.interfaces import IPublishTraverse
 
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
 
+try:
+    from OFS.Image import extract_media_type
+except ImportError:
+    try:
+        from plone.namedfile.utils import extract_media_type
+    except ImportError:
+
+        def extract_media_type(content_type):
+            """extract the proper media type from *content_type*.
+
+            Ignore parameters and whitespace and normalize to lower case.
+            See https://github.com/zopefoundation/Zope/pull/1167
+            """
+            if not content_type:
+                return content_type
+            # ignore parameters
+            content_type = content_type.split(";", 1)[0]
+            # ignore whitespace
+            content_type = "".join(content_type.split())
+            # normalize to lowercase
+            return content_type.lower()
+
 
 def getPortraitUrl(user):
     if not user:
@@ -84,7 +106,6 @@ class UsersGet(Service):
     def _principal_search_results(
         self, search_for_principal, get_principal_by_id, principal_type, id_key
     ):
-
         hunter = getMultiAdapter((self.context, self.request), name="pas_search")
 
         principals = []
@@ -209,7 +230,6 @@ class UsersGet(Service):
         if self.has_permission_to_access_user_info() or (
             current_user_id and current_user_id == self._get_user_id
         ):
-
             # we retrieve the user on the user id not the username
             user = self._get_user(self._get_user_id)
             if not user:
@@ -251,7 +271,7 @@ class PortraitGet(Service):
 
     def _should_force_download(self, portrait):
         # If this returns True, the caller should set the Content-Disposition header.
-        mimetype = portrait.content_type
+        mimetype = extract_media_type(portrait.content_type)
         if not mimetype:
             return False
         if self.use_denylist:
