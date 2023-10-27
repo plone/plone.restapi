@@ -28,13 +28,16 @@ from zope.publisher.interfaces import IPublishTraverse
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
 
 try:
-    from OFS.Image import extract_media_type
+    # Zope 5.8.4+
+    from OFS.Image import extract_media_type as _extract_media_type
 except ImportError:
     try:
-        from plone.namedfile.utils import extract_media_type
+        from plone.namedfile.utils import extract_media_type as _extract_media_type
     except ImportError:
+        # Note that we start the method with an underscore, to signal that this
+        # is a private implementation detail and no one should be importing this.
 
-        def extract_media_type(content_type):
+        def _extract_media_type(content_type):
             """extract the proper media type from *content_type*.
 
             Ignore parameters and whitespace and normalize to lower case.
@@ -271,7 +274,7 @@ class PortraitGet(Service):
 
     def _should_force_download(self, portrait):
         # If this returns True, the caller should set the Content-Disposition header.
-        mimetype = extract_media_type(portrait.content_type)
+        mimetype = _extract_media_type(portrait.content_type)
         if not mimetype:
             return False
         if self.use_denylist:

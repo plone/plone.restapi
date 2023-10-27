@@ -25,7 +25,7 @@ import unittest
 
 class TestUnit(unittest.TestCase):
     def test_extract_media_type(self):
-        from plone.restapi.services.users.get import extract_media_type as extract
+        from plone.restapi.services.users.get import _extract_media_type as extract
 
         self.assertIsNone(extract(None))
         self.assertEqual(extract("text/plain"), "text/plain")
