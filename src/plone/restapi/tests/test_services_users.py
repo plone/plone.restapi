@@ -23,6 +23,17 @@ import transaction
 import unittest
 
 
+class TestUnit(unittest.TestCase):
+    def test_extract_media_type(self):
+        from plone.restapi.services.users.get import _extract_media_type as extract
+
+        self.assertIsNone(extract(None))
+        self.assertEqual(extract("text/plain"), "text/plain")
+        self.assertEqual(extract("TEXT/PLAIN"), "text/plain")
+        self.assertEqual(extract("text / plain"), "text/plain")
+        self.assertEqual(extract(" text/plain ; charset=utf-8"), "text/plain")
+
+
 class TestUsersEndpoint(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
