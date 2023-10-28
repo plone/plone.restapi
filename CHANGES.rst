@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+9.1.1 (2023-10-28)
+------------------
+
+Bug fixes:
+
+
+- Be more strict when checking if mimetype is allowed to be displayed inline.
+  [maurits] (#1167)
+
+
 9.1.0 (2023-10-18)
 ------------------
 
