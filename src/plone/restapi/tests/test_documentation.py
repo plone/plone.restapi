@@ -8,7 +8,7 @@ from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
-from plone.app.testing import applyProfile
+
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
@@ -32,9 +32,8 @@ from plone.testing.z2 import Browser
 from six.moves import range
 from zope.component import createObject
 from zope.component import getUtility
-from zope.component.hooks import getSite
 from zope.interface import alsoProvides
-
+from zope.component.hooks import getSite
 import collections
 import json
 import os
@@ -203,7 +202,8 @@ class TestDocumentationBase(unittest.TestCase):
         self.browser = Browser(self.app)
         self.browser.handleErrors = False
         self.browser.addHeader(
-            "Authorization", "Basic %s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+            "Authorization",
+            "Basic %s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
         )
 
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
@@ -234,7 +234,6 @@ class TestDocumentation(TestDocumentationBase):
         super(TestDocumentation, self).setUp()
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
-
         transaction.commit()
 
     def tearDown(self):
@@ -271,7 +270,8 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
 
         response = self.api_session.post(
-            folder.absolute_url(), json={"@type": "Document", "title": "My Document"}
+            folder.absolute_url(),
+            json={"@type": "Document", "title": "My Document"},
         )
         save_request_and_response_for_docs("content_post", response)
 
@@ -432,7 +432,11 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.invokeFactory("Folder", id="folder1", title="Folder 1")
         self.portal.folder1.invokeFactory("Folder", id="folder2", title="Folder 2")
         transaction.commit()
-        query = {"sort_on": "path", "path.query": "/plone/folder1", "path.depth": "1"}
+        query = {
+            "sort_on": "path",
+            "path.query": "/plone/folder1",
+            "path.depth": "1",
+        }
         response = self.api_session.get("/@search", params=query)
         save_request_and_response_for_docs("search_options", response)
 
@@ -453,7 +457,10 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_search_metadata_fields(self):
         self.portal.invokeFactory("Document", id="doc1", title="Lorem Ipsum")
         transaction.commit()
-        query = {"SearchableText": "lorem", "metadata_fields": ["modified", "created"]}
+        query = {
+            "SearchableText": "lorem",
+            "metadata_fields": ["modified", "created"],
+        }
         response = self.api_session.get("/@search", params=query)
         save_request_and_response_for_docs("search_metadata_fields", response)
 
@@ -498,7 +505,8 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_registry_update(self):
         response = self.api_session.patch(
-            "/@registry/", json={"plone.app.querystring.field.path.title": "Value"}
+            "/@registry/",
+            json={"plone.app.querystring.field.path.title": "Value"},
         )
         save_request_and_response_for_docs("registry_update", response)
 
@@ -782,7 +790,9 @@ class TestDocumentation(TestDocumentationBase):
         ]
         for i in range(7):
             folder.invokeFactory(
-                "Document", id="doc-%s" % str(i + 1), title="Document %s" % str(i + 1)
+                "Document",
+                id="doc-%s" % str(i + 1),
+                title="Document %s" % str(i + 1),
             )
         transaction.commit()
 
@@ -860,7 +870,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
         response = self.api_session.get("@users/noam")
@@ -876,7 +888,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
 
@@ -954,7 +968,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
         response = self.api_session.get("@users", params={"query": "noa"})
@@ -1003,7 +1019,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
 
@@ -1061,7 +1079,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
 
@@ -1161,7 +1181,10 @@ class TestDocumentation(TestDocumentationBase):
 
         response = self.api_session.patch(
             "/@groups/ploneteam",
-            json={"email": "ploneteam2@plone.org", "users": {TEST_USER_ID: False}},
+            json={
+                "email": "ploneteam2@plone.org",
+                "users": {TEST_USER_ID: False},
+            },
         )
         save_request_and_response_for_docs("groups_update", response)
 
@@ -1211,7 +1234,10 @@ class TestDocumentation(TestDocumentationBase):
             folder, u"Folder", id=u"subfolder2", title=u"SubFolder 2"
         )
         thirdlevelfolder = createContentInContainer(
-            subfolder1, u"Folder", id=u"thirdlevelfolder", title=u"Third Level Folder"
+            subfolder1,
+            u"Folder",
+            id=u"thirdlevelfolder",
+            title=u"Third Level Folder",
         )
         createContentInContainer(
             thirdlevelfolder,
@@ -1242,7 +1268,10 @@ class TestDocumentation(TestDocumentationBase):
             folder, u"Folder", id=u"subfolder2", title=u"SubFolder 2"
         )
         thirdlevelfolder = createContentInContainer(
-            subfolder1, u"Folder", id=u"thirdlevelfolder", title=u"Third Level Folder"
+            subfolder1,
+            u"Folder",
+            id=u"thirdlevelfolder",
+            title=u"Third Level Folder",
         )
         createContentInContainer(
             thirdlevelfolder,
@@ -1289,7 +1318,12 @@ class TestDocumentation(TestDocumentationBase):
 
         response = self.api_session.post(
             "/@copy",
-            json={"source": [self.document.absolute_url(), newsitem.absolute_url()]},
+            json={
+                "source": [
+                    self.document.absolute_url(),
+                    newsitem.absolute_url(),
+                ]
+            },
         )
         save_request_and_response_for_docs("copy_multiple", response)
 
@@ -1334,7 +1368,10 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_sources_get(self):
         api.content.create(
-            container=self.portal, id="doc", type="DXTestDocument", title=u"DX Document"
+            container=self.portal,
+            id="doc",
+            type="DXTestDocument",
+            title=u"DX Document",
         )
         transaction.commit()
         response = self.api_session.get("/doc/@sources/test_choice_with_source")
@@ -1526,7 +1563,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock", response)
@@ -1539,7 +1577,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock_nonstealable_timeout", response)
@@ -1565,7 +1604,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("refresh_lock", response)
@@ -1877,7 +1917,8 @@ class TestControlPanelDocumentation(TestDocumentationBase):
 
 
 @unittest.skipUnless(
-    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
+    PAM_INSTALLED,
+    "plone.app.multilingual is installed by default only in Plone 5",
 )  # NOQA
 class TestPAMDocumentation(TestDocumentationBase):
 
@@ -1886,11 +1927,16 @@ class TestPAMDocumentation(TestDocumentationBase):
     def setUp(self):
         super(TestPAMDocumentation, self).setUp()
 
-        language_tool = api.portal.get_tool("portal_languages")
-        language_tool.addSupportedLanguage("en")
-        language_tool.addSupportedLanguage("es")
-        language_tool.addSupportedLanguage("de")
-        applyProfile(self.portal, "plone.app.multilingual:default")
+        #
+        # We manually set the UIDs for LRFs here because the static uuid
+        # generator is not applied for LRFs.
+        # When we have tried to apply it for LRFs we have had several
+        # utility registration problems.
+        #
+        setattr(self.portal.en, "_plone.uuid", "00000000000000000000000000000001")
+        setattr(self.portal.es, "_plone.uuid", "00000000000000000000000000000002")
+        setattr(self.portal.fr, "_plone.uuid", "00000000000000000000000000000003")
+        setattr(self.portal.de, "_plone.uuid", "00000000000000000000000000000004")
 
         en_id = self.portal["en"].invokeFactory(
             "Document", id="test-document", title="Test document"
@@ -1901,9 +1947,6 @@ class TestPAMDocumentation(TestDocumentationBase):
         )
         self.es_content = self.portal["es"].get(es_id)
         transaction.commit()
-
-    def tearDown(self):
-        super(TestPAMDocumentation, self).tearDown()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
@@ -1929,6 +1972,7 @@ class TestPAMDocumentation(TestDocumentationBase):
     def test_documentation_translations_get(self):
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
+
         response = self.api_session.get(
             "{}/@translations".format(self.en_content.absolute_url())
         )
@@ -1966,3 +2010,29 @@ class TestPAMDocumentation(TestDocumentationBase):
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
         )
         save_request_and_response_for_docs("translation_locator", response)
+
+    def test_site_navroot_get(self):
+        response = self.api_session.get("/@navroot")
+        save_request_and_response_for_docs("navroot_site_get", response)
+
+    def test_site_navroot_language_folder_get(self):
+        response = self.api_session.get("/en/@navroot")
+        save_request_and_response_for_docs("navroot_lang_folder_get", response)
+
+    def test_site_navroot_language_content_get(self):
+        response = self.api_session.get("/en/test-document/@navroot")
+        save_request_and_response_for_docs("navroot_lang_content_get", response)
+
+    def test_site_expansion_navroot(self):
+        response = self.api_session.get("?expand=navroot")
+        save_request_and_response_for_docs("site_get_expand_navroot", response)
+
+    def test_site_expansion_navroot_language_folder(self):
+        response = self.api_session.get("/en?expand=navroot")
+        save_request_and_response_for_docs("site_get_expand_lang_folder", response)
+
+    def test_site_expansion_navroot_language_folder_content(self):
+        response = self.api_session.get("/en/test-document?expand=navroot")
+        save_request_and_response_for_docs(
+            "site_get_expand_lang_folder_content", response
+        )

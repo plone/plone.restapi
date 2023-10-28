@@ -1,0 +1,65 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@navroot",
+    "navroot": {
+        "@components": {
+            "actions": {
+                "@id": "http://localhost:55001/plone/@actions"
+            },
+            "breadcrumbs": {
+                "@id": "http://localhost:55001/plone/@breadcrumbs"
+            },
+            "contextnavigation": {
+                "@id": "http://localhost:55001/plone/@contextnavigation"
+            },
+            "navigation": {
+                "@id": "http://localhost:55001/plone/@navigation"
+            },
+            "navroot": {
+                "@id": "http://localhost:55001/plone/@navroot"
+            }
+        },
+        "@id": "http://localhost:55001/plone/@navroot",
+        "@type": "Plone Site",
+        "blocks": {},
+        "blocks_layout": {},
+        "description": "",
+        "id": "plone",
+        "is_folderish": true,
+        "items": [
+            {
+                "@id": "http://localhost:55001/plone/en",
+                "@type": "LRF",
+                "description": "",
+                "review_state": "published",
+                "title": "English"
+            },
+            {
+                "@id": "http://localhost:55001/plone/de",
+                "@type": "LRF",
+                "description": "",
+                "review_state": "published",
+                "title": "Deutsch"
+            },
+            {
+                "@id": "http://localhost:55001/plone/es",
+                "@type": "LRF",
+                "description": "",
+                "review_state": "published",
+                "title": "Espa\u00f1ol"
+            },
+            {
+                "@id": "http://localhost:55001/plone/fr",
+                "@type": "LRF",
+                "description": "",
+                "review_state": null,
+                "title": "Fran\u00e7ais"
+            }
+        ],
+        "items_total": 4,
+        "parent": {},
+        "title": "Plone site"
+    }
+}
