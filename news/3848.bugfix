@@ -1,0 +1,2 @@
+``extractCredentials``: do not fail when the request is too large to read.
+@maurits

@@ -14,6 +14,7 @@ from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlug
 from Products.PluggableAuthService.interfaces.plugins import IChallengePlugin
 from Products.PluggableAuthService.interfaces.plugins import IExtractionPlugin
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from zExceptions import BadRequest
 from zope.component import getUtility
 from zope.interface import implementer
 
@@ -98,6 +99,8 @@ class JWTAuthenticationPlugin(BasePlugin):
         # is intended to change or update the logged in user.
         try:
             creds = deserializer.json_body(request)
+        except BadRequest:
+            pass
         except exceptions.DeserializationError:
             pass
         else:
