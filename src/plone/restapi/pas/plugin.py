@@ -6,8 +6,6 @@ from datetime import datetime
 from datetime import timedelta
 from plone.keyring.interfaces import IKeyManager
 from plone.keyring.keyring import GenerateSecret
-from plone.restapi import deserializer
-from plone.restapi import exceptions
 from Products.CMFCore.permissions import ManagePortal
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
@@ -90,27 +88,16 @@ class JWTAuthenticationPlugin(BasePlugin):
     # Extracts a JSON web token from the request.
     @security.private
     def extractCredentials(self, request):
-        """
-        Extract credentials either from a JSON POST request or an established JWT token.
-        """
-        # Prefer any credentials in a JSON POST request under the assumption that any
-        # such requested sent when a JWT token is already in the `Authorization` header
-        # is intended to change or update the logged in user.
-        try:
-            creds = deserializer.json_body(request)
-        except exceptions.DeserializationError:
-            pass
-        else:
-            if "login" in creds and "password" in creds:
-                return creds
+        """Extract credentials from an established JWT token.
 
-        creds = {}
+        Note that logging in should be done by using the @login endpoint,
+        which gives you the needed JWT token.
+        """
         auth = request._auth
         if auth is None:
             return
         if auth[:7].lower() == "bearer ":
-            creds["token"] = auth.split()[-1]
-            return creds
+            return {"token": auth.split()[-1]}
 
     # IAuthenticationPlugin implementation
     @security.private

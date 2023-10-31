@@ -1,0 +1,3 @@
+``extractCredentials``: do not read json from the request.
+The result was never used, and it may fail when the request is too large to read.
+@maurits
