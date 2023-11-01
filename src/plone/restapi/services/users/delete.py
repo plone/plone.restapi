@@ -3,9 +3,10 @@ from plone.restapi.services import Service
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
+from zExceptions import BadRequest
+from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from zope.component import getUtility
 
 
 FALSE_VALUES = (0, "0", False, "false", "no")
@@ -46,7 +47,9 @@ class UsersDelete(Service):
         if not self.is_zope_manager:
             current_roles = user.getRoles()
             if "Manager" in current_roles:
-                return self.reply_no_content(status=403)
+                raise BadRequest(
+                    "You don't have permission to delete a user with 'Manager' role."
+                )
 
         delete_memberareas = (
             self.request.get("delete_memberareas", True) not in FALSE_VALUES

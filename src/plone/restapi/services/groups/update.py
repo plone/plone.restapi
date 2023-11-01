@@ -94,7 +94,9 @@ class GroupsPatch(Service):
         groups = data.get("groups", None)
 
         if not self.can_update(group, users, roles, groups):
-            return self.reply_no_content(status=403)
+            raise BadRequest(
+                "You don't have permission to assign a 'Manager' role to a group."
+            )
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):

@@ -31,7 +31,9 @@ class GroupsPost(Service):
         roles = data.get("roles", None)
 
         if not self.is_zope_manager and "Manager" in roles:
-            return self.reply_no_content(status=403)
+            raise BadRequest(
+                "You don't have permission to create a group with the 'Manager' role"
+            )
 
         email = data.get("email", None)
         title = data.get("title", None)
