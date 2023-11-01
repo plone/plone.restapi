@@ -28,7 +28,7 @@ class GroupsPost(Service):
         if not groupname:
             raise BadRequest("Property 'groupname' is required")
 
-        roles = data.get("roles", None)
+        roles = data.get("roles", [])
 
         if not self.is_zope_manager and "Manager" in roles:
             raise BadRequest(
