@@ -35,12 +35,10 @@ class UsersPatch(Service):
     def is_zope_manager(self):
         return getSecurityManager().checkPermission(ManagePortal, self.context)
 
-    def can_change_manager_role(self, target_roles, current_roles):
+    def can_change_roles(self, target_roles, current_roles):
         if self.is_zope_manager:
             return True
-        if "Manager" not in current_roles:
-            return "Manager" not in list(target_roles)
-        return "Manager" in list(target_roles)
+        return ("Manager" in current_roles) == ("Manager" in list(target_roles))
 
     def can_change(self, current_roles):
         if self.is_zope_manager:
@@ -113,7 +111,7 @@ class UsersPatch(Service):
                 target_roles = set(current_roles) - set(to_remove)
                 target_roles = target_roles | set(to_add)
 
-                if not self.can_change_manager_role(target_roles, current_roles):
+                if not self.can_change_roles(target_roles, current_roles):
                     return self._error(
                         403,
                         "Forbidden",
