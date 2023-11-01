@@ -1,1 +1,1 @@
-Give Site Administrator permission to manage users. @wesleybl
+Give Site Administrator permission to manage users. To make this possible, we now check the "plone.app.controlpanel.UsersAndGroups" permission instead of "cmf.ManagePortal" in a lot of operations in the users and groups endpoints. @wesleybl
