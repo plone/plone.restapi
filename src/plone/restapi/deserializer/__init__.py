@@ -17,7 +17,8 @@ def json_body(request):
             # Go back to the beginning.
             bodyfile.seek(0)
         try:
-            data = json.load(bodyfile)
+            body = bodyfile.read()
+            data = {} if not body else json.loads(body)
         except ValueError:
             raise DeserializationError("No JSON object could be decoded")
         finally:
