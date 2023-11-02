@@ -8,6 +8,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.testing import set_request_body
 from plone.restapi.testing import PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
@@ -175,7 +176,7 @@ class TestWorkflowTransition(TestCase):
             self.traverse("/plone/doc1/@workflow/publish/test")
 
     def test_transition_with_comment(self):
-        self.request["BODY"] = '{"comment": "A comment"}'
+        set_request_body(self.request, '{"comment": "A comment"}')
         service = self.traverse("/plone/doc1/@workflow/publish")
         res = service.reply()
         self.assertEqual("A comment", res["comments"])
@@ -183,7 +184,10 @@ class TestWorkflowTransition(TestCase):
     def test_transition_including_children(self):
         folder = self.portal[self.portal.invokeFactory("Folder", id="folder")]
         subfolder = folder[folder.invokeFactory("Folder", id="subfolder")]
-        self.request["BODY"] = '{"comment": "A comment", "include_children": true}'
+        set_request_body(
+            self.request,
+            '{"comment": "A comment", "include_children": true}',
+        )
         service = self.traverse("/plone/folder/@workflow/publish")
         service.reply()
         self.assertEqual(200, self.request.response.getStatus())
@@ -191,7 +195,7 @@ class TestWorkflowTransition(TestCase):
         self.assertEqual("published", self.wftool.getInfoFor(subfolder, "review_state"))
 
     def test_transition_with_effective_date(self):
-        self.request["BODY"] = '{"effective": "2018-06-24T09:17:02"}'
+        set_request_body(self.request, '{"effective": "2018-06-24T09:17:02"}')
         service = self.traverse("/plone/doc1/@workflow/publish")
         service.reply()
         self.assertEqual(
@@ -199,7 +203,7 @@ class TestWorkflowTransition(TestCase):
         )
 
     def test_transition_with_expiration_date(self):
-        self.request["BODY"] = '{"expires": "2019-06-20T18:00:00"}'
+        set_request_body(self.request, '{"expires": "2019-06-20T18:00:00"}')
         service = self.traverse("/plone/doc1/@workflow/publish")
         service.reply()
         self.assertEqual(
@@ -213,7 +217,7 @@ class TestWorkflowTransition(TestCase):
         self.assertEqual("WorkflowException", res["error"]["type"])
 
     def test_invalid_effective_date_results_in_400(self):
-        self.request["BODY"] = '{"effective": "now"}'
+        set_request_body(self.request, '{"effective": "now"}')
         service = self.traverse("/plone/doc1/@workflow/publish")
         res = service.reply()
         self.assertEqual(400, self.request.response.getStatus())
@@ -241,7 +245,10 @@ class TestWorkflowTransition(TestCase):
             folder.invokeFactory("Document", id="document", title="Document")
         ]
 
-        self.request["BODY"] = '{"comment": "A comment", "include_children": true}'
+        set_request_body(
+            self.request,
+            '{"comment": "A comment", "include_children": true}',
+        )
         service = self.traverse("/plone/folder/@workflow/publish")
         service.reply()
         self.assertEqual(200, self.request.response.getStatus())
@@ -266,7 +273,10 @@ class TestWorkflowTransition(TestCase):
         self.assertEqual("private", self.wftool.getInfoFor(document, "review_state"))
 
         # now try to publish folder and all children
-        self.request["BODY"] = '{"comment": "A comment", "include_children": true}'
+        set_request_body(
+            self.request,
+            '{"comment": "A comment", "include_children": true}',
+        )
         service = self.traverse("/plone/folder/@workflow/publish")
         service.reply()
         self.assertEqual(200, self.request.response.getStatus())

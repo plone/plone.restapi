@@ -3,6 +3,7 @@ from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.testing import set_request_body
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
 from zope.component import adapter
@@ -42,7 +43,7 @@ class TestBlocksDeserializer(unittest.TestCase):
     def deserialize(self, blocks=None, validate_all=False, context=None):
         blocks = blocks or ""
         context = context or self.portal.doc1
-        self.request["BODY"] = json.dumps({"blocks": blocks})
+        set_request_body(self.request, json.dumps({"blocks": blocks}))
         deserializer = getMultiAdapter((context, self.request), IDeserializeFromJson)
 
         return deserializer(validate_all=validate_all)

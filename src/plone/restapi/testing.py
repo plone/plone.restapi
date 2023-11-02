@@ -1,5 +1,6 @@
 # pylint: disable=E1002
 # E1002: Use of super on an old style class
+from io import BytesIO
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
 from plone.app.i18n.locales.interfaces import IMetadataLanguages
@@ -355,3 +356,10 @@ def normalize_html(value):
             line = " " + line
         lines.append(line)
     return "".join(lines).strip()
+
+
+def set_request_body(request, body):
+    if isinstance(body, str):
+        body = body.encode("utf-8")
+    request["BODY"] = body
+    request["BODYFILE"] = BytesIO(body)

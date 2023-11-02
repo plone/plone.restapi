@@ -4,6 +4,7 @@ from io import BytesIO
 from OFS.Image import Image
 from plone.restapi import _
 from plone.restapi.bbb import ISecuritySchema
+from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
@@ -18,7 +19,6 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 import codecs
-import json
 import plone
 
 
@@ -57,7 +57,7 @@ class UsersPatch(Service):
         )
 
     def reply(self):
-        user_settings_to_update = json.loads(self.request.get("BODY", "{}"))
+        user_settings_to_update = json_body(self.request)
         user = self._get_user(self._get_user_id)
 
         # Disable CSRF protection

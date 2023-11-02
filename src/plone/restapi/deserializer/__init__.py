@@ -4,10 +4,27 @@ import json
 
 
 def json_body(request):
-    try:
-        data = json.loads(request.get("BODY") or "{}")
-    except ValueError:
-        raise DeserializationError("No JSON object could be decoded")
+    bodyfile = request.get("BODYFILE")
+    if bodyfile is None:
+        data = {}
+    else:
+        try:
+            fpos = bodyfile.tell()
+        except Exception:
+            fpos = None
+        if fpos:
+            # Something has already begun reading the bodyfile.
+            # Go back to the beginning.
+            bodyfile.seek(0)
+        try:
+            body = bodyfile.read()
+            data = {} if not body else json.loads(body)
+        except ValueError:
+            raise DeserializationError("No JSON object could be decoded")
+        finally:
+            if fpos is not None:
+                # Go back to the previous position.
+                bodyfile.seek(fpos)
     if not isinstance(data, dict):
         raise DeserializationError("Malformed body")
     return data

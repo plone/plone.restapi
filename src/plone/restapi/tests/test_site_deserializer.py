@@ -2,6 +2,7 @@ from importlib import import_module
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.schema import SCHEMA_CACHE
 from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.testing import set_request_body
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.mixin_ordering import OrderingMixin
 from zope.component import getMultiAdapter
@@ -34,7 +35,7 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
 
     def deserialize(self, body="{}", validate_all=False, context=None):
         context = context or self.portal
-        self.request["BODY"] = body
+        set_request_body(self.request, body)
         deserializer = getMultiAdapter((context, self.request), IDeserializeFromJson)
         return deserializer(validate_all=validate_all)
 
@@ -70,7 +71,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
 
     def deserialize(self, body="{}", validate_all=False, context=None):
         context = context or self.portal
-        self.request["BODY"] = body
+        set_request_body(self.request, body)
         deserializer = getMultiAdapter((context, self.request), IDeserializeFromJson)
         return deserializer(validate_all=validate_all)
 

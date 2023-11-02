@@ -1,17 +1,17 @@
 from plone.registry import field
 from plone.registry.interfaces import IRegistry
+from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.schema.interfaces import WrongType
 
-import json
 import plone.protect.interfaces
 
 
 class RegistryUpdate(Service):
     def reply(self):
-        records_to_update = json.loads(self.request.get("BODY", "{}"))
+        records_to_update = json_body(self.request)
         registry = getUtility(IRegistry)
 
         # Disable CSRF protection

@@ -2,6 +2,7 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.permissions import UseRESTAPI
+from plone.restapi.testing import set_request_body
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest import TestCase
 from zExceptions import Unauthorized
@@ -40,16 +41,19 @@ class TestLogin(TestCase):
         self.assertNotIn("token", res)
 
     def test_login_with_invalid_credentials_fails(self):
-        self.request["BODY"] = '{"login": "admin", "password": "admin"}'
+        set_request_body(self.request, '{"login": "admin", "password": "admin"}')
         service = self.traverse()
         res = service.reply()
         self.assertIn("error", res)
         self.assertNotIn("token", res)
 
     def test_successful_login_returns_token(self):
-        self.request["BODY"] = '{{"login": "{}", "password": "{}"}}'.format(
-            SITE_OWNER_NAME,
-            SITE_OWNER_PASSWORD,
+        set_request_body(
+            self.request,
+            '{{"login": "{}", "password": "{}"}}'.format(
+                SITE_OWNER_NAME,
+                SITE_OWNER_PASSWORD,
+            ),
         )
         service = self.traverse()
         res = service.reply()
@@ -69,9 +73,12 @@ class TestLogin(TestCase):
 
     def test_login_without_api_permission(self):
         self.portal.manage_permission(UseRESTAPI, roles=[])
-        self.request["BODY"] = '{{"login": "{}", "password": "{}"}}'.format(
-            SITE_OWNER_NAME,
-            SITE_OWNER_PASSWORD,
+        set_request_body(
+            self.request,
+            '{{"login": "{}", "password": "{}"}}'.format(
+                SITE_OWNER_NAME,
+                SITE_OWNER_PASSWORD,
+            ),
         )
         service = self.traverse()
         res = service.render()
@@ -82,8 +89,9 @@ class TestLogin(TestCase):
         uf.plugins.users.addUser("zopeuser", "zopeuser", TEST_USER_PASSWORD)
         if "jwt_auth" in uf:
             uf["jwt_auth"].manage_activateInterfaces([])
-        self.request["BODY"] = (
-            '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}'
+        set_request_body(
+            self.request,
+            '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}',
         )
         service = self.traverse()
         res = service.reply()
@@ -97,8 +105,9 @@ class TestLogin(TestCase):
         self.layer["app"].acl_users.plugins.users.addUser(
             "zopeuser", "zopeuser", TEST_USER_PASSWORD
         )
-        self.request["BODY"] = (
-            '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}'
+        set_request_body(
+            self.request,
+            '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}',
         )
         service = self.traverse()
         res = service.reply()
