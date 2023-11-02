@@ -15,7 +15,6 @@ def json_body(request):
         try:
             data = json.load(bodyfile)
         except ValueError:
-            breakpoint()
             raise DeserializationError("No JSON object could be decoded")
     if not isinstance(data, dict):
         raise DeserializationError("Malformed body")
