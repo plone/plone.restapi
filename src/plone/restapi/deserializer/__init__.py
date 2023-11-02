@@ -8,14 +8,22 @@ def json_body(request):
     if bodyfile is None:
         data = {}
     else:
-        if bodyfile.tell() != 0:
-            # Something has already read the bodyfile.
+        try:
+            fpos = bodyfile.tell()
+        except Exception:
+            fpos = None
+        if fpos:
+            # Something has already begun reading the bodyfile.
             # Go back to the beginning.
             bodyfile.seek(0)
         try:
             data = json.load(bodyfile)
         except ValueError:
             raise DeserializationError("No JSON object could be decoded")
+        finally:
+            if fpos is not None:
+                # Go back to the previous position.
+                bodyfile.seek(fpos)
     if not isinstance(data, dict):
         raise DeserializationError("Malformed body")
     return data
