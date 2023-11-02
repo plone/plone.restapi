@@ -5,7 +5,8 @@ import json
 
 def json_body(request):
     try:
-        data = json.loads(request.get("BODY") or "{}")
+        bodyfile = request.get("BODYFILE")
+        data = {} if bodyfile is None else json.load(bodyfile)
     except ValueError:
         raise DeserializationError("No JSON object could be decoded")
     if not isinstance(data, dict):

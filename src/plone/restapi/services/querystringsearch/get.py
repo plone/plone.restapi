@@ -1,3 +1,4 @@
+from io import BytesIO
 from pkg_resources import get_distribution
 from pkg_resources import parse_version
 from plone.restapi.bbb import IPloneSiteRoot
@@ -101,10 +102,13 @@ class QuerystringSearchGet(Service):
 
     def reply(self):
         # We need to copy the JSON query parameters from the querystring
-        # into the request body, because that's where other code expects to find them
-        self.request["BODY"] = parse.unquote(
-            self.request.form.get("query", "{}")
-        ).encode(self.request.charset)
+        # into the request BODY and BODYFILE, because that's where other code
+        # expects to find them.
+        body = parse.unquote(self.request.form.get("query", "{}")).encode(
+            self.request.charset
+        )
+        self.request["BODY"] = body
+        self.request["BODYFILE"] = BytesIO(body)
 
         # unset the get parameters
         self.request.form = {}

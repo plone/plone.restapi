@@ -4,6 +4,7 @@ from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.testing import set_request_body
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import ITestAnnotationsBehavior
 from plone.restapi.tests.mixin_ordering import OrderingMixin
@@ -43,7 +44,7 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
 
     def deserialize(self, body="{}", validate_all=False, context=None, create=False):
         context = context or self.portal.doc1
-        self.request["BODY"] = body
+        set_request_body(self.request, body)
         deserializer = getMultiAdapter((context, self.request), IDeserializeFromJson)
         return deserializer(validate_all=validate_all, create=create)
 
@@ -257,7 +258,7 @@ class TestDXContentSerializerDeserializer(unittest.TestCase):
         body = {}
         body[field] = value
         body = json.dumps(body)
-        self.request["BODY"] = body
+        set_request_body(self.request, body)
         deserializer = getMultiAdapter((context, self.request), IDeserializeFromJson)
         return deserializer(validate_all=validate_all)
 
