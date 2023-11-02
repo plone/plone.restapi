@@ -4,11 +4,19 @@ import json
 
 
 def json_body(request):
-    try:
-        bodyfile = request.get("BODYFILE")
-        data = {} if bodyfile is None else json.load(bodyfile)
-    except ValueError:
-        raise DeserializationError("No JSON object could be decoded")
+    bodyfile = request.get("BODYFILE")
+    if bodyfile is None:
+        data = {}
+    else:
+        if bodyfile.tell() != 0:
+            # Something has already read the bodyfile.
+            # Go back to the beginning.
+            bodyfile.seek(0)
+        try:
+            data = json.load(bodyfile)
+        except ValueError:
+            breakpoint()
+            raise DeserializationError("No JSON object could be decoded")
     if not isinstance(data, dict):
         raise DeserializationError("Malformed body")
     return data
