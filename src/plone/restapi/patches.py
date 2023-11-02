@@ -3,18 +3,18 @@
 # and https://github.com/zopefoundation/Zope/pull/1180
 # Should be removed once `plone.restapi.deserializer.json_body` no longer
 # reads the complete request BODY in memory.
-from ZPublisher import HTTPRequest
+from ZPublisher.HTTPRequest import ZopeFieldStorage
 
 import logging
 
 
 logger = logging.getLogger(__name__)
-_attr = "FORM_MEMORY_LIMIT"
-_limit = getattr(HTTPRequest, _attr, None)
-if _limit and _limit == 2**20:
-    setattr(HTTPRequest, _attr, 2**24)
+_attr = "VALUE_LIMIT"
+_limit = getattr(ZopeFieldStorage, _attr, None)
+if _limit:
+    setattr(ZopeFieldStorage, _attr, None)
     logger.info(
-        "PATCH: ZPublisher.HTTPRequest.%s is at a too low default of 1MB. "
-        "Increased it to 16MB to enable larger file uploads.",
+        "PATCH: Disabled ZPublisher.HTTPRequest.ZopeFieldStorage.%s. "
+        "This enables file uploads larger than 1MB.",
         _attr,
     )
