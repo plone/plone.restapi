@@ -1,0 +1,5 @@
+Allow uploads up to 16 MB.
+This fixes a regression due to a low Zope form memory limit of 1MB used since Plone 6.0.7.
+You can use ``dos_protection`` settings in ``etc/zope.conf`` to change the limit.
+See `CMFPlone issue 3848 <https://github.com/plone/Products.CMFPlone/issues/3848>`_ and `Zope PR 1142 <https://github.com/zopefoundation/Zope/pull/1142>`_.
+@maurits
