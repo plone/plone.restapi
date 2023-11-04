@@ -1,1 +1,0 @@
-Fix jwt_auth extractCredentials plugin to only try to read credentials from the request body if there is a `Content-Type: application/json` header. @davisagli

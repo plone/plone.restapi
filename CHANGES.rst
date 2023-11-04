@@ -8,6 +8,25 @@ Changelog
 
 .. towncrier release notes start
 
+9.1.2 (2023-11-04)
+------------------
+
+Bug fixes:
+
+
+- Fix jwt_auth extractCredentials plugin to only try to read credentials from the request body if there is a `Content-Type: application/json` header. @davisagli (#1728)
+- Temporarily disable form memory limit checking for files and images.
+  This fixes a regression due to a low Zope form memory limit of 1MB used since Plone 6.0.7.
+  See `CMFPlone issue 3848 <https://github.com/plone/Products.CMFPlone/issues/3848>`_ and `Zope PR 1142 <https://github.com/zopefoundation/Zope/pull/1142>`_.
+  @maurits (#3848)
+
+
+Documentation:
+
+
+- Remove regular expression from `sphinx-copybutton` configuration, now that `linenos` are excluded by default. @stevepiercy (#1725)
+
+
 9.1.1 (2023-10-28)
 ------------------
 
