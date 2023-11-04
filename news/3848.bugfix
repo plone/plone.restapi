@@ -1,0 +1,4 @@
+Temporarily disable form memory limit checking for files and images.
+This fixes a regression due to a low Zope form memory limit of 1MB used since Plone 6.0.7.
+See `CMFPlone issue 3848 <https://github.com/plone/Products.CMFPlone/issues/3848>`_ and `Zope PR 1142 <https://github.com/zopefoundation/Zope/pull/1142>`_.
+@maurits
