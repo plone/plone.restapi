@@ -1,8 +1,6 @@
-from AccessControl import getSecurityManager
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.services import Service
-from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
@@ -20,10 +18,6 @@ class GroupsGet(Service):
         super().__init__(context, request)
         self.params = []
         self.query = self.request.form.copy()
-
-    @property
-    def is_zope_manager(self):
-        return getSecurityManager().checkPermission(ManagePortal, self.context)
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
@@ -52,13 +46,7 @@ class GroupsGet(Service):
         results = portal_groups.searchGroups(id=query, max_results=limit)
         return [portal_groups.getGroupById(group["groupid"]) for group in results]
 
-    def can_delete(self, is_zope_manager, roles):
-        if is_zope_manager:
-            return True
-        return "Manager" not in roles
-
     def reply(self):
-        is_zope_manager = self.is_zope_manager
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
             limit = self.query.get("limit", DEFAULT_SEARCH_RESULTS_LIMIT)
@@ -69,11 +57,7 @@ class GroupsGet(Service):
                     serializer = queryMultiAdapter(
                         (group, self.request), ISerializeToJsonSummary
                     )
-                    group_serializer = serializer()
-                    group_serializer["can_delete"] = self.can_delete(
-                        is_zope_manager, group_serializer["roles"]
-                    )
-                    result.append(group_serializer)
+                    result.append(serializer())
                 return result
             else:
                 raise BadRequest("Query string supplied is not valid")
@@ -82,11 +66,7 @@ class GroupsGet(Service):
             result = []
             for group in self._get_groups():
                 serializer = queryMultiAdapter((group, self.request), ISerializeToJson)
-                group_serializer = serializer()
-                group_serializer["can_delete"] = self.can_delete(
-                    is_zope_manager, group_serializer["roles"]
-                )
-                result.append(group_serializer)
+                result.append(serializer())
             return result
         # we retrieve the user on the user id not the username
         group = self._get_group(self._get_group_id)
@@ -94,8 +74,4 @@ class GroupsGet(Service):
             self.request.response.setStatus(404)
             return
         serializer = queryMultiAdapter((group, self.request), ISerializeToJson)
-        group_serializer = serializer()
-        group_serializer["can_delete"] = self.can_delete(
-            is_zope_manager, group_serializer["roles"]
-        )
-        return group_serializer
+        return serializer()
