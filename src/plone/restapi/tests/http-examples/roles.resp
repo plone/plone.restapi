@@ -6,7 +6,6 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/@roles/Contributor",
         "@type": "role",
         "can_assign": true,
-        "can_assign_add": true,
         "id": "Contributor",
         "title": "Contributor"
     },
@@ -14,7 +13,6 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/@roles/Editor",
         "@type": "role",
         "can_assign": true,
-        "can_assign_add": true,
         "id": "Editor",
         "title": "Editor"
     },
@@ -22,7 +20,6 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/@roles/Member",
         "@type": "role",
         "can_assign": true,
-        "can_assign_add": true,
         "id": "Member",
         "title": "Member"
     },
@@ -30,7 +27,6 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/@roles/Reader",
         "@type": "role",
         "can_assign": true,
-        "can_assign_add": true,
         "id": "Reader",
         "title": "Reader"
     },
@@ -38,7 +34,6 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/@roles/Reviewer",
         "@type": "role",
         "can_assign": true,
-        "can_assign_add": true,
         "id": "Reviewer",
         "title": "Reviewer"
     },
@@ -46,7 +41,6 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/@roles/Site Administrator",
         "@type": "role",
         "can_assign": true,
-        "can_assign_add": true,
         "id": "Site Administrator",
         "title": "Site Administrator"
     },
@@ -54,7 +48,6 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/@roles/Manager",
         "@type": "role",
         "can_assign": true,
-        "can_assign_add": true,
         "id": "Manager",
         "title": "Manager"
     }

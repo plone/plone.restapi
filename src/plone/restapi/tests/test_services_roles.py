@@ -47,7 +47,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Contributor",
                 "title": "Contributor",
                 "can_assign": True,
-                "can_assign_add": True,
             },
             {
                 "@id": self.portal_url + "/@roles/Editor",
@@ -55,7 +54,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Editor",
                 "title": "Editor",
                 "can_assign": True,
-                "can_assign_add": True,
             },
             {
                 "@id": self.portal_url + "/@roles/Member",
@@ -63,7 +61,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Member",
                 "title": "Member",
                 "can_assign": True,
-                "can_assign_add": True,
             },
             {
                 "@id": self.portal_url + "/@roles/Reader",
@@ -71,7 +68,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Reader",
                 "title": "Reader",
                 "can_assign": True,
-                "can_assign_add": True,
             },
             {
                 "@id": self.portal_url + "/@roles/Reviewer",
@@ -79,7 +75,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Reviewer",
                 "title": "Reviewer",
                 "can_assign": True,
-                "can_assign_add": True,
             },
             {
                 "@id": self.portal_url + "/@roles/Site Administrator",
@@ -87,7 +82,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Site Administrator",
                 "title": "Site Administrator",
                 "can_assign": True,
-                "can_assign_add": True,
             },
             {
                 "@id": self.portal_url + "/@roles/Manager",
@@ -95,7 +89,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Manager",
                 "title": "Manager",
                 "can_assign": True,
-                "can_assign_add": True,
             },
         )
         result = response.json()
@@ -114,7 +107,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Contributor",
                 "title": "Contributor",
                 "can_assign": True,
-                "can_assign_add": False,
             },
             {
                 "@id": self.portal_url + "/@roles/Editor",
@@ -122,7 +114,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Editor",
                 "title": "Editor",
                 "can_assign": True,
-                "can_assign_add": False,
             },
             {
                 "@id": self.portal_url + "/@roles/Member",
@@ -130,7 +121,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Member",
                 "title": "Member",
                 "can_assign": True,
-                "can_assign_add": False,
             },
             {
                 "@id": self.portal_url + "/@roles/Reader",
@@ -138,7 +128,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Reader",
                 "title": "Reader",
                 "can_assign": True,
-                "can_assign_add": False,
             },
             {
                 "@id": self.portal_url + "/@roles/Reviewer",
@@ -146,7 +135,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Reviewer",
                 "title": "Reviewer",
                 "can_assign": True,
-                "can_assign_add": False,
             },
             {
                 "@id": self.portal_url + "/@roles/Site Administrator",
@@ -154,7 +142,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Site Administrator",
                 "title": "Site Administrator",
                 "can_assign": True,
-                "can_assign_add": True,
             },
             {
                 "@id": self.portal_url + "/@roles/Manager",
@@ -162,7 +149,6 @@ class TestRolesGet(unittest.TestCase):
                 "id": "Manager",
                 "title": "Manager",
                 "can_assign": False,
-                "can_assign_add": False,
             },
         )
         result = response.json()
