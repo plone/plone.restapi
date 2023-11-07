@@ -8,8 +8,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - python-version: "3.7"
-            plone-version: "5.2"
           - python-version: "3.8"
             plone-version: "5.2"
           - python-version: "3.8"
