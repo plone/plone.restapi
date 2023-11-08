@@ -1,9 +1,10 @@
-from plone.dexterity.schema import lookup_fti
+from AccessControl import getSecurityManager
 from plone.app.uuid.utils import uuidToCatalogBrain
+from plone.dexterity.schema import lookup_fti
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from zope.component import queryMultiAdapter
-from zope.i18n import translate
 from zope.globalrequest import getRequest
+from zope.i18n import translate
 
 import re
 
@@ -43,7 +44,7 @@ def resolve_uid(path):
 
 
 def uid_to_url(path):
-    path, brain = resolve_uid(path)
+    path, _brain = resolve_uid(path)
     return path
 
 
@@ -53,3 +54,7 @@ def get_portal_type_title(portal_type):
     if request:
         return translate(getattr(fti, "Title", lambda: portal_type)(), context=request)
     return getattr(fti, "Title", lambda: portal_type)()
+
+
+def check_permission(permission, context):
+    return getSecurityManager().checkPermission(permission, context)

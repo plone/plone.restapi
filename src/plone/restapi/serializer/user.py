@@ -1,10 +1,11 @@
-from AccessControl import getSecurityManager
 from plone.app.users.browser.userdatapanel import getUserDataSchema
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.permissions import ManageUsers
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.serializer.utils import check_permission
 from plone.restapi.services.users.get import getPortraitUrl
 from Products.CMFCore.interfaces._tools import IMemberData
 from Products.CMFCore.permissions import ManagePortal
@@ -23,7 +24,11 @@ class BaseSerializer:
 
     @property
     def is_zope_manager(self):
-        return getSecurityManager().checkPermission(ManagePortal, self.context)
+        return check_permission(ManagePortal, self.context)
+
+    @property
+    def can_manage_users(self):
+        return check_permission(ManageUsers, self.context)
 
     def can_delete(self, roles):
         if self.is_zope_manager:
@@ -45,8 +50,9 @@ class BaseSerializer:
             "id": user.id,
             "username": user.getUserName(),
             "roles": roles,
-            "can_delete": self.can_delete(roles),
         }
+        if self.can_manage_users:
+            data["can_delete"] = self.can_delete(roles)
 
         schema = getUserDataSchema()
 

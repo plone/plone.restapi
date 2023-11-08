@@ -1,7 +1,8 @@
-from AccessControl import getSecurityManager
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.permissions import ManageUsers
+from plone.restapi.serializer.utils import check_permission
 from Products.CMFCore.permissions import ManagePortal
 from Products.PlonePAS.interfaces.group import IGroupData
 from zope.component import adapter
@@ -17,7 +18,11 @@ class BaseSerializer:
 
     @property
     def is_zope_manager(self):
-        return getSecurityManager().checkPermission(ManagePortal, self.context)
+        return check_permission(ManagePortal, self.context)
+
+    @property
+    def can_manage_users(self):
+        return check_permission(ManageUsers, self.context)
 
     def can_delete(self, roles):
         if self.is_zope_manager:
@@ -29,7 +34,7 @@ class BaseSerializer:
         portal = getSite()
         roles = group.getRoles()
 
-        return {
+        result = {
             "@id": f"{portal.absolute_url()}/@groups/{group.id}",
             "id": group.id,
             "groupname": group.getGroupName(),
@@ -37,8 +42,10 @@ class BaseSerializer:
             "title": group.getProperty("title"),
             "description": group.getProperty("description"),
             "roles": roles,
-            "can_delete": self.can_delete(roles),
         }
+        if self.can_manage_users:
+            result["can_delete"] = self.can_delete(roles)
+        return result
 
 
 @implementer(ISerializeToJsonSummary)
