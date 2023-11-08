@@ -1,7 +1,7 @@
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.permissions import ManageUsers
+from plone.restapi.permissions import PloneManageUsers
 from plone.restapi.serializer.utils import check_permission
 from Products.CMFCore.permissions import ManagePortal
 from Products.PlonePAS.interfaces.group import IGroupData
@@ -22,7 +22,7 @@ class BaseSerializer:
 
     @property
     def can_manage_users(self):
-        return check_permission(ManageUsers, self.context)
+        return check_permission(PloneManageUsers, self.context)
 
     def can_delete(self, roles):
         if self.is_zope_manager:
