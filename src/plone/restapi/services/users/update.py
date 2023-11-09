@@ -4,6 +4,7 @@ from io import BytesIO
 from OFS.Image import Image
 from plone.restapi import _
 from plone.restapi.bbb import ISecuritySchema
+from plone.restapi.permissions import PloneManageUsers
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import SetOwnPassword
@@ -160,7 +161,7 @@ class UsersPatch(Service):
     @property
     def can_manage_users(self):
         sm = getSecurityManager()
-        return sm.checkPermission("Plone Site Setup: Users and Groups", self.context)
+        return sm.checkPermission(PloneManageUsers, self.context)
 
     @property
     def can_set_own_password(self):

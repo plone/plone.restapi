@@ -2,4 +2,5 @@
 # permissions. Granted to Anonymous (i.e. everyone) by default via rolemap.xml
 
 UseRESTAPI = "plone.restapi: Use REST API"
+
 PloneManageUsers = "Plone Site Setup: Users and Groups"
