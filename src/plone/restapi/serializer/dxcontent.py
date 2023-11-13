@@ -42,9 +42,13 @@ except ImportError:
 def get_allow_discussion_value(context, request, result):
     # This test is to handle the plone.app.discussion not being installed situation
     if "allow_discussion" in result:
-        result["allow_discussion"] = getMultiAdapter(
+        # Check if the content item implements the IContentish interface
+        if IContentish.providedBy(context):
+            result["allow_discussion"] = getMultiAdapter(
             (context, request), name="conversation_view"
-        ).enabled()
+            ).enabled()
+        else:
+            result["allow_discussion"] = False
     else:
         return False
 
