@@ -185,6 +185,6 @@ class UsersPatch(Service):
             # frontend
             scaled = data
 
-        portrait = Image(id=safe_id, file=scaled, title="")
+        portrait = Image(id=safe_id, file=scaled, title="", content_type=content_type)
         membertool = getToolByName(self, "portal_memberdata")
         membertool._setPortrait(portrait, safe_id)

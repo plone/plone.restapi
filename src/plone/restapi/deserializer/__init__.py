@@ -4,6 +4,9 @@ import json
 
 
 def json_body(request):
+    # TODO We should not read the complete request BODY in memory.
+    # Once we have fixed this, we can remove the temporary patches.py.
+    # See there for background information.
     try:
         data = json.loads(request.get("BODY") or "{}")
     except ValueError:

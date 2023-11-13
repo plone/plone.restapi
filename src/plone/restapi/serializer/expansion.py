@@ -1,19 +1,14 @@
 from plone.restapi.interfaces import IExpandableElement
 from zope.component import getAdapters
 
-import warnings
-
 
 def expandable_elements(context, request):
     """Returns a dict containing all expandable elements."""
     expands = request.form.get("expand", [])
     if isinstance(expands, str):
         if "," in expands:
-            # deprecated use of expands (with commas)
-            warnings.warn(
-                "``expand`` as a string parameter separated with commas is deprecated and will be removed in plone.restapi 9.0. Use ``expand:list`` instead.",
-                DeprecationWarning,
-            )
+            # use of expands (with commas) was deprecated in plone.restapi 8
+            # undeprecated with plone.restapi 9
             expands = expands.split(",")
         else:
             # allow still the use of non marked :list parameters present
