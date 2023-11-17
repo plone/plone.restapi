@@ -45,7 +45,7 @@ def get_allow_discussion_value(context, request, result):
         # Check if the content item implements the IContentish interface
         if IContentish.providedBy(context):
             result["allow_discussion"] = getMultiAdapter(
-            (context, request), name="conversation_view"
+                (context, request), name="conversation_view"
             ).enabled()
         else:
             result["allow_discussion"] = False
