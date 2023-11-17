@@ -21,6 +21,7 @@ from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import base_hasattr
+from Products.CMFCore.interfaces import IContentish
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
