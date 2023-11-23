@@ -238,7 +238,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
         content_type = "application/octet-stream"
         filename = None
-        tus = None
+        size = None
         if isinstance(value, dict):
             if "data" not in value:
                 # We are probably pushing the contents of a previous GET
@@ -258,9 +258,9 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
         elif isinstance(value, TUSUpload):
             content_type = value.metadata().get("content-type", content_type)
             filename = value.metadata().get("filename", filename)
-            # Put an single byte in place. Blob file is moved below.
-            data = b"0"
-            tus = value
+            size = value.length
+            # Note there is a special TUSUploadStorage that will move instead reread the data
+            data = value
         else:
             data = value
         # Convert if we have data
@@ -268,19 +268,14 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
             value = self.field._type(
                 data=data, contentType=content_type, filename=filename
             )
+            if size is not None:
+                # Shortcut so NamedBlobFile doesn't have to reopen the file again
+                value.__dict__['size'] = size
         else:
             value = None
 
-        
-
         # Always validate to check for required fields
         self.field.validate(value)
-
-        # If it is a TUS upload, we rename the temporary file to the temp blob
-        # file. If the two files are on the same disk volume this will be a
-        # very quick operation
-        if tus:
-            tus.process_blob(value._blob)
 
         return value
 

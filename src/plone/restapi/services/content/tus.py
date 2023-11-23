@@ -23,6 +23,8 @@ from zope.lifecycleevent import ObjectCreatedEvent
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
 from ZODB.blob import rename_or_copy_blob
+from plone.namedfile.interfaces import IStorage
+from plone.namedfile.interfaces import NotStorable
 
 import json
 import os
@@ -396,6 +398,13 @@ class TUSUpload:
             expiration = time.time() + self.expiration_period
         return formatdate(expiration, False, True)
 
-    def process_blob(self, blob):
-        rename_or_copy_blob(self.filepath, blob._p_blob_uncommitted)
+
+@implementer(IStorage)
+class TUSUploadStorable:
+    """ Special storage to skip reading and writing of the upload since it's already on disk """
+    def store(self, data, blob):
+        if not isinstance(data, TUSUpload):
+            raise NotStorable('Could not store data (not of "FileUpload").')
+
+        rename_or_copy_blob(data.filepath, blob._p_blob_uncommitted)
 

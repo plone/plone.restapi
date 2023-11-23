@@ -140,4 +140,10 @@
       name="@tus-upload"
       />
 
+  <utility
+      name="plone.restapi.services.content.tus.TUSUpload"
+      provides="plone.namedfile.interfaces.IStorage"
+      factory=".tus.TUSUploadStorable"
+      />
+
 </configure>
