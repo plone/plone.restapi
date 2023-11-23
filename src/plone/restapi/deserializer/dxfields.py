@@ -270,7 +270,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
             )
             if size is not None:
                 # Shortcut so NamedBlobFile doesn't have to reopen the file again
-                value.__dict__['size'] = size
+                value.__dict__["size"] = size
         else:
             value = None
 
