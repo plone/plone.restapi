@@ -238,6 +238,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
         content_type = "application/octet-stream"
         filename = None
+        size = None
         if isinstance(value, dict):
             if "data" not in value:
                 # We are probably pushing the contents of a previous GET
@@ -257,20 +258,25 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
         elif isinstance(value, TUSUpload):
             content_type = value.metadata().get("content-type", content_type)
             filename = value.metadata().get("filename", filename)
-            data = value.open()
+            size = value.length
+            # Note there is a special TUSUploadStorage that will move instead reread the data
+            data = value
         else:
             data = value
-
         # Convert if we have data
         if data:
             value = self.field._type(
                 data=data, contentType=content_type, filename=filename
             )
+            if size is not None:
+                # Shortcut so NamedBlobFile doesn't have to reopen the file again
+                value.__dict__['size'] = size
         else:
             value = None
 
         # Always validate to check for required fields
         self.field.validate(value)
+
         return value
 
 
