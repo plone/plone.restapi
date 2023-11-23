@@ -40,7 +40,7 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
 class ResolveUIDSerializerBase:
     order = 1
     block_type = None
-    fields = ["url", "href"]
+    fields = ["url", "href", "preview_image", "preview_image_link"]
     disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
