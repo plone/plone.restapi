@@ -167,7 +167,6 @@ class UploadHead(UploadFileBase):
     """TUS upload endpoint for handling HEAD requests"""
 
     def reply(self):
-
         tus_upload = self.tus_upload()
         if tus_upload is None:
             return self.error("Not Found", "", 404)
@@ -191,7 +190,6 @@ class UploadPatch(UploadFileBase):
     """TUS upload endpoint for handling PATCH requests"""
 
     def reply(self):
-
         tus_upload = self.tus_upload()
         if tus_upload is None:
             return self.error("Not Found", "", 404)
@@ -288,7 +286,6 @@ class UploadPatch(UploadFileBase):
 
 
 class TUSUpload:
-
     file_prefix = "tus_upload_"
     expiration_period = 60 * 60
     finished = False
@@ -401,7 +398,8 @@ class TUSUpload:
 
 @implementer(IStorage)
 class TUSUploadStorable:
-    """ Special storage to skip reading and writing of the upload since it's already on disk """
+    """Special storage to skip reading and writing of the upload since it's already on disk"""
+
     def store(self, data, blob):
         if not isinstance(data, TUSUpload):
             raise NotStorable('Could not store data (not of "FileUpload").')

@@ -51,7 +51,6 @@ def _prepare_metadata(filename, content_type):
 
 
 class TestTUS(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -399,6 +398,7 @@ class TestTUS(unittest.TestCase):
         # if tmp dir is on the same filesystem then we shouldn't have delay caused by reading and writing large file
 
         import ZODB.blob
+
         old_open = ZODB.blob.Blob.open
         blob_read = 0
         blob_write = 0
@@ -408,6 +408,7 @@ class TestTUS(unittest.TestCase):
             blob_read += 1 if "r" in mode else 0
             blob_write += 1 if "w" in mode else 0
             return old_open(self, mode)
+
         ZODB.blob.Blob.open = count_open
 
         pdf_file_path = os.path.join(os.path.dirname(__file__), UPLOAD_PDF_FILENAME)
@@ -437,7 +438,11 @@ class TestTUS(unittest.TestCase):
             )
         self.assertEqual(response.status_code, 204)
 
-        self.assertEqual(blob_write, 1, "Slow write to blob instead of os rename. Should be only 1 on init")
+        self.assertEqual(
+            blob_write,
+            1,
+            "Slow write to blob instead of os rename. Should be only 1 on init",
+        )
         self.assertEqual(blob_read, 0, "Validation is reading the whole blob in memory")
         # TODO: would be better test to patch file read instead and ensure its not called?
 
@@ -616,7 +621,6 @@ class CORSTestPolicy(CORSPolicy):
 
 
 class TestTUSUploadWithCORS(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
