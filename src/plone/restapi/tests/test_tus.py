@@ -410,8 +410,6 @@ class TestTUS(unittest.TestCase):
             return old_open(self, mode)
         ZODB.blob.Blob.open = count_open
 
-        # TODO: count NamedBlobFile._getData calls
-        
         pdf_file_path = os.path.join(os.path.dirname(__file__), UPLOAD_PDF_FILENAME)
         pdf_file_size = os.path.getsize(pdf_file_path)
         metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)

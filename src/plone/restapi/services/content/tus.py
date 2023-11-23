@@ -407,4 +407,3 @@ class TUSUploadStorable:
             raise NotStorable('Could not store data (not of "FileUpload").')
 
         rename_or_copy_blob(data.filepath, blob._p_blob_uncommitted)
-
