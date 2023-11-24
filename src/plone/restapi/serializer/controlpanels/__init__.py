@@ -153,8 +153,6 @@ class DefaultRecordsProxy(RecordsProxy):
     def __setattr__(self, name, value):
         if name in self.__schema__:
             full_name = self.__prefix__ + name
-            # if full_name not in self.__registry__:
-            #     raise AttributeError(name)
             self.__registry__[full_name] = value
         else:
             self.__dict__[name] = value

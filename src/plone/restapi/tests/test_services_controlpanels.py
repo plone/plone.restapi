@@ -4,7 +4,6 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from zope import schema
 from zope.component import getUtility
 from plone.registry.interfaces import IRegistry
 import transaction
