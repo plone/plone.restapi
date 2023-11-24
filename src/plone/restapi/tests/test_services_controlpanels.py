@@ -134,7 +134,7 @@ class TestControlpanelsEndpoint(unittest.TestCase):
 
         response = self.api_session.get("/@controlpanels/editing")
         old_data = response.json()["data"]
-        self.assertEquals(old_data["ext_editor"], True)
+        self.assertEqual(old_data["ext_editor"], True)
 
         # It's too hard to add another field so lets delete the registry data to
         # simulate what it's like starting when the schema has a field and no
@@ -145,12 +145,11 @@ class TestControlpanelsEndpoint(unittest.TestCase):
 
         response = self.api_session.get("/@controlpanels/editing")
         old_data = response.json()["data"]
-        self.assertEquals(old_data["ext_editor"], False)
+        self.assertEqual(old_data["ext_editor"], False)
 
         # ensure there is no problem trying to set missing registry entries
         new_values = {
             "ext_editor": not old_data["ext_editor"],
-            "lock_on_ttw_edit": not old_data["lock_on_ttw_edit"],
         }
         response = self.api_session.patch("/@controlpanels/editing", json=new_values)
 
