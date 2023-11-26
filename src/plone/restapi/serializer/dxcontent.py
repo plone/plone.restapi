@@ -48,8 +48,6 @@ def get_allow_discussion_value(context, request, result):
             result["allow_discussion"] = getMultiAdapter(
                 (context, request), name="conversation_view"
             ).enabled()
-        else:
-            result["allow_discussion"] = False
     else:
         return False
 
