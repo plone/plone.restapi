@@ -110,7 +110,7 @@ class GenericBlockLinksRetriever(object):
         Returns a list of internal links
         """
         links = []
-        for field in ["url", "href", "preview_image", "preview_image_link"]:
+        for field in ["url", "href", "preview_image"]:
             value = block.get(field, "")
             for url in get_urls_from_value(value):
                 links.append(url)
