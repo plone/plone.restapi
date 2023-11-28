@@ -49,7 +49,7 @@ def get_allow_discussion_value(context, request, result):
                 (context, request), name="conversation_view"
             ).enabled()
     else:
-        return False
+        result["allow_discussion"] = False
 
 
 @implementer(ISerializeToJson)
