@@ -145,7 +145,7 @@ class TestControlpanelsEndpoint(unittest.TestCase):
 
         response = self.api_session.get("/@controlpanels/editing")
         old_data = response.json()["data"]
-        self.assertEqual(old_data["ext_editor"], False)
+        self.assertEqual(old_data["ext_editor"], None)
 
         # ensure there is no problem trying to set missing registry entries
         new_values = {

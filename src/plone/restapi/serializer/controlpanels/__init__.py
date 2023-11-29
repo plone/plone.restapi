@@ -93,7 +93,7 @@ class ControlpanelSerializeToJson:
             self.schema,
             prefix=self.schema_prefix,
             check=False,
-            factory=DefaultRecordsProxy,
+            # factory=DefaultRecordsProxy,
         )
 
         # Temporarily provide IDexterityContent, so we can use DX field
