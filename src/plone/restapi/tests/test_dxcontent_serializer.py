@@ -504,7 +504,7 @@ class TestDXContentSerializer(unittest.TestCase):
         installer = get_installer(self.portal)
         return installer.getVersion() >= "6.1"
 
-    def test_allow_discussion_by_default(self):
+    def test_allow_discussion_portal_default(self):
         """Not globally addable, not fti enabled, not obj instance enabled"""
         if self.isPlone61OrAbove():
             # Test for Plone 6.1 and above
