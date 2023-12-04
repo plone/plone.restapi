@@ -57,7 +57,6 @@ class TextBlockLinksRetriever(object):
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldLinkIntegrityRetriever)
 class SlateBlockLinksRetriever:
-
     order = 100
     block_type = "slate"
     field = "value"
@@ -111,7 +110,7 @@ class GenericBlockLinksRetriever(object):
         Returns a list of internal links
         """
         links = []
-        for field in ["url", "href"]:
+        for field in ["url", "href", "preview_image"]:
             value = block.get(field, "")
             for url in get_urls_from_value(value):
                 links.append(url)

@@ -8,6 +8,22 @@ Changelog
 
 .. towncrier release notes start
 
+9.2.0 (2023-11-23)
+------------------
+
+New features:
+
+
+- Added preview_image and preview_image_link to the list of smart fields for resolveuid and link integrity. @sneridagh (#1735)
+
+
+Internal:
+
+
+- Does not test Python 3.7. @wesleybl (#1732)
+- Use plone.recipe.precompiler to generate mo files to test. @wesleybl (#1733)
+
+
 9.1.2 (2023-11-04)
 ------------------
 

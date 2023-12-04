@@ -55,7 +55,7 @@ class ResolveUIDDeserializerBase:
 
     order = 1
     block_type = None
-    fields = ["url", "href"]
+    fields = ["url", "href", "preview_image"]
     disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
