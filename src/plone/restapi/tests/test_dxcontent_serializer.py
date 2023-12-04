@@ -27,6 +27,7 @@ from zope.component import provideAdapter
 from zope.component import queryUtility
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
+from plone.restapi.tests.base import TestSerializer
 
 import json
 import unittest
