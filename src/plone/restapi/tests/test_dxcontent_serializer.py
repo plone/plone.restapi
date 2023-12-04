@@ -498,7 +498,7 @@ class TestDXContentSerializer(unittest.TestCase):
 
         self.assertIn("allow_discussion", obj)
         self.assertEqual(True, obj["allow_discussion"])
-    
+
     def isPlone61OrAbove(self):
         """Check if the Plone version is 6.1 or above."""
         installer = get_installer(self.portal)
@@ -661,5 +661,3 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
         serializer = getMultiAdapter((self.portal.doc1, self.request), ISerializeToJson)
         data = serializer()
         self.assertNotIn("targetUrl", data)
-
-    
