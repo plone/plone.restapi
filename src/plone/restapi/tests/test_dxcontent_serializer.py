@@ -27,7 +27,6 @@ from zope.component import provideAdapter
 from zope.component import queryUtility
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
-from plone.restapi.tests.base import TestSerializer
 
 import json
 import unittest
@@ -499,6 +498,26 @@ class TestDXContentSerializer(unittest.TestCase):
 
         self.assertIn("allow_discussion", obj)
         self.assertEqual(True, obj["allow_discussion"])
+    
+    def isPlone61OrAbove(self):
+        """Check if the Plone version is 6.1 or above."""
+        installer = get_installer(self.portal)
+        return installer.getVersion() >= "6.1"
+
+    def test_allow_discussion_by_default(self):
+        """Not globally addable, not fti enabled, not obj instance enabled"""
+        if self.isPlone61OrAbove():
+            # Test for Plone 6.1 and above
+            self.portal.invokeFactory("Document", id="doc2")
+            serializer = getMultiAdapter(
+                (self.portal.doc2, self.request), ISerializeToJson
+            )
+            obj = serializer()
+
+            self.assertIn("allow_discussion", obj)
+            self.assertEqual(False, obj["allow_discussion"])
+        else:
+            self.skipTest("Test skipped for Plone versions earlier than 6.1")
 
     def test_allow_discussion_obj_instance_not_set_global_enabled(self):
         self.portal.invokeFactory("Document", id="doc2")
@@ -643,24 +662,4 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
         data = serializer()
         self.assertNotIn("targetUrl", data)
 
-
-class TestAllowDiscussion(TestSerializer):
-    def isPlone61OrAbove(self):
-        """Check if the Plone version is 6.1 or above."""
-        installer = get_installer(self.portal)
-        return installer.getVersion() >= "6.1"
-
-    def test_allow_discussion_by_default(self):
-        """Not globally addable, not fti enabled, not obj instance enabled"""
-        if self.isPlone61OrAbove():
-            # Test for Plone 6.1 and above
-            self.portal.invokeFactory("Document", id="doc2")
-            serializer = getMultiAdapter(
-                (self.portal.doc2, self.request), ISerializeToJson
-            )
-            obj = serializer()
-
-            self.assertIn("allow_discussion", obj)
-            self.assertEqual(False, obj["allow_discussion"])
-        else:
-            self.skipTest("Test skipped for Plone versions earlier than 6.1")
+    
