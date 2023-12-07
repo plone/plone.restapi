@@ -20,13 +20,13 @@ from plone.restapi.tests.test_expansion import ExpandableElementFoo
 from plone.restapi.serializer.utils import get_portal_type_title
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import get_installer
 from zope.component import getGlobalSiteManager
 from zope.component import getMultiAdapter
 from zope.component import provideAdapter
 from zope.component import queryUtility
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
+from importlib import import_module
 
 import json
 import unittest
