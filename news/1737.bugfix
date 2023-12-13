@@ -1,2 +1,1 @@
-Remove wrong `preview_image_link` addition from blocks (de)serializers
-[sneridagh]
+Remove wrong `preview_image_link` addition from blocks (de)serializers. @sneridagh
