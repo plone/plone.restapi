@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+9.2.1 (2023-12-14)
+------------------
+
+Bug fixes:
+
+
+- Remove wrong `preview_image_link` addition from blocks (de)serializers. @sneridagh (#1737)
+
+
 9.2.0 (2023-11-23)
 ------------------
 
