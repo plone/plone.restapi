@@ -508,7 +508,7 @@ class TestDXContentSerializer(unittest.TestCase):
     )
     def test_allow_discussion_portal_default(self):
         """Not globally addable, not fti enabled, not obj instance enabled"""
-        serializer = getMultiAdapter((self.portal.doc2, self.request), ISerializeToJson)
+        serializer = getMultiAdapter((self.portal, self.request), ISerializeToJson)
         obj = serializer()
 
         self.assertIn("allow_discussion", obj)
