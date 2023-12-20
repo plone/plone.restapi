@@ -4,6 +4,7 @@
 
 from zope.interface import Attribute
 from zope.interface import Interface
+from zope.interface.interfaces import IObjectEvent
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 
@@ -214,6 +215,14 @@ class IBlockSearchableText(Interface):
 
     def __call__(value):
         """Extract text from the block value. Returns text"""
+
+
+class IBlocksRemovedEvent(IObjectEvent):
+    """A bunch of blocks have been removed"""
+
+
+class IBlockRemovedEvent(IObjectEvent):
+    """A block has been removed"""
 
 
 class IJSONSummarySerializerMetadata(Interface):

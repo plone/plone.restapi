@@ -112,6 +112,9 @@
 
   <include package=".controlpanels" />
 
+  <adapter factory=".slots.SlotSerializer" />
+  <adapter factory=".slots.SlotsSerializer" />
+
   <!-- Summary Serializer Metadata -->
   <utility
       factory=".summary.JSONSummarySerializerMetadata"

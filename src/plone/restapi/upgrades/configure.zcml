@@ -69,4 +69,22 @@
       handler="plone.restapi.upgrades.to0006.rename_iface_to_name_in_blocks_behavior"
       />
 
+  <genericsetup:upgradeStep
+      title="Import slots configuration"
+      description=""
+      profile="plone.restapi:default"
+      source="0006"
+      destination="0007"
+      handler="plone.restapi.upgrades.to0007.slots_configuration"
+      />
+
+  <genericsetup:registerProfile
+      name="0007"
+      title="plone.restapi.upgrades.0007"
+      description=""
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+      directory="profiles/0007"
+      />
+
 </configure>

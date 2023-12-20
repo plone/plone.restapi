@@ -8,6 +8,8 @@ from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import applyProfile
+from plone.app.testing import popGlobalRegistry
+from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -22,6 +24,7 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
+from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import patch_addon_versions
 from plone.restapi.tests.helpers import patch_scale_uuid
@@ -37,9 +40,6 @@ from zope.event import notify
 from zope.interface import alsoProvides
 from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent import ObjectModifiedEvent
-from plone.app.testing import popGlobalRegistry
-from plone.app.testing import pushGlobalRegistry
-from plone.restapi.testing import register_static_uuid_utility
 
 import collections
 import json

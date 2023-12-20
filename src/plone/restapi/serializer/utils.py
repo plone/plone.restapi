@@ -1,9 +1,9 @@
-from plone.dexterity.schema import lookup_fti
 from plone.app.uuid.utils import uuidToCatalogBrain
+from plone.dexterity.schema import lookup_fti
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from zope.component import queryMultiAdapter
-from zope.i18n import translate
 from zope.globalrequest import getRequest
+from zope.i18n import translate
 
 import re
 

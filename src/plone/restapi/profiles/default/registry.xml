@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<registry>
+  <records interface="plone.restapi.slots.interfaces.ISlotSettings" />
+</registry>
