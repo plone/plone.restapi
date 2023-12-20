@@ -1,0 +1,1 @@
+Uses Python 3.12.0 in tests, while https://github.com/zopefoundation/Zope/issues/1188 is not fixed. @wesleybl
