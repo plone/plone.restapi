@@ -4,7 +4,6 @@ Content-Type: application/json
 [
     {
         "@id": "http://localhost:55001/plone/@groups/Administrators",
-        "can_delete": true,
         "description": "",
         "email": "",
         "groupname": "Administrators",
@@ -22,7 +21,6 @@ Content-Type: application/json
     },
     {
         "@id": "http://localhost:55001/plone/@groups/Reviewers",
-        "can_delete": true,
         "description": "",
         "email": "",
         "groupname": "Reviewers",
@@ -40,7 +38,6 @@ Content-Type: application/json
     },
     {
         "@id": "http://localhost:55001/plone/@groups/Site Administrators",
-        "can_delete": true,
         "description": "",
         "email": "",
         "groupname": "Site Administrators",
@@ -58,7 +55,6 @@ Content-Type: application/json
     },
     {
         "@id": "http://localhost:55001/plone/@groups/ploneteam",
-        "can_delete": true,
         "description": "We are Plone",
         "email": "ploneteam@plone.org",
         "groupname": "ploneteam",
@@ -77,7 +73,6 @@ Content-Type: application/json
     },
     {
         "@id": "http://localhost:55001/plone/@groups/AuthenticatedUsers",
-        "can_delete": true,
         "description": "Automatic Group Provider",
         "email": "",
         "groupname": "AuthenticatedUsers",
