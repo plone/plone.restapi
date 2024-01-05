@@ -1,1 +1,1 @@
-Uses Python 3.12.0 in tests, while https://github.com/zopefoundation/Zope/issues/1188 is not fixed. @wesleybl
+Use Python 3.12.0 in tests to work around https://github.com/python/cpython/issues/113267. @wesleybl

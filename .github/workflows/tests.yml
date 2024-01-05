@@ -18,7 +18,7 @@ jobs:
             plone-version: "6.0"
           - python-version: "3.11"
             plone-version: "6.0"
-          # FIXME: Change to 3.12 when errors in tests with Python 3.12.1 are fixed.
+          # FIXME: Change to 3.12 when https://github.com/python/cpython/issues/113267 is fixed
           - python-version: "3.12.0"
             plone-version: "6.0"
     steps:
