@@ -1,5 +1,7 @@
+from AccessControl import getSecurityManager
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component.hooks import getSite
@@ -34,6 +36,36 @@ class GroupsPatch(Service):
         super().__init__(context, request)
         self.params = []
 
+    @property
+    def is_zope_manager(self):
+        return getSecurityManager().checkPermission(ManagePortal, self.context)
+
+    def can_update(self, group, users, roles, groups):
+        # Manager can update
+        if self.is_zope_manager:
+            return True
+        # Does not allow an Site Administrator to add users to groups
+        # with the Manager role
+        current_group_roles = group.getRoles()
+        if "Manager" in current_group_roles and users:
+            return False
+        # Does not allow an Site Administrator set Manager to group
+        result_roles = True
+        if roles:
+            if "Manager" in roles:
+                result_roles = "Manager" in current_group_roles
+            else:
+                result_roles = "Manager" not in current_group_roles
+        # Does not allow an Site Administrator add group to group with Manager role
+        result_groups = True
+        if groups:
+            for assign_group_id in groups:
+                assign_group = self._get_group(assign_group_id)
+                if "Manager" in assign_group.getRoles():
+                    result_groups = False
+                    break
+        return result_roles and result_groups
+
     def publishTraverse(self, request, name):
         # Consume any path segments after /@groups as parameters
         self.params.append(name)
@@ -57,9 +89,14 @@ class GroupsPatch(Service):
         if not group:
             raise BadRequest("Trying to update a non-existing group.")
 
+        users = data.get("users", {})
         roles = data.get("roles", None)
         groups = data.get("groups", None)
-        users = data.get("users", {})
+
+        if not self.can_update(group, users, roles, groups):
+            raise BadRequest(
+                "You don't have permission to assign a 'Manager' role to a group."
+            )
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):

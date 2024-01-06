@@ -7,6 +7,7 @@ from plone.namedfile.browser import DISALLOWED_INLINE_MIMETYPES
 from plone.namedfile.browser import USE_DENYLIST
 from plone.namedfile.utils import stream_data
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.permissions import PloneManageUsers
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
@@ -177,11 +178,11 @@ class UsersGet(Service):
 
     def has_permission_to_query(self):
         sm = getSecurityManager()
-        return sm.checkPermission("Manage portal", self.context)
+        return sm.checkPermission(PloneManageUsers, self.context)
 
     def has_permission_to_enumerate(self):
         sm = getSecurityManager()
-        return sm.checkPermission("Manage portal", self.context)
+        return sm.checkPermission(PloneManageUsers, self.context)
 
     def has_permission_to_access_user_info(self):
         sm = getSecurityManager()
