@@ -23,6 +23,11 @@ from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFields
 from zope.schema.interfaces import ValidationError
 
+import logging
+
+
+logger = logging.getLogger(__name__)
+
 
 @implementer(IDeserializeFromJson)
 @adapter(IDexterityContent, Interface)
@@ -36,7 +41,12 @@ class DeserializeFromJson(OrderingMixin):
         self.modified = {}
 
     def __call__(
-        self, validate_all=False, data=None, create=False, mask_validation_errors=True
+        self,
+        validate_all=False,
+        data=None,
+        create=False,
+        mask_validation_errors=True,
+        ignore_errors=False,
     ):  # noqa: ignore=C901
 
         if data is None:
@@ -60,7 +70,10 @@ class DeserializeFromJson(OrderingMixin):
                     error["error"] = "ValidationError"
             for error in errors:
                 error["message"] = translate(error["message"], context=self.request)
-            raise BadRequest(errors)
+            if ignore_errors:
+                logger.warn("Ignoring validation errors: %s", errors)
+            else:
+                raise BadRequest(errors)
 
         # We'll set the layout after the validation and even if there
         # are no other changes.
