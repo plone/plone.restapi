@@ -38,7 +38,6 @@ class DeserializeFromJson(OrderingMixin, object):
     def __call__(
         self, validate_all=False, data=None, create=False, mask_validation_errors=True
     ):  # noqa: ignore=C901
-
         if data is None:
             data = json_body(self.request)
 
@@ -156,8 +155,9 @@ class DeserializeFromJson(OrderingMixin, object):
         return schema_data, errors
 
     def mark_field_as_changed(self, schema, fieldname):
-        """Collect the names of the modified fields. Use prefixed name because
-        z3c.form does so.
+        """Collect the names of the modified fields.
+
+        Use prefixed name because z3c.form does so.
         """
 
         prefixed_name = schema.__name__ + "." + fieldname
