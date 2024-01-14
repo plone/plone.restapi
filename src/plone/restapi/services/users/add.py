@@ -4,6 +4,7 @@ from plone.restapi import _
 from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.permissions import PloneManageUsers
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import SetOwnPassword
@@ -244,7 +245,7 @@ class UsersPost(Service):
     @property
     def can_manage_users(self):
         sm = getSecurityManager()
-        return sm.checkPermission("plone.app.controlpanel.UsersAndGroups", self.context)
+        return sm.checkPermission(PloneManageUsers, self.context)
 
     @property
     def can_set_own_password(self):

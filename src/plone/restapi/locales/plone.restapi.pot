@@ -154,7 +154,7 @@ msgstr ""
 msgid "Volto Blocks"
 msgstr ""
 
-#: plone/restapi/services/users/update.py:119
+#: plone/restapi/services/users/update.py:151
 msgid "You are not authorized to perform this action"
 msgstr ""
 
@@ -170,8 +170,16 @@ msgstr ""
 msgid "You can't set a password without a password reset token."
 msgstr ""
 
-#: plone/restapi/services/users/update.py:125
+#: plone/restapi/services/users/update.py:120
+msgid "You can't update roles of this user"
+msgstr ""
+
+#: plone/restapi/services/users/update.py:157
 msgid "You can't update the properties of this user"
+msgstr ""
+
+#: plone/restapi/services/users/update.py:94
+msgid "You can't update this user"
 msgstr ""
 
 #: plone/restapi/services/users/add.py:284

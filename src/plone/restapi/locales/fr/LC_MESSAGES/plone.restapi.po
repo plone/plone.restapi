@@ -151,7 +151,7 @@ msgstr "Le reset_token est inconnu/non valide."
 msgid "Volto Blocks"
 msgstr "Blocs Volto"
 
-#: plone/restapi/services/users/update.py:119
+#: plone/restapi/services/users/update.py:151
 msgid "You are not authorized to perform this action"
 msgstr "Vous n'êtes pas autorisé à effectuer cette action"
 
@@ -167,9 +167,17 @@ msgstr "Vous ne pouvez pas envoyer à la fois le password et sendPasswordReset"
 msgid "You can't set a password without a password reset token."
 msgstr "Vous ne pouvez pas définir de mot de passe sans un jeton de réinitialisation de mot de passe."
 
-#: plone/restapi/services/users/update.py:125
+#: plone/restapi/services/users/update.py:120
+msgid "You can't update roles of this user"
+msgstr ""
+
+#: plone/restapi/services/users/update.py:157
 msgid "You can't update the properties of this user"
 msgstr "Vous ne pouvez pas mettre à jour les propriétés de cet utilisateur"
+
+#: plone/restapi/services/users/update.py:94
+msgid "You can't update this user"
+msgstr ""
 
 #: plone/restapi/services/users/add.py:284
 msgid "You can't use 'reset_token' and 'old_password' together."

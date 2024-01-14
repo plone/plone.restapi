@@ -4,7 +4,9 @@ from io import BytesIO
 from OFS.Image import Image
 from plone.restapi import _
 from plone.restapi.bbb import ISecuritySchema
+from plone.restapi.permissions import PloneManageUsers
 from plone.restapi.services import Service
+from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import set_own_login_name
@@ -29,6 +31,20 @@ class UsersPatch(Service):
     def __init__(self, context, request):
         super().__init__(context, request)
         self.params = []
+
+    @property
+    def is_zope_manager(self):
+        return getSecurityManager().checkPermission(ManagePortal, self.context)
+
+    def can_change_roles(self, target_roles, current_roles):
+        if self.is_zope_manager:
+            return True
+        return ("Manager" in current_roles) == ("Manager" in list(target_roles))
+
+    def can_change(self, current_roles):
+        if self.is_zope_manager:
+            return True
+        return "Manager" not in current_roles
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
@@ -67,7 +83,15 @@ class UsersPatch(Service):
         security = getAdapter(self.context, ISecuritySchema)
 
         if self.can_manage_users:
+            current_roles = user.getRoles()
             for key, value in user_settings_to_update.items():
+                if key in ["password", "email"]:
+                    if not self.can_change(current_roles):
+                        return self._error(
+                            403,
+                            "Forbidden",
+                            _("You can't update this user"),
+                        )
                 if key == "password":
                     self._change_user_password(user, value)
                 elif key == "username":
@@ -85,8 +109,15 @@ class UsersPatch(Service):
                 to_add = [key for key, enabled in roles.items() if enabled]
                 to_remove = [key for key, enabled in roles.items() if not enabled]
 
-                target_roles = set(user.getRoles()) - set(to_remove)
+                target_roles = set(current_roles) - set(to_remove)
                 target_roles = target_roles | set(to_add)
+
+                if not self.can_change_roles(target_roles, current_roles):
+                    return self._error(
+                        403,
+                        "Forbidden",
+                        _("You can't update roles of this user"),
+                    )
 
                 acl_users = getToolByName(self.context, "acl_users")
                 acl_users.userFolderEditUser(
@@ -130,7 +161,7 @@ class UsersPatch(Service):
     @property
     def can_manage_users(self):
         sm = getSecurityManager()
-        return sm.checkPermission("plone.app.controlpanel.UsersAndGroups", self.context)
+        return sm.checkPermission(PloneManageUsers, self.context)
 
     @property
     def can_set_own_password(self):

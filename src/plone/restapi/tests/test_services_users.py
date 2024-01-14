@@ -102,6 +102,29 @@ class TestUsersEndpoint(unittest.TestCase):
         with open(path, "rb") as image:
             yield dummy.FileUpload(dummy.FieldStorage(image))
 
+    def set_siteadm(self):
+        siteadm_username = "siteadm"
+        siteadm_password = "siteadmpassword"
+        api.user.create(
+            email="siteadm@example.com",
+            roles=["Site Administrator"],
+            username=siteadm_username,
+            password=siteadm_password,
+        )
+        self.api_session = RelativeSession(self.portal_url, test=self)
+        self.api_session.headers.update({"Accept": "application/json"})
+        self.api_session.auth = (siteadm_username, siteadm_password)
+        transaction.commit()
+
+    def create_manager(self):
+        api.user.create(
+            email="manager@example.com",
+            roles=["Manager"],
+            username="manager",
+            password="managerpassword",
+        )
+        transaction.commit()
+
     def test_list_users(self):
         response = self.api_session.get("/@users")
 
@@ -1312,3 +1335,104 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(len(users), 2)
         self.assertEqual(users[0].userid, "user1")
         self.assertEqual(users[1].userid, "user2")
+
+    def test_siteadm_not_update_manager(self):
+        self.set_siteadm()
+        payload = {
+            "roles": {
+                "Contributor": False,
+                "Editor": False,
+                "Reviewer": False,
+                "Manager": True,
+                "Member": True,
+                "Reader": False,
+                "Site Administrator": False,
+            }
+        }
+
+        self.api_session.patch("/@users/noam", json=payload)
+        transaction.commit()
+
+        noam = api.user.get(userid="noam")
+        self.assertNotIn("Manager", noam.getRoles())
+
+    def test_manager_update_manager(self):
+        payload = {
+            "roles": {
+                "Contributor": False,
+                "Editor": False,
+                "Reviewer": False,
+                "Manager": True,
+                "Member": True,
+                "Reader": False,
+                "Site Administrator": False,
+            }
+        }
+
+        self.api_session.patch("/@users/noam", json=payload)
+        transaction.commit()
+
+        noam = api.user.get(userid="noam")
+        self.assertIn("Manager", noam.getRoles())
+
+    def test_siteadm_not_delete_manager(self):
+        self.set_siteadm()
+        api.user.grant_roles(username="noam", roles=["Manager"])
+        transaction.commit()
+        self.api_session.delete("/@users/noam")
+        transaction.commit()
+
+        self.assertIsNotNone(api.user.get(userid="noam"))
+
+    def test_siteadm_not_add_manager(self):
+        self.set_siteadm()
+        self.api_session.post(
+            "/@users",
+            json={
+                "username": "howard",
+                "email": "howard.zinn2@example.com",
+                "password": "peopleshistory",
+                "roles": ["Manager"],
+            },
+        )
+        transaction.commit()
+
+        self.assertIsNone(api.user.get(userid="howard"))
+
+    def test_siteadm_not_change_manager_password(self):
+        self.set_siteadm()
+        self.create_manager()
+        self.api_session.patch(
+            "/@users/manager",
+            json={
+                "password": "newmanagerpassword",
+            },
+        )
+        transaction.commit()
+
+        response = self.api_session.post(
+            "/@login",
+            json={
+                "login": "manager",
+                "password": "newmanagerpassword",
+            },
+        )
+
+        self.assertEqual(
+            "Wrong login and/or password.", response.json()["error"]["message"]
+        )
+
+    def test_siteadm_not_change_manager_email(self):
+        self.set_siteadm()
+        self.create_manager()
+        self.api_session.patch(
+            "/@users/manager",
+            json={
+                "email": "newmanageremail@test.com",
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(
+            "manager@example.com", api.user.get(userid="manager").getProperty("email")
+        )
