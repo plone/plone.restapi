@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: plone.restapi\n"
-"POT-Creation-Date: 2023-09-25 20:32+0000\n"
+"POT-Creation-Date: 2023-12-22 19:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: Wesley Barroso Lopes\n"
 "Language-Team: \n"
@@ -13,6 +13,10 @@ msgstr ""
 "Language-Name: Português do Brasil\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: plone.restapi\n"
+
+#: plone/restapi/deserializer/dxcontent.py:116
+msgid "${field_name} is a required field. Setting it to null is not allowed."
+msgstr "${field_name} é um campo obrigatório. Não é permitido defini-lo como nulo."
 
 #: plone/restapi/services/email_send/post.py:88
 msgid "${sender_fullname} via ${portal_title}"
