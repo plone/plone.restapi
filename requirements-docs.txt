@@ -1,6 +1,7 @@
 docutils<0.17,>=0.15  # sphinx-book-theme 0.2.0 has requirement docutils<0.17,>=0.15
-sphinxcontrib-applehelp<=1.0.7  # newer versions require sphinx 5
-sphinxcontrib-devhelp<=1.0.5   # newer versions require sphinx 5
+sphinxcontrib-applehelp==1.0.4  # newer versions require sphinx 5
+sphinxcontrib-devhelp==1.0.2   # newer versions require sphinx 5
+sphinxcontrib-htmlhelp==2.0.1  # newer versions require sphinx 5
 Sphinx<5,>=3  # sphinx-book-theme 0.3.3 has requirement sphinx<5,>=3
 jsx-lexer
 lesscpy
