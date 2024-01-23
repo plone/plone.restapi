@@ -1,5 +1,8 @@
+from AccessControl import getSecurityManager
 from plone.restapi.services import Service
+from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
+from zExceptions import BadRequest
 from zExceptions import NotFound
 from zope.component.hooks import getSite
 from zope.interface import implementer
@@ -20,6 +23,10 @@ class GroupsDelete(Service):
         return self
 
     @property
+    def is_zope_manager(self):
+        return getSecurityManager().checkPermission(ManagePortal, self.context)
+
+    @property
     def _get_group_id(self):
         if len(self.params) != 1:
             raise Exception("Must supply exactly one parameter (group id)")
@@ -37,6 +44,11 @@ class GroupsDelete(Service):
 
         if not group:
             raise NotFound("Trying to delete a non-existing group.")
+
+        if not self.is_zope_manager and "Manager" in group.getRoles():
+            raise BadRequest(
+                "You don't have permission to delete a group with the Manager role"
+            )
 
         delete_successful = portal_groups.removeGroup(self._get_group_id)
         if delete_successful:

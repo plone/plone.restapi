@@ -8,6 +8,30 @@ Changelog
 
 .. towncrier release notes start
 
+9.3.0 (2024-01-10)
+------------------
+
+New features:
+
+
+- Give Site Administrator permission to manage users. To make this possible, we now check the "plone.app.controlpanel.UsersAndGroups" permission instead of "cmf.ManagePortal" in a lot of operations in the users and groups endpoints. @wesleybl (#1712)
+
+
+Internal:
+
+
+- Use Python 3.12.0 in tests to work around https://github.com/python/cpython/issues/113267. @wesleybl (#1740)
+
+
+9.2.1 (2023-12-14)
+------------------
+
+Bug fixes:
+
+
+- Remove wrong `preview_image_link` addition from blocks (de)serializers. @sneridagh (#1737)
+
+
 9.2.0 (2023-11-23)
 ------------------
 
