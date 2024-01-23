@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+7.9.0 (2024-01-23)
+------------------
+
+New features:
+
+
+- Added `@site` and `@navroot` endpoints. @erral (#1464)
+- New version pins to run tests
+  [erral] (#1721)
+
+
 7.8.3 (2023-09-21)
 ------------------
 
