@@ -1,9 +1,9 @@
-from plone.dexterity.schema import lookup_fti
 from plone.app.uuid.utils import uuidToCatalogBrain
+from plone.dexterity.schema import lookup_fti
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from zope.component import queryMultiAdapter
-from zope.i18n import translate
 from zope.globalrequest import getRequest
+from zope.i18n import translate
 
 import re
 
@@ -43,7 +43,7 @@ def resolve_uid(path):
 
 
 def uid_to_url(path):
-    path, brain = resolve_uid(path)
+    path, _brain = resolve_uid(path)
     return path
 
 
