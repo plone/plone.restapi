@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+9.4.0 (2024-01-26)
+------------------
+
+New features:
+
+
+- Translate validation error messages in the deserializer. @wesleybl (#1742)
+
+
 9.3.0 (2024-01-10)
 ------------------
 
