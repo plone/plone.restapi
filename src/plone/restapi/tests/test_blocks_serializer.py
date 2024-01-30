@@ -29,7 +29,6 @@ IMAGE_DATA = IMAGE_PATH.read_bytes()
 
 
 class TestBlocksSerializer(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -285,7 +284,75 @@ class TestBlocksSerializer(unittest.TestCase):
         )
         value = res["abc"]["value"]
         link = value[0]["children"][1]["data"]["url"]
-        self.assertTrue(link, self.portal.absolute_url() + "/doc1")
+        self.assertEqual(link, self.portal.absolute_url() + "/doc1")
+
+    def test_simple_link_serializer_with_anchor(self):
+        doc_uid = IUUID(self.portal["doc1"])
+        resolve_uid_link = f"../resolveuid/{doc_uid}#anchor-id"
+
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": resolve_uid_link,
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks=blocks,
+        )
+        value = res["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertEqual(link, f"{self.portal['doc1'].absolute_url()}#anchor-id")
+
+    def test_simple_link_serializer_with_suffix(self):
+        doc_uid = IUUID(self.portal["doc1"])
+        resolve_uid_link = f"../resolveuid/{doc_uid}/@@download/file"
+
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": resolve_uid_link,
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks=blocks,
+        )
+        value = res["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertEqual(link, f"{self.portal['doc1'].absolute_url()}/@@download/file")
 
     def test_slate_table_block_link_serializer(self):
         doc_uid = IUUID(self.portal["doc1"])
@@ -388,7 +455,7 @@ class TestBlocksSerializer(unittest.TestCase):
         rows = res["abc"]["table"]["rows"]
         cell = rows[1]["cells"][0]
         link = cell["value"][0]["children"][1]["data"]["url"]
-        self.assertTrue(link, self.portal.absolute_url() + "/doc1")
+        self.assertEqual(link, self.portal.absolute_url() + "/doc1")
 
     @unittest.skipUnless(
         HAS_PLONE_6,
