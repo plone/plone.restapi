@@ -41,6 +41,7 @@ def path2uid(context, link):
         if obj is None:
             break
         suffix = "/" + segments.pop() + suffix
+    print(suffix)
     # check if obj is wrong because of acquisition
     if not obj or "/".join(obj.getPhysicalPath()) != "/".join(segments):
         return link

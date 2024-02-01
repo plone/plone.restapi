@@ -354,6 +354,42 @@ class TestBlocksSerializer(unittest.TestCase):
         link = value[0]["children"][1]["data"]["url"]
         self.assertEqual(link, f"{self.portal['doc1'].absolute_url()}/@@download/file")
 
+    def test_simple_link_serializer_with_suffix_and_anchor(self):
+        doc_uid = IUUID(self.portal["doc1"])
+        resolve_uid_link = f"../resolveuid/{doc_uid}/@@download/file#anchor-id"
+
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": resolve_uid_link,
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks=blocks,
+        )
+        value = res["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertEqual(
+            link, f"{self.portal['doc1'].absolute_url()}/@@download/file#anchor-id"
+        )
+
     def test_slate_table_block_link_serializer(self):
         doc_uid = IUUID(self.portal["doc1"])
         resolve_uid_link = f"../resolveuid/{doc_uid}"
