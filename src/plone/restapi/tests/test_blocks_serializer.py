@@ -318,7 +318,7 @@ class TestBlocksSerializer(unittest.TestCase):
         )
         value = res["abc"]["value"]
         link = value[0]["children"][1]["data"]["url"]
-        self.assertEqual(link, f"{self.portal['doc1'].absolute_url()}#anchor-id")
+        self.assertEqual(link, f"{self.portal['doc1'].absolute_url()}/#anchor-id")
 
     def test_simple_link_serializer_with_suffix(self):
         doc_uid = IUUID(self.portal["doc1"])
