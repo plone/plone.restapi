@@ -8,7 +8,7 @@ from zope.i18n import translate
 import re
 
 
-RESOLVEUID_RE = re.compile("^(?:|.*/)resolve[Uu]id/([^/]*)/?(.*)$")
+RESOLVEUID_RE = re.compile("^(?:|.*/)resolve[Uu]id/([^/#]*)/?(.*)?$")
 
 
 def resolve_uid(path):

@@ -18,7 +18,6 @@ import unittest
 
 
 class TestBlocksDeserializer(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -443,6 +442,98 @@ class TestBlocksDeserializer(unittest.TestCase):
         value = res.blocks["abc"]["value"]
         link = value[0]["children"][1]["data"]["url"]
         self.assertTrue(link.startswith("../resolveuid/"))
+
+    def test_slate_simple_link_deserializer_with_anchor(self):
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": "%s/image-1#anchor-id"
+                                    % self.portal.absolute_url()
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+
+        res = self.deserialize(blocks=blocks)
+        value = res.blocks["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertEqual(link, f"../resolveuid/{self.image.UID()}#anchor-id")
+
+    def test_slate_simple_link_deserializer_with_suffix(self):
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": "%s/image-1/@@download/file"
+                                    % self.portal.absolute_url()
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+
+        res = self.deserialize(blocks=blocks)
+        value = res.blocks["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertEqual(link, f"../resolveuid/{self.image.UID()}/@@download/file")
+
+    def test_slate_simple_link_deserializer_with_suffix_and_anchor(self):
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": "%s/image-1/@@download/file#anchor-id"
+                                    % self.portal.absolute_url()
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+
+        res = self.deserialize(blocks=blocks)
+        value = res.blocks["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertEqual(
+            link, f"../resolveuid/{self.image.UID()}/@@download/file#anchor-id"
+        )
 
     def test_aquisition_messing_with_link_deserializer(self):
         self.portal.invokeFactory(
