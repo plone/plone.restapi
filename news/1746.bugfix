@@ -1,1 +1,0 @@
-Fixed the logic for converting public URLs to and from internal UID-based URLs. Now if the URL includes a fragment, it is preserved. @sneridagh

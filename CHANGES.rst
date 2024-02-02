@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+9.4.1 (2024-02-02)
+------------------
+
+Bug fixes:
+
+
+- Fixed the logic for converting public URLs to and from internal UID-based URLs. Now if the URL includes a fragment, it is preserved. @sneridagh (#1746)
+
+
 9.4.0 (2024-01-26)
 ------------------
 
