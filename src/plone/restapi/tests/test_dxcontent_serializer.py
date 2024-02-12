@@ -26,9 +26,14 @@ from zope.component import provideAdapter
 from zope.component import queryUtility
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
+from importlib import import_module
 
 import json
 import unittest
+
+HAS_PLONE_61 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE61MARKER", False
+)
 
 
 class AdapterCM:
@@ -497,6 +502,17 @@ class TestDXContentSerializer(unittest.TestCase):
 
         self.assertIn("allow_discussion", obj)
         self.assertEqual(True, obj["allow_discussion"])
+
+    @unittest.skipUnless(
+        HAS_PLONE_61, "Skipping test for Plone versions earlier than 6.1"
+    )
+    def test_allow_discussion_portal_default(self):
+        """Not globally addable, not fti enabled, not obj instance enabled"""
+        serializer = getMultiAdapter((self.portal, self.request), ISerializeToJson)
+        obj = serializer()
+
+        self.assertIn("allow_discussion", obj)
+        self.assertEqual(False, obj["allow_discussion"])
 
     def test_allow_discussion_obj_instance_not_set_global_enabled(self):
         self.portal.invokeFactory("Document", id="doc2")
