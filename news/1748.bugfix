@@ -1,0 +1,2 @@
+Fix blocks resolveuid serializer with suffixes, remove trailing slash added before anchors
+[sneridagh]
