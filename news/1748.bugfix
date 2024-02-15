@@ -1,2 +1,1 @@
-Fix blocks resolveuid serializer with suffixes, remove trailing slash added before anchors
-[sneridagh]
+Fixed an edge case in the blocks resolveuid transforms with a trailing slash before a fragment. @sneridagh 
