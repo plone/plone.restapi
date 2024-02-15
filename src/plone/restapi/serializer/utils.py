@@ -8,7 +8,7 @@ from zope.i18n import translate
 import re
 
 
-RESOLVEUID_RE = re.compile("^(?:|.*/)resolve[Uu]id/([^/#]*)/?(.*)?$")
+RESOLVEUID_RE = re.compile("^(?:|.*/)resolve[Uu]id/([^/#]*)?(.*)?$")
 
 
 def resolve_uid(path):
@@ -29,7 +29,7 @@ def resolve_uid(path):
         return path, None
     href = brain.getURL()
     if suffix:
-        return href + "/" + suffix, brain
+        return href + suffix, brain
     target_object = brain._unrestrictedGetObject()
     adapter = queryMultiAdapter(
         (target_object, target_object.REQUEST),
