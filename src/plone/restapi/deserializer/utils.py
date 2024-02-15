@@ -31,7 +31,7 @@ def path2uid(context, link):
     suffix = ""
     match = PATH_RE.match(path)
     if match is not None:
-        path = match.group(1)
+        path = match.group(1).rstrip("/")
         suffix = match.group(2) or ""
 
     obj = portal.unrestrictedTraverse(path, None)
