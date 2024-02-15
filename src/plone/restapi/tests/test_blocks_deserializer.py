@@ -563,9 +563,7 @@ class TestBlocksDeserializer(unittest.TestCase):
         res = self.deserialize(blocks=blocks)
         value = res.blocks["abc"]["value"]
         link = value[0]["children"][1]["data"]["url"]
-        self.assertEqual(
-            link, f"../resolveuid/{self.image.UID()}#anchor-id"
-        )
+        self.assertEqual(link, f"../resolveuid/{self.image.UID()}#anchor-id")
 
     def test_aquisition_messing_with_link_deserializer(self):
         self.portal.invokeFactory(
