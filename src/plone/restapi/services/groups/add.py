@@ -71,7 +71,7 @@ class GroupsPost(Service):
         # Add members
         group = gtool.getGroupById(groupname)
         for userid in users:
-            group.addMember(userid)
+            gtool.addPrincipalToGroup(userid, groupname)
 
         self.request.response.setStatus(201)
         self.request.response.setHeader(
