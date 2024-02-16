@@ -8,6 +8,31 @@ Changelog
 
 .. towncrier release notes start
 
+9.4.2 (2024-02-16)
+------------------
+
+Bug fixes:
+
+
+- Fixed `allow_discussion` serialization for the Plone Site, to return a boolean like other content types. @Akshat2Jain (#1674)
+- Fixed an edge case in the blocks resolveuid transforms with a trailing slash before a fragment. @sneridagh (#1748)
+
+
+Internal:
+
+
+- Remove debug-exceptions = on from the buildout instance section. @wesleybl (#1734)
+
+
+9.4.1 (2024-02-02)
+------------------
+
+Bug fixes:
+
+
+- Fixed the logic for converting public URLs to and from internal UID-based URLs. Now if the URL includes a fragment, it is preserved. @sneridagh (#1746)
+
+
 9.4.0 (2024-01-26)
 ------------------
 
