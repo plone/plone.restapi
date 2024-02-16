@@ -1,1 +1,0 @@
-Fixed `allow_discussion` serialization for the Plone Site, to return a boolean like other content types. @Akshat2Jain
