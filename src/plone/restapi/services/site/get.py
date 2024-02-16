@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from plone.app.event.base import default_timezone
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
@@ -38,6 +39,7 @@ class Site:
                 "plone.site_logo": site_settings.site_logo and getSiteLogo() or None,
                 "plone.robots_txt": site_settings.robots_txt,
                 "plone.allowed_sizes": image_settings.allowed_sizes,
+                "plone.site_timezone": default_timezone(self.context),
             }
         )
 
