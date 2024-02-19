@@ -36,4 +36,4 @@ class TestServicesSite(unittest.TestCase):
         self.assertIn("plone.site_logo", response.json())
         self.assertIn("plone.robots_txt", response.json())
         self.assertIn("plone.allowed_sizes", response.json())
-        self.assertEqual(response.json()["plone.site_timezone"], "UTC")
+        self.assertEqual(response.json()["plone.portal_timezone"], "UTC")

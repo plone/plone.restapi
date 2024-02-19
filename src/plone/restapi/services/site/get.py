@@ -42,7 +42,7 @@ class Site:
                 "plone.site_logo": site_settings.site_logo and getSiteLogo() or None,
                 "plone.robots_txt": site_settings.robots_txt,
                 "plone.allowed_sizes": image_settings.allowed_sizes,
-                "plone.timezone": self.plone_timezone(),
+                "plone.portal_timezone": self.plone_timezone(),
             }
         )
 
