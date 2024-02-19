@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from plone.app.event.base import default_timezone
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -37,6 +36,4 @@ class TestServicesSite(unittest.TestCase):
         self.assertIn("plone.site_logo", response.json())
         self.assertIn("plone.robots_txt", response.json())
         self.assertIn("plone.allowed_sizes", response.json())
-        self.assertEqual(
-            response.json()["plone.site_timezone"], default_timezone(self.portal)
-        )
+        self.assertEqual(response.json()["plone.site_timezone"], "UTC")
