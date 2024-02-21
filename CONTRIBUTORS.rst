@@ -38,4 +38,4 @@
 - Gauthier Bastien
 - Katja Süss
 - Jon Pentland
-  
+- Leonardo J. Caballero G.

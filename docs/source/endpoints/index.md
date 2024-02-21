@@ -29,7 +29,6 @@ copymove
 database
 email-notification
 email-send
-expansion
 groups
 history
 linkintegrity
@@ -47,7 +46,6 @@ roles
 searching
 site
 system
-tiles
 transactions
 translations
 tusupload

@@ -96,13 +96,14 @@ class JWTAuthenticationPlugin(BasePlugin):
         # Prefer any credentials in a JSON POST request under the assumption that any
         # such requested sent when a JWT token is already in the `Authorization` header
         # is intended to change or update the logged in user.
-        try:
-            creds = deserializer.json_body(request)
-        except exceptions.DeserializationError:
-            pass
-        else:
-            if "login" in creds and "password" in creds:
-                return creds
+        if request.getHeader("Content-Type") == "application/json":
+            try:
+                creds = deserializer.json_body(request)
+            except exceptions.DeserializationError:
+                pass
+            else:
+                if "login" in creds and "password" in creds:
+                    return creds
 
         creds = {}
         auth = request._auth

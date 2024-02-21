@@ -96,7 +96,7 @@ To unlink the content, issue a `DELETE` request on the `@translations` endpoint 
 ## Creating a translation from an existing content
 
 The `POST` content endpoint to a folder is also capable of linking this new content with an
-exising translation using two parameters: `translationOf` and `language`.
+existing translation using two parameters: `translationOf` and `language`.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -125,6 +125,32 @@ This endpoint returns the proper placement for the newly created translation:
 
 ## Expansion
 
-This endpoint can be used with the {doc}`expansion` mechanism which allows getting additional information about a content item in one query, avoiding unnecessary requests.
+This service can be used with the {doc}`../usage/expansion` mechanism which allows getting additional information about a content item in one query, avoiding additional requests.
+
+Translation information can be provided by the API expansion for translatable content items.
+A content type is translatable if it has the `plone.translatable` behavior enabled. 
+`plone.app.multilingual` enables this behavior for all content types at the time that it is installed.
+For other content types added later, it would be necessary to enable the behavior for them also.
 
 If a simple `GET` request is done on the content item, a new entry will be shown on the `@components` entry, with the URL of the `@translations` endpoint:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/translations_unexpanded_get.req
+```
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_unexpanded_get.resp
+:language: http
+```
+
+In order to expand and embed the translations component, use the GET parameter `expand` with the value `translations`.
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/translations_expand_get.req
+```
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_expand_get.resp
+:language: http
+```
+

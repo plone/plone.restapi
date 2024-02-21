@@ -1,4 +1,5 @@
 from plone import api
+from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -58,3 +59,24 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         self.assertEqual("Plone Team", group.get("title"))
         self.assertEqual("We are Plone", group.get("description"))
         self.assertNotIn("users", group)
+
+    def test_serialize_group_with_member(self):
+        setRoles(self.portal, TEST_USER_ID, ["Member"])
+        group = self.serialize(self.group)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/@groups/ploneteam",
+                "id": "ploneteam",
+                "groupname": "ploneteam",
+                "email": "ploneteam@plone.org",
+                "title": "Plone Team",
+                "description": "We are Plone",
+                "roles": ["Authenticated"],
+                "members": {
+                    "@id": "http://nohost",
+                    "items_total": 1,
+                    "items": ["test_user_1_"],
+                },
+            },
+            group,
+        )

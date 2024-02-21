@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timezone
 from DateTime import DateTime
 from plone.app.discussion.comment import Comment
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
@@ -70,8 +71,8 @@ class StaticTime:
 
     def __init__(
         self,
-        created=datetime(1995, 7, 31, 13, 45),
-        modified=datetime(1995, 7, 31, 17, 30),
+        created=datetime(1995, 7, 31, 13, 45, tzinfo=timezone.utc),
+        modified=datetime(1995, 7, 31, 17, 30, tzinfo=timezone.utc),
     ):
         self.static_created = created
         self.static_modified = modified

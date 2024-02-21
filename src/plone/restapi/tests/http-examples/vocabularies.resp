@@ -3,12 +3,12 @@ Content-Type: application/json
 
 [
     {
-        "@id": "http://localhost:55001/plone/@vocabularies/plone.contentrules.events",
-        "title": "plone.contentrules.events"
-    },
-    {
         "@id": "http://localhost:55001/plone/@vocabularies/Behaviors",
         "title": "Behaviors"
+    },
+    {
+        "@id": "http://localhost:55001/plone/@vocabularies/plone.contentrules.events",
+        "title": "plone.contentrules.events"
     },
     {
         "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableContentLanguages",
@@ -91,10 +91,6 @@ Content-Type: application/json
         "title": "plone.app.vocabularies.Principals"
     },
     {
-        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog",
-        "title": "plone.app.vocabularies.Catalog"
-    },
-    {
         "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Actions",
         "title": "plone.app.vocabularies.Actions"
     },
@@ -161,6 +157,10 @@ Content-Type: application/json
     {
         "@id": "http://localhost:55001/plone/@vocabularies/plone.app.event.SynchronizationStrategies",
         "title": "plone.app.event.SynchronizationStrategies"
+    },
+    {
+        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog",
+        "title": "plone.app.vocabularies.Catalog"
     },
     {
         "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.metadatafields",

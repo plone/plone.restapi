@@ -1,5 +1,7 @@
 from DateTime import DateTime
 from plone import api
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.app.users.browser.schemaeditor import applySchema
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -49,7 +51,6 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         self.assertNotIn("Anonymous", user["roles"])
 
     def test_serialize_custom_member_schema(self):
-        from plone.app.users.browser.schemaeditor import applySchema
 
         member_schema = """
             <model xmlns="http://namespaces.plone.org/supermodel/schema"
@@ -78,6 +79,32 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         res = self.serialize(user)
         self.assertIn("twitter", res)
         self.assertEqual(res["twitter"], "TheRealDuck")
+
+    def test_serialize_user_with_member(self):
+        setRoles(self.portal, TEST_USER_ID, ["Member"])
+        user = self.serialize(self.user)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/@users/noam",
+                "id": "noam",
+                "username": "noam",
+                "roles": ["Member"],
+                "fullname": "Noam Avram Chomsky",
+                "email": "noam.chomsky@example.com",
+                "home_page": "web.mit.edu/chomsky",
+                "description": "Professor of Linguistics",
+                "location": "Cambridge, MA",
+                "portrait": None,
+                "groups": {
+                    "@id": "http://nohost",
+                    "items_total": 1,
+                    "items": [
+                        {"id": "AuthenticatedUsers", "title": "AuthenticatedUsers"}
+                    ],
+                },
+            },
+            user,
+        )
 
 
 class TestSerializeUserCustomSchemaToJsonAdapter(unittest.TestCase):

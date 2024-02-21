@@ -1,0 +1,100 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@components": {
+        "actions": {
+            "@id": "http://localhost:55001/plone/en/test-document/@actions"
+        },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/en/test-document/@aliases"
+        },
+        "breadcrumbs": {
+            "@id": "http://localhost:55001/plone/en/test-document/@breadcrumbs"
+        },
+        "contextnavigation": {
+            "@id": "http://localhost:55001/plone/en/test-document/@contextnavigation"
+        },
+        "navigation": {
+            "@id": "http://localhost:55001/plone/en/test-document/@navigation"
+        },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/en/test-document/@navroot"
+        },
+        "translations": {
+            "@id": "http://localhost:55001/plone/en/test-document/@translations",
+            "items": [
+                {
+                    "@id": "http://localhost:55001/plone/es/test-document",
+                    "language": "es"
+                }
+            ],
+            "root": {
+                "de": "http://localhost:55001/plone/de",
+                "en": "http://localhost:55001/plone/en",
+                "es": "http://localhost:55001/plone/es",
+                "fr": "http://localhost:55001/plone/fr"
+            }
+        },
+        "types": {
+            "@id": "http://localhost:55001/plone/en/test-document/@types"
+        },
+        "workflow": {
+            "@id": "http://localhost:55001/plone/en/test-document/@workflow"
+        }
+    },
+    "@id": "http://localhost:55001/plone/en/test-document",
+    "@type": "Document",
+    "UID": "SomeUUID000000000000000000000001",
+    "allow_discussion": false,
+    "changeNote": "",
+    "contributors": [],
+    "created": "1995-07-31T13:45:00+00:00",
+    "creators": [
+        "test_user_1_"
+    ],
+    "description": "",
+    "effective": null,
+    "exclude_from_nav": false,
+    "expires": null,
+    "id": "test-document",
+    "is_folderish": false,
+    "language": {
+        "title": "English",
+        "token": "en"
+    },
+    "layout": "document_view",
+    "lock": {
+        "locked": false,
+        "stealable": true
+    },
+    "modified": "1995-07-31T17:30:00+00:00",
+    "next_item": {},
+    "parent": {
+        "@id": "http://localhost:55001/plone/en",
+        "@type": "LRF",
+        "description": "",
+        "review_state": "published",
+        "title": "English",
+        "type_title": "Language Root Folder"
+    },
+    "previous_item": {
+        "@id": "http://localhost:55001/plone/en/assets",
+        "@type": "LIF",
+        "description": "",
+        "title": "Assets",
+        "type_title": "Language Independent Folder"
+    },
+    "relatedItems": [],
+    "review_state": "private",
+    "rights": "",
+    "subjects": [],
+    "table_of_contents": null,
+    "text": null,
+    "title": "Test document",
+    "type_title": "Page",
+    "version": "current",
+    "versioning_enabled": true,
+    "working_copy": null,
+    "working_copy_of": null
+}

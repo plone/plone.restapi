@@ -1,25 +1,26 @@
 name: Tests
-on: [push]
+on: [push, pull_request]
 jobs:
   build:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - python-version: '3.7'
-            plone-version: '5.2'
-          - python-version: '3.8'
-            plone-version: '5.2'
-          - python-version: '3.8'
-            plone-version: '6.0'
-          - python-version: '3.9'
-            plone-version: '6.0'
-          - python-version: '3.10'
-            plone-version: '6.0'
-          - python-version: '3.11'
-            plone-version: '6.0'
-
+          - python-version: "3.8"
+            plone-version: "5.2"
+          - python-version: "3.8"
+            plone-version: "6.0"
+          - python-version: "3.9"
+            plone-version: "6.0"
+          - python-version: "3.10"
+            plone-version: "6.0"
+          - python-version: "3.11"
+            plone-version: "6.0"
+          # FIXME: Change to 3.12 when https://github.com/python/cpython/issues/113267 is fixed
+          - python-version: "3.12.0"
+            plone-version: "6.0"
     steps:
       # git checkout
       - uses: actions/checkout@v3
@@ -29,7 +30,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
+          cache: "pip"
 
       # buildout eggs cache
       - uses: actions/cache@v3

@@ -32,7 +32,7 @@
       method="DELETE"
       factory=".delete.UsersDelete"
       for="Products.CMFCore.interfaces.ISiteRoot"
-      permission="cmf.ManagePortal"
+      permission="plone.app.controlpanel.UsersAndGroups"
       name="@users"
       />
 
