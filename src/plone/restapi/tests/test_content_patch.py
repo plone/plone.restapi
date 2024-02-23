@@ -61,6 +61,9 @@ class TestContentPatch(unittest.TestCase):
         self.assertEqual(204, response.status_code)
         self.assertEqual("", self.portal.doc1.description)
 
+    # FIXE: This test requires a version of Plone with:
+    # https://github.com/plone/plone.rest/pull/179
+    @unittest.skip("Requires https://github.com/plone/plone.rest/pull/179.")
     def test_patch_document_will_not_delete_value_with_null_if_required(self):
         response = requests.patch(
             self.portal.doc1.absolute_url(),
@@ -72,9 +75,12 @@ class TestContentPatch(unittest.TestCase):
 
         # null will set field.missing_value which is u'' for the field
         self.assertEqual(400, response.status_code)
-        self.assertTrue("'field': 'title'" in response.text)
-        self.assertTrue("title is a required field." in response.text)
-        self.assertTrue("Setting it to null is not allowed." in response.text)
+        message = response.json()["message"][0]
+        self.assertEqual(message["field"], "title")
+        self.assertEqual(
+            message["message"],
+            "title is a required field. Setting it to null is not allowed.",
+        )
 
     def test_patch_document_with_representation(self):
         response = requests.patch(

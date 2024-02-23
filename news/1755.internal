@@ -1,0 +1,1 @@
+Fix test to work with the new way plone.rest returns errors. For now the tests are also being skipped @wesleybl

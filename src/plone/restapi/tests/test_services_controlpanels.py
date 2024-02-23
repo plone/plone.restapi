@@ -100,6 +100,9 @@ class TestControlpanelsEndpoint(unittest.TestCase):
                 "{} failed: {}".format(item["@id"], response.content),
             )
 
+    # FIXE: This test requires a version of Plone with:
+    # https://github.com/plone/plone.rest/pull/179
+    @unittest.skip("Requires https://github.com/plone/plone.rest/pull/179.")
     def test_update_required(self):
         KEY = "email_charset"
         URL = "/@controlpanels/mail"
@@ -113,7 +116,9 @@ class TestControlpanelsEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         response = response.json()
         self.assertIn("message", response)
-        self.assertIn("Required input is missing.", response["message"])
+        self.assertEqual(
+            "Required input is missing.", response["message"][0]["message"]
+        )
 
     def test_get_usergroup_control_panel(self):
         # This control panel does not exist in Plone 5
