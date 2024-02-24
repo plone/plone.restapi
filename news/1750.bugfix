@@ -1,0 +1,1 @@
+Fixed the permission check for adding users to groups and removing users from groups, so that it is allowed for users with the Site Administrator role. @wesleybl
