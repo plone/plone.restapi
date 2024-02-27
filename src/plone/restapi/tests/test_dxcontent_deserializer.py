@@ -195,10 +195,7 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
             "valid value", self.portal.doc1.test_missing_value_required_field
         )
         self.assertEqual(
-            (
-                "test_missing_value_required_field is a required field.",
-                "Setting it to null is not allowed.",
-            ),
+            "test_missing_value_required_field is a required field. Setting it to null is not allowed.",
             cm.exception.args[0][0]["message"],
         )
         self.assertEqual(

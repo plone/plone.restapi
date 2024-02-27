@@ -29,12 +29,12 @@ copymove
 database
 email-notification
 email-send
-expansion
 groups
 history
 linkintegrity
 locking
 navigation
+navroot
 actions
 portrait
 principals
@@ -44,8 +44,8 @@ registry
 relations
 roles
 searching
+site
 system
-tiles
 transactions
 translations
 tusupload

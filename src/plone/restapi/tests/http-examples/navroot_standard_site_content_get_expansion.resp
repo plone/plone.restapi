@@ -1,0 +1,149 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@components": {
+        "actions": {
+            "@id": "http://localhost:55001/plone/front-page/@actions"
+        },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/front-page/@aliases"
+        },
+        "breadcrumbs": {
+            "@id": "http://localhost:55001/plone/front-page/@breadcrumbs"
+        },
+        "contextnavigation": {
+            "@id": "http://localhost:55001/plone/front-page/@contextnavigation"
+        },
+        "navigation": {
+            "@id": "http://localhost:55001/plone/front-page/@navigation"
+        },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/front-page/@navroot",
+            "navroot": {
+                "@components": {
+                    "actions": {
+                        "@id": "http://localhost:55001/plone/@actions"
+                    },
+                    "aliases": {
+                        "@id": "http://localhost:55001/plone/@aliases"
+                    },
+                    "breadcrumbs": {
+                        "@id": "http://localhost:55001/plone/@breadcrumbs"
+                    },
+                    "contextnavigation": {
+                        "@id": "http://localhost:55001/plone/@contextnavigation"
+                    },
+                    "navigation": {
+                        "@id": "http://localhost:55001/plone/@navigation"
+                    },
+                    "navroot": {
+                        "@id": "http://localhost:55001/plone/@navroot"
+                    },
+                    "types": {
+                        "@id": "http://localhost:55001/plone/@types"
+                    },
+                    "workflow": {
+                        "@id": "http://localhost:55001/plone/@workflow"
+                    }
+                },
+                "@id": "http://localhost:55001/plone",
+                "@type": "Plone Site",
+                "UID": "55c25ebc220d400393574f37d648727c",
+                "allow_discussion": null,
+                "contributors": [],
+                "creators": [
+                    "admin"
+                ],
+                "description": "",
+                "effective": null,
+                "exclude_from_nav": false,
+                "expires": null,
+                "id": "plone",
+                "is_folderish": true,
+                "items": [
+                    {
+                        "@id": "http://localhost:55001/plone/front-page",
+                        "@type": "Document",
+                        "description": "Congratulations! You have successfully installed Plone.",
+                        "review_state": "private",
+                        "title": "Welcome to Plone",
+                        "type_title": "Page"
+                    }
+                ],
+                "items_total": 1,
+                "language": {
+                    "title": "English",
+                    "token": "en"
+                },
+                "lock": {
+                    "locked": false,
+                    "stealable": true
+                },
+                "parent": {},
+                "relatedItems": [],
+                "review_state": null,
+                "rights": "",
+                "subjects": [],
+                "table_of_contents": null,
+                "text": null,
+                "title": "Plone site",
+                "type_title": "Plone Site"
+            }
+        },
+        "types": {
+            "@id": "http://localhost:55001/plone/front-page/@types"
+        },
+        "workflow": {
+            "@id": "http://localhost:55001/plone/front-page/@workflow"
+        }
+    },
+    "@id": "http://localhost:55001/plone/front-page",
+    "@type": "Document",
+    "UID": "SomeUUID000000000000000000000001",
+    "allow_discussion": false,
+    "changeNote": "",
+    "contributors": [],
+    "created": "1995-07-31T13:45:00+00:00",
+    "creators": [
+        "test_user_1_"
+    ],
+    "description": "Congratulations! You have successfully installed Plone.",
+    "effective": null,
+    "exclude_from_nav": false,
+    "expires": null,
+    "id": "front-page",
+    "is_folderish": false,
+    "language": "",
+    "layout": "document_view",
+    "lock": {
+        "locked": false,
+        "stealable": true
+    },
+    "modified": "1995-07-31T17:30:00+00:00",
+    "next_item": {},
+    "parent": {
+        "@id": "http://localhost:55001/plone",
+        "@type": "Plone Site",
+        "description": "",
+        "title": "Plone site",
+        "type_title": "Plone Site"
+    },
+    "previous_item": {},
+    "relatedItems": [],
+    "review_state": "private",
+    "rights": "",
+    "subjects": [],
+    "table_of_contents": null,
+    "text": {
+        "content-type": "text/plain",
+        "data": "<p>If you&#x27;re seeing this instead of the web site you were expecting, the owner of this web site has just installed Plone. Do not contact the Plone Team or the Plone mailing lists about this.</p>",
+        "encoding": "utf-8"
+    },
+    "title": "Welcome to Plone",
+    "type_title": "Page",
+    "version": "current",
+    "versioning_enabled": true,
+    "working_copy": null,
+    "working_copy_of": null
+}

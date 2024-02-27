@@ -2,6 +2,9 @@ from Acquisition import aq_parent
 from plone.uuid.interfaces import IUUID
 from plone.uuid.interfaces import IUUIDAware
 from zope.component import getMultiAdapter
+import re
+
+PATH_RE = re.compile(r"^(.*?)((?=/@@|#).*)?$")
 
 
 def path2uid(context, link):
@@ -23,16 +26,23 @@ def path2uid(context, link):
         path = "{portal_path}/{path}".format(
             portal_path=portal_path, path=path.lstrip("/")
         )
+
+    # handle edge cases with suffixes like /@@download/file or a fragment
+    suffix = ""
+    match = PATH_RE.match(path)
+    if match is not None:
+        path = match.group(1).rstrip("/")
+        suffix = match.group(2) or ""
+
     obj = portal.unrestrictedTraverse(path, None)
     if obj is None or obj == portal:
         return link
     segments = path.split("/")
-    suffix = ""
     while not IUUIDAware.providedBy(obj):
         obj = aq_parent(obj)
         if obj is None:
             break
-        suffix += "/" + segments.pop()
+        suffix = "/" + segments.pop() + suffix
     # check if obj is wrong because of acquisition
     if not obj or "/".join(obj.getPhysicalPath()) != "/".join(segments):
         return link

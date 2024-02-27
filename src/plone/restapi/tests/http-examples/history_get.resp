@@ -13,7 +13,7 @@ Content-Type: application/json
         },
         "comments": "Initial version",
         "may_revert": true,
-        "time": "1995-07-31T17:30:00Z",
+        "time": "1995-07-31T17:30:00+00:00",
         "transition_title": "Edited",
         "type": "versioning",
         "version": 0
@@ -29,7 +29,7 @@ Content-Type: application/json
         "comments": "",
         "review_state": "private",
         "state_title": "Private",
-        "time": "1995-07-31T18:30:00Z",
+        "time": "1995-07-31T18:30:00+00:00",
         "transition_title": "Create",
         "type": "workflow"
     }

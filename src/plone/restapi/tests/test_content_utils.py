@@ -92,9 +92,10 @@ class TestAddContent(unittest.TestCase):
 
         sm.registerHandler(move_object, (IObjectAddedEvent,))
 
-        obj = create(self.folder, "Document", "my-document")
-        notify(ObjectCreatedEvent(obj))
-        obj = add(self.folder, obj)
-        self.assertEqual(aq_parent(obj), self.portal)
-
-        sm.unregisterHandler(move_object, (IObjectAddedEvent,))
+        try:
+            obj = create(self.folder, "Document", "my-document")
+            notify(ObjectCreatedEvent(obj))
+            obj = add(self.folder, obj)
+            self.assertEqual(aq_parent(obj), self.portal)
+        finally:
+            sm.unregisterHandler(move_object, (IObjectAddedEvent,))

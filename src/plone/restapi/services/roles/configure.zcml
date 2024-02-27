@@ -7,7 +7,7 @@
       method="GET"
       factory=".get.RolesGet"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      permission="cmf.ManagePortal"
+      permission="plone.app.controlpanel.UsersAndGroups"
       name="@roles"
       />
 

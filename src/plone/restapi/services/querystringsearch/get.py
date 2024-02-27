@@ -2,9 +2,11 @@ from pkg_resources import get_distribution
 from pkg_resources import parse_version
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
+from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from urllib import parse
+from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
@@ -27,16 +29,13 @@ class QuerystringSearch:
         self.params = params
 
     def __call__(self):
-        data = json_body(self.request)
-        fullobjects = data.get("fullobjects", False)
-
         self.setQuerybuilderParams()
 
         if len(self.params) > 0:
             results = Facet(
                 self.context,
                 name=self.params[0],
-                querybuilder_params=self.querybuilder_params,
+                querybuilder_parameters=self.querybuilder_parameters,
             ).reply()
             results["@id"] = (
                 "%s/@querystring-search/%s"
@@ -45,26 +44,41 @@ class QuerystringSearch:
         else:
             results = self.getResults()
             results = getMultiAdapter((results, self.request), ISerializeToJson)(
-                fullobjects=fullobjects
+                fullobjects=self.fullobjects
             )
         return results
 
     def setQuerybuilderParams(self):
-        data = json_body(self.request)
+        try:
+            data = json_body(self.request)
+        except DeserializationError as err:
+            raise BadRequest(str(err))
+
         query = data.get("query", None)
-        b_start = int(data.get("b_start", 0))
-        b_size = int(data.get("b_size", 25))
+        try:
+            b_start = int(data.get("b_start", 0))
+        except ValueError:
+            raise BadRequest("Invalid b_start")
+        try:
+            b_size = int(data.get("b_size", 25))
+        except ValueError:
+            raise BadRequest("Invalid b_size")
         sort_on = data.get("sort_on", None)
         sort_order = data.get("sort_order", None)
-        limit = int(data.get("limit", 1000))
+        try:
+            limit = int(data.get("limit", 1000))
+        except ValueError:
+            raise BadRequest("Invalid limit")
 
-        if query is None:
-            raise Exception("No query supplied")
+        self.fullobjects = bool(data.get("fullobjects", False))
+
+        if not query:
+            raise BadRequest("No query supplied")
 
         if sort_order:
             sort_order = "descending" if sort_order == "descending" else "ascending"
 
-        self.querybuilder_params = dict(
+        self.querybuilder_parameters = dict(
             query=query,
             brains=True,
             b_start=b_start,
@@ -82,11 +96,11 @@ class QuerystringSearch:
         # Exclude "self" content item from the results when ZCatalog supports NOT UUID
         # queries and it is called on a content object.
         if not IPloneSiteRoot.providedBy(self.context) and SUPPORT_NOT_UUID_QUERIES:
-            self.querybuilder_params.update(
+            self.querybuilder_parameters.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
             )
 
-        return querybuilder(**self.querybuilder_params)
+        return querybuilder(**self.querybuilder_parameters)
 
 
 @implementer(IPublishTraverse)

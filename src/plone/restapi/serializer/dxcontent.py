@@ -21,6 +21,7 @@ from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import base_hasattr
+from Products.CMFCore.interfaces import IContentish
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
@@ -37,6 +38,18 @@ try:
     from plone.restapi.serializer.working_copy import WorkingCopyInfo
 except ImportError:
     WorkingCopyInfo = None
+
+
+def get_allow_discussion_value(context, request, result):
+    # This test is to handle the plone.app.discussion not being installed situation
+    if "allow_discussion" in result:
+        # Check if the content item implements the IContentish interface
+        if IContentish.providedBy(context):
+            result["allow_discussion"] = getMultiAdapter(
+                (context, request), name="conversation_view"
+            ).enabled()
+    else:
+        result["allow_discussion"] = False
 
 
 @implementer(ISerializeToJson)
@@ -81,10 +94,15 @@ class SerializeToJson:
         }
 
         # Insert next/prev information
-        nextprevious = NextPrevious(obj)
-        result.update(
-            {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
-        )
+        try:
+            nextprevious = NextPrevious(obj)
+            result.update(
+                {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
+            )
+        except ValueError:
+            # If we're serializing an old version that was renamed or moved,
+            # then its id might not be found inside the current object's container.
+            result.update({"previous_item": {}, "next_item": {}})
 
         # Insert working copy information
         if WorkingCopyInfo is not None:
@@ -120,9 +138,7 @@ class SerializeToJson:
         if target_url:
             result["targetUrl"] = target_url
 
-        result["allow_discussion"] = getMultiAdapter(
-            (self.context, self.request), name="conversation_view"
-        ).enabled()
+        get_allow_discussion_value(self.context, self.request, result)
 
         return result
 
