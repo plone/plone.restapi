@@ -249,7 +249,6 @@ class TestExternalLoginServices(TestCase):
         notify(PubStart(request))
         return request.traverse(path)
 
-
     def test_provider_returns_list(self):
         service = self.traverse()
         res = service.reply()
