@@ -213,20 +213,21 @@ class TestRenew(TestCase):
             res["error"]["type"], "Invalid or expired authentication token"
         )
 
+
 class MyExternalLinks:
     def get_providers(self):
         return [
             {
-                'id': 'myprovider',
-                'title': 'Provider',
-                'plugin': 'myprovider',
-                'url': 'https://some.example.com/login-url'
+                "id": "myprovider",
+                "title": "Provider",
+                "plugin": "myprovider",
+                "url": "https://some.example.com/login-url",
             },
             {
-                'id': 'github',
-                'title': 'GitHub',
-                'plugin': 'github',
-                'url': 'https://some.example.com/login-authomatic/github'
+                "id": "github",
+                "title": "GitHub",
+                "plugin": "github",
+                "url": "https://some.example.com/login-authomatic/github",
             },
         ]
 
@@ -238,7 +239,9 @@ class TestExternalLoginServices(TestCase):
         self.portal = self.layer["portal"]
         self.request = self.layer["request"]
 
-        provideAdapter(MyExternalLinks, adapts=(IPloneSiteRoot,), provides=IExternalLoginProviders)
+        provideAdapter(
+            MyExternalLinks, adapts=(IPloneSiteRoot,), provides=IExternalLoginProviders
+        )
 
     def traverse(self, path="/plone/@login", accept="application/json", method="GET"):
         request = self.layer["request"]
@@ -254,5 +257,5 @@ class TestExternalLoginServices(TestCase):
         res = service.reply()
         self.assertEqual(service.request.response.status, 200)
         self.assertTrue(isinstance(res, dict))
-        self.assertIn('options', res)
-        self.assertTrue(isinstance(res.get('options'), list))
+        self.assertIn("options", res)
+        self.assertTrue(isinstance(res.get("options"), list))

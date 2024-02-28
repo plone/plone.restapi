@@ -243,9 +243,10 @@ class IBlockVisitor(Interface):
 
 
 class IExternalLoginProviders(Interface):
-    """ An interface needed to be implemented by providers that want to be listed
-        in the @login endpoint
+    """An interface needed to be implemented by providers that want to be listed
+    in the @login endpoint
     """
+
     def get_providers():
         """
         return a list of login providers, with its id, title, plugin and url

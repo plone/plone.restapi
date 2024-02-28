@@ -9,8 +9,6 @@ class Login(Service):
         adapters = getAdapters(self.context, IExternalLoginProviders)
         external_providers = []
         for adapter in adapters:
-            external_providers.extend(
-                adapter.get_providers()
-            )
+            external_providers.extend(adapter.get_providers())
 
-        return {'options': external_providers}
+        return {"options": external_providers}
