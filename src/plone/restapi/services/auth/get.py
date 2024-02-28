@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from plone.restapi.interfaces import IExternalLoginProviders
 from plone.restapi.services import Service
 from zope.component import getAdapters
-from plone.restapi.interfaces import IExternalLoginProviders
 
 
 class Login(Service):
