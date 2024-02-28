@@ -7,7 +7,6 @@ from unittest import TestCase
 from zExceptions import Unauthorized
 from zope.event import notify
 from ZPublisher.pubevents import PubStart
-from zope.interface import implementer
 from zope.component import provideAdapter
 from plone.restapi.interfaces import IExternalLoginProviders
 from Products.CMFPlone.interfaces import IPloneSiteRoot
