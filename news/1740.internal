@@ -1,0 +1,1 @@
+Use last version of Python 3.12 in tests. https://github.com/python/cpython/issues/113267 has been fixed. @wesleybl
