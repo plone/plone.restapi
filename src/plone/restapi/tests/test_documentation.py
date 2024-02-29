@@ -40,6 +40,10 @@ from zope.lifecycleevent import ObjectModifiedEvent
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.restapi.testing import register_static_uuid_utility
+from zope.component import provideAdapter
+from plone.restapi.interfaces import IExternalLoginProviders
+from Products.CMFPlone.interfaces import IPloneSiteRoot
+
 
 import collections
 import json
@@ -82,6 +86,24 @@ UPLOAD_PDF_FILENAME = "file.pdf"
 
 # How do we open files?
 open_kw = {"newline": "\n"}
+
+
+class MyExternalLinks:
+    def get_providers(self):
+        return [
+            {
+                "id": "myprovider",
+                "title": "Provider",
+                "plugin": "myprovider",
+                "url": "https://some.example.com/login-url",
+            },
+            {
+                "id": "github",
+                "title": "GitHub",
+                "plugin": "github",
+                "url": "https://some.example.com/login-authomatic/github",
+            },
+        ]
 
 
 def normalize_test_port(value):
@@ -225,6 +247,10 @@ class TestDocumentation(TestDocumentationBase):
         super().setUp()
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
+        provideAdapter(
+            MyExternalLinks, adapts=(IPloneSiteRoot,), provides=IExternalLoginProviders
+        )
+
         transaction.commit()
 
     def tearDown(self):
@@ -784,6 +810,12 @@ class TestDocumentation(TestDocumentationBase):
             headers={"Authorization": f"Bearer {token}"},
         )
         save_request_and_response_for_docs("jwt_logout", response)
+
+    def test_documentation_external_doc_links(self):
+        response = self.api_session.get(
+            f"{self.portal.absolute_url()}/@login",
+        )
+        save_request_and_response_for_docs("external_authentication_links", response)
 
     def test_documentation_batching(self):
         folder = self.portal[

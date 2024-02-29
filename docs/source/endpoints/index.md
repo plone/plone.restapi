@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    "description": "Usage of the Plone REST API."
-    "property=og:description": "Usage of the Plone REST API."
-    "property=og:title": "Usage of the Plone REST API"
-    "keywords": "Plone, plone.restapi, REST, API, Usage"
+    'description': 'Usage of the Plone REST API.'
+    'property=og:description': 'Usage of the Plone REST API.'
+    'property=og:title': 'Usage of the Plone REST API'
+    'keywords': 'Plone, plone.restapi, REST, API, Usage'
 ---
 
 (restapi-endpoints)=
@@ -29,6 +29,7 @@ copymove
 database
 email-notification
 email-send
+external-authentication-links
 groups
 history
 linkintegrity
