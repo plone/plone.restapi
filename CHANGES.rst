@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+9.5.0 (2024-02-27)
+------------------
+
+Bug fixes:
+
+
+- Fixed the permission check for adding users to groups and removing users from groups, so that it is allowed for users with the Site Administrator role. @wesleybl (#1750)
+- Enhanced Makefile paths to address whitespace compatibility issues. @Vivek-04022001 (#1753)
+
+
 9.4.2 (2024-02-16)
 ------------------
 
