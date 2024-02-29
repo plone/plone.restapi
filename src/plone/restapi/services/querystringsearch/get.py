@@ -30,13 +30,16 @@ class QuerystringSearch:
 
     def __call__(self):
         self.setQuerybuilderParams()
-
+        
         if len(self.params) > 0:
             results = Facet(
                 self.context,
+                self.request,
                 name=self.params[0],
                 querybuilder_parameters=self.querybuilder_parameters,
-            ).reply()
+            ).getFacet()
+            if results is None:
+                raise BadRequest("Invalid facet")
             results["@id"] = (
                 "%s/@querystring-search/%s"
                 % (self.context.absolute_url(), self.params[0]),
@@ -46,6 +49,16 @@ class QuerystringSearch:
             results = getMultiAdapter((results, self.request), ISerializeToJson)(
                 fullobjects=self.fullobjects
             )
+            results["facets_count"] = {}
+            for facet in self.facets:
+                facet_results = Facet(
+                    self.context,
+                    self.request,
+                    name=facet,
+                    querybuilder_parameters=self.querybuilder_parameters,
+                ).getFacet()
+                if facet_results:
+                    results["facets_count"][facet] = facet_results
         return results
 
     def setQuerybuilderParams(self):
@@ -71,6 +84,7 @@ class QuerystringSearch:
             raise BadRequest("Invalid limit")
 
         self.fullobjects = bool(data.get("fullobjects", False))
+        self.facets = data.get("facets", [])
 
         if not query:
             raise BadRequest("No query supplied")
@@ -87,19 +101,16 @@ class QuerystringSearch:
             sort_order=sort_order,
             limit=limit,
         )
-
-    def getResults(self):
-        querybuilder = getMultiAdapter(
-            (self.context, self.request), name="querybuilderresults"
-        )
-
-        # Exclude "self" content item from the results when ZCatalog supports NOT UUID
-        # queries and it is called on a content object.
+        
         if not IPloneSiteRoot.providedBy(self.context) and SUPPORT_NOT_UUID_QUERIES:
             self.querybuilder_parameters.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
             )
 
+    def getResults(self):
+        querybuilder = getMultiAdapter(
+            (self.context, self.request), name="querybuilderresults"
+        )
         return querybuilder(**self.querybuilder_parameters)
 
 
@@ -120,9 +131,18 @@ class QuerystringSearchPost(Service):
         querystring_search = QuerystringSearch(self.context, self.request, self.params)
         return querystring_search()
 
-
+@implementer(IPublishTraverse)
 class QuerystringSearchGet(Service):
     """Returns the querystring search results given a p.a.querystring data."""
+    
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
+        
+    def publishTraverse(self, request, name):
+        # Treat any path segments after /@types as parameters
+        self.params.append(name)
+        return self
 
     def reply(self):
         # We need to copy the JSON query parameters from the querystring
@@ -133,5 +153,5 @@ class QuerystringSearchGet(Service):
 
         # unset the get parameters
         self.request.form = {}
-        querystring_search = QuerystringSearch(self.context, self.request)
+        querystring_search = QuerystringSearch(self.context, self.request, self.params)
         return querystring_search()

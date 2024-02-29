@@ -1,54 +1,56 @@
-from zope.component import getUtility
+from BTrees.IIBTree import intersection
 from Products.CMFCore.interfaces import ICatalogTool
-
-from plone.restapi.utils import get_query, searchResults
+from zope.component import getUtility
+from zope.component import getMultiAdapter
 
 
 class Facet:
     """Returns facet count."""
 
-    def __init__(self, context, name, querybuilder_params):
+    def __init__(self, context, request, name, querybuilder_parameters):
         self.context = context
+        self.request = request
         self.name = name
-        self.querybuilder_params = querybuilder_params
+        self.querybuilder_parameters = querybuilder_parameters
+        self.querybuilder_parameters["query"] = [
+            qs for qs in querybuilder_parameters.get("query", []) if qs["i"] != self.name
+        ]
+        self.querybuilder_parameters["rids"] = True
 
-    def reply(self):
-        facet_count = {}
-        ctool = getUtility(ICatalogTool)
-
-        query = self.querybuilder_params.get("query", None)
-
+    def getFacet(self):
         try:
+            ctool = getUtility(ICatalogTool)
+            count = {}
             index = ctool._catalog.getIndex(self.name)
-        except:
-            index = None
-
-        if query:
-            self.querybuilder_params["query"] = [
-                qs for qs in query if qs["i"] != self.name
-            ]
-
-        brains_rids = set(
-            searchResults(get_query(self.context, **self.querybuilder_params))
-        )
-        rids = brains_rids.intersection(index.documentToKeyMap())
-
-        for rid in rids:
-            for key in index.keyForDocument(rid):
-                if key not in facet_count:
-                    facet_count[key] = 0
-                facet_count[key] += 1
-
-        return {
-            "facets": {
-                self.name: {
-                    "count": len(rids),
-                    "data": [
-                        {"value": key, "count": value}
-                        for key, value in facet_count.items()
-                    ],
-                }
+            # Get the brains for the query without the facet
+            querybuilder = getMultiAdapter(
+                (self.context, self.request), name="querybuilderresults"
+            )
+            brains_rids = querybuilder(**self.querybuilder_parameters)
+            # Get the rids for the brains that have the facet index set to the value we are interested in
+            rids = intersection(brains_rids, index.documentToKeyMap())
+            
+            for rid in rids:
+                keys = index.keyForDocument(rid)
+                if isinstance(keys, str):
+                    keys = [keys]
+                if not isinstance(keys, list):
+                    continue
+                for key in keys:
+                    if key not in count:
+                        count[key] = 0
+                    count[key] += 1
+                    
+            results = {
+                "name": self.name,
+                "count": len(rids),
+                "data": {},
             }
-            if self.name
-            else {},
-        }
+            
+            for key, value in count.items():
+                results["data"][key] = value
+
+            return results
+
+        except:
+            return None
