@@ -30,7 +30,7 @@ class QuerystringSearch:
 
     def __call__(self):
         self.setQuerybuilderParams()
-        
+
         if len(self.params) > 0:
             results = Facet(
                 self.context,
@@ -101,7 +101,7 @@ class QuerystringSearch:
             sort_order=sort_order,
             limit=limit,
         )
-        
+
         if not IPloneSiteRoot.providedBy(self.context) and SUPPORT_NOT_UUID_QUERIES:
             self.querybuilder_parameters.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
@@ -131,14 +131,15 @@ class QuerystringSearchPost(Service):
         querystring_search = QuerystringSearch(self.context, self.request, self.params)
         return querystring_search()
 
+
 @implementer(IPublishTraverse)
 class QuerystringSearchGet(Service):
     """Returns the querystring search results given a p.a.querystring data."""
-    
+
     def __init__(self, context, request):
         super().__init__(context, request)
         self.params = []
-        
+
     def publishTraverse(self, request, name):
         # Treat any path segments after /@types as parameters
         self.params.append(name)
