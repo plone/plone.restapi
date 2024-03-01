@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    'description': 'The @history endpoint exposes history and versioning information on previous versions of the content.'
-    'property=og:description': 'The @history endpoint exposes history and versioning information on previous versions of the content.'
-    'property=og:title': 'History'
-    'keywords': 'Plone, plone.restapi, REST, API, History'
+    "description': "The @login endpoint exposes the list of external authentication services that may be used in the Plone site."
+    "property=og:description": "The @login endpoint exposes the list of external authentication services that may be used in the Plone site."
+    "property=og:title": 'External authentication links"
+    "keywords": 'Plone, plone.restapi, REST, API, Login, Authentication, External services"
 ---
 
 # External authentication links
