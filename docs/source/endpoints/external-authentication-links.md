@@ -1,7 +1,7 @@
 ---
 myst:
   html_meta:
-    "description': "The @login endpoint exposes the list of external authentication services that may be used in the Plone site."
+    "description": "The @login endpoint exposes the list of external authentication services that may be used in the Plone site."
     "property=og:description": "The @login endpoint exposes the list of external authentication services that may be used in the Plone site."
     "property=og:title": 'External authentication links"
     "keywords": 'Plone, plone.restapi, REST, API, Login, Authentication, External services"
