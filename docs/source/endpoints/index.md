@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    'description': 'Usage of the Plone REST API.'
-    'property=og:description': 'Usage of the Plone REST API.'
-    'property=og:title': 'Usage of the Plone REST API'
-    'keywords': 'Plone, plone.restapi, REST, API, Usage'
+    'description': 'Endpoints of the Plone REST API.'
+    'property=og:description': 'Endpoints of the Plone REST API.'
+    'property=og:title': 'Endpoints of the Plone REST API'
+    'keywords': 'Plone, plone.restapi, REST, API, endpoints'
 ---
 
 (restapi-endpoints)=
@@ -34,6 +34,7 @@ groups
 history
 linkintegrity
 locking
+login
 navigation
 navroot
 actions
