@@ -21,7 +21,7 @@ This will be mostly used by frontends, that need to show the end user the links 
 
 To achieve that, third party products need to register one or more adapters for the Plone site root object, providing the `plone.restapi.interfaces.IExternalLoginProviders` interface.
 
-In such adapter, the addon need to return the list of external links and some metadata like the id, title and plugin name.
+In such adapter the addon needs to return the list of external links and some metadata like the id, title and plugin name.
 
 An example adapter would be the following (in an `adapter.py` file):
 
