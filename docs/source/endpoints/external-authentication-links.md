@@ -17,7 +17,7 @@ In such cases, an addon is installed in Plone and those addons modify the way th
 
 To expose the links provided by those addons, plone.restapi provides an adapter based service registration, to let those addons know this REST API that those services could be used to authenticate users.
 
-This will be mostly used by frontends, that need to show the end user the links to those services.
+This will be mostly used by frontends that need to show the end user the links to those services.
 
 To achieve that, third party products need to register one or more adapters for the Plone site root object, providing the `plone.restapi.interfaces.IExternalLoginProviders` interface.
 
