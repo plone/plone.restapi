@@ -2,5 +2,30 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "options": []
+    "options": [
+        {
+            "id": "myprovider",
+            "plugin": "myprovider",
+            "title": "Provider",
+            "url": "https://some.example.com/login-url"
+        },
+        {
+            "id": "github",
+            "plugin": "github",
+            "title": "GitHub",
+            "url": "https://some.example.com/login-authomatic/github"
+        },
+        {
+            "id": "myprovider",
+            "plugin": "myprovider",
+            "title": "Provider",
+            "url": "https://some.example.com/login-url"
+        },
+        {
+            "id": "github",
+            "plugin": "github",
+            "title": "GitHub",
+            "url": "https://some.example.com/login-authomatic/github"
+        }
+    ]
 }
