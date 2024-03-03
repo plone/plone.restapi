@@ -25,12 +25,15 @@ In the adapter, the add-on needs to return the list of external links and some m
 An example adapter would be the following, in a file named {file}`adapter.py`:
 
 ```python
-from zope.component import adapts
+from zope.component import adapter
 from zope.interface import implementer
 
-@adapts(IPloneSiteRoot)
+@adapter(IPloneSiteRoot)
 @implementer(IExternalLoginProviders)
 class MyExternalLinks:
+    def __init__(self, context):
+        self.context = context
+
     def get_providers(self):
         return [
             {
@@ -51,7 +54,7 @@ class MyExternalLinks:
 With the corresponding ZCML stanza, in the corresponding {file}`configure.zcml` file:
 
 ```xml
-<adapter factory=".adapter.MyExternalLinks" />
+<adapter factory=".adapter.MyExternalLinks" name="my-external-links"/>
 ```
 
 The API request would be as follows:

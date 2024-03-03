@@ -89,6 +89,9 @@ open_kw = {"newline": "\n"}
 
 
 class MyExternalLinks:
+    def __init__(self, context):
+        self.context = context
+
     def get_providers(self):
         return [
             {
@@ -248,7 +251,10 @@ class TestDocumentation(TestDocumentationBase):
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
         provideAdapter(
-            MyExternalLinks, adapts=(IPloneSiteRoot,), provides=IExternalLoginProviders
+            MyExternalLinks,
+            adapts=(IPloneSiteRoot,),
+            provides=IExternalLoginProviders,
+            name="test-external-links",
         )
 
         transaction.commit()

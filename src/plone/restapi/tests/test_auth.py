@@ -212,8 +212,11 @@ class TestRenew(TestCase):
             res["error"]["type"], "Invalid or expired authentication token"
         )
 
-
 class MyExternalLinks:
+
+    def __init__(self, context):
+        self.context = context
+
     def get_providers(self):
         return [
             {
@@ -239,7 +242,10 @@ class TestExternalLoginServices(TestCase):
         self.request = self.layer["request"]
 
         provideAdapter(
-            MyExternalLinks, adapts=(IPloneSiteRoot,), provides=IExternalLoginProviders
+            MyExternalLinks,
+            adapts=(IPloneSiteRoot,),
+            provides=IExternalLoginProviders,
+            name="test-external-links"
         )
 
     def traverse(self, path="/plone/@login", accept="application/json", method="GET"):
@@ -258,3 +264,4 @@ class TestExternalLoginServices(TestCase):
         self.assertTrue(isinstance(res, dict))
         self.assertIn("options", res)
         self.assertTrue(isinstance(res.get("options"), list))
+        self.assertTrue(len(res.get("options")), 2)
