@@ -1,1 +1,1 @@
-Add the site tiemezone to the @site endpoint return result. [folix-01]
+Add the site timezone to the @site endpoint return result. @folix-01
