@@ -1,2 +1,1 @@
-Add available languages information to the @site endpoint
-[erral]
+Add available languages information to the @site endpoint. @erral
