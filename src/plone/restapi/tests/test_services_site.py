@@ -9,7 +9,6 @@ import unittest
 
 
 class TestServicesSite(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -36,4 +35,6 @@ class TestServicesSite(unittest.TestCase):
         self.assertIn("plone.site_logo", response.json())
         self.assertIn("plone.robots_txt", response.json())
         self.assertIn("plone.allowed_sizes", response.json())
+        self.assertIn("plone.available_languages", response.json())
+        self.assertIn("plone.default_language", response.json())
         self.assertEqual(response.json()["plone.portal_timezone"], "UTC")

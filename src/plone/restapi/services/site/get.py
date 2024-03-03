@@ -3,6 +3,7 @@ from plone.app.event.base import FALLBACK_TIMEZONE
 from plone.app.event.base import replacement_zones
 from plone.event.utils import default_timezone as fallback_default_timezone
 from plone.event.utils import validated_timezone
+from plone.i18n.interfaces import ILanguageSchema
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
@@ -36,12 +37,17 @@ class Site:
         image_settings = registry.forInterface(
             IImagingSchema, prefix="plone", check=False
         )
+        language_settings = registry.forInterface(
+            ILanguageSchema, prefix="plone", check=False
+        )
         result["site"].update(
             {
                 "plone.site_title": portal_state.portal_title(),
                 "plone.site_logo": site_settings.site_logo and getSiteLogo() or None,
                 "plone.robots_txt": site_settings.robots_txt,
                 "plone.allowed_sizes": image_settings.allowed_sizes,
+                "plone.default_language": language_settings.default_language,
+                "plone.available_languages": language_settings.available_languages,
                 "plone.portal_timezone": self.plone_timezone(),
             }
         )
