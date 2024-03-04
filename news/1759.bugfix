@@ -1,0 +1,1 @@
+Fix missign slash after conversion of complex url by the plone.restapi.serializer.resolve_uid function @folix-01

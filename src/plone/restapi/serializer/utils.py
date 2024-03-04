@@ -29,7 +29,7 @@ def resolve_uid(path):
         return path, None
     href = brain.getURL()
     if suffix:
-        return href + "/" + suffix, brain
+        return href + ((suffix[0] != "#") and "/" or "") + suffix, brain
 
     target_object = brain._unrestrictedGetObject()
     adapter = queryMultiAdapter(
