@@ -2,10 +2,12 @@ from . import patches  # noqa: ignore=F401
 from AccessControl import allow_module
 from AccessControl.Permissions import add_user_folders
 from plone.restapi.pas import plugin
+from Products.CMFPlone.utils import getFSVersionTuple
 from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin
 from zope.i18nmessageid import MessageFactory
 
 import pkg_resources
+
 
 try:
     pkg_resources.get_distribution("plone.app.multilingual")
@@ -18,6 +20,9 @@ PROJECT_NAME = "plone.restapi"
 
 
 allow_module("json")
+
+# BBB: Plone 5.2
+PLONE5 = getFSVersionTuple()[0] == 5
 
 
 def initialize(context):
