@@ -1,15 +1,15 @@
-from plone.restapi import PLONE5
+from plone.restapi import HAS_PLONE_6
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.globalrequest import getRequest
 
 
-if PLONE5:
-    # BBB: In Plone 5.2, it is necessary to use the direction parameter.
-    scale_parameter = {"direction": "thumbnail"}
-else:
+if HAS_PLONE_6:
     # In Plone 6.0+, we must use the mode parameter
     scale_parameter = {"mode": "scale"}
+else:
+    # BBB: In Plone 5.2, it is necessary to use the direction parameter.
+    scale_parameter = {"direction": "thumbnail"}
 
 
 def get_scales(context, field, width, height):
