@@ -30,13 +30,25 @@ class QuerystringSearch:
 
     def __call__(self):
         self.setQuerybuilderParams()
+        querybuilder_criteria_parameters = self.querybuilder_parameters.copy()
+        querybuilder_criteria_parameters["query"] =[
+            qs
+            for qs in self.querybuilder_parameters.get("query", [])
+            if 'criteria' in qs and qs["criteria"] is True
+        ]
+        querybuilder_criteria_parameters["rids"] = True
+        querybuilder = getMultiAdapter(
+            (self.context, self.request), name="querybuilderresults"
+        )
 
+        brains_rids_criteria = querybuilder(**querybuilder_criteria_parameters)
         if len(self.params) > 0:
             results = Facet(
                 self.context,
                 self.request,
                 name=self.params[0],
                 querybuilder_parameters=self.querybuilder_parameters,
+                brains_rids_criteria=brains_rids_criteria
             ).getFacet()
             if results is None:
                 raise BadRequest("Invalid facet")
@@ -56,6 +68,7 @@ class QuerystringSearch:
                     self.request,
                     name=facet,
                     querybuilder_parameters=self.querybuilder_parameters,
+                    brains_rids_criteria=brains_rids_criteria
                 ).getFacet()
                 if facet_results:
                     results["facets_count"][facet] = facet_results

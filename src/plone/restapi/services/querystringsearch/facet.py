@@ -6,7 +6,7 @@ from zope.component import getMultiAdapter
 class Facet:
     """Returns facet count."""
 
-    def __init__(self, context, request, name, querybuilder_parameters):
+    def __init__(self, context, request, name, querybuilder_parameters,brains_rids_criteria):
         self.context = context
         self.request = request
         self.name = name
@@ -24,6 +24,7 @@ class Facet:
             for qs in querybuilder_parameters.get("query", [])
             if 'criteria' in qs and qs["criteria"] is True
         ]
+        self.brain_rids_criteria = brains_rids_criteria
 
     def getFacet(self):
         ctool = getUtility(ICatalogTool)
@@ -39,12 +40,9 @@ class Facet:
         querybuilder = getMultiAdapter(
             (self.context, self.request), name="querybuilderresults"
         )
-        querybuilder_criteria = getMultiAdapter(
-            (self.context, self.request), name="querybuilderresults"
-        )
-
+       
         brains_rids = querybuilder(**self.querybuilder_parameters)
-        brains_rids_criteria = querybuilder_criteria(**self.querybuilder_criteria_parameters)
+        brains_rids_criteria = self.brain_rids_criteria
         # Get the rids for the brains that have the facet index set to the value we are interested in
         rids = intersection(brains_rids, index.documentToKeyMap())
         rids_criteria = intersection(brains_rids_criteria, index.documentToKeyMap())
@@ -73,13 +71,11 @@ class Facet:
             "name": self.name,
             "count": len(rids),
             "data": {},
-            "count_criteria":len(rids_criteria)
         }
 
         for key, value in count.items():
-            if key in count_criteria and count_criteria[key] > 0:
-                results["data"][key] = value
-
+            if key in  count_criteria and count_criteria[key]>0:
+              results["data"][key] = value
         for key,value in count_criteria.items():
                 if key not in  results["data"]:
                   results["data"][key] = 0
