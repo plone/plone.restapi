@@ -77,10 +77,11 @@ class Facet:
         }
 
         for key, value in count.items():
-            results["data"][key] = {'count':value, 'count_criteria':  count_criteria[key] if (key in count_criteria) else 0}
+            if key in count_criteria and count_criteria[key] > 0:
+                results["data"][key] = value
 
         for key,value in count_criteria.items():
                 if key not in  results["data"]:
-                  results["data"][key] = {'count':0, 'count_criteria': value}
+                  results["data"][key] = 0
 
         return results
