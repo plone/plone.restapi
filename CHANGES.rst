@@ -8,6 +8,22 @@ Changelog
 
 .. towncrier release notes start
 
+9.6.0 (2024-03-03)
+------------------
+
+New features:
+
+
+- Add available languages information to the @site endpoint. @erral (#1738)
+- Add the site timezone to the @site endpoint return result. @folix-01 (#1749)
+
+
+Internal:
+
+
+- Use last version of Python 3.12 in tests. https://github.com/python/cpython/issues/113267 has been fixed. @wesleybl (#1740)
+
+
 9.5.0 (2024-02-27)
 ------------------
 
