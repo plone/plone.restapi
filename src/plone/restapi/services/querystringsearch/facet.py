@@ -3,10 +3,13 @@ from Products.CMFCore.interfaces import ICatalogTool
 from zope.component import getUtility
 from zope.component import getMultiAdapter
 
+
 class Facet:
     """Returns facet count."""
 
-    def __init__(self, context, request, name, querybuilder_parameters,brains_rids_criteria):
+    def __init__(
+        self, context, request, name, querybuilder_parameters, brains_rids_criteria
+    ):
         self.context = context
         self.request = request
         self.name = name
@@ -15,14 +18,14 @@ class Facet:
         self.querybuilder_parameters["query"] = [
             qs
             for qs in querybuilder_parameters.get("query", [])
-            if qs["i"] != self.name or  ('criteria' in qs and qs["criteria"] is True)
+            if qs["i"] != self.name or ("criteria" in qs and qs["criteria"] is True)
         ]
         self.querybuilder_parameters["rids"] = True
         self.querybuilder_criteria_parameters["rids"] = True
-        self.querybuilder_criteria_parameters["query"] =[
+        self.querybuilder_criteria_parameters["query"] = [
             qs
             for qs in querybuilder_parameters.get("query", [])
-            if 'criteria' in qs and qs["criteria"] is True
+            if "criteria" in qs and qs["criteria"] is True
         ]
         self.brain_rids_criteria = brains_rids_criteria
 
@@ -40,7 +43,7 @@ class Facet:
         querybuilder = getMultiAdapter(
             (self.context, self.request), name="querybuilderresults"
         )
-       
+
         brains_rids = querybuilder(**self.querybuilder_parameters)
         brains_rids_criteria = self.brain_rids_criteria
         # Get the rids for the brains that have the facet index set to the value we are interested in
@@ -74,10 +77,10 @@ class Facet:
         }
 
         for key, value in count.items():
-            if key in  count_criteria and count_criteria[key]>0:
-              results["data"][key] = value
-        for key,value in count_criteria.items():
-                if key not in  results["data"]:
-                  results["data"][key] = 0
+            if key in count_criteria and count_criteria[key] > 0:
+                results["data"][key] = value
+        for key, value in count_criteria.items():
+            if key not in results["data"]:
+                results["data"][key] = 0
 
         return results
