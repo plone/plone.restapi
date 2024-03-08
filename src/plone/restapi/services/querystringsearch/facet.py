@@ -11,6 +11,7 @@ if parse_version(zcatalog_version) >= parse_version("5.1"):
 else:
     SUPPORT_NOT_UUID_QUERIES = False
 
+
 class Facet:
     """Returns facet count."""
 
@@ -40,7 +41,6 @@ class Facet:
             self.querybuilder_parameters.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
             )
-
 
     def getFacet(self):
         ctool = getUtility(ICatalogTool)
@@ -92,6 +92,6 @@ class Facet:
         }
 
         for key, _ in count_mandatory.items():
-            results["data"][key] = count[key] if key in count else 0 
+            results["data"][key] = count[key] if key in count else 0
 
         return results
