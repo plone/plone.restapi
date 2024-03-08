@@ -2,37 +2,50 @@ from BTrees.IIBTree import intersection
 from Products.CMFCore.interfaces import ICatalogTool
 from zope.component import getUtility
 from zope.component import getMultiAdapter
+from pkg_resources import get_distribution
+from pkg_resources import parse_version
 
+zcatalog_version = get_distribution("Products.ZCatalog").version
+if parse_version(zcatalog_version) >= parse_version("5.1"):
+    SUPPORT_NOT_UUID_QUERIES = True
+else:
+    SUPPORT_NOT_UUID_QUERIES = False
 
 class Facet:
     """Returns facet count."""
 
     def __init__(
-        self, context, request, name, querybuilder_parameters, brains_rids_criteria
+        self, context, request, name, querybuilder_parameters, brains_rids_mandatory
     ):
+
         self.context = context
         self.request = request
         self.name = name
         self.querybuilder_parameters = querybuilder_parameters.copy()
-        self.querybuilder_criteria_parameters = querybuilder_parameters.copy()
+        self.querybuilder_mandatory_parameters = querybuilder_parameters.copy()
         self.querybuilder_parameters["query"] = [
             qs
             for qs in querybuilder_parameters.get("query", [])
-            if qs["i"] != self.name or ("criteria" in qs and qs["criteria"] is True)
+            if qs["i"] != self.name or ("mandatory" in qs and qs["mandatory"] is True)
         ]
         self.querybuilder_parameters["rids"] = True
-        self.querybuilder_criteria_parameters["rids"] = True
-        self.querybuilder_criteria_parameters["query"] = [
+        self.querybuilder_mandatory_parameters["rids"] = True
+        self.querybuilder_mandatory_parameters["query"] = [
             qs
             for qs in querybuilder_parameters.get("query", [])
-            if "criteria" in qs and qs["criteria"] is True
+            if "mandatory" in qs and qs["mandatory"] is True
         ]
-        self.brain_rids_criteria = brains_rids_criteria
+        self.brain_rids_mandatory = brains_rids_mandatory
+        if SUPPORT_NOT_UUID_QUERIES:
+            self.querybuilder_parameters.update(
+                dict(custom_query={"UID": {"not": self.context.UID()}})
+            )
+
 
     def getFacet(self):
         ctool = getUtility(ICatalogTool)
         count = {}
-        count_criteria = {}
+        count_mandatory = {}
         index = None
         try:
             index = ctool._catalog.getIndex(self.name)
@@ -45,10 +58,12 @@ class Facet:
         )
 
         brains_rids = querybuilder(**self.querybuilder_parameters)
-        brains_rids_criteria = self.brain_rids_criteria
+        brains_rids_mandatory = self.brain_rids_mandatory
         # Get the rids for the brains that have the facet index set to the value we are interested in
-        rids = intersection(brains_rids, index.documentToKeyMap())
-        rids_criteria = intersection(brains_rids_criteria, index.documentToKeyMap())
+        index_rids = index.documentToKeyMap()
+        rids = intersection(brains_rids, index_rids)
+        rids_mandatory = intersection(brains_rids_mandatory, index_rids)
+
         for rid in rids:
             keys = index.keyForDocument(rid)
             if isinstance(keys, str):
@@ -59,16 +74,16 @@ class Facet:
                 if key not in count:
                     count[key] = 0
                 count[key] += 1
-        for rid in rids_criteria:
+        for rid in rids_mandatory:
             keys = index.keyForDocument(rid)
             if isinstance(keys, str):
                 keys = [keys]
             if not isinstance(keys, list):
                 continue
             for key in keys:
-                if key not in count_criteria:
-                    count_criteria[key] = 0
-                count_criteria[key] += 1
+                if key not in count_mandatory:
+                    count_mandatory[key] = 0
+                count_mandatory[key] += 1
 
         results = {
             "name": self.name,
@@ -76,11 +91,7 @@ class Facet:
             "data": {},
         }
 
-        for key, value in count.items():
-            if key in count_criteria and count_criteria[key] > 0:
-                results["data"][key] = value
-        for key, value in count_criteria.items():
-            if key not in results["data"]:
-                results["data"][key] = 0
+        for key, _ in count_mandatory.items():
+            results["data"][key] = count[key] if key in count else 0 
 
         return results
