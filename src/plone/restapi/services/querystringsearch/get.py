@@ -37,6 +37,8 @@ class QuerystringSearch:
             if "mandatory" in qs and qs["mandatory"] is True
         ]
         querybuilder_mandatory_parameters["rids"] = True
+
+        # make serch work also on Plone Root
         if SUPPORT_NOT_UUID_QUERIES:
             querybuilder_mandatory_parameters.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
@@ -46,6 +48,7 @@ class QuerystringSearch:
         )
 
         brains_rids_mandatory = querybuilder(**querybuilder_mandatory_parameters)
+
         if len(self.params) > 0:
             results = Facet(
                 self.context,

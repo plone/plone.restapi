@@ -37,6 +37,8 @@ class Facet:
             if "mandatory" in qs and qs["mandatory"] is True
         ]
         self.brain_rids_mandatory = brains_rids_mandatory
+
+        # make serch work also on Plone Root
         if SUPPORT_NOT_UUID_QUERIES:
             self.querybuilder_parameters.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
