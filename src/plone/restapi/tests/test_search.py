@@ -416,6 +416,53 @@ class TestSearchFunctional(unittest.TestCase):
 
         self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
+    @unittest.skipUnless(HAS_PLONE_6, "'not' query support with Plone 6")
+    def test_keyword_index_not_as_list(self):
+        query = {"test_list_field.not": ["Keyword1", "Keyword2"]}
+        response = self.api_session.get("/@search", params=query)
+
+        self.assertEqual(
+            sorted(
+                [
+                    "/plone",
+                    "/plone/doc-outside-folder",
+                    "/plone/folder",
+                    "/plone/folder2",
+                    "/plone/folder2/doc",
+                ]
+            ),
+            sorted(result_paths(response.json())),
+        )
+
+    @unittest.skipUnless(HAS_PLONE_6, "'not' query support with Plone 6")
+    def test_keyword_index_not_as_str(self):
+        query = {"test_list_field.not": "Keyword1"}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(
+            sorted(
+                [
+                    "/plone",
+                    "/plone/folder",
+                    "/plone/folder/other-document",
+                    "/plone/folder2",
+                    "/plone/folder2/doc",
+                    "/plone/doc-outside-folder",
+                ]
+            ),
+            sorted(result_paths(response.json())),
+        )
+
+    @unittest.skipUnless(HAS_PLONE_6, "'not' query support with Plone 6")
+    def test_keyword_index_query_and_not(self):
+        query = {
+            "test_list_field.query": "Keyword2",
+            "test_list_field.not": "Keyword1",
+        }
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+
     # BooleanIndex
 
     def test_boolean_index_query(self):
@@ -445,6 +492,35 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/@search", params=query)
 
         self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+    @unittest.skipUnless(HAS_PLONE_6, "'not' query support with Plone 6")
+    def test_field_index_not_as_list(self):
+        query = {"portal_type.not": ["DXTestDocument", "Plone Site"]}
+        response = self.api_session.get("/@search", params=query)
+
+        self.assertEqual(
+            sorted(["/plone/folder", "/plone/folder2"]),
+            sorted(result_paths(response.json())),
+        )
+
+    @unittest.skipUnless(HAS_PLONE_6, "'not' query support with Plone 6")
+    def test_field_index_not_as_str(self):
+        query = {"portal_type.not": ["DXTestDocument"]}
+        response = self.api_session.get("/@search", params=query)
+
+        self.assertEqual(
+            sorted(["/plone/folder", "/plone/folder2", "/plone"]),
+            sorted(result_paths(response.json())),
+        )
+
+    @unittest.skipUnless(HAS_PLONE_6, "'not' query support with Plone 6")
+    def test_field_index_query_and_not(self):
+        query = {
+            "id.query": ["folder", "folder2"],
+            "id.not": "folder2",
+        }
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(["/plone/folder"], result_paths(response.json()))
 
     # ExtendedPathIndex
 
@@ -554,6 +630,46 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/@search", params=query)
 
         self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+    @unittest.skipUnless(HAS_PLONE_6, "'not' query support with Plone 6")
+    def test_date_index_not_as_list(self):
+        query = {
+            "start.not": [date(1950, 1, 1).isoformat(), date(1975, 1, 1).isoformat()]
+        }
+        response = self.api_session.get("/@search", params=query)
+
+        self.assertEqual(
+            sorted(
+                [
+                    "/plone",
+                    "/plone/folder",
+                    "/plone/folder2",
+                    "/plone/doc-outside-folder",
+                ]
+            ),
+            sorted(result_paths(response.json())),
+        )
+
+    @unittest.skipUnless(HAS_PLONE_6, "'not' query support with Plone 6")
+    def test_date_index_not_as_date(self):
+        query = {
+            "start.not": date(1950, 1, 1).isoformat(),
+        }
+        response = self.api_session.get("/@search", params=query)
+
+        self.assertEqual(
+            sorted(
+                [
+                    "/plone",
+                    "/plone/folder",
+                    "/plone/folder/other-document",
+                    "/plone/folder2",
+                    "/plone/folder2/doc",
+                    "/plone/doc-outside-folder",
+                ]
+            ),
+            sorted(result_paths(response.json())),
+        )
 
     # DateRangeIndex
 
