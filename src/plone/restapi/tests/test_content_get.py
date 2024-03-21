@@ -178,9 +178,9 @@ class TestContentGet(unittest.TestCase):
         )
 
     def test_image_scales_get(self):
-        from zope.component import getMultiAdapter
-        from plone.restapi.interfaces import ISerializeToJson
         from plone.app.testing import applyProfile
+        from plone.restapi.interfaces import ISerializeToJson
+        from zope.component import getMultiAdapter
 
         applyProfile(self.portal, "plone.restapi:blocks")
 
@@ -189,8 +189,6 @@ class TestContentGet(unittest.TestCase):
                 obj = self.portal.doc1
                 serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
                 return serializer()
-
-        intids = getUtility(IIntIds)
 
         self.portal.invokeFactory("Image", id="imagewf")
         self.portal.imagewf.title = "Image without workflow"
@@ -203,9 +201,6 @@ class TestContentGet(unittest.TestCase):
         )
         transaction.commit()
 
-        # self.portal.folder1.doc1.relatedItems = [
-        #     RelationValue(intids.getId(self.portal.imagewf))
-        # ]
         image_uid = self.portal.imagewf.UID()
         blocks = {"123": {"@type": "image", "url": f"../resolveuid/{image_uid}"}}
         self.portal.invokeFactory("Document", id="doc_with_blocks")
@@ -220,7 +215,6 @@ class TestContentGet(unittest.TestCase):
         )
         self.assertEqual(response_image.status_code, 200)
         response_image = response_image.json()
-        # serialize(obj=self.portal.imagewf)
 
         response = requests.get(
             self.portal.doc_with_blocks.absolute_url(),
