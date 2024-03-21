@@ -5,6 +5,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobImage
+from plone.restapi import HAS_PLONE_6
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from Products.CMFCore.utils import getToolByName
 from z3c.relationfield import RelationValue
@@ -177,6 +178,7 @@ class TestContentGet(unittest.TestCase):
             response.json()["relatedItems"],
         )
 
+    @unittest.skipUnless(HAS_PLONE_6, "This not working in Plone 5.2")
     def test_image_scales_get(self):
         from plone.app.testing import applyProfile
         from plone.restapi.interfaces import ISerializeToJson
