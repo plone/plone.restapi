@@ -6,6 +6,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobImage
 from plone.restapi import HAS_PLONE_6
+from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from Products.CMFCore.utils import getToolByName
 from z3c.relationfield import RelationValue
@@ -178,20 +179,15 @@ class TestContentGet(unittest.TestCase):
             response.json()["relatedItems"],
         )
 
+
+class TestBlocksContentGet(unittest.TestCase):
+    layer = PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+
     @unittest.skipUnless(HAS_PLONE_6, "This not working in Plone 5.2")
     def test_image_scales_get(self):
-        from plone.app.testing import applyProfile
-        from plone.restapi.interfaces import ISerializeToJson
-        from zope.component import getMultiAdapter
-
-        applyProfile(self.portal, "plone.restapi:blocks")
-
-        def serialize(self, obj=None):
-            if obj is None:
-                obj = self.portal.doc1
-                serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
-                return serializer()
-
         self.portal.invokeFactory("Image", id="imagewf")
         self.portal.imagewf.title = "Image without workflow"
         self.portal.imagewf.description = "This is an image"
@@ -201,7 +197,6 @@ class TestContentGet(unittest.TestCase):
         self.portal.imagewf.image = NamedBlobImage(
             data=image_data, contentType="image/png", filename="image.png"
         )
-        transaction.commit()
 
         image_uid = self.portal.imagewf.UID()
         blocks = {"123": {"@type": "image", "url": f"../resolveuid/{image_uid}"}}
