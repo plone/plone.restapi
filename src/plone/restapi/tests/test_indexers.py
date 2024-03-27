@@ -1,6 +1,6 @@
 from plone.dexterity.interfaces import IDexterityFTI
-from plone.restapi.indexers import SearchableText_blocks
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
+from Products.CMFCore.utils import getToolByName
 from uuid import uuid4
 from zope.component import queryUtility
 
@@ -89,11 +89,12 @@ TABLE_BLOCK = {
 
 class TestSearchableTextIndexer(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.portal = self.layer["portal"]
         self.request = self.layer["request"]
+        self.catalog = getToolByName(self.portal, "portal_catalog")
         fti = queryUtility(IDexterityFTI, name="Document")
         behavior_list = [a for a in fti.behaviors]
         behavior_list.append("volto.blocks")
@@ -108,10 +109,12 @@ class TestSearchableTextIndexer(unittest.TestCase):
         )
         self.document = self.portal["doc1"]
 
-    @staticmethod
-    def _extract_searchable_text(obj):
-        indexer = SearchableText_blocks(obj)
-        return indexer()
+    def _extract_searchable_text(self, obj):
+        query = {"path": {"query": "/".join(obj.getPhysicalPath()), "depth": 0}}
+        brains = self.catalog(query)
+        brain = brains[0]
+        data = self.catalog.getIndexDataForRID(brain.getRID())
+        return " ".join(data["SearchableText"])
 
     @staticmethod
     def _add_blocks(obj, raw_blocks):
@@ -119,11 +122,12 @@ class TestSearchableTextIndexer(unittest.TestCase):
         layout = list(blocks.keys())
         obj.blocks = blocks
         obj.blocks_layout["items"] = layout
+        obj.reindexObject()
 
     def test_indexer_no_blocks(self):
         result = self._extract_searchable_text(self.document)
-        self.assertIn("Title is here", result)
-        self.assertIn("Description is there", result)
+        self.assertIn("title is here", result)
+        self.assertIn("description is there", result)
 
     def test_indexer_block_has_searchableText(self):
         document = self.document
@@ -132,8 +136,8 @@ class TestSearchableTextIndexer(unittest.TestCase):
             [{"@type": "new-block", "attribute": "bar", "searchableText": "Foo Bar"}],
         )
         result = self._extract_searchable_text(document)
-        self.assertIn("Title is here Description is there", result)
-        self.assertIn("Foo Bar", result)
+        self.assertIn("title is here description is there", result)
+        self.assertIn("foo bar", result)
 
     def test_indexer_multiple_blocks(self):
         document = self.document
@@ -145,7 +149,7 @@ class TestSearchableTextIndexer(unittest.TestCase):
             ],
         )
         result = self._extract_searchable_text(document)
-        self.assertIn("Plone is a CMS ", result)
+        self.assertIn("plone is a cms", result)
 
     def test_indexer_block_slate_bbb(self):
         document = self.document
@@ -156,8 +160,8 @@ class TestSearchableTextIndexer(unittest.TestCase):
             ],
         )
         result = self._extract_searchable_text(document)
-        self.assertIn("Title is here Description is there", result)
-        self.assertIn("Follow Plone Conference", result)
+        self.assertIn("title is here description is there", result)
+        self.assertIn("follow plone conference", result)
 
     def test_indexer_block_text(self):
         document = self.document
@@ -168,8 +172,8 @@ class TestSearchableTextIndexer(unittest.TestCase):
             ],
         )
         result = self._extract_searchable_text(document)
-        self.assertIn("Title is here Description is there", result)
-        self.assertIn("Plone is a powerful content management system", result)
+        self.assertIn("title is here description is there", result)
+        self.assertIn("plone is a powerful content management system", result)
 
     def test_indexer_block_table(self):
         document = self.document
@@ -180,8 +184,8 @@ class TestSearchableTextIndexer(unittest.TestCase):
             ],
         )
         result = self._extract_searchable_text(document)
-        self.assertIn("Title is here Description is there", result)
-        self.assertIn("My data", result)
+        self.assertIn("title is here description is there", result)
+        self.assertIn("my data", result)
 
     def test_indexer_block_with_subblocks(self):
         document = self.document
@@ -208,8 +212,8 @@ class TestSearchableTextIndexer(unittest.TestCase):
         )
         result = self._extract_searchable_text(document)
         # From Slate sub block
-        self.assertIn("Follow Plone Conference", result)
+        self.assertIn("follow plone conference", result)
         # From DraftJS
-        self.assertIn("Plone is a powerful content management system", result)
+        self.assertIn("plone is a powerful content management system", result)
         # From Table block
-        self.assertIn("My data", result)
+        self.assertIn("my data", result)

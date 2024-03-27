@@ -7,6 +7,7 @@
 
 from plone.app.contenttypes.indexers import SearchableText
 from plone.indexer.decorator import indexer
+from plone.restapi import HAS_PLONE_6
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.blocks import visit_subblocks
 from plone.restapi.interfaces import IBlockSearchableText
@@ -15,6 +16,13 @@ from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
+
+
+try:
+    from plone.app.dexterity import textindexer
+except ImportError:
+    # BBB: Plone 5.2 does not have plone.app.dexterity.textindexer.
+    pass
 
 
 @implementer(IBlockSearchableText)
@@ -88,7 +96,6 @@ def extract_text(block, obj, request):
     :param request: Current request.
     :returns: A string with text found in the block.
     """
-    result = ""
     block_type = block.get("@type", "")
     # searchableText is the conventional way of storing
     # searchable info in a block
@@ -107,8 +114,7 @@ def extract_text(block, obj, request):
     return result
 
 
-@indexer(IBlocks)
-def SearchableText_blocks(obj):
+def get_blocks_text(obj):
     """Extract text to be used by the SearchableText index in the Catalog."""
     request = getRequest()
     blocks = obj.blocks
@@ -117,8 +123,33 @@ def SearchableText_blocks(obj):
     for block_id in blocks_layout.get("items", []):
         block = blocks.get(block_id, {})
         blocks_text.append(extract_text(block, obj, request))
+    return blocks_text
 
-    # Extract text using the base plone.app.contenttypes indexer
-    std_text = SearchableText(obj)
-    blocks_text.append(std_text)
-    return " ".join([text.strip() for text in blocks_text if text.strip()])
+
+def text_strip(text_list):
+    return " ".join([text.strip() for text in text_list if text.strip()])
+
+
+if HAS_PLONE_6:
+    # In Plone 6, uses IDynamicTextIndexExtender to index block texts.
+    # This ensures that indexing with plone.textindexer continues to work. See:
+    # https://github.com/plone/plone.restapi/issues/1744
+    @implementer(textindexer.IDynamicTextIndexExtender)
+    @adapter(IBlocks)
+    class BlocksSearchableTextExtender(object):
+        def __init__(self, context):
+            self.context = context
+
+        def __call__(self):
+            return text_strip(get_blocks_text(self.context))
+
+else:
+    # BBB: Plone 5.2 does not have plone.app.dexterity.textindexer.
+    # So we need to index with plone.indexer.
+    @indexer(IBlocks)
+    def SearchableText_blocks(obj):
+        blocks_text = get_blocks_text(obj)
+        # Extract text using the base plone.app.contenttypes indexer
+        std_text = SearchableText(obj)
+        blocks_text.append(std_text)
+        return text_strip(blocks_text)

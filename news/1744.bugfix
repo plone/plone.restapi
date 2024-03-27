@@ -1,0 +1,1 @@
+In Plone 6, uses ``plone.textindexer`` to add block texts to the SearchableText index, instead of ``plone.indexer``. This ensures that behaviors can add fields to SearchableText with ``plone.textindexer``. @wesleybl
