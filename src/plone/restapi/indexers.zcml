@@ -4,23 +4,27 @@
     i18n_domain="plone"
     >
 
-  <configure zcml:condition="installed plone.app.contenttypes">
-    <adapter
-        factory=".indexers.SearchableText_blocks"
-        name="SearchableText"
-        />
-    <adapter
-        factory=".indexers.TextBlockSearchableText"
-        name="text"
-        />
-    <adapter
-        factory=".indexers.SlateTextIndexer"
-        name="slate"
-        />
-    <adapter
-        factory=".indexers.TableBlockSearchableText"
-        name="table"
-        />
-  </configure>
+  <adapter
+      factory=".indexers.BlocksSearchableTextExtender"
+      name="IBlocks"
+      zcml:condition="have plone-60"
+      />
+  <adapter
+      factory=".indexers.SearchableText_blocks"
+      name="SearchableText"
+      zcml:condition="not-have plone-60"
+      />
+  <adapter
+      factory=".indexers.TextBlockSearchableText"
+      name="text"
+      />
+  <adapter
+      factory=".indexers.SlateTextIndexer"
+      name="slate"
+      />
+  <adapter
+      factory=".indexers.TableBlockSearchableText"
+      name="table"
+      />
 
 </configure>
