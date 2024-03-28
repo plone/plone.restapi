@@ -341,7 +341,9 @@ class UsersPost(Service):
                 )
 
             check_password_auth = pas.authenticate(
-                target_user.getUser().getUserName(), old_password.encode("utf-8"), self.request
+                target_user.getUser().getUserName(),
+                old_password.encode("utf-8"),
+                self.request,
             )
             if not check_password_auth:
                 return self._error(
