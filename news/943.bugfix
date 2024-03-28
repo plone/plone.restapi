@@ -1,0 +1,1 @@
+Fixed password reset issue by replacing `username` with `target_user` to correctly authenticate using email. @Hrittik20
