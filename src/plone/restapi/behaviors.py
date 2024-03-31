@@ -1,18 +1,19 @@
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.restapi import _
-from plone.restapi import HAS_PLONE_6
 from plone.schema import JSONField
 from plone.supermodel import model
+from zope.interface import Interface
 from zope.interface import provider
 
 import json
 
 
+# In Plone 6, IBlocks implicitly enables the IDexterityTextIndexer behavior
+# to handle full-text indexing. In Plone 5, it is not available.
 try:
     from plone.app.dexterity.textindexer.behavior import IDexterityTextIndexer
 except ImportError:
-    # BBB: Plone 5.2 does not have plone.app.dexterity.textindexer.
-    pass
+    IDexterityTextIndexer = Interface
 
 BLOCKS_SCHEMA = json.dumps({"type": "object", "properties": {}})
 
@@ -24,7 +25,8 @@ LAYOUT_SCHEMA = json.dumps(
 )
 
 
-class IBaseBloks(model.Schema):
+@provider(IFormFieldProvider)
+class IBlocks(model.Schema, IDexterityTextIndexer):
 
     model.fieldset("layout", label=_("Layout"), fields=["blocks", "blocks_layout"])
 
@@ -43,22 +45,6 @@ class IBaseBloks(model.Schema):
         default={"items": []},
         required=False,
     )
-
-
-if HAS_PLONE_6:
-
-    # Make IBlocks extend IDexterityTextIndexer, makes that enabling blocks
-    # implicitly enables the plone.textindexer indexer
-    @provider(IFormFieldProvider)
-    class IBlocks(IBaseBloks, IDexterityTextIndexer):
-        """"""
-
-else:
-    # Plone 5.2 does not have plone.app.dexterity.textindexer.
-    # In Plone 5.2 Searchabletext indexing is done with plone.indexer.
-    @provider(IFormFieldProvider)
-    class IBlocks(IBaseBloks):
-        """"""
 
 
 class IBlocksEditableLayout(IBlocks):
