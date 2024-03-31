@@ -1,10 +1,3 @@
-# XXX: EXPERIMENTAL!!!
-# This is an experimental feature meant for use in Volto only!
-# This code is likely to change in the future, even within minor releases.
-# We will make sure plone.restapi latest always works with the latest Volto release.
-# This code is planned to being refactored into plone.volto before CMFPlone 6.0 is out.
-# <tisto@plone.org>
-
 from plone.app.contenttypes.indexers import SearchableText
 from plone.indexer.decorator import indexer
 from plone.restapi import HAS_PLONE_6
@@ -16,13 +9,6 @@ from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
-
-
-try:
-    from plone.app.dexterity import textindexer
-except ImportError:
-    # BBB: Plone 5.2 does not have plone.app.dexterity.textindexer.
-    pass
 
 
 @implementer(IBlockSearchableText)
@@ -134,6 +120,8 @@ if HAS_PLONE_6:
     # In Plone 6, uses IDynamicTextIndexExtender to index block texts.
     # This ensures that indexing with plone.textindexer continues to work. See:
     # https://github.com/plone/plone.restapi/issues/1744
+    from plone.app.dexterity import textindexer
+
     @implementer(textindexer.IDynamicTextIndexExtender)
     @adapter(IBlocks)
     class BlocksSearchableTextExtender(object):
