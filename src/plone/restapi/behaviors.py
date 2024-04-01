@@ -2,10 +2,18 @@ from plone.autoform.interfaces import IFormFieldProvider
 from plone.restapi import _
 from plone.schema import JSONField
 from plone.supermodel import model
+from zope.interface import Interface
 from zope.interface import provider
 
 import json
 
+
+# In Plone 6, IBlocks implicitly enables the IDexterityTextIndexer behavior
+# to handle full-text indexing. In Plone 5, it is not available.
+try:
+    from plone.app.dexterity.textindexer.behavior import IDexterityTextIndexer
+except ImportError:
+    IDexterityTextIndexer = Interface
 
 BLOCKS_SCHEMA = json.dumps({"type": "object", "properties": {}})
 
@@ -18,7 +26,7 @@ LAYOUT_SCHEMA = json.dumps(
 
 
 @provider(IFormFieldProvider)
-class IBlocks(model.Schema):
+class IBlocks(model.Schema, IDexterityTextIndexer):
 
     model.fieldset("layout", label=_("Layout"), fields=["blocks", "blocks_layout"])
 
