@@ -1,1 +1,1 @@
-Returns an error message when an Invalid error occurs when validating a controlpanel field. @wesleybl
+Returns an error message when an Invalid error occurs when validating a controlpanel field. Also translates the message. @wesleybl

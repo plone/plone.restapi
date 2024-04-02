@@ -9,6 +9,7 @@ from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
+from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface.exceptions import Invalid
 from zope.schema import getFields
@@ -76,6 +77,9 @@ class ControlpanelDeserializeFromJson:
             )
             for error in validator.validate(field_data):
                 errors.append({"error": error, "message": str(error)})
+
+        for error in errors:
+            error["message"] = translate(error["message"], context=self.request)
 
         if errors:
             raise BadRequest(errors)
