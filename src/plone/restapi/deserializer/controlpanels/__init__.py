@@ -10,6 +10,7 @@ from zope.component import adapter
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.interface import implementer
+from zope.interface.exceptions import Invalid
 from zope.schema import getFields
 from zope.schema.interfaces import ValidationError
 
@@ -61,10 +62,10 @@ class ControlpanelDeserializeFromJson:
                     field.validate(value)
                     # Set the value.
                     setattr(proxy, name, value)
-                except ValueError as e:
-                    errors.append({"message": str(e), "field": name, "error": e})
                 except ValidationError as e:
                     errors.append({"message": e.doc(), "field": name, "error": e})
+                except (ValueError, Invalid) as e:
+                    errors.append({"message": str(e), "field": name, "error": e})
                 else:
                     field_data[name] = value
 
