@@ -1,0 +1,1 @@
+image_scales in serializer are returned as json_compatible format. @cekk
