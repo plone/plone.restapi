@@ -34,7 +34,7 @@ class ControlpanelDeserializeFromJson:
         self.context = self.controlpanel.context
         self.request = self.controlpanel.request
 
-    def __call__(self):
+    def __call__(self, mask_validation_errors=True):
         data = json_body(self.controlpanel.request)
 
         proxy = self.registry.forInterface(self.schema, prefix=self.schema_prefix)
@@ -78,8 +78,12 @@ class ControlpanelDeserializeFromJson:
             for error in validator.validate(field_data):
                 errors.append({"error": error, "message": str(error)})
 
-        for error in errors:
-            error["message"] = translate(error["message"], context=self.request)
-
         if errors:
+            if mask_validation_errors:
+                # Drop Python specific error classes in order to be able to better handle
+                # errors on front-end
+                for error in errors:
+                    error["error"] = "ValidationError"
+            for error in errors:
+                error["message"] = translate(error["message"], context=self.request)
             raise BadRequest(errors)
