@@ -505,3 +505,15 @@ class TestBlocksSerializer(unittest.TestCase):
         )
         self.assertEqual(res["123"]["url"], self.image.absolute_url())
         self.assertIn("image_scales", res["123"])
+
+    @unittest.skipUnless(
+        HAS_PLONE_6,
+        "image_scales were added to the catalog in Plone 6",
+    )
+    def test_image_scales_serializer_is_json_compatible(self):
+        image_uid = self.image.UID()
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks={"123": {"@type": "image", "url": f"../resolveuid/{image_uid}"}},
+        )
+        self.assertIs(type(res["123"]["image_scales"]), dict)
