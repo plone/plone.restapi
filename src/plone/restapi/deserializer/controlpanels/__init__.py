@@ -79,11 +79,10 @@ class ControlpanelDeserializeFromJson:
                 errors.append({"error": error, "message": str(error)})
 
         if errors:
-            if mask_validation_errors:
-                # Drop Python specific error classes in order to be able to better handle
-                # errors on front-end
-                for error in errors:
-                    error["error"] = "ValidationError"
             for error in errors:
+                if mask_validation_errors:
+                    # Drop Python specific error classes in order to be able to better handle
+                    # errors on front-end
+                    error["error"] = "ValidationError"
                 error["message"] = translate(error["message"], context=self.request)
             raise BadRequest(errors)
