@@ -8,6 +8,25 @@ Changelog
 
 .. towncrier release notes start
 
+9.6.1 (2024-04-25)
+------------------
+
+Bug fixes:
+
+
+- Fixed password reset issue by replacing `username` with `target_user` to correctly authenticate using email. @Hrittik20 (#943)
+- In Plone 6, uses ``plone.textindexer`` to add block texts to the SearchableText index, instead of ``plone.indexer``. This ensures that behaviors can add fields to SearchableText with ``plone.textindexer``. @wesleybl (#1744)
+- Use the ``mode`` parameter instead of ``direction`` when calling the ``scale`` method. Also change value to ``scale`. @wesleybl (#1758)
+- image_scales in serializer are returned as json_compatible format. @cekk (#1772)
+
+
+Internal:
+
+
+- Test to ensure that the scale hash of an image is the same as the hash of the image block with this image. @sneridagh (#1716)
+- Bump all the versions in GitHub workflows. @stevepiercy (#1762)
+
+
 9.6.0 (2024-03-03)
 ------------------
 
