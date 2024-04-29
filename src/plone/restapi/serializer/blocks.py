@@ -65,7 +65,9 @@ class ResolveUIDSerializerBase:
                     continue
                 newdata[field], brain = resolve_uid(data[field])
                 if brain is not None and "image_scales" not in newdata:
-                    newdata["image_scales"] = getattr(brain, "image_scales", None)
+                    newdata["image_scales"] = json_compatible(
+                        getattr(brain, "image_scales", None)
+                    )
             result = {
                 field: (
                     newdata[field]

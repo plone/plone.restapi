@@ -1,1 +1,0 @@
-Use the ``mode`` parameter instead of ``direction`` when calling the ``scale`` method. Also change value to ``scale`. @wesleybl
