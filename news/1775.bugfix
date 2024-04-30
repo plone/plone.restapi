@@ -1,0 +1,1 @@
+Users service: Fixed edge case AttributeError if a user is enumerated but doesn't actually exist. @davisagli
