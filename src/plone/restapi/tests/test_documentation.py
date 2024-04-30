@@ -1,5 +1,6 @@
 from base64 import b64encode
 from datetime import datetime
+from datetime import timezone
 from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import ICommentAddedEvent
@@ -319,8 +320,8 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.invokeFactory("Event", id="event")
         self.portal.event.title = "Event"
         self.portal.event.description = "This is an event"
-        self.portal.event.start = datetime(2013, 1, 1, 10, 0)
-        self.portal.event.end = datetime(2013, 1, 1, 12, 0)
+        self.portal.event.start = datetime(2013, 1, 1, 10, 0, tzinfo=timezone.utc)
+        self.portal.event.end = datetime(2013, 1, 1, 12, 0, tzinfo=timezone.utc)
         transaction.commit()
         response = self.api_session.get(self.portal.event.absolute_url())
         save_request_and_response_for_docs("event", response)
