@@ -11,4 +11,10 @@
       name="@site"
       />
 
+  <cache:ruleset
+      for=".get.SiteGet"
+      ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
+      />
+
 </configure>
