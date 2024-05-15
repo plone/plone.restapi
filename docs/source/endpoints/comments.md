@@ -9,7 +9,12 @@ myst:
 
 # Comments
 
-Plone offers to users a feature to post comments on any content object with `plone.app.discussion`.
+```{note}
+This feature is not enabled by default in Plone 6.1 and later.
+To enable commenting, you need to install the core add-on "Discussion Support" (`plone.app.discussion`).
+```
+
+Plone offers to users a feature to post comments on any content object.
 
 Commenting can be enabled globally for specific content types and for single content objects.
 
