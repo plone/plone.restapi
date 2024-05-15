@@ -135,6 +135,9 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
 
         set_supported_languages(portal)
 
+        if portal.portal_setup.profileExists("plone.app.discussion:default"):
+            applyProfile(portal, "plone.app.discussion:default")
+
         applyProfile(portal, "plone.restapi:default")
         applyProfile(portal, "plone.restapi:testing")
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
