@@ -107,12 +107,14 @@
 
   <adapter factory=".registry.SerializeRegistryToJson" />
 
-  <adapter factory=".discussion.ConversationSerializer" />
-  <adapter factory=".discussion.CommentSerializer" />
+  <configure zcml:condition="installed plone.app.discussion">
+    <adapter factory=".discussion.ConversationSerializer" />
+    <adapter factory=".discussion.CommentSerializer" />
+  </configure>
 
   <include package=".controlpanels" />
 
-  <!-- Summary Serializer Metadata -->
+    <!-- Summary Serializer Metadata -->
   <utility
       factory=".summary.JSONSummarySerializerMetadata"
       name="plone.restapi.summary_serializer_metadata"
