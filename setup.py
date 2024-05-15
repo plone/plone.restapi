@@ -43,6 +43,7 @@ TEST_REQUIRES = [
     "collective.MockMailHost",
     "plone.app.caching",
     "plone.app.contenttypes[test]",
+    "plone.app.iterate",
     "plone.app.testing",
     "plone.app.upgrade",
     "plone.api",
