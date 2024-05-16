@@ -72,43 +72,68 @@ class Application(object):
                         "bearerFormat": "JWT",
                     }
                 },
-                "schemas": {},
+                "schemas": {
+                    "ContentType": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "description": "Title",
+                                    },
+                                },
+                            }
+                        },
+                    }
+                },
             },
             "paths": {},
         }
 
         for ct, services in cls.get_services_by_ct().items():
+            doc_template = {}
+            doc_template["parameters"] = []
+
+            path_parameter = {
+                "in": "path",
+                "name": ct,
+                "required": True,
+                "description": f"Path to the {ct}",
+                "schema": {
+                    "type": "string",
+                    "example": "",
+                },
+            }
+
+            doc_template["parameters"].append(path_parameter)
+
             for service in services:
-                doc = cls.get_doc_by_service(service)
+                service_doc = cls.get_doc_by_service(service)
 
-                if doc:
-                    if not doc.get("parameters"):
-                        doc["parameters"] = []
-
-                    path_parameter = {
-                        "in": "path",
-                        "name": ct,
-                        "required": True,
-                        "description": f"Path to the {ct}",
-                        "schema": {
-                            "type": "string",
-                            "example": "",
-                        },
-                    }
-
-                    doc["parameters"].append(path_parameter)
-
-                    openapi_doc_boilerplate["paths"][
-                        f"/{'{' + ct + '}'}/{'@' + service.name.split('@')[1]}"
-                    ] = doc
-
-                else:
+                if not service_doc:
                     logger.warning(
                         f"No documentation found for /{ct}/{'@' + service.name.split('@')[-1]}"
                     )
+                    continue
+
+                doc = {**doc_template, **service_doc}
+
+                cls.inject_schemas(
+                    doc, schemas={"$ContextType": cls.get_schema_by_ct(ct)}
+                )
+
+                api_name = (
+                    len(service.name.split("@")) > 1
+                    and "@" + service.name.split("@")[1]
+                    or ""
+                )
+
+                openapi_doc_boilerplate["paths"][f"/{'{' + ct + '}'}/{api_name}"] = doc
 
                 # Extend the components
-                component = cls.get_doc_components_by_service(service)
+                component = cls.get_doc_schemas_by_service(service)
 
                 if component:
                     openapi_doc_boilerplate["components"]["schemas"].update(component)
@@ -117,8 +142,24 @@ class Application(object):
             docfile.write(cls.generate_yaml_by_doc(openapi_doc_boilerplate))
 
     @classmethod
+    def get_schema_by_ct(cls, ct):
+        return "#/components/schemas/ContentType"
+
+    @classmethod
+    def inject_schemas(cls, doc, schemas):
+        def inject(d):
+            for k, v in d.items():
+                if isinstance(v, dict):
+                    inject(v)
+                else:
+                    if k == "$ref" and "$" in v:
+                        d[k] = schemas[v]
+
+        inject(doc)
+
+    @classmethod
     def generate_yaml_by_doc(cls, doc):
-        return yaml.dump(doc)
+        return yaml.safe_dump(doc)
 
     @classmethod
     def get_services_by_ct(cls):
@@ -162,7 +203,7 @@ class Application(object):
         return doc
 
     @classmethod
-    def get_doc_components_by_service(cls, service):
+    def get_doc_schemas_by_service(cls, service):
         return getattr(
             service.factory, "__restapi_doc_component_schemas_extension__", None
         )
