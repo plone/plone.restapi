@@ -597,7 +597,7 @@ class TestServicesContextNavigation(unittest.TestCase):
             self.portal.folder2.folder21,
             opts(
                 topLevel=1,
-                root_path="/folder2"
+                root_path="/folder2",
                 # self.portal.folder2.UID()
             ),
         )

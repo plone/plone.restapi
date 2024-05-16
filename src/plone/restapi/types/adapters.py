@@ -1,4 +1,5 @@
 """JsonSchema providers."""
+
 from plone.app.textfield.interfaces import IRichText
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
