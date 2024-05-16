@@ -19,8 +19,8 @@
   <include package=".copymove" />
   <include package=".database" />
   <include
-      zcml:condition="installed plone.app.discussion"
       package=".discussion"
+      zcml:condition="installed plone.app.discussion"
       />
   <include package=".groups" />
   <include package=".navigation" />
