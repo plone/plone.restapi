@@ -1710,9 +1710,9 @@ class TestDocumentation(TestDocumentationBase):
             headers={"Lock-Token": token},
             json={"title": "New Title"},
         )
-        response.request.headers[
-            "Lock-Token"
-        ] = "0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
+        response.request.headers["Lock-Token"] = (
+            "0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
+        )
         save_request_and_response_for_docs("lock_update", response)
 
     def test_querystring_get(self):
