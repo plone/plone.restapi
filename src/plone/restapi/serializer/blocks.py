@@ -231,19 +231,18 @@ class TeaserBlockSerializerBase:
             brain = url_to_brain(url)
 
             if brain is not None:
-                result = getMultiAdapter(
+                serialized_brain = getMultiAdapter(
                     (brain, self.request), ISerializeToJsonSummary
                 )()
-                # We return the serialized brain.
-                # Note: You can add more metadata by adding a custom adapter
-                # for IJSONSummarySerializerMetadata
-                data["href"] = [result]
 
                 # Fields from the teaser-schema need to be overwritten
                 for key in ["title", "description", "head_title"]:
-                    if key in result:
-                        data[key] = result[key]
+                    if key in serialized_brain:
+                        data[key] = serialized_brain[key]
 
+                # We return the serialized brain.
+                value[0].update(serialized_brain)
+                data["href"] = value
             elif not url.startswith("http"):
                 # Source not found; clear out derived fields
                 data["href"] = []
