@@ -12,6 +12,27 @@ _no_content_marker = object()
 class Service(RestService):
     """Base class for Plone REST API services"""
 
+    __restapi_doc_component_schemas_extension__ = {
+        "ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "description": "The type of error.",
+                        },
+                        "message": {
+                            "type": "string",
+                            "description": "A human-readable message describing the error.",
+                        },
+                    },
+                }
+            },
+        }
+    }
+
     content_type = "application/json"
 
     def render(self):

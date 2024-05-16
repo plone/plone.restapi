@@ -6,6 +6,31 @@ from zope.component import queryMultiAdapter
 class ContentGet(Service):
     """Returns a serialized content object."""
 
+    __restapi_doc__ = {
+        "get": {
+            "summary": "Content",
+            "description": "Content data",
+            "responses": {
+                "200": {
+                    "description": "Success",
+                    "content": {
+                        "application/json": {
+                            "schema": {"type": "object", "$ref": "$ContextType"}
+                        }
+                    },
+                },
+                "501": {
+                    "description": "ServerError",
+                    "content": {
+                        "application/json": {
+                            "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+                        }
+                    },
+                },
+            },
+        }
+    }
+
     def reply(self):
         serializer = queryMultiAdapter((self.context, self.request), ISerializeToJson)
 

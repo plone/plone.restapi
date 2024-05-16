@@ -13,27 +13,6 @@ import plone.protect.interfaces
 class Login(Service):
     """Handles login and returns a JSON web token (JWT)."""
 
-    __restapi_doc_component_schemas_extension__ = {
-        "ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "object",
-                    "properties": {
-                        "type": {
-                            "type": "string",
-                            "description": "The type of error.",
-                        },
-                        "message": {
-                            "type": "string",
-                            "description": "A human-readable message describing the error.",
-                        },
-                    },
-                }
-            },
-        }
-    }
-
     __restapi_doc__ = {
         "post": {
             "summary": "Login endpoint",
@@ -78,7 +57,7 @@ class Login(Service):
                     },
                 },
                 "401": {
-                    "description": "User input error",
+                    "description": "User unauthorized",
                     "content": {
                         "application/json": {
                             "schema": {"$ref": "#/components/schemas/ErrorResponse"}
@@ -86,7 +65,7 @@ class Login(Service):
                     },
                 },
                 "501": {
-                    "description": "User input error",
+                    "description": "Server error",
                     "content": {
                         "application/json": {
                             "schema": {"$ref": "#/components/schemas/ErrorResponse"}

@@ -129,6 +129,7 @@ class SerializeToJson:
                 serializer = queryMultiAdapter(
                     (field, obj, self.request), IFieldSerializer
                 )
+
                 value = serializer()
                 result[json_compatible(name)] = value
 
