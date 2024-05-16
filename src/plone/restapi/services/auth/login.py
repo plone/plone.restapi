@@ -13,6 +13,90 @@ import plone.protect.interfaces
 class Login(Service):
     """Handles login and returns a JSON web token (JWT)."""
 
+    __restapi_doc_component_schemas_extension__ = {
+        "ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "description": "The type of error.",
+                        },
+                        "message": {
+                            "type": "string",
+                            "description": "A human-readable message describing the error.",
+                        },
+                    },
+                }
+            },
+        }
+    }
+
+    __restapi_doc__ = {
+        "post": {
+            "summary": "Login endpoint",
+            "description": "A JWT token can be acquired by posting a user's credentials to the @login endpoint",
+            "requestBody": {
+                "required": True,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "login": {"type": "string", "example": "admin"},
+                                "password": {"type": "string", "example": "admin"},
+                            },
+                        }
+                    }
+                },
+            },
+            "responses": {
+                "200": {
+                    "description": "User succesfully authenticated",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImZ1bGxuYW1lIjoiIn0.S9kUg8j-Iju0eaOpot7asXiZO8mlJX1fQVt9MPQpXBg",
+                                    },
+                                },
+                            }
+                        }
+                    },
+                },
+                "400": {
+                    "description": "User input error",
+                    "content": {
+                        "application/json": {
+                            "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+                        }
+                    },
+                },
+                "401": {
+                    "description": "User input error",
+                    "content": {
+                        "application/json": {
+                            "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+                        }
+                    },
+                },
+                "501": {
+                    "description": "User input error",
+                    "content": {
+                        "application/json": {
+                            "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+                        }
+                    },
+                },
+            },
+        }
+    }
+
     def reply(self):
         data = json_body(self.request)
         if "login" not in data or "password" not in data:
