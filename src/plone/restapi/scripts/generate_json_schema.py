@@ -36,6 +36,8 @@ from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
 from plone.restapi.types.utils import get_fieldsets, get_jsonschema_properties
+from Products.CMFPlone.interfaces import IPloneSiteRoot
+from plone.restapi.interfaces import ISerializeToJson
 
 logger = logging.getLogger(__name__)
 
@@ -141,6 +143,8 @@ class Application(object):
         with open("openapi_doc.yaml", "w") as docfile:
             docfile.write(cls.generate_yaml_by_doc(openapi_doc_boilerplate))
 
+        schemas = [i for i in cls.get_ct_schemas()]
+
     @classmethod
     def get_schema_by_ct(cls, ct):
         return "#/components/schemas/ContentType"
@@ -175,9 +179,6 @@ class Application(object):
             portal_type_services = []
 
             if not getattr(portal_type, "klass", None):
-                logger.warning(
-                    f"No documentation found for {getattr(portal_type, 'id', '[Can not pick up the name]')}"
-                )
                 continue
 
             module_name = ".".join(getattr(portal_type, "klass", ".").split(".")[:-1])
@@ -199,35 +200,46 @@ class Application(object):
     def get_doc_by_service(cls, service):
         # Supposed to be extended later
         doc = getattr(service.factory, "__restapi_doc__", None)
+        if callable(doc):
+            return doc()
 
-        return doc
+        return None
 
     @classmethod
     def get_doc_schemas_by_service(cls, service):
-        return getattr(
+        doc = getattr(
             service.factory, "__restapi_doc_component_schemas_extension__", None
         )
 
-    # @classmethod
-    # def get_ct_schemas(cls):
+        if callable(doc):
+            return doc()
 
-    #     portal_types = getToolByName(api.portal.get(), "portal_types")
+        return None
 
-    #     for fti in portal_types.listTypeInfo():
-    #         try:
-    #             schema = fti.lookupSchema()
-    #         except AttributeError:
-    #             schema = None
-    #             fieldsets = ()
-    #             additional_schemata = ()
-    #         else:
-    #             additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-    #             fieldsets = get_fieldsets(
-    #                 api.portal.get(), getRequest(), schema, additional_schemata
-    #             )
-    #         import pdb
+    @classmethod
+    def get_ct_schemas(cls):
 
-    #         pdb.set_trace()
+        portal_types = getToolByName(api.portal.get(), "portal_types")
+
+        for fti in portal_types.listTypeInfo():
+            klass = getattr(fti, "klass", None)
+
+            if klass:
+                klass = getattr(
+                    importlib.import_module(".".join(klass.split(".")[:-1])),
+                    klass.split(".")[-1],
+                )
+
+                if isinstance(api.portal.get(), klass):
+                    obj = api.portal.get()
+                else:
+                    obj = klass()
+
+                # Doc retrieve here
+                yield getMultiAdapter((obj, getRequest()), ISerializeToJson)
+
+            else:
+                logger.warning(f"Could not find a schema for {fti.id}")
 
 
 if __name__ == "__main__":
