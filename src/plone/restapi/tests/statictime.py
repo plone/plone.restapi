@@ -114,7 +114,9 @@ class StaticTime:
             # Patch the lightweight p.a.discussion 'Comment' type. Its dates are
             # Python datetimes, unlike DX Content types which use zope DateTimes.
             Comment.creation_date = property(
-                static_creation_date_getter_factory(self.static_created, type_=datetime),
+                static_creation_date_getter_factory(
+                    self.static_created, type_=datetime
+                ),
                 nop_setter,
             )
             Comment.modification_date = property(
