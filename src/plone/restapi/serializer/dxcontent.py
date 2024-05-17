@@ -55,6 +55,68 @@ def get_allow_discussion_value(context, request, result):
 @implementer(ISerializeToJson)
 @adapter(IDexterityContent, Interface)
 class SerializeToJson:
+    def __restapi_doc_component_schema__(self):
+
+        return {
+            "PreviousItemSchema": {
+                "type": "any",
+            },
+            "NextItemSchema": {
+                "type": "any",
+            },
+            "WorkingCopy": {"type": "any"},
+            "WorkingCopyOf": {"type": "any"},
+            "LockInfo": {"type": "any"},
+            "ExpandableItems": {"type": "any"},
+            "TargetUrl": {"type": "any"},
+            self.context.portal_type: {
+                "type": "object",
+                "properties": {
+                    "@id": {"type": "string"},
+                    "id": {"type": "string"},
+                    "@type": {"type": "string"},
+                    "type_title": {"type": "string"},
+                    "parent": {"type": "string"},
+                    "created": {"type": "string"},
+                    "modified": {"type": "string"},
+                    "review_state": {"type": "string"},
+                    "UID": {"type": "string"},
+                    "version": {"type": "string"},
+                    "layout": {"type": "string"},
+                    "is_folderish": {"type": "boolean"},
+                    "previous_item": {
+                        "type": "array",
+                        "items": {"$ref": "#/components/schemas/PreviousItemSchema"},
+                    },
+                    "next_item": {
+                        "type": "array",
+                        "items": {"$ref": "#/components/schemas/NextItemSchema"},
+                    },
+                    "working_copy": {"$ref": "#/components/schemas/WorkingCopy"},
+                    "working_copy_of": {"$ref": "#/components/schemas/WorkingCopyOf"},
+                    "lock": {"$ref": "#/components/schemas/LockInfo"},
+                    "@components": {"$ref": "#/components/schemas/ExpandableItems"},
+                    **(self._get_context_field_schema()),
+                    "targetUrl": {"$ref": "#/components/schemas/TargetUrl"},
+                    "allow_discussion": {"type": "bool"},
+                },
+            },
+        }
+
+    def _get_context_field_schema(self):
+        schema = {}
+        obj = self.getVersion(version="current")
+
+        for name, field in self._get_context_field_serializers(obj):
+            method = getattr(field, "__restapi_schema_json_type__", None)
+
+            if callable(method):
+                schema[name] = field.__restapi_schema_json_type__()
+            else:
+                schema[name] = {type: "any"}
+
+        return schema
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -117,21 +179,9 @@ class SerializeToJson:
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))
 
-        # Insert field values
-        for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
-
-            for name, field in getFields(schema).items():
-                if not self.check_permission(read_permissions.get(name), obj):
-                    continue
-
-                # serialize the field
-                serializer = queryMultiAdapter(
-                    (field, obj, self.request), IFieldSerializer
-                )
-
-                value = serializer()
-                result[json_compatible(name)] = value
+        for name, serializer in self._get_context_field_serializers(obj):
+            value = serializer()
+            result[json_compatible(name)] = value
 
         target_url = getMultiAdapter(
             (self.context, self.request), IObjectPrimaryFieldTarget
@@ -142,6 +192,21 @@ class SerializeToJson:
         get_allow_discussion_value(self.context, self.request, result)
 
         return result
+
+    def _get_context_field_serializers(self, obj):
+        # Insert field values
+        for schema in iterSchemata(self.context):
+            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
+
+            for name, field in getFields(schema).items():
+                if not self.check_permission(read_permissions.get(name), obj):
+                    continue
+
+                # serialize the field
+                yield (
+                    name,
+                    queryMultiAdapter((field, obj, self.request), IFieldSerializer),
+                )
 
     def _get_workflow_state(self, obj):
         wftool = getToolByName(self.context, "portal_workflow")

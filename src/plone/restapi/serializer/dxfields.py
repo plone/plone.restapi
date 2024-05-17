@@ -21,6 +21,7 @@ from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import IVocabularyTokenized
+from zope.schema import _bootstrapfields
 
 import logging
 
@@ -35,6 +36,10 @@ class DefaultFieldSerializer:
         self.context = context
         self.request = request
         self.field = field
+
+    def __restapi_schema_json_type__(self):
+        type = {str: "string", bool: "bool", int: "integer"}.get(self.field._type)
+        return {"type": type or "any"}
 
     def __call__(self):
         return json_compatible(self.get_value())
