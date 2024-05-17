@@ -36,11 +36,29 @@ HAS_PLONE_6 = getattr(
 @implementer(ISerializeToJson)
 @adapter(IPloneSiteRoot, Interface)
 class SerializeSiteRootToJson:
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
 
-    def __restapi_doc_component_schema__(self):
+    @classmethod
+    def __restapi_doc_component_schema__(cls, context, request):
+        fields_adapter = []
+        for schema in iterSchemata(context):
+            for name, field in getFields(schema).items():
+                fields_adapter.append(
+                    (
+                        name,
+                        queryMultiAdapter(
+                            (field, context, request), IFieldSerializer
+                        ),
+                    )
+                )
+
+        schema = {}
+        for name, field in fields_adapter:
+            method = getattr(field, "__restapi_schema_json_type__", None)
+
+            if callable(method):
+                schema[name] = field.__restapi_schema_json_type__()
+            else:
+                schema[name] = {type: "any"}
 
         return {
             "ParentShema": {"type": "any"},
@@ -61,7 +79,7 @@ class SerializeSiteRootToJson:
                     "is_folderish": {"type": "boolean"},
                     "description": {"type": "string"},
                     "review_state": {"type": "string"},
-                    **{self._get_context_field_schema},
+                    **schema,
                     "lock": {"$ref": "#/components/schemas/LockInfo"},
                     "blocks": {
                         "type": "array",
@@ -82,17 +100,9 @@ class SerializeSiteRootToJson:
             },
         }
 
-    def _get_context_field_schema(self):
-        for name, field in self._get_context_field_serializers():
-            schema = {}
-            method = getattr(field, "__restapi_schema_json_type__", None)
-
-            if callable(method):
-                schema[name] = field.__restapi_schema_json_type__()
-            else:
-                schema[name] = {type: "any"}
-
-        return schema
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
 
     def _get_context_field_serializers(self):
         for schema in iterSchemata(self.context):

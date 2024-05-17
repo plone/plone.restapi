@@ -263,10 +263,14 @@ class SerializeToJson:
 @implementer(ISerializeToJson)
 @adapter(IDexterityContainer, Interface)
 class SerializeFolderToJson(SerializeToJson):
-    def __restapi_doc_component_schema__(self):
-        result = super().__restapi_doc_component_schema__()
 
-        ct = result[self.context.portal_type]
+    @classmethod
+    def __restapi_doc_component_schema__(cls, context, request):
+        result = super(
+            cls, SerializeFolderToJson
+        ).__restapi_doc_component_schema__(context, request)
+
+        ct: dict = result[context.portal_type]
 
         result.update({"BrainItem": {"type": "any"}})
         ct.update(
