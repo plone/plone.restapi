@@ -17,6 +17,7 @@ from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
 from plone.restapi.services.locking import lock_info
 from plone.restapi.serializer.utils import get_portal_type_title
+from plone import api
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
@@ -58,14 +59,13 @@ class SerializeToJson:
     @classmethod
     def __restapi_doc_component_schema__(cls, context, request):
         fields_adapter = []
+        portal_types = getToolByName(api.portal.get(), "portal_types")
         for schema in iterSchemata(context):
             for name, field in getFields(schema).items():
                 fields_adapter.append(
                     (
                         name,
-                        queryMultiAdapter(
-                            (field, context, request), IFieldSerializer
-                        ),
+                        queryMultiAdapter((field, context, request), IFieldSerializer),
                     )
                 )
 
@@ -91,7 +91,7 @@ class SerializeToJson:
             "ExpandableItems": {"type": "any"},
             "TargetUrl": {"type": "any"},
             "ParentShema": {"type": "any"},
-            context.portal_type: {
+            portal_types.get(context.portal_type).id: {
                 "type": "object",
                 "properties": {
                     "@id": {"type": "string"},
@@ -110,26 +110,16 @@ class SerializeToJson:
                     "is_folderish": {"type": "boolean"},
                     "previous_item": {
                         "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/PreviousItemSchema"
-                        },
+                        "items": {"$ref": "#/components/schemas/PreviousItemSchema"},
                     },
                     "next_item": {
                         "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/NextItemSchema"
-                        },
+                        "items": {"$ref": "#/components/schemas/NextItemSchema"},
                     },
-                    "working_copy": {
-                        "$ref": "#/components/schemas/WorkingCopy"
-                    },
-                    "working_copy_of": {
-                        "$ref": "#/components/schemas/WorkingCopyOf"
-                    },
+                    "working_copy": {"$ref": "#/components/schemas/WorkingCopy"},
+                    "working_copy_of": {"$ref": "#/components/schemas/WorkingCopyOf"},
                     "lock": {"$ref": "#/components/schemas/LockInfo"},
-                    "@components": {
-                        "$ref": "#/components/schemas/ExpandableItems"
-                    },
+                    "@components": {"$ref": "#/components/schemas/ExpandableItems"},
                     **schema,
                     "targetUrl": {"$ref": "#/components/schemas/TargetUrl"},
                     "allow_discussion": {"type": "bool"},
@@ -194,9 +184,7 @@ class SerializeToJson:
             baseline, working_copy = WorkingCopyInfo(
                 self.context
             ).get_working_copy_info()
-            result.update(
-                {"working_copy": working_copy, "working_copy_of": baseline}
-            )
+            result.update({"working_copy": working_copy, "working_copy_of": baseline})
 
         # Insert locking information
         result.update({"lock": lock_info(obj)})
@@ -221,9 +209,7 @@ class SerializeToJson:
     def _get_context_field_serializers(self, obj):
         # Insert field values
         for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(
-                schema, READ_PERMISSIONS_KEY
-            )
+            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
                 if not self.check_permission(read_permissions.get(name), obj):
@@ -232,16 +218,12 @@ class SerializeToJson:
                 # serialize the field
                 yield (
                     name,
-                    queryMultiAdapter(
-                        (field, obj, self.request), IFieldSerializer
-                    ),
+                    queryMultiAdapter((field, obj, self.request), IFieldSerializer),
                 )
 
     def _get_workflow_state(self, obj):
         wftool = getToolByName(self.context, "portal_workflow")
-        review_state = wftool.getInfoFor(
-            ob=obj, name="review_state", default=None
-        )
+        review_state = wftool.getInfoFor(ob=obj, name="review_state", default=None)
         return review_state
 
     def check_permission(self, permission_name, obj):
@@ -266,11 +248,12 @@ class SerializeFolderToJson(SerializeToJson):
 
     @classmethod
     def __restapi_doc_component_schema__(cls, context, request):
-        result = super(
-            cls, SerializeFolderToJson
-        ).__restapi_doc_component_schema__(context, request)
+        result = super(cls, SerializeFolderToJson).__restapi_doc_component_schema__(
+            context, request
+        )
+        portal_types = getToolByName(api.portal.get(), "portal_types")
 
-        ct: dict = result[context.portal_type]
+        ct: dict = result[portal_types.get(context.portal_type).id]
 
         result.update({"BrainItem": {"type": "any"}})
         ct.update(
@@ -321,9 +304,7 @@ class SerializeFolderToJson(SerializeToJson):
                 )(fullobjects=True)["items"]
             else:
                 result["items"] = [
-                    getMultiAdapter(
-                        (brain, self.request), ISerializeToJsonSummary
-                    )()
+                    getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
                     for brain in batch
                 ]
         return result
@@ -341,14 +322,10 @@ class DexterityObjectPrimaryFieldTarget:
     def __call__(self):
         primary_field_name = self.get_primary_field_name()
         for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(
-                schema, READ_PERMISSIONS_KEY
-            )
+            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
-                if not self.check_permission(
-                    read_permissions.get(name), self.context
-                ):
+                if not self.check_permission(read_permissions.get(name), self.context):
                     continue
 
                 if name != primary_field_name:
