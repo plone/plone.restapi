@@ -32,7 +32,10 @@ class ContentGet(Service):
             if name == "Plone Site":
                 instance = api.portal.get()
             else:
-                instance = fti.constructInstance(api.portal.get(), id=name)
+                try:
+                    instance = fti.constructInstance(api.portal.get(), id=name)
+                except Exception:
+                    instance = getattr(api.portal.get(), "name", None)
 
             for interface in required_interfaces:
                 if interface.providedBy(instance):
