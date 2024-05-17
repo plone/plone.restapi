@@ -69,6 +69,7 @@ class SerializeToJson:
             "LockInfo": {"type": "any"},
             "ExpandableItems": {"type": "any"},
             "TargetUrl": {"type": "any"},
+            "ParentShema": {"type": "any"},
             self.context.portal_type: {
                 "type": "object",
                 "properties": {
@@ -76,7 +77,9 @@ class SerializeToJson:
                     "id": {"type": "string"},
                     "@type": {"type": "string"},
                     "type_title": {"type": "string"},
-                    "parent": {"type": "string"},
+                    "parent": {
+                        "items": {"$ref": "#/components/schemas/ParentShema"},
+                    },
                     "created": {"type": "string"},
                     "modified": {"type": "string"},
                     "review_state": {"type": "string"},
@@ -232,6 +235,26 @@ class SerializeToJson:
 @implementer(ISerializeToJson)
 @adapter(IDexterityContainer, Interface)
 class SerializeFolderToJson(SerializeToJson):
+    def __restapi_doc_component_schema__(self):
+        result = super().__restapi_doc_component_schema__()
+
+        ct = result[self.context.portal_type]
+
+        result.update({"BrainItem": {"type": "any"}})
+        ct.update(
+            {
+                "is_folderish": {"type": "boolean"},
+                "items_total": {"type": "integer"},
+                "batching": {"type": "any"},
+                "items": {
+                    "type": "array",
+                    "items": {"$ref": "#/components/schemas/BrainItem"},
+                },
+            }
+        )
+
+        return result
+
     def _build_query(self):
         path = "/".join(self.context.getPhysicalPath())
         query = {
