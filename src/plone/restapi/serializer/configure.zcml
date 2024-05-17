@@ -107,8 +107,10 @@
 
   <adapter factory=".registry.SerializeRegistryToJson" />
 
-  <adapter factory=".discussion.ConversationSerializer" />
-  <adapter factory=".discussion.CommentSerializer" />
+  <configure zcml:condition="installed plone.app.discussion">
+    <adapter factory=".discussion.ConversationSerializer" />
+    <adapter factory=".discussion.CommentSerializer" />
+  </configure>
 
   <include package=".controlpanels" />
 

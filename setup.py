@@ -44,6 +44,7 @@ TEST_REQUIRES = [
     "plone.app.caching",
     "plone.app.contenttypes[test]",
     "plone.app.iterate",
+    "plone.app.discussion[test]",
     "plone.app.testing",
     "plone.app.upgrade",
     "plone.api",

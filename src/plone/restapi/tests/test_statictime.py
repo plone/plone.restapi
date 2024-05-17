@@ -299,10 +299,6 @@ class TestStaticTimeWorkingCopy(unittest.TestCase):
 
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        registry = getUtility(IRegistry)
-        settings = registry.forInterface(IDiscussionSettings, check=False)
-        settings.globally_enabled = True
-
         transaction.commit()
 
     def create_document(self, id_):
