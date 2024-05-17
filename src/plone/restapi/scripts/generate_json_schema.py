@@ -123,10 +123,6 @@ class Application(object):
 
                 doc = {**doc_template, **service_doc}
 
-                cls.inject_schemas(
-                    doc, schemas={"$ContextType": cls.get_schema_by_ct(ct)}
-                )
-
                 api_name = (
                     len(service.name.split("@")) > 1
                     and "@" + service.name.split("@")[1]
@@ -141,14 +137,27 @@ class Application(object):
                 if component:
                     openapi_doc_boilerplate["components"]["schemas"].update(component)
 
+                cls.inject_schemas(
+                    doc,
+                    schemas={
+                        "$ContextType": cls.get_schema_by_ct(
+                            ct, openapi_doc_boilerplate["components"]["schemas"]
+                        )
+                    },
+                )
+
         with open("openapi_doc.yaml", "w") as docfile:
             docfile.write(cls.generate_yaml_by_doc(openapi_doc_boilerplate))
 
-        schemas = [i for i in cls.get_ct_schemas()]
-
     @classmethod
-    def get_schema_by_ct(cls, ct):
-        return "#/components/schemas/ContentType"
+    def get_schema_by_ct(cls, ct, schemas):
+        schema = schemas.get(ct)
+
+        if not schema:
+            logger.warning(f"Not found schema for {ct}")
+            return
+
+        return schema
 
     @classmethod
     def inject_schemas(cls, doc, schemas):
