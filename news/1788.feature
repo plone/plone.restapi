@@ -1,0 +1,1 @@
+Make Teaser blocks dynamic @pbauer
