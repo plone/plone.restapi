@@ -8,15 +8,6 @@
     i18n_domain="plone.restapi"
     >
 
-    <plone:CORSPolicy
-        allow_origin="*"
-        allow_methods="DELETE,GET,OPTIONS,PATCH,POST,PUT"
-        allow_credentials="true"
-        expose_headers="Content-Length,X-My-Header"
-        allow_headers="Accept,Authorization,Content-Type,X-Custom-Header"
-        max_age="3600"
-        />
-
   <i18n:registerTranslations directory="locales" />
 
   <include
