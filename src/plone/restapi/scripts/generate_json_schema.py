@@ -93,6 +93,7 @@ class Application(object):
                 },
             },
             "paths": {},
+            "security": [{"bearerAuth": []}],
         }
 
         for ct, services in cls.get_services_by_ct().items():
@@ -139,25 +140,11 @@ class Application(object):
 
                 cls.inject_schemas(
                     doc,
-                    schemas={
-                        "$ContextType": cls.get_schema_by_ct(
-                            ct, openapi_doc_boilerplate["components"]["schemas"]
-                        )
-                    },
+                    schemas={"$ContextType": f"#/components/schemas/{ct}"},
                 )
 
         with open("openapi_doc.yaml", "w") as docfile:
             docfile.write(cls.generate_yaml_by_doc(openapi_doc_boilerplate))
-
-    @classmethod
-    def get_schema_by_ct(cls, ct, schemas):
-        schema = schemas.get(ct)
-
-        if not schema:
-            logger.warning(f"Not found schema for {ct}")
-            return
-
-        return schema
 
     @classmethod
     def inject_schemas(cls, doc, schemas):
