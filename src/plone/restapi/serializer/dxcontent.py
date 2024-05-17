@@ -55,7 +55,28 @@ def get_allow_discussion_value(context, request, result):
 @implementer(ISerializeToJson)
 @adapter(IDexterityContent, Interface)
 class SerializeToJson:
-    def __restapi_doc_component_schema__(self):
+    @classmethod
+    def __restapi_doc_component_schema__(cls, context, request):
+        fields_adapter = []
+        for schema in iterSchemata(context):
+            for name, field in getFields(schema).items():
+                fields_adapter.append(
+                    (
+                        name,
+                        queryMultiAdapter(
+                            (field, context, request), IFieldSerializer
+                        ),
+                    )
+                )
+
+        schema = {}
+        for name, field in fields_adapter:
+            method = getattr(field, "__restapi_schema_json_type__", None)
+
+            if callable(method):
+                schema[name] = field.__restapi_schema_json_type__()
+            else:
+                schema[name] = {type: "any"}
 
         return {
             "PreviousItemSchema": {
@@ -70,7 +91,7 @@ class SerializeToJson:
             "ExpandableItems": {"type": "any"},
             "TargetUrl": {"type": "any"},
             "ParentShema": {"type": "any"},
-            self.context.portal_type: {
+            context.portal_type: {
                 "type": "object",
                 "properties": {
                     "@id": {"type": "string"},
@@ -89,36 +110,32 @@ class SerializeToJson:
                     "is_folderish": {"type": "boolean"},
                     "previous_item": {
                         "type": "array",
-                        "items": {"$ref": "#/components/schemas/PreviousItemSchema"},
+                        "items": {
+                            "$ref": "#/components/schemas/PreviousItemSchema"
+                        },
                     },
                     "next_item": {
                         "type": "array",
-                        "items": {"$ref": "#/components/schemas/NextItemSchema"},
+                        "items": {
+                            "$ref": "#/components/schemas/NextItemSchema"
+                        },
                     },
-                    "working_copy": {"$ref": "#/components/schemas/WorkingCopy"},
-                    "working_copy_of": {"$ref": "#/components/schemas/WorkingCopyOf"},
+                    "working_copy": {
+                        "$ref": "#/components/schemas/WorkingCopy"
+                    },
+                    "working_copy_of": {
+                        "$ref": "#/components/schemas/WorkingCopyOf"
+                    },
                     "lock": {"$ref": "#/components/schemas/LockInfo"},
-                    "@components": {"$ref": "#/components/schemas/ExpandableItems"},
-                    **(self._get_context_field_schema()),
+                    "@components": {
+                        "$ref": "#/components/schemas/ExpandableItems"
+                    },
+                    **schema,
                     "targetUrl": {"$ref": "#/components/schemas/TargetUrl"},
                     "allow_discussion": {"type": "bool"},
                 },
             },
         }
-
-    def _get_context_field_schema(self):
-        schema = {}
-        obj = self.getVersion(version="current")
-
-        for name, field in self._get_context_field_serializers(obj):
-            method = getattr(field, "__restapi_schema_json_type__", None)
-
-            if callable(method):
-                schema[name] = field.__restapi_schema_json_type__()
-            else:
-                schema[name] = {type: "any"}
-
-        return schema
 
     def __init__(self, context, request):
         self.context = context
@@ -162,7 +179,10 @@ class SerializeToJson:
         try:
             nextprevious = NextPrevious(obj)
             result.update(
-                {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
+                {
+                    "previous_item": nextprevious.previous,
+                    "next_item": nextprevious.next,
+                }
             )
         except ValueError:
             # If we're serializing an old version that was renamed or moved,
@@ -174,7 +194,9 @@ class SerializeToJson:
             baseline, working_copy = WorkingCopyInfo(
                 self.context
             ).get_working_copy_info()
-            result.update({"working_copy": working_copy, "working_copy_of": baseline})
+            result.update(
+                {"working_copy": working_copy, "working_copy_of": baseline}
+            )
 
         # Insert locking information
         result.update({"lock": lock_info(obj)})
@@ -199,7 +221,9 @@ class SerializeToJson:
     def _get_context_field_serializers(self, obj):
         # Insert field values
         for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
+            read_permissions = mergedTaggedValueDict(
+                schema, READ_PERMISSIONS_KEY
+            )
 
             for name, field in getFields(schema).items():
                 if not self.check_permission(read_permissions.get(name), obj):
@@ -208,12 +232,16 @@ class SerializeToJson:
                 # serialize the field
                 yield (
                     name,
-                    queryMultiAdapter((field, obj, self.request), IFieldSerializer),
+                    queryMultiAdapter(
+                        (field, obj, self.request), IFieldSerializer
+                    ),
                 )
 
     def _get_workflow_state(self, obj):
         wftool = getToolByName(self.context, "portal_workflow")
-        review_state = wftool.getInfoFor(ob=obj, name="review_state", default=None)
+        review_state = wftool.getInfoFor(
+            ob=obj, name="review_state", default=None
+        )
         return review_state
 
     def check_permission(self, permission_name, obj):
@@ -289,7 +317,9 @@ class SerializeFolderToJson(SerializeToJson):
                 )(fullobjects=True)["items"]
             else:
                 result["items"] = [
-                    getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
+                    getMultiAdapter(
+                        (brain, self.request), ISerializeToJsonSummary
+                    )()
                     for brain in batch
                 ]
         return result
@@ -307,10 +337,14 @@ class DexterityObjectPrimaryFieldTarget:
     def __call__(self):
         primary_field_name = self.get_primary_field_name()
         for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
+            read_permissions = mergedTaggedValueDict(
+                schema, READ_PERMISSIONS_KEY
+            )
 
             for name, field in getFields(schema).items():
-                if not self.check_permission(read_permissions.get(name), self.context):
+                if not self.check_permission(
+                    read_permissions.get(name), self.context
+                ):
                     continue
 
                 if name != primary_field_name:

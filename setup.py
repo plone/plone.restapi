@@ -94,6 +94,7 @@ setup(
         "Products.CMFPlone>=5.2",
         "PyJWT>=1.7.0",
         "pytz",
+        "pyyaml",
     ],
     extras_require={"test": TEST_REQUIRES},
     entry_points="""

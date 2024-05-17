@@ -75,6 +75,7 @@ class Application(object):
                     }
                 },
                 "schemas": {
+                    # TODO andrà sovrascritto
                     "ContentType": {
                         "type": "object",
                         "properties": {
