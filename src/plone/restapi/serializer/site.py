@@ -45,9 +45,7 @@ class SerializeSiteRootToJson:
                 fields_adapter.append(
                     (
                         name,
-                        queryMultiAdapter(
-                            (field, context, request), IFieldSerializer
-                        ),
+                        queryMultiAdapter((field, context, request), IFieldSerializer),
                     )
                 )
 

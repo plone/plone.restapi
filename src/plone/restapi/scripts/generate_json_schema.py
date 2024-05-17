@@ -189,7 +189,7 @@ class Application(object):
                     portal_type_services.append(service)
 
             if portal_type_services:
-                services_by_ct[portal_type.id] = portal_type_services
+                services_by_ct[portal_type.id.replace(" ", "")] = portal_type_services
 
         return services_by_ct
 

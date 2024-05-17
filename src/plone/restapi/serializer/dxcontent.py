@@ -91,7 +91,7 @@ class SerializeToJson:
             "ExpandableItems": {"type": "any"},
             "TargetUrl": {"type": "any"},
             "ParentShema": {"type": "any"},
-            portal_types.get(context.portal_type).id: {
+            portal_types.get(context.portal_type).id.replace(" ", ""): {
                 "type": "object",
                 "properties": {
                     "@id": {"type": "string"},
@@ -253,7 +253,7 @@ class SerializeFolderToJson(SerializeToJson):
         )
         portal_types = getToolByName(api.portal.get(), "portal_types")
 
-        ct: dict = result[portal_types.get(context.portal_type).id]
+        ct: dict = result[portal_types.get(context.portal_type).id.replace(" ", "")]
 
         result.update({"BrainItem": {"type": "any"}})
         ct.update(
