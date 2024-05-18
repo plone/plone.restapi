@@ -6,37 +6,9 @@ from plone.app.customerize import registration
 from Products.CMFCore.utils import getToolByName
 from zope.publisher.interfaces.browser import IBrowserRequest
 from plone import api
-from zope.schema import getFields
-from collections import OrderedDict
-from copy import copy
-from plone.autoform.form import AutoExtensibleForm
-from plone.autoform.interfaces import IParameterizedWidget
-from plone.autoform.interfaces import WIDGETS_KEY
-from plone.behavior.interfaces import IBehavior
-from plone.dexterity.interfaces import IDexterityContent
-from plone.dexterity.interfaces import IDexterityFTI
-from plone.dexterity.utils import getAdditionalSchemata
-from plone.i18n.normalizer import idnormalizer
-from plone.restapi.interfaces import IFieldDeserializer
-from plone.restapi.serializer.converters import IJsonCompatible
-from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.supermodel import serializeModel
-from plone.supermodel.interfaces import FIELDSETS_KEY
-from plone.supermodel.utils import mergedTaggedValueDict
-from plone.supermodel.utils import syncSchema
 from Products.CMFCore.utils import getToolByName
-from z3c.form import form as z3c_form
-from zExceptions import BadRequest
 from zope.component import getMultiAdapter
-from zope.component import queryMultiAdapter
-from zope.component import queryUtility
-from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
-from zope.i18n import translate
-from zope.interface import implementer
-from zope.schema.interfaces import IVocabularyFactory
-from plone.restapi.types.utils import get_fieldsets, get_jsonschema_properties
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from plone.restapi.interfaces import ISerializeToJson
 
 logger = logging.getLogger(__name__)
