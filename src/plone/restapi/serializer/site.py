@@ -36,7 +36,6 @@ HAS_PLONE_6 = getattr(
 @implementer(ISerializeToJson)
 @adapter(IPloneSiteRoot, Interface)
 class SerializeSiteRootToJson:
-
     @classmethod
     def __restapi_doc_component_schema__(cls, context, request):
         fields_adapter = []

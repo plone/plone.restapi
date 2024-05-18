@@ -245,7 +245,6 @@ class SerializeToJson:
 @implementer(ISerializeToJson)
 @adapter(IDexterityContainer, Interface)
 class SerializeFolderToJson(SerializeToJson):
-
     @classmethod
     def __restapi_doc_component_schema__(cls, context, request):
         result = super(cls, SerializeFolderToJson).__restapi_doc_component_schema__(

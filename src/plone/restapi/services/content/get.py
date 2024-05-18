@@ -14,9 +14,7 @@ class ContentGet(Service):
 
     @classmethod
     def __restapi_doc_component_schemas_extension__(cls):
-        doc = super(
-            ContentGet, cls
-        ).__restapi_doc_component_schemas_extension__()
+        doc = super(ContentGet, cls).__restapi_doc_component_schemas_extension__()
 
         # recupero le interfacce per cui il service è stato registrato
         services = [
@@ -46,14 +44,11 @@ class ContentGet(Service):
         # di contenuto
         definition = {}
         for fti in ftis:
-            serializer = queryMultiAdapter(
-                (fti[1], getRequest()), ISerializeToJson
-            )
+            serializer = queryMultiAdapter((fti[1], getRequest()), ISerializeToJson)
             if method := getattr(serializer, "__restapi_doc_component_schema__", None):
                 definition.update(**method(fti[1], getRequest()))
 
         return definition
-
 
     @classmethod
     def __restapi_doc__(cls):
@@ -77,9 +72,7 @@ class ContentGet(Service):
                         "description": "ServerError",
                         "content": {
                             "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
+                                "schema": {"$ref": "#/components/schemas/ErrorResponse"}
                             }
                         },
                     },
@@ -88,9 +81,7 @@ class ContentGet(Service):
         }
 
     def reply(self):
-        serializer = queryMultiAdapter(
-            (self.context, self.request), ISerializeToJson
-        )
+        serializer = queryMultiAdapter((self.context, self.request), ISerializeToJson)
 
         if serializer is None:
             self.request.response.setStatus(501)
