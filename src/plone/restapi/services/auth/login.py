@@ -7,6 +7,8 @@ from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlug
 from zope import component
 from zope.interface import alsoProvides
 
+from .model import LoginData
+
 import plone.protect.interfaces
 
 
@@ -23,13 +25,7 @@ class Login(Service):
                     "required": True,
                     "content": {
                         "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "login": {"type": "string", "example": "admin"},
-                                    "password": {"type": "string", "example": "admin"},
-                                },
-                            }
+                            "schema": LoginData.schema(),
                         }
                     },
                 },
@@ -79,28 +75,28 @@ class Login(Service):
         }
 
     def reply(self):
-        data = json_body(self.request)
-        if "login" not in data or "password" not in data:
-            self.request.response.setStatus(400)
-            return dict(
-                error=dict(
-                    type="Missing credentials",
-                    message="Login and password must be provided in body.",
-                )
-            )
+        data = LoginData(**json_body(self.request))
+        # if "login" not in data or "password" not in data:
+        #     self.request.response.setStatus(400)
+        #     return dict(
+        #         error=dict(
+        #             type="Missing credentials",
+        #             message="Login and password must be provided in body.",
+        #         )
+        #     )
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
-        userid = data["login"]
-        password = data["password"]
+        userid = data.login
+        password = data.password
         uf = self._find_userfolder(userid)
 
         # Also put the password in __ac_password on the request.
         # The post-login code in PlonePAS expects to find it there
         # when it calls the PAS updateCredentials plugin.
-        self.request.form["__ac_password"] = data["password"]
+        self.request.form["__ac_password"] = password
 
         if uf is not None:
             plugins = uf._getOb("plugins")

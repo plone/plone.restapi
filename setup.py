@@ -95,6 +95,7 @@ setup(
         "PyJWT>=1.7.0",
         "pytz",
         "pyyaml",
+        "pyDantic",
     ],
     extras_require={"test": TEST_REQUIRES},
     entry_points="""
