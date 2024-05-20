@@ -3,6 +3,8 @@ from plone.rest import Service as RestService
 from plone.restapi.permissions import UseRESTAPI
 from zExceptions import Unauthorized
 
+from plone.restapi.services.model import ErrorOutputDTO, ErrorDefinitionDTO
+
 import json
 
 
@@ -15,24 +17,8 @@ class Service(RestService):
     @classmethod
     def __restapi_doc_component_schemas_extension__(cls):
         return {
-            "ErrorResponse": {
-                "type": "object",
-                "properties": {
-                    "error": {
-                        "type": "object",
-                        "properties": {
-                            "type": {
-                                "type": "string",
-                                "description": "The type of error.",
-                            },
-                            "message": {
-                                "type": "string",
-                                "description": "A human-readable message describing the error.",
-                            },
-                        },
-                    }
-                },
-            }
+            "ErrorDefinitionDTO": ErrorDefinitionDTO.schema(),
+            "ErrorResponse": ErrorOutputDTO.schema(ref_template="#/components/schemas/{model}") # noqa
         }
 
     content_type = "application/json"

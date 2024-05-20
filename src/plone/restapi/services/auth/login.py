@@ -2,12 +2,16 @@ from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from plone.restapi.services.model import ErrorOutputDTO
+from pydantic import ValidationError
 from Products.CMFCore.utils import getToolByName
-from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
+from Products.PluggableAuthService.interfaces.plugins import (
+    IAuthenticationPlugin,
+)
 from zope import component
 from zope.interface import alsoProvides
 
-from .model import LoginData
+from .model import LoginInputDTO, TokenOutputDTO
 
 import plone.protect.interfaces
 
@@ -25,7 +29,7 @@ class Login(Service):
                     "required": True,
                     "content": {
                         "application/json": {
-                            "schema": LoginData.schema(),
+                            "schema": LoginInputDTO.schema(),
                         }
                     },
                 },
@@ -34,15 +38,7 @@ class Login(Service):
                         "description": "User succesfully authenticated",
                         "content": {
                             "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "token": {
-                                            "type": "string",
-                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImZ1bGxuYW1lIjoiIn0.S9kUg8j-Iju0eaOpot7asXiZO8mlJX1fQVt9MPQpXBg",
-                                        },
-                                    },
-                                }
+                                "schema": TokenOutputDTO.schema()
                             }
                         },
                     },
@@ -50,7 +46,9 @@ class Login(Service):
                         "description": "User input error",
                         "content": {
                             "application/json": {
-                                "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
                             }
                         },
                     },
@@ -58,7 +56,9 @@ class Login(Service):
                         "description": "User unauthorized",
                         "content": {
                             "application/json": {
-                                "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
                             }
                         },
                     },
@@ -66,7 +66,9 @@ class Login(Service):
                         "description": "Server error",
                         "content": {
                             "application/json": {
-                                "schema": {"$ref": "#/components/schemas/ErrorResponse"}
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
                             }
                         },
                     },
@@ -75,19 +77,22 @@ class Login(Service):
         }
 
     def reply(self):
-        data = LoginData(**json_body(self.request))
-        # if "login" not in data or "password" not in data:
-        #     self.request.response.setStatus(400)
-        #     return dict(
-        #         error=dict(
-        #             type="Missing credentials",
-        #             message="Login and password must be provided in body.",
-        #         )
-        #     )
+        try:
+            data = LoginInputDTO(**json_body(self.request))
+        except ValidationError as e:
+            self.request.response.setStatus(400)
+            return ErrorOutputDTO(
+                error={
+                    "type": "Missing credentials",
+                    "message": "Login and password must be provided in body.",
+                }
+            ).dict()
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
+            alsoProvides(
+                self.request, plone.protect.interfaces.IDisableCSRFProtection
+            )
 
         userid = data.login
         password = data.password
@@ -109,12 +114,12 @@ class Login(Service):
 
             if plugin is None:
                 self.request.response.setStatus(501)
-                return dict(
+                return ErrorOutputDTO(
                     error=dict(
                         type="Login failed",
                         message="JWT authentication plugin not installed.",
                     )
-                )
+                ).dict()
 
             user = uf.authenticate(userid, password, self.request)
         else:
@@ -122,11 +127,12 @@ class Login(Service):
 
         if not user:
             self.request.response.setStatus(401)
-            return dict(
+            return ErrorOutputDTO(
                 error=dict(
-                    type="Invalid credentials", message="Wrong login and/or password."
+                    type="Invalid credentials",
+                    message="Wrong login and/or password.",
                 )
-            )
+            ).dict()
 
         # Perform the same post-login actions as would happen when logging in through
         # the Plone classic HTML login form.  There is a trade-off here, we either
@@ -143,7 +149,9 @@ class Login(Service):
 
         payload = {}
         payload["fullname"] = user.getProperty("fullname")
-        return {"token": plugin.create_token(user.getId(), data=payload)}
+        return TokenOutputDTO(
+            token=plugin.create_token(user.getId(), data=payload)
+        ).dict()
 
     def _find_userfolder(self, userid):
         """Try to find a user folder that contains a user with the given

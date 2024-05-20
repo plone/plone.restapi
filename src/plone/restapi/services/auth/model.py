@@ -1,14 +1,10 @@
 from pydantic import BaseModel
 
 
-class LoginData(BaseModel):
+class LoginInputDTO(BaseModel):
     login: str
     password: str
 
 
-class TokenResponse(BaseModel):
+class TokenOutputDTO(BaseModel):
     token: str
-
-
-class ErrorResponse(BaseModel):
-    error: dict

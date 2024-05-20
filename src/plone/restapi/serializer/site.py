@@ -55,13 +55,13 @@ class SerializeSiteRootToJson:
             if callable(method):
                 schema[name] = field.__restapi_schema_json_type__()
             else:
-                schema[name] = {type: "any"}
+                schema[name] = {type: "string"}
 
         return {
-            "ParentShema": {"type": "any"},
-            "LockInfo": {"type": "any"},
-            "Block": {"type": "any"},
-            "BlocksLayout": {"type": "any"},
+            "ParentShema": {"type": "string"},
+            "LockInfo": {"type": "string"},
+            "Block": {"type": "string"},
+            "BlocksLayout": {"type": "string"},
             "PloneSite": {
                 "type": "object",
                 "properties": {
@@ -84,15 +84,15 @@ class SerializeSiteRootToJson:
                     },
                     "blocks_layout": {
                         "type": "object",
-                        "schema": {"$ref": "#/components/schemas/BlocksLayout"},
+                        "items": {"$ref": "#/components/schemas/BlocksLayout"},
                     },
                     "items_total": {"type": "integer"},
-                    "batching": {"type": "any"},
+                    "batching": {"type": "string"},
                     "items": {
                         "type": "array",
                         "items": {"$ref": "#/components/schemas/BrainItem"},
                     },
-                    "allow_discussion": {"type": "bool"},
+                    "allow_discussion": {"type": "boolean"},
                 },
             },
         }

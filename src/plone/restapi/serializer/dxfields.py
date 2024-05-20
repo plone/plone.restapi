@@ -38,8 +38,8 @@ class DefaultFieldSerializer:
         self.field = field
 
     def __restapi_schema_json_type__(self):
-        type = {str: "string", bool: "bool", int: "integer"}.get(self.field._type)
-        return {"type": type or "any"}
+        type = {str: "string", bool: "boolean", int: "integer"}.get(self.field._type)
+        return {"type": type or "string"}
 
     def __call__(self):
         return json_compatible(self.get_value())

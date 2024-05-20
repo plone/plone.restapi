@@ -62,7 +62,6 @@ class ContentGet(Service):
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
                                     "$ref": "$ContextType",
                                 }
                             }

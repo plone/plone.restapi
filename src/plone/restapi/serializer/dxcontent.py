@@ -76,21 +76,21 @@ class SerializeToJson:
             if callable(method):
                 schema[name] = field.__restapi_schema_json_type__()
             else:
-                schema[name] = {type: "any"}
+                schema[name] = {type: "string"}
 
         return {
             "PreviousItemSchema": {
-                "type": "any",
+                "type": "string",
             },
             "NextItemSchema": {
-                "type": "any",
+                "type": "string",
             },
-            "WorkingCopy": {"type": "any"},
-            "WorkingCopyOf": {"type": "any"},
-            "LockInfo": {"type": "any"},
-            "ExpandableItems": {"type": "any"},
-            "TargetUrl": {"type": "any"},
-            "ParentShema": {"type": "any"},
+            "WorkingCopy": {"type": "string"},
+            "WorkingCopyOf": {"type": "string"},
+            "LockInfo": {"type": "string"},
+            "ExpandableItems": {"type": "string"},
+            "TargetUrl": {"type": "string"},
+            "ParentShema": {"type": "string"},
             portal_types.get(context.portal_type).id.replace(" ", ""): {
                 "type": "object",
                 "properties": {
@@ -122,7 +122,7 @@ class SerializeToJson:
                     "@components": {"$ref": "#/components/schemas/ExpandableItems"},
                     **schema,
                     "targetUrl": {"$ref": "#/components/schemas/TargetUrl"},
-                    "allow_discussion": {"type": "bool"},
+                    "allow_discussion": {"type": "boolean"},
                 },
             },
         }
@@ -250,22 +250,24 @@ class SerializeFolderToJson(SerializeToJson):
         result = super(cls, SerializeFolderToJson).__restapi_doc_component_schema__(
             context, request
         )
-        portal_types = getToolByName(api.portal.get(), "portal_types")
+        # portal_types = getToolByName(api.portal.get(), "portal_types")
 
-        ct: dict = result[portal_types.get(context.portal_type).id.replace(" ", "")]
+        # ct: dict = result[portal_types.get(context.portal_type).id.replace(" ", "")]
 
-        result.update({"BrainItem": {"type": "any"}})
-        ct.update(
-            {
-                "is_folderish": {"type": "boolean"},
-                "items_total": {"type": "integer"},
-                "batching": {"type": "any"},
-                "items": {
-                    "type": "array",
-                    "items": {"$ref": "#/components/schemas/BrainItem"},
-                },
-            }
-        )
+        result.update({"BrainItem": {"type": "string"}})
+        # ct.update(
+        #     {
+        #         "items": {
+        #             "type": "array",
+        #             "items": {
+        #                 "$ref": "#/components/schemas/BrainItem",
+        #                 "is_folderish": {"type": "boolean"},
+        #                 "items_total": {"type": "integer"},
+        #                 "batching": {"type": "string"}
+        #             },
+        #         },
+        #     }
+        # )
 
         return result
 
