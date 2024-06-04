@@ -9,7 +9,12 @@ myst:
 
 # Comments
 
-Plone offers to users a feature to post comments on any content object with `plone.app.discussion`.
+```{versionchanged} Plone 6.1
+Discussion is disabled by default in Plone 6.1 and later.
+To enable discussion, see the Plone 6.1 upgrade guide section {ref}`backend-upgrade-plone-v61-discussion-label`.
+```
+
+Discussion is a feature that allows your site visitors to comment on web pages for any content object.
 
 Commenting can be enabled globally for specific content types and for single content objects.
 
