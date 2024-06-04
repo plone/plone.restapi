@@ -265,8 +265,8 @@ def url_to_brain(url):
     if not url:
         return
     brain = None
-    match = re.search("resolveuid/([^/]+)", url)
-    if match:
+    r = re.compile("resolveuid/([^/]+)")
+    if match := r.search(url):
         uid = match.group(1)
         brain = uuidToCatalogBrain(uid)
     else:
