@@ -255,6 +255,8 @@ class TeaserBlockSerializer(TeaserBlockSerializerBase):
     """Serializer for content-types with IBlocks behavior"""
 
 
+RESOLVE_UID_REGEXP = re.compile("resolveuid/([^/]+)")
+
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IPloneSiteRoot, IBrowserRequest)
 class TeaserBlockSerializerRoot(TeaserBlockSerializerBase):
@@ -264,9 +266,8 @@ class TeaserBlockSerializerRoot(TeaserBlockSerializerBase):
 def url_to_brain(url):
     if not url:
         return
-    brain = None
-    r = re.compile("resolveuid/([^/]+)")
-    if match := r.search(url):
+    brain = None   
+    if match := RESOLVE_UID_REGEXP.search(url):
         uid = match.group(1)
         brain = uuidToCatalogBrain(uid)
     else:
