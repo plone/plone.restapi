@@ -220,25 +220,22 @@ class TeaserBlockSerializerBase:
                 data["overwrite"] = True
                 return data
 
-            if data.get("overwrite"):
-                # Editor decided to overwrite a data
-                return data
-
             if isinstance(value, str):
                 url = value
+                value = [{"@id": url}]
             else:
                 url = value[0].get("@id", "")
             brain = url_to_brain(url)
-
             if brain is not None:
                 serialized_brain = getMultiAdapter(
                     (brain, self.request), ISerializeToJsonSummary
                 )()
 
-                # Fields from the teaser-schema need to be overwritten
-                for key in ["title", "description", "head_title"]:
-                    if key in serialized_brain:
-                        data[key] = serialized_brain[key]
+                if not data.get("overwrite"):
+                    # Update fields at the top level of the block data
+                    for key in ["title", "description", "head_title"]:
+                        if key in serialized_brain:
+                            data[key] = serialized_brain[key]
 
                 # We return the serialized brain.
                 value[0].update(serialized_brain)
