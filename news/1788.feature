@@ -1,0 +1,1 @@
+Added TeaserBlockSerializer which updates the contents of a teaser block from its target if the block has `"overwrite": false`. @pbauer, @davisagli

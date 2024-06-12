@@ -1,3 +1,5 @@
+from plone import api
+from plone.app.uuid.utils import uuidToCatalogBrain
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.blocks import visit_blocks, iter_block_transform_handlers
@@ -6,17 +8,20 @@ from plone.restapi.deserializer.blocks import SlateBlockTransformer
 from plone.restapi.deserializer.blocks import transform_links
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.serializer.utils import resolve_uid, uid_to_url
 from plone.schema import IJSONField
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import copy
 import os
+import re
 
 
 @adapter(IJSONField, IBlocks, Interface)
@@ -193,3 +198,81 @@ class SlateTableBlockSerializer(SlateTableBlockSerializerBase):
 @adapter(IPloneSiteRoot, IBrowserRequest)
 class SlateTableBlockSerializerRoot(SlateTableBlockSerializerBase):
     """Serializer for site root"""
+
+
+class TeaserBlockSerializerBase:
+    order = 0
+    block_type = "teaser"
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, block):
+        return self._process_data(block)
+
+    def _process_data(self, data, field=None):
+        value = data.get("href", "")
+        if value:
+            if "overwrite" not in data:
+                # A block without this option is old and keeps the behavior
+                # where data is not dynamically pulled from the href
+                data["overwrite"] = True
+                return data
+
+            if isinstance(value, str):
+                url = value
+                value = [{"@id": url}]
+            else:
+                url = value[0].get("@id", "")
+            brain = url_to_brain(url)
+            if brain is not None:
+                serialized_brain = getMultiAdapter(
+                    (brain, self.request), ISerializeToJsonSummary
+                )()
+
+                if not data.get("overwrite"):
+                    # Update fields at the top level of the block data
+                    for key in ["title", "description", "head_title"]:
+                        if key in serialized_brain:
+                            data[key] = serialized_brain[key]
+
+                # We return the serialized brain.
+                value[0].update(serialized_brain)
+                data["href"] = value
+            elif not url.startswith("http"):
+                # Source not found; clear out derived fields
+                data["href"] = []
+        return data
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IBlocks, IBrowserRequest)
+class TeaserBlockSerializer(TeaserBlockSerializerBase):
+    """Serializer for content-types with IBlocks behavior"""
+
+
+RESOLVE_UID_REGEXP = re.compile("resolveuid/([^/]+)")
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IPloneSiteRoot, IBrowserRequest)
+class TeaserBlockSerializerRoot(TeaserBlockSerializerBase):
+    """Serializer for site root"""
+
+
+def url_to_brain(url):
+    if not url:
+        return
+    brain = None
+    if match := RESOLVE_UID_REGEXP.search(url):
+        uid = match.group(1)
+        brain = uuidToCatalogBrain(uid)
+    else:
+        # fallback in case the url wasn't converted to a UID
+        catalog = api.portal.get_tool("portal_catalog")
+        path = "/".join(api.portal.get().getPhysicalPath()) + url
+        results = catalog.searchResults(path={"query": path, "depth": 0})
+        if results:
+            brain = results[0]
+    return brain
