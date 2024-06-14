@@ -1,1 +1,1 @@
-add cache rules for `@site` and `@navroot`. @mamico
+Add cache rules for `@site` and `@navroot`. @mamico
