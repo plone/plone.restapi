@@ -8,6 +8,34 @@ Changelog
 
 .. towncrier release notes start
 
+9.7.0 (2024-06-15)
+------------------
+
+New features:
+
+
+- Add cache rules for `@site` and `@navroot`. @mamico (#1779)
+- Added TeaserBlockSerializer which updates the contents of a teaser block from its target if the block has `"overwrite": false`. @pbauer, @davisagli (#1788)
+
+
+Bug fixes:
+
+
+- Returns an error message when an Invalid error occurs when validating a controlpanel field. Also translates the message. @wesleybl (#1771)
+- Users service: Fixed edge case AttributeError if a user is enumerated but doesn't actually exist. @davisagli (#1775)
+- Add Plone 6.1 support to classifiers and test against it. @tisto (#1780)
+- Make plone.app.discussion an optional dependency (core add-on). @jensens (#1781)
+- Fix require plone.app.iterate on test extras. @jensens (#1782)
+- Fix require plone.app.upgrade on test extras. @jensens (#1783)
+
+
+Documentation:
+
+
+- Fix event start & end timezone in documentation examples. @davisagli (#1776)
+- Move sharing endpoint docs to the correct section. @davisagli (#1778)
+
+
 9.6.1 (2024-04-25)
 ------------------
 
