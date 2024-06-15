@@ -13,7 +13,7 @@ function red {
     echo "$RED $1 $RESET"
 }
 
-if [ "$PLONE_VERSION" == "6.0" ] && [ "$PYTHON_VERSION" == '3.9' ]; then
+if [ "$PLONE_VERSION" == "6.0" ] && [ "$PYTHON_VERSION" == '3.12' ]; then
     echo "Running check for undocumented changes for Plone 6.0.x on Python 3.9"
 else
     # request/response dumps have known differences for different Python/Plone combinations
