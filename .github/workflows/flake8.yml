@@ -1,5 +1,5 @@
 name: Flake 8
-on: [push,pull_request]
+on: [push, pull_request]
 jobs:
   build:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.11]
+        python-version: [3.12]
 
     steps:
       # git checkout
