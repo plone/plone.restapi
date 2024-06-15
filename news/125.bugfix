@@ -1,0 +1,3 @@
+Remove use of `portal_properties` in context navigation.
+Theoretically we checked `portal_properties.site_properties.sortAttribute`.
+[maurits]

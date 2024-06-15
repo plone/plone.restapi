@@ -625,9 +625,6 @@ class QueryBuilder:
         self.context = context
         self.data = data
 
-        portal_properties = getToolByName(context, "portal_properties")
-        navtree_properties = getattr(portal_properties, "navtree_properties")
-
         # Acquire a custom nav query if available
         customQuery = getattr(context, "getCustomNavQuery", None)
         if customQuery is not None and safe_callable(customQuery):
@@ -667,14 +664,6 @@ class QueryBuilder:
 
         # Only list the applicable types
         query["portal_type"] = typesToList(context)
-
-        # Apply the desired sort
-        sortAttribute = navtree_properties.getProperty("sortAttribute", None)
-        if sortAttribute is not None:
-            query["sort_on"] = sortAttribute
-            sortOrder = navtree_properties.getProperty("sortOrder", None)
-            if sortOrder is not None:
-                query["sort_order"] = sortOrder
 
         # Filter on workflow states, if enabled
         registry = getUtility(IRegistry)
