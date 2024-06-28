@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+9.7.1 (2024-06-29)
+------------------
+
+Bug fixes:
+
+
+- Remove use of `portal_properties` in context navigation.
+  Theoretically we checked `portal_properties.site_properties.sortAttribute`.
+  [maurits] (#125)
+
+
+Internal:
+
+
+- Update test-no-uncommitted-doc-changes to run on Python 3.12 instead of 3.9. @tisto, @davisagli (#1794)
+
+
 9.7.0 (2024-06-15)
 ------------------
 
