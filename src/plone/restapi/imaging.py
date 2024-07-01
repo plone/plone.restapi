@@ -1,6 +1,15 @@
+from plone.restapi import HAS_PLONE_6
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.globalrequest import getRequest
+
+
+if HAS_PLONE_6:
+    # In Plone 6.0+, we must use the mode parameter
+    scale_parameter = {"mode": "scale"}
+else:
+    # BBB: In Plone 5.2, it is necessary to use the direction parameter.
+    scale_parameter = {"direction": "thumbnail"}
 
 
 def get_scales(context, field, width, height):
@@ -51,9 +60,8 @@ def get_original_image_url(context, fieldname, width, height):
     scale_flags = {}
     if hasattr(images_view, "picture"):
         scale_flags["pre"] = True
-    scale = images_view.scale(
-        fieldname, width=width, height=height, direction="thumbnail", **scale_flags
-    )
+    parameters = {**scale_flags, **scale_parameter}
+    scale = images_view.scale(fieldname, width=width, height=height, **parameters)
     if scale:
         return scale.url
     # Corrupt images may not have a scale.

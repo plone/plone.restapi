@@ -44,6 +44,7 @@ registry
 relations
 roles
 searching
+sharing
 site
 system
 transactions

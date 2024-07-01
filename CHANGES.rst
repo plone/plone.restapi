@@ -8,6 +8,130 @@ Changelog
 
 .. towncrier release notes start
 
+9.7.1 (2024-06-29)
+------------------
+
+Bug fixes:
+
+
+- Remove use of `portal_properties` in context navigation.
+  Theoretically we checked `portal_properties.site_properties.sortAttribute`.
+  [maurits] (#125)
+
+
+Internal:
+
+
+- Update test-no-uncommitted-doc-changes to run on Python 3.12 instead of 3.9. @tisto, @davisagli (#1794)
+
+
+9.7.0 (2024-06-15)
+------------------
+
+New features:
+
+
+- Add cache rules for `@site` and `@navroot`. @mamico (#1779)
+- Added TeaserBlockSerializer which updates the contents of a teaser block from its target if the block has `"overwrite": false`. @pbauer, @davisagli (#1788)
+
+
+Bug fixes:
+
+
+- Returns an error message when an Invalid error occurs when validating a controlpanel field. Also translates the message. @wesleybl (#1771)
+- Users service: Fixed edge case AttributeError if a user is enumerated but doesn't actually exist. @davisagli (#1775)
+- Add Plone 6.1 support to classifiers and test against it. @tisto (#1780)
+- Make plone.app.discussion an optional dependency (core add-on). @jensens (#1781)
+- Fix require plone.app.iterate on test extras. @jensens (#1782)
+- Fix require plone.app.upgrade on test extras. @jensens (#1783)
+
+
+Documentation:
+
+
+- Fix event start & end timezone in documentation examples. @davisagli (#1776)
+- Move sharing endpoint docs to the correct section. @davisagli (#1778)
+
+
+9.6.1 (2024-04-25)
+------------------
+
+Bug fixes:
+
+
+- Fixed password reset issue by replacing `username` with `target_user` to correctly authenticate using email. @Hrittik20 (#943)
+- In Plone 6, uses ``plone.textindexer`` to add block texts to the SearchableText index, instead of ``plone.indexer``. This ensures that behaviors can add fields to SearchableText with ``plone.textindexer``. @wesleybl (#1744)
+- Use the ``mode`` parameter instead of ``direction`` when calling the ``scale`` method. Also change value to ``scale``. @wesleybl (#1758)
+- image_scales in serializer are returned as json_compatible format. @cekk (#1772)
+
+
+Internal:
+
+
+- Test to ensure that the scale hash of an image is the same as the hash of the image block with this image. @sneridagh (#1716)
+- Bump all the versions in GitHub workflows. @stevepiercy (#1762)
+
+
+9.6.0 (2024-03-03)
+------------------
+
+New features:
+
+
+- Add available languages information to the @site endpoint. @erral (#1738)
+- Add the site timezone to the @site endpoint return result. @folix-01 (#1749)
+
+
+Internal:
+
+
+- Use last version of Python 3.12 in tests. https://github.com/python/cpython/issues/113267 has been fixed. @wesleybl (#1740)
+
+
+9.5.0 (2024-02-27)
+------------------
+
+Bug fixes:
+
+
+- Fixed the permission check for adding users to groups and removing users from groups, so that it is allowed for users with the Site Administrator role. @wesleybl (#1750)
+- Enhanced Makefile paths to address whitespace compatibility issues. @Vivek-04022001 (#1753)
+
+
+9.4.2 (2024-02-16)
+------------------
+
+Bug fixes:
+
+
+- Fixed `allow_discussion` serialization for the Plone Site, to return a boolean like other content types. @Akshat2Jain (#1674)
+- Fixed an edge case in the blocks resolveuid transforms with a trailing slash before a fragment. @sneridagh (#1748)
+
+
+Internal:
+
+
+- Remove debug-exceptions = on from the buildout instance section. @wesleybl (#1734)
+
+
+9.4.1 (2024-02-02)
+------------------
+
+Bug fixes:
+
+
+- Fixed the logic for converting public URLs to and from internal UID-based URLs. Now if the URL includes a fragment, it is preserved. @sneridagh (#1746)
+
+
+9.4.0 (2024-01-26)
+------------------
+
+New features:
+
+
+- Translate validation error messages in the deserializer. @wesleybl (#1742)
+
+
 9.3.0 (2024-01-10)
 ------------------
 

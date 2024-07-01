@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-09-25 20:32+0000\n"
+"POT-Creation-Date: 2023-12-22 19:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "Language-Name: English\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: plone.restapi\n"
+
+#: plone/restapi/deserializer/dxcontent.py:116
+msgid "${field_name} is a required field. Setting it to null is not allowed."
+msgstr ""
 
 #: plone/restapi/services/email_send/post.py:88
 msgid "${sender_fullname} via ${portal_title}"

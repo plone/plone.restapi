@@ -7,7 +7,7 @@ from plone.dexterity.interfaces import IDexterityItem
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockSearchableText
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.component import adapter
 from zope.component import provideAdapter
@@ -21,7 +21,7 @@ import unittest
 
 class TestSearchTextInBlocks(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer["app"]

@@ -29,7 +29,6 @@ IMAGE_DATA = IMAGE_PATH.read_bytes()
 
 
 class TestBlocksSerializer(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -285,7 +284,111 @@ class TestBlocksSerializer(unittest.TestCase):
         )
         value = res["abc"]["value"]
         link = value[0]["children"][1]["data"]["url"]
-        self.assertTrue(link, self.portal.absolute_url() + "/doc1")
+        self.assertEqual(link, self.portal.absolute_url() + "/doc1")
+
+    def test_simple_link_serializer_with_anchor(self):
+        doc_uid = IUUID(self.portal["doc1"])
+        resolve_uid_link = f"../resolveuid/{doc_uid}#anchor-id"
+
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": resolve_uid_link,
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks=blocks,
+        )
+        value = res["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertEqual(link, f"{self.portal['doc1'].absolute_url()}#anchor-id")
+
+    def test_simple_link_serializer_with_suffix(self):
+        doc_uid = IUUID(self.portal["doc1"])
+        resolve_uid_link = f"../resolveuid/{doc_uid}/@@download/file"
+
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": resolve_uid_link,
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks=blocks,
+        )
+        value = res["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertEqual(link, f"{self.portal['doc1'].absolute_url()}/@@download/file")
+
+    def test_simple_link_serializer_with_suffix_and_anchor(self):
+        doc_uid = IUUID(self.portal["doc1"])
+        resolve_uid_link = f"../resolveuid/{doc_uid}/@@download/file#anchor-id"
+
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": resolve_uid_link,
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks=blocks,
+        )
+        value = res["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertEqual(
+            link, f"{self.portal['doc1'].absolute_url()}/@@download/file#anchor-id"
+        )
 
     def test_slate_table_block_link_serializer(self):
         doc_uid = IUUID(self.portal["doc1"])
@@ -388,7 +491,7 @@ class TestBlocksSerializer(unittest.TestCase):
         rows = res["abc"]["table"]["rows"]
         cell = rows[1]["cells"][0]
         link = cell["value"][0]["children"][1]["data"]["url"]
-        self.assertTrue(link, self.portal.absolute_url() + "/doc1")
+        self.assertEqual(link, self.portal.absolute_url() + "/doc1")
 
     @unittest.skipUnless(
         HAS_PLONE_6,
@@ -402,3 +505,109 @@ class TestBlocksSerializer(unittest.TestCase):
         )
         self.assertEqual(res["123"]["url"], self.image.absolute_url())
         self.assertIn("image_scales", res["123"])
+
+    @unittest.skipUnless(
+        HAS_PLONE_6,
+        "image_scales were added to the catalog in Plone 6",
+    )
+    def test_image_scales_serializer_is_json_compatible(self):
+        image_uid = self.image.UID()
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks={"123": {"@type": "image", "url": f"../resolveuid/{image_uid}"}},
+        )
+        self.assertIs(type(res["123"]["image_scales"]), dict)
+
+    def test_teaser_block_serializer_dynamic(self):
+        doc = self.portal["doc1"]
+        doc_uid = doc.UID()
+        resolve_uid_link = f"../resolveuid/{doc_uid}"
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={
+                "1": {
+                    "@type": "teaser",
+                    "href": resolve_uid_link,
+                    "overwrite": False,
+                }
+            },
+        )
+
+        block = value["1"]
+        self.assertEqual(block["title"], doc.title)
+        self.assertEqual(block["description"], doc.description)
+        href = block["href"][0]
+        self.assertEqual(href["@id"], doc.absolute_url())
+
+    def test_teaser_block_serializer_dynamic_nested(self):
+        doc = self.portal["doc1"]
+        doc_uid = doc.UID()
+        resolve_uid_link = f"../resolveuid/{doc_uid}"
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={
+                "grid": {
+                    "@type": "gridBlock",
+                    "blocks": {
+                        "1": {
+                            "@type": "teaser",
+                            "href": resolve_uid_link,
+                            "overwrite": False,
+                        },
+                    },
+                    "blocks_layout": {"items": ["1"]},
+                }
+            },
+        )
+
+        block = value["grid"]["blocks"]["1"]
+        self.assertEqual(block["title"], doc.title)
+        self.assertEqual(block["description"], doc.description)
+        href = block["href"][0]
+        self.assertEqual(href["@id"], doc.absolute_url())
+
+    def test_teaser_block_serializer_with_overwrite(self):
+        doc = self.portal["doc1"]
+        doc_uid = doc.UID()
+        resolve_uid_link = f"../resolveuid/{doc_uid}"
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={
+                "1": {
+                    "@type": "teaser",
+                    "href": resolve_uid_link,
+                    "overwrite": True,
+                    "title": "Custom title",
+                    "description": "Custom description",
+                }
+            },
+        )
+
+        block = value["1"]
+        self.assertEqual(block["title"], "Custom title")
+        self.assertEqual(block["description"], "Custom description")
+        href = block["href"][0]
+        self.assertEqual(href["@id"], doc.absolute_url())
+
+    def test_teaser_block_serializer_legacy(self):
+        # no "overwrite" key -> default to True
+        doc = self.portal["doc1"]
+        doc_uid = doc.UID()
+        resolve_uid_link = f"../resolveuid/{doc_uid}"
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={
+                "1": {
+                    "@type": "teaser",
+                    "href": [{"@id": resolve_uid_link}],
+                    "title": "Custom title",
+                    "description": "Custom description",
+                }
+            },
+        )
+
+        block = value["1"]
+        self.assertEqual(block["title"], "Custom title")
+        self.assertEqual(block["description"], "Custom description")
+        href = block["href"][0]
+        self.assertEqual(href["@id"], doc.absolute_url())

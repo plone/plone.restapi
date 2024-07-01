@@ -3,6 +3,7 @@ from AccessControl import getSecurityManager
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
+from plone.restapi import _
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import IFieldDeserializer
@@ -14,6 +15,7 @@ from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
 from zope.event import notify
+from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.lifecycleevent import Attributes
@@ -49,7 +51,7 @@ class DeserializeFromJson(OrderingMixin):
                 (self.context, self.request, None, schema, None), IManagerValidator
             )
             for error in validator.validate(field_data):
-                errors.append({"error": error, "message": str(error)})
+                errors.append({"error": error, "message": error.args[0]})
 
         if errors:
             if mask_validation_errors:
@@ -57,6 +59,8 @@ class DeserializeFromJson(OrderingMixin):
                 # errors on front-end
                 for error in errors:
                     error["error"] = "ValidationError"
+            for error in errors:
+                error["message"] = translate(error["message"], context=self.request)
             raise BadRequest(errors)
 
         # We'll set the layout after the validation and even if there
@@ -109,11 +113,10 @@ class DeserializeFromJson(OrderingMixin):
                             errors.append(
                                 {
                                     "field": field.__name__,
-                                    "message": (
-                                        "{} is a required field.".format(
-                                            field.__name__
-                                        ),
-                                        "Setting it to null is not allowed.",
+                                    "message": _(
+                                        "${field_name} is a required field."
+                                        " Setting it to null is not allowed.",
+                                        mapping={"field_name": field.__name__},
                                     ),
                                 }
                             )
