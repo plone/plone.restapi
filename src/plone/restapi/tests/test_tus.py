@@ -409,44 +409,41 @@ class TestTUS(unittest.TestCase):
             blob_write += 1 if "w" in mode else 0
             return old_open(self, mode)
 
-        ZODB.blob.Blob.open = count_open
+        with unittest.mock.patch.object(ZODB.blob.Blob, 'open', count_open):
 
-        pdf_file_path = os.path.join(os.path.dirname(__file__), UPLOAD_PDF_FILENAME)
-        pdf_file_size = os.path.getsize(pdf_file_path)
-        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
-        response = self.api_session.post(
-            self.upload_url,
-            headers={
-                "Tus-Resumable": "1.0.0",
-                "Upload-Length": str(pdf_file_size),
-                "Upload-Metadata": metadata,
-            },
-        )
-        self.assertEqual(response.status_code, 201)
-        location = response.headers["Location"]
-
-        # upload the data with PATCH
-        with open(pdf_file_path, "rb") as pdf_file:
-            response = self.api_session.patch(
-                location,
+            pdf_file_path = os.path.join(os.path.dirname(__file__), UPLOAD_PDF_FILENAME)
+            pdf_file_size = os.path.getsize(pdf_file_path)
+            metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
+            response = self.api_session.post(
+                self.upload_url,
                 headers={
-                    "Content-Type": "application/offset+octet-stream",
-                    "Upload-Offset": "0",
                     "Tus-Resumable": "1.0.0",
+                    "Upload-Length": str(pdf_file_size),
+                    "Upload-Metadata": metadata,
                 },
-                data=pdf_file,
             )
-        self.assertEqual(response.status_code, 204)
+            self.assertEqual(response.status_code, 201)
+            location = response.headers["Location"]
 
-        self.assertEqual(
-            blob_write,
-            1,
-            "Slow write to blob instead of os rename. Should be only 1 on init",
-        )
-        self.assertEqual(blob_read, 0, "Validation is reading the whole blob in memory")
-        # TODO: would be better test to patch file read instead and ensure its not called?
+            # upload the data with PATCH
+            with open(pdf_file_path, "rb") as pdf_file:
+                response = self.api_session.patch(
+                    location,
+                    headers={
+                        "Content-Type": "application/offset+octet-stream",
+                        "Upload-Offset": "0",
+                        "Tus-Resumable": "1.0.0",
+                    },
+                    data=pdf_file,
+                )
+            self.assertEqual(response.status_code, 204)
 
-        ZODB.blob.Blob.open = old_open
+            self.assertEqual(
+                blob_write,
+                1,
+                "Slow write to blob instead of os rename. Should be only 1 on init",
+            )
+            self.assertEqual(blob_read, 0, "Validation is reading the whole blob in memory")
 
     def test_tus_can_replace_pdf_file(self):
         # Create a test file
