@@ -229,7 +229,10 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         fieldsets = ()
         additional_schemata = ()
     else:
-        additional_schemata = tuple(getAdditionalSchemata(context=context))
+        if fti.id == context.portal_type:
+            additional_schemata = tuple(getAdditionalSchemata(context=context))
+        else:
+            additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
         fieldsets = get_fieldsets(context, request, schema, additional_schemata)
 
     # Build JSON schema properties
