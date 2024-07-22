@@ -138,11 +138,6 @@ docs-vale:  ## Run Vale style, grammar, and spell checks
 	@echo
 	@echo "Vale is finished; look for any errors in the above output."
 
-.PHONY: netlify
-netlify:
-	pip install -r requirements-docs.txt
-	cd $(DOCS_DIR) && sphinx-build -b html $(ALLSPHINXOPTS) ../$(BUILDDIR)/html
-
 .PHONY: Test Release
 test-release:  ## Run Pyroma and Check Manifest
 	bin/pyroma -n 10 -d .
