@@ -57,8 +57,7 @@ Include them in the documentation using MyST syntax:
 ```
 ````
 
-Build the documentation locally to test the rendering by running `./bin/sphinxbuilder`.
-Alternatively, you can use Makefile targets:
+Build the documentation locally to test the rendering using the appropriate Makefile target.
 
 `docs-clean`
 : Clean current and legacy docs build directories, and Python virtual environment

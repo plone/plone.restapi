@@ -95,10 +95,6 @@ black:  ## Black
 zpretty:  ## zpretty
 	if [ -f "bin/zpretty" ]; then zpretty -i ./**/*.zcml; fi
 
-.PHONY: Build Docs
-docs:  ## Build Docs
-	bin/sphinxbuilder
-
 .PHONY: docs-clean
 docs-clean:  ## Clean current and legacy docs build directories, and Python virtual environment
 	cd $(DOCS_DIR) && rm -rf $(BUILDDIR)/
