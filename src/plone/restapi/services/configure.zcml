@@ -19,7 +19,10 @@
   <include package=".controlpanels" />
   <include package=".copymove" />
   <include package=".database" />
-  <include package=".discussion" />
+  <include
+      package=".discussion"
+      zcml:condition="installed plone.app.discussion"
+      />
   <include package=".groups" />
   <include package=".navigation" />
   <include package=".contextnavigation" />
