@@ -5,25 +5,21 @@
 # Required
 version: 2
 
-# Set the version of Python and other tools you might need
+# Set the OS, Python version and other tools you might need
 build:
-  os: ubuntu-20.04
+  os: ubuntu-22.04
   tools:
-    python: "3.9"
-    # You can also specify other tool versions:
-    # nodejs: "16"
-    # rust: "1.55"
-    # golang: "1.17"
-
-# Build documentation in the docs/ directory with Sphinx
-sphinx:
-  configuration: docs/source/conf.py
-
-# If using Sphinx, optionally build your docs in additional formats such as PDF
-# formats:
-#    - pdf
-
-# Optionally declare the Python requirements required to build your docs
-python:
-  install:
-    - requirements: requirements-docs.txt
+    python: "3.12"
+  commands:
+    # Cancel building pull requests when there aren't changes in the docs directory or YAML file.
+    # You can add any other files or directories that you'd like here as well,
+    # like your docs requirements file, or other files that will change your docs build.
+    #
+    # If there are no changes (git diff exits with 0) we force the command to return with 183.
+    # This is a special exit code on Read the Docs that will cancel the build immediately.
+    - |
+      if [ "$READTHEDOCS_VERSION_TYPE" = "external" ] && git diff --quiet origin/6.0 -- docs/ .readthedocs.yaml requirements-docs.txt requirements.txt;
+      then
+        exit 183;
+      fi
+    - make rtd-pr-preview
