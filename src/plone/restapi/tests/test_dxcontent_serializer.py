@@ -93,6 +93,11 @@ class TestDXContentSerializer(unittest.TestCase):
         self.portal.doc1.modification_date = DateTime("2015-04-27T10:24:11+00:00")
         IMutableUUID(self.portal.doc1).set("30314724b77a4ec0abbad03d262837aa")
 
+        fti = queryUtility(IDexterityFTI, name="Document")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.append("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+
     def serialize(self, obj=None):
         if obj is None:
             obj = self.portal.doc1
@@ -199,6 +204,70 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
         self.assertIn("is_folderish", obj)
         self.assertEqual(True, obj["is_folderish"])
+
+    def test_enable_disable_nextprev(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+        )
+        prev_doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Previous item",
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Current item",
+        )
+        next_doc = api.content.create(
+            container=folder, type="Document", title="Item 2", description="Next item"
+        )
+
+        # Disable next/ previous
+        fti = queryUtility(IDexterityFTI, name="Document")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.remove("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+
+        data = self.serialize(doc)
+
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual({}, data["next_item"])
+
+        # Re-enable next/ previous
+        fti = queryUtility(IDexterityFTI, name="Document")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.remove("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-1",
+                "@type": "Document",
+                "type_title": "Page",
+                "title": "Item 1",
+                "description": "Previous item",
+            },
+            data["previous_item"],
+        )
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-2",
+                "@type": "Document",
+                "type_title": "Page",
+                "title": "Item 2",
+                "description": "Next item",
+            },
+            data["next_item"],
+        )
+
+    def test_enable_disable_nextprev_toggle(self):
+        pass
 
     def test_nextprev_no_nextprev(self):
         folder = api.content.create(
