@@ -206,13 +206,19 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(True, obj["is_folderish"])
 
     def test_enable_disable_nextprev(self):
+        # Disable next/ previous
+        fti = queryUtility(IDexterityFTI, name="Document")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.remove("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+
         folder = api.content.create(
             container=self.portal,
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
         )
-        prev_doc = api.content.create(
+        api.content.create(
             container=folder,
             type="Document",
             title="Item 1",
@@ -224,11 +230,14 @@ class TestDXContentSerializer(unittest.TestCase):
             title="Item 2",
             description="Current item",
         )
-        next_doc = api.content.create(
+        api.content.create(
             container=folder, type="Document", title="Item 2", description="Next item"
         )
 
-        # Disable next/ previous
+        data = self.serialize(doc)
+
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual({}, data["next_item"])
         fti = queryUtility(IDexterityFTI, name="Document")
         behavior_list = [a for a in fti.behaviors]
         behavior_list.remove("plone.nextpreviousenabled")

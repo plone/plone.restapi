@@ -1,7 +1,10 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from plone.app.dexterity.behaviors.nextprevious import NextPreviousBase
+from plone.app.dexterity.behaviors.nextprevious import (
+    INextPreviousProvider,
+    NextPreviousBase,
+)
 from plone.registry.interfaces import IRegistry
 from plone.restapi.serializer.utils import get_portal_type_title
 from zope.component import getUtility
@@ -32,6 +35,9 @@ class NextPrevious:
     @property
     def next(self):
         """return info about the next item in the container"""
+        # Enabled Behaviour is disabled or the toggle is not checked if using the toggle behaviour
+        if not INextPreviousProvider(self.context, None):
+            return {}
         if getattr(self.parent, "_ordering", "") == "unordered":
             # Unordered folder
             return {}
@@ -49,6 +55,9 @@ class NextPrevious:
     @property
     def previous(self):
         """return info about the previous item in the container"""
+        # Enabled Behaviour is disabled or the toggle is not checked if using the toggle behaviour
+        if not INextPreviousProvider(self.context, None):
+            return {}
         if getattr(self.parent, "_ordering", "") == "unordered":
             # Unordered folder
             return {}
