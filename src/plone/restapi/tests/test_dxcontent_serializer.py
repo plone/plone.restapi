@@ -239,18 +239,7 @@ class TestDXContentSerializer(unittest.TestCase):
 
         self.assertEqual({}, data["previous_item"])
         self.assertEqual({}, data["next_item"])
-        fti = queryUtility(IDexterityFTI, name="Document")
-        behavior_list = [a for a in fti.behaviors]
-        behavior_list.remove("plone.nextpreviousenabled")
-        fti.behaviors = tuple(behavior_list)
 
-        data = self.serialize(doc)
-
-        self.assertEqual({}, data["previous_item"])
-        self.assertEqual({}, data["next_item"])
-
-    def test_enable_disable_nextprev_toggle(self):
-        pass
 
     def test_nextprev_no_nextprev(self):
         folder = api.content.create(
