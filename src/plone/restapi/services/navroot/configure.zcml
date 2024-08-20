@@ -13,11 +13,15 @@
       name="@navroot"
       />
 
-
   <adapter
       factory=".get.Navroot"
       name="navroot"
       />
 
+  <cache:ruleset
+      for=".get.NavrootGet"
+      ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
+      />
 
 </configure>

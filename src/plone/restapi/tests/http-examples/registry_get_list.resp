@@ -242,7 +242,7 @@ Content-Type: application/json
             "schema": {
                 "properties": {
                     "default": "disabled",
-                    "description": "Use this setting to enable or disable Captcha validation for comments. Install plone.formwidget.captcha, plone.formwidget.recaptcha, collective.akismet, or collective.z3cform.norobots if there are no options available.",
+                    "description": "Use this setting to enable or disable Captcha validation for comments. Install plone.formwidget.captcha, plone.formwidget.recaptcha, plone.formwidget.hcaptcha, collective.akismet, or collective.z3cform.norobots if there are no options available.",
                     "factory": "Choice",
                     "title": "Captcha",
                     "type": "string",
@@ -423,5 +423,5 @@ Content-Type: application/json
             "value": "The person that created an item"
         }
     ],
-    "items_total": 2972
+    "items_total": 2973
 }

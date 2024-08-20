@@ -76,9 +76,9 @@ class TypesInfo:
                 "id": fti.getId(),
                 "title": translate(fti.Title(), context=self.request),
                 "addable": fti.getId() in allowed_types if can_add else False,
-                "immediately_addable": fti.getId() in immediately_types
-                if can_add
-                else False,
+                "immediately_addable": (
+                    fti.getId() in immediately_types if can_add else False
+                ),
             }
             for fti in ftis
         ]

@@ -20,6 +20,12 @@ jobs:
             plone-version: "6.0"
           - python-version: "3.12"
             plone-version: "6.0"
+          - python-version: "3.10"
+            plone-version: "6.1"
+          - python-version: "3.11"
+            plone-version: "6.1"
+          - python-version: "3.12"
+            plone-version: "6.1"
     steps:
       # git checkout
       - uses: actions/checkout@v4
@@ -48,7 +54,7 @@ jobs:
 
       # buildout
       - name: buildout
-        run: buildout -t 10 -c plone-${{ matrix.plone-version }}.x.cfg
+        run: if [ "${{ matrix.plone-version }}" == "6.0" ] && [ ${{ matrix.python-version }} == '3.8' ]; then buildout -t 10 -c plone-6.0.x-python3.8.cfg; else buildout -t 10 -c plone-${{ matrix.plone-version }}.x.cfg; fi;
         env:
           CI: true
 
