@@ -75,8 +75,9 @@ def json_compatible(value, context=None):
 @adapter(Interface)
 @implementer(IJsonCompatible)
 def default_converter(value):
-    if value is None:
-        return value
+    if value is None or repr(value) == "<UNSET>":
+        # None or node.utils.Unset
+        return None
 
     if type(value) in (six.text_type, bool, int, float, int):
         return value
