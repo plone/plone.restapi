@@ -12,6 +12,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.interfaces import ITransformer
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.schema import SCHEMA_CACHE
 from plone.namedfile.file import NamedFile
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
@@ -93,11 +94,6 @@ class TestDXContentSerializer(unittest.TestCase):
         self.portal.doc1.creation_date = DateTime("2015-04-27T10:14:48+00:00")
         self.portal.doc1.modification_date = DateTime("2015-04-27T10:24:11+00:00")
         IMutableUUID(self.portal.doc1).set("30314724b77a4ec0abbad03d262837aa")
-
-        fti = queryUtility(IDexterityFTI, name="Document")
-        behavior_list = [a for a in fti.behaviors]
-        behavior_list.append("plone.nextpreviousenabled")
-        fti.behaviors = tuple(behavior_list)
 
     def serialize(self, obj=None):
         if obj is None:
@@ -207,17 +203,12 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(True, obj["is_folderish"])
 
     def test_enable_disable_nextprev(self):
-        # Disable next/ previous
-        fti = queryUtility(IDexterityFTI, name="Document")
-        behavior_list = [a for a in fti.behaviors]
-        behavior_list.remove("plone.nextpreviousenabled")
-        fti.behaviors = tuple(behavior_list)
-
         folder = api.content.create(
             container=self.portal,
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=False,
         )
         api.content.create(
             container=folder,
@@ -240,13 +231,13 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual({}, data["previous_item"])
         self.assertEqual({}, data["next_item"])
 
-
     def test_nextprev_no_nextprev(self):
         folder = api.content.create(
             container=self.portal,
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         doc = api.content.create(
             container=folder,
@@ -264,6 +255,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,
@@ -296,6 +288,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         doc = api.content.create(
             container=folder,
@@ -325,6 +318,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,
@@ -369,6 +363,14 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual({}, data["next_item"])
 
     def test_nextprev_root_has_prev(self):
+        fti = queryUtility(IDexterityFTI, name="Plone Site")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.append("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+        # Invalidating the cache is required for the FTI to be applied
+        # on the existing object
+        SCHEMA_CACHE.invalidate("Plone Site")
+
         doc = api.content.create(
             container=self.portal,
             type="Document",
@@ -389,6 +391,14 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual({}, data["next_item"])
 
     def test_nextprev_root_has_next(self):
+        fti = queryUtility(IDexterityFTI, name="Plone Site")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.append("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+        # Invalidating the cache is required for the FTI to be applied
+        # on the existing object
+        SCHEMA_CACHE.invalidate("Plone Site")
+
         api.content.create(
             container=self.portal,
             type="Document",
@@ -409,6 +419,14 @@ class TestDXContentSerializer(unittest.TestCase):
         )
 
     def test_nextprev_root_has_nextprev(self):
+        fti = queryUtility(IDexterityFTI, name="Plone Site")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.append("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+        # Invalidating the cache is required for the FTI to be applied
+        # on the existing object
+        SCHEMA_CACHE.invalidate("Plone Site")
+
         api.content.create(
             container=self.portal,
             type="Document",
@@ -455,6 +473,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         folder.setOrdering("unordered")
         doc = api.content.create(
