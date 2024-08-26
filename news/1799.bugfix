@@ -1,0 +1,4 @@
+Fixed Dexterity content serializer:
+Return an empty object for `next_item` and `previous_item`
+unless the parent has next/previous support enabled.
+@JeffersonBledsoe, @davisagli
