@@ -33,6 +33,9 @@ from importlib import import_module
 import json
 import unittest
 
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 HAS_PLONE_61 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE61MARKER", False
 )
@@ -362,6 +365,7 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual({}, data["previous_item"])
         self.assertEqual({}, data["next_item"])
 
+    @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_prev(self):
         fti = queryUtility(IDexterityFTI, name="Plone Site")
         behavior_list = [a for a in fti.behaviors]
@@ -390,6 +394,7 @@ class TestDXContentSerializer(unittest.TestCase):
         )
         self.assertEqual({}, data["next_item"])
 
+    @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_next(self):
         fti = queryUtility(IDexterityFTI, name="Plone Site")
         behavior_list = [a for a in fti.behaviors]
@@ -418,6 +423,7 @@ class TestDXContentSerializer(unittest.TestCase):
             data["next_item"],
         )
 
+    @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_nextprev(self):
         fti = queryUtility(IDexterityFTI, name="Plone Site")
         behavior_list = [a for a in fti.behaviors]
