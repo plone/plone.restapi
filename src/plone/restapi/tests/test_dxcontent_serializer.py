@@ -527,6 +527,9 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(False, obj["allow_discussion"])
 
     def test_allow_discussion_obj_instance_allows_but_not_global_enabled(self):
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = False
         self.portal.invokeFactory("Document", id="doc2")
         self.portal.doc2.allow_discussion = True
         serializer = getMultiAdapter((self.portal.doc2, self.request), ISerializeToJson)
@@ -536,6 +539,9 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(False, obj["allow_discussion"])
 
     def test_allow_discussion_fti_allows_not_global_enabled(self):
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = False
         self.portal.invokeFactory("Document", id="doc2")
         portal_types = getToolByName(self.portal, "portal_types")
         document_fti = getattr(portal_types, self.portal.doc2.portal_type)
