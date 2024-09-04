@@ -14,7 +14,7 @@
       <div class="form-group row">
         <label for="id_" class="form-label col-sm-3 col-md-2">Id</label>
         <div class="col-sm-9 col-md-10">
-          <input id="id_" name="id" class="form-control" type="text" tal:attributes="value request/id|string:jwt_auth" />
+          <input id="id_" name="id_" class="form-control" type="text" tal:attributes="value request/id_|string:jwt_auth" />
         </div>
       </div>
 
