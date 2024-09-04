@@ -86,7 +86,8 @@ class VocabulariesGet(Service):
                 404, "Not Found", f"The vocabulary '{vocabulary_name}' does not exist"
             )
 
-        vocabulary = factory(self.context)
+        query = self.request.form.get("title", "")
+        vocabulary = factory(self.context, query=query)
         serializer = getMultiAdapter(
             (vocabulary, self.request), interface=ISerializeToJson
         )
