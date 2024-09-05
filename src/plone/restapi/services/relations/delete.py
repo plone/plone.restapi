@@ -40,9 +40,11 @@ class DeleteRelations(Service):
                     msg = (
                         "Source and target not found."
                         if not source_obj and not target_obj
-                        else "Source not found."
-                        if not source_obj
-                        else "Target not found."
+                        else (
+                            "Source not found."
+                            if not source_obj
+                            else "Target not found."
+                        )
                     )
                     msg = f"Failed on deleting a relation. {msg}"
                     log.error(f"{msg} {relationdata}")

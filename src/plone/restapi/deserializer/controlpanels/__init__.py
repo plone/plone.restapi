@@ -9,7 +9,9 @@ from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
+from zope.i18n import translate
 from zope.interface import implementer
+from zope.interface.exceptions import Invalid
 from zope.schema import getFields
 from zope.schema.interfaces import ValidationError
 
@@ -32,7 +34,7 @@ class ControlpanelDeserializeFromJson:
         self.context = self.controlpanel.context
         self.request = self.controlpanel.request
 
-    def __call__(self):
+    def __call__(self, mask_validation_errors=True):
         data = json_body(self.controlpanel.request)
 
         proxy = self.registry.forInterface(self.schema, prefix=self.schema_prefix)
@@ -61,10 +63,10 @@ class ControlpanelDeserializeFromJson:
                     field.validate(value)
                     # Set the value.
                     setattr(proxy, name, value)
-                except ValueError as e:
-                    errors.append({"message": str(e), "field": name, "error": e})
                 except ValidationError as e:
                     errors.append({"message": e.doc(), "field": name, "error": e})
+                except (ValueError, Invalid) as e:
+                    errors.append({"message": str(e), "field": name, "error": e})
                 else:
                     field_data[name] = value
 
@@ -77,4 +79,10 @@ class ControlpanelDeserializeFromJson:
                 errors.append({"error": error, "message": str(error)})
 
         if errors:
+            for error in errors:
+                if mask_validation_errors:
+                    # Drop Python specific error classes in order to be able to better handle
+                    # errors on front-end
+                    error["error"] = "ValidationError"
+                error["message"] = translate(error["message"], context=self.request)
             raise BadRequest(errors)

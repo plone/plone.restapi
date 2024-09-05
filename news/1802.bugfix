@@ -1,0 +1,1 @@
+Fixed implementation of the `jwt_auth` plugin. It now can be added, and its properties, `use_keyring` and `store_tokens`, can be updated. @sauzher

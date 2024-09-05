@@ -11,6 +11,8 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.interfaces import ITransformer
 from plone.app.textfield.value import RichTextValue
+from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.schema import SCHEMA_CACHE
 from plone.namedfile.file import NamedFile
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
@@ -31,6 +33,9 @@ from importlib import import_module
 import json
 import unittest
 
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 HAS_PLONE_61 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE61MARKER", False
 )
@@ -200,12 +205,42 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertIn("is_folderish", obj)
         self.assertEqual(True, obj["is_folderish"])
 
+    def test_enable_disable_nextprev(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+            nextPreviousEnabled=False,
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Previous item",
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Current item",
+        )
+        api.content.create(
+            container=folder, type="Document", title="Item 2", description="Next item"
+        )
+
+        data = self.serialize(doc)
+
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual({}, data["next_item"])
+
     def test_nextprev_no_nextprev(self):
         folder = api.content.create(
             container=self.portal,
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         doc = api.content.create(
             container=folder,
@@ -223,6 +258,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,
@@ -255,6 +291,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         doc = api.content.create(
             container=folder,
@@ -284,6 +321,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,
@@ -327,7 +365,16 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual({}, data["previous_item"])
         self.assertEqual({}, data["next_item"])
 
+    @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_prev(self):
+        fti = queryUtility(IDexterityFTI, name="Plone Site")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.append("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+        # Invalidating the cache is required for the FTI to be applied
+        # on the existing object
+        SCHEMA_CACHE.invalidate("Plone Site")
+
         doc = api.content.create(
             container=self.portal,
             type="Document",
@@ -347,7 +394,16 @@ class TestDXContentSerializer(unittest.TestCase):
         )
         self.assertEqual({}, data["next_item"])
 
+    @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_next(self):
+        fti = queryUtility(IDexterityFTI, name="Plone Site")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.append("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+        # Invalidating the cache is required for the FTI to be applied
+        # on the existing object
+        SCHEMA_CACHE.invalidate("Plone Site")
+
         api.content.create(
             container=self.portal,
             type="Document",
@@ -367,7 +423,16 @@ class TestDXContentSerializer(unittest.TestCase):
             data["next_item"],
         )
 
+    @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_nextprev(self):
+        fti = queryUtility(IDexterityFTI, name="Plone Site")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.append("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+        # Invalidating the cache is required for the FTI to be applied
+        # on the existing object
+        SCHEMA_CACHE.invalidate("Plone Site")
+
         api.content.create(
             container=self.portal,
             type="Document",
@@ -414,6 +479,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         folder.setOrdering("unordered")
         doc = api.content.create(
@@ -461,6 +527,9 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(False, obj["allow_discussion"])
 
     def test_allow_discussion_obj_instance_allows_but_not_global_enabled(self):
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = False
         self.portal.invokeFactory("Document", id="doc2")
         self.portal.doc2.allow_discussion = True
         serializer = getMultiAdapter((self.portal.doc2, self.request), ISerializeToJson)
@@ -470,6 +539,9 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(False, obj["allow_discussion"])
 
     def test_allow_discussion_fti_allows_not_global_enabled(self):
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = False
         self.portal.invokeFactory("Document", id="doc2")
         portal_types = getToolByName(self.portal, "portal_types")
         document_fti = getattr(portal_types, self.portal.doc2.portal_type)

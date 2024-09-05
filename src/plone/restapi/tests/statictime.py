@@ -1,13 +1,17 @@
 from datetime import datetime
 from datetime import timezone
 from DateTime import DateTime
-from plone.app.discussion.comment import Comment
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.dexterity.content import DexterityContent
 from plone.locking.lockable import TTWLockable
 from plone.restapi.serializer.working_copy import WorkingCopyInfo
 from Products.CMFCore.WorkflowTool import _marker
 from Products.CMFCore.WorkflowTool import WorkflowTool
+
+try:
+    from plone.app.discussion.comment import Comment
+except ImportError:
+    Comment = None
 
 
 _originals = {
@@ -106,19 +110,21 @@ class StaticTime:
         DexterityContent.modification_date = property(
             static_modification_date_getter_factory(self.static_modified), nop_setter
         )
-
-        # Patch the lightweight p.a.discussion 'Comment' type. Its dates are
-        # Python datetimes, unlike DX Content types which use zope DateTimes.
-        Comment.creation_date = property(
-            static_creation_date_getter_factory(self.static_created, type_=datetime),
-            nop_setter,
-        )
-        Comment.modification_date = property(
-            static_modification_date_getter_factory(
-                self.static_modified, type_=datetime
-            ),
-            nop_setter,
-        )
+        if Comment is not None:
+            # Patch the lightweight p.a.discussion 'Comment' type. Its dates are
+            # Python datetimes, unlike DX Content types which use zope DateTimes.
+            Comment.creation_date = property(
+                static_creation_date_getter_factory(
+                    self.static_created, type_=datetime
+                ),
+                nop_setter,
+            )
+            Comment.modification_date = property(
+                static_modification_date_getter_factory(
+                    self.static_modified, type_=datetime
+                ),
+                nop_setter,
+            )
 
         WorkflowTool.getInfoFor = static_get_info_for_factory(self.static_modified)
 
@@ -138,8 +144,9 @@ class StaticTime:
         ]
         WorkflowTool.getInfoFor = _originals["WorkflowTool.getInfoFor"]
 
-        Comment.modification_date = None
-        Comment.creation_date = None
+        if Comment is not None:
+            Comment.modification_date = None
+            Comment.creation_date = None
 
         WorkingCopyInfo.created = _originals["WorkingCopyInfo.created"]
 

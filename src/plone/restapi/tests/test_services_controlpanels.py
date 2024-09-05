@@ -115,6 +115,22 @@ class TestControlpanelsEndpoint(unittest.TestCase):
         self.assertIn("message", response)
         self.assertIn("Required input is missing.", response["message"])
 
+    def test_update_validation(self):
+        response = self.api_session.patch(
+            "/@controlpanels/socialmedia", json={"twitter_username": "@test"}
+        )
+        response = response.json()
+        self.assertIn(
+            'Twitter username should not include the "@" prefix character.',
+            response["message"],
+        )
+
+    def test_update_validation_status(self):
+        response = self.api_session.patch(
+            "/@controlpanels/socialmedia", json={"twitter_username": "@test"}
+        )
+        self.assertEqual(response.status_code, 400)
+
     def test_get_usergroup_control_panel(self):
         # This control panel does not exist in Plone 5
         response = self.api_session.get("/@controlpanels/usergroup")

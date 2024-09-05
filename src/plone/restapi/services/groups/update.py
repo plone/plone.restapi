@@ -112,9 +112,9 @@ class GroupsPatch(Service):
         )
 
         properties = {}
-        for id, property in group.propertyItems():
-            if data.get(id, False):
-                properties[id] = data[id]
+        for _id, _property in group.propertyItems():
+            if data.get(_id, False):
+                properties[_id] = data[_id]
         group.setGroupProperties(properties)
 
         # Add/remove members
@@ -122,8 +122,8 @@ class GroupsPatch(Service):
         for userid, allow in users.items():
             if allow:
                 if userid not in memberids:
-                    group.addMember(userid)
+                    portal_groups.addPrincipalToGroup(userid, group.id)
             else:
                 if userid in memberids:
-                    group.removeMember(userid)
+                    portal_groups.removePrincipalFromGroup(userid, group.id)
         return self.reply_no_content()

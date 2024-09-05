@@ -34,7 +34,7 @@ copyright = "2014-%s, Plone Foundation" % thisyear
 # built documents.
 # TODO: There must be a way to import this from `setup.py` so we don't have to
 # update it manually for each release.
-version = "8.24.2.dev0"
+version = "9.7.2.dev0"
 release = version
 
 # -- General configuration ----------------------------------------------------
@@ -176,15 +176,7 @@ html_theme_options = {
     "use_repository_button": True,
     "use_issues_button": True,
     "use_edit_page_button": True,
-    "extra_navbar": """
-    <p class="ploneorglink">
-        <a href="https://plone.org">
-            <img src="/_static/logo.svg" alt="plone.org" /> plone.org</a>
-    </p>""",
-    "extra_footer": """<p>The text and illustrations in this website are licensed by the Plone Foundation under a Creative Commons Attribution 4.0 International license. Plone and the Plone® logo are registered trademarks of the Plone Foundation, registered in the United States and other countries. For guidelines on the permitted uses of the Plone trademarks, see <a href="https://plone.org/foundation/logo">https://plone.org/foundation/logo</a>. All other trademarks are owned by their respective owners.</p>
-    <p><a href="https://www.netlify.com">
-  <img src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg" alt="Deploys by Netlify" />
-</a></p>""",
+    "extra_footer": """<p>The text and illustrations in this website are licensed by the Plone Foundation under a Creative Commons Attribution 4.0 International license. Plone and the Plone® logo are registered trademarks of the Plone Foundation, registered in the United States and other countries. For guidelines on the permitted uses of the Plone trademarks, see <a href="https://plone.org/foundation/logo">https://plone.org/foundation/logo</a>. All other trademarks are owned by their respective owners.</p>""",
 }
 
 # Theme options are theme-specific and customize the look and feel of a theme
