@@ -86,8 +86,14 @@ class VocabulariesGet(Service):
                 404, "Not Found", f"The vocabulary '{vocabulary_name}' does not exist"
             )
 
+        # some vocabularies (such as plone.app.vocabularies.Principals)
+        # allow passing a query parameter to their factory
         query = self.request.form.get("title", "")
-        vocabulary = factory(self.context, query=query)
+        if query:
+            vocabulary = factory(self.context, query=query)
+        else:
+            vocabulary = factory(self.context)
+
         serializer = getMultiAdapter(
             (vocabulary, self.request), interface=ISerializeToJson
         )
