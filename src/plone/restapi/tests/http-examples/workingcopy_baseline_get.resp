@@ -58,13 +58,7 @@ Content-Type: application/json
         "token": "0.12345678901234567-0.98765432109876543-00105A989226:1630609830.249"
     },
     "modified": "1995-07-31T17:30:00+00:00",
-    "next_item": {
-        "@id": "http://localhost:55001/plone/copy_of_document",
-        "@type": "Document",
-        "description": "",
-        "title": "Test document",
-        "type_title": "Page"
-    },
+    "next_item": {},
     "parent": {
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",

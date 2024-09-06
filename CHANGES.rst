@@ -8,6 +8,32 @@ Changelog
 
 .. towncrier release notes start
 
+9.7.2 (2024-09-05)
+------------------
+
+Bug fixes:
+
+
+- Fixed Dexterity content serializer:
+  Return an empty object for `next_item` and `previous_item`
+  unless the parent has next/previous support enabled.
+  @JeffersonBledsoe, @davisagli (#1799)
+- Fixed implementation of the `jwt_auth` plugin. It now can be added, and its properties, `use_keyring` and `store_tokens`, can be updated. @sauzher (#1802)
+
+
+Internal:
+
+
+- Explicitly globally disable comments in the tests that need it.
+  [maurits] (#244)
+
+
+Documentation:
+
+
+- Update contributing docs for Plone 6, and switch from Netlify to Read the Docs for pull request previews. @stevepiercy (#1798)
+
+
 9.7.1 (2024-06-29)
 ------------------
 
