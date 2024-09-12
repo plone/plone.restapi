@@ -252,4 +252,5 @@ class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
         ocurrence = ot.publishTraverse(self.request, tomorrow_str)
         summary = getMultiAdapter((ocurrence, self.request), ISerializeToJsonSummary)()
 
-        self.assertEqual(summary, {})
+        self.assertEqual(summary["start"], tomorrow_str)
+        self.assertEqual(summary["Title"], ocurrence.Title())
