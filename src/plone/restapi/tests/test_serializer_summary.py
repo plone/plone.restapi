@@ -211,8 +211,9 @@ class TestSummarySerializers(unittest.TestCase):
             summary,
         )
 
+
 class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING    
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer["portal"]
@@ -220,9 +221,12 @@ class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
 
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix="c6dcbd55ab2746e199cd4ed458")
-    
+
         behaviors = self.portal.portal_types.DXTestDocument.behaviors
-        behaviors = behaviors + ('plone.eventbasic', 'plone.eventrecurrence',)
+        behaviors = behaviors + (
+            "plone.eventbasic",
+            "plone.eventrecurrence",
+        )
         self.portal.portal_types.DXTestDocument.behaviors = behaviors
 
         self.event = createContentInContainer(
@@ -233,7 +237,7 @@ class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
             description="Description event",
             start=datetime.now(),
             end=datetime.now() + timedelta(hours=1),
-            recurrence="RRULE:FREQ=DAILY;COUNT=3" # see https://github.com/plone/plone.app.event/blob/master/plone/app/event/tests/base_setup.py
+            recurrence="RRULE:FREQ=DAILY;COUNT=3",  # see https://github.com/plone/plone.app.event/blob/master/plone/app/event/tests/base_setup.py
         )
 
         alsoProvides(self.event, IEvent)
@@ -244,9 +248,9 @@ class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
 
     def test_dx_event_with_recurrence(self):
         tomorrow = datetime.now() + timedelta(days=1)
-        tomorrow_str = tomorrow.strftime('%Y-%m-%d')
+        tomorrow_str = tomorrow.strftime("%Y-%m-%d")
         ot = OccurrenceTraverser(self.event, self.request)
         ocurrence = ot.publishTraverse(self.request, tomorrow_str)
         summary = getMultiAdapter((ocurrence, self.request), ISerializeToJsonSummary)()
-        
+
         self.assertEqual(summary, {})
