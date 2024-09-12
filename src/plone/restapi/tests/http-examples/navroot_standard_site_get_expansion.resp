@@ -50,7 +50,7 @@ Content-Type: application/json
                 "@id": "http://localhost:55001/plone",
                 "@type": "Plone Site",
                 "UID": "55c25ebc220d400393574f37d648727c",
-                "allow_discussion": null,
+                "allow_discussion": false,
                 "contributors": [],
                 "creators": [
                     "admin"
@@ -101,7 +101,7 @@ Content-Type: application/json
     "@id": "http://localhost:55001/plone",
     "@type": "Plone Site",
     "UID": "55c25ebc220d400393574f37d648727c",
-    "allow_discussion": null,
+    "allow_discussion": false,
     "contributors": [],
     "creators": [
         "admin"
