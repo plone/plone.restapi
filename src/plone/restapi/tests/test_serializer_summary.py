@@ -17,7 +17,6 @@ from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 
 import Missing
-import transaction
 import unittest
 
 
