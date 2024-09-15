@@ -4,14 +4,20 @@ from plone.restapi import _
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFPlone.controlpanel.browser.redirects import absolutize_path
+from Products.CMFPlone.controlpanel.browser.redirects import RedirectsControlPanel
+from Products.statusmessages.interfaces import IStatusMessage
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
+from zope.component.hooks import getSite
 from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect.interfaces
+import logging
+
+logger = logging.getLogger("Plone")
 
 
 @implementer(IPublishTraverse)
@@ -83,14 +89,35 @@ class AliasesPost(Service):
 class AliasesRootPost(Service):
     """Creates new aliases via controlpanel"""
 
-    def reply(self):
-        data = json_body(self.request)
+    def _reply_csv(self):
+        form = self.request.form
+        if not form.get("file"):
+            raise BadRequest("No file uploaded")
+        controlpanel = RedirectsControlPanel(self.context, self.request)
         storage = getUtility(IRedirectionStorage)
-        aliases = data.get("items", [])
+        status = IStatusMessage(self.request)
+        portal = getSite()
+        file = form["file"]
+        controlpanel.upload(file, portal, storage, status)
+        file.close()
 
+        if err := status.show():
+            if err[0].type == "error":
+                raise BadRequest(err[0].message)
+            elif err[0].type == "info":
+                logger.info(err[0].message)
+        return self.reply_no_content()
+
+    def reply(self):
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
+        if "multipart/form-data" in self.request.getHeader("Content-Type"):
+            return self._reply_csv()
+
+        storage = getUtility(IRedirectionStorage)
+        data = json_body(self.request)
+        aliases = data.get("items", [])
 
         for alias in aliases:
             redirection = alias.get("path")
