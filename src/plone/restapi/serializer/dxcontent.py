@@ -23,6 +23,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import base_hasattr
 from Products.CMFCore.interfaces import IContentish
 from zope.component import adapter
+from zope.component import ComponentLookupError
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
@@ -41,15 +42,16 @@ except ImportError:
 
 
 def get_allow_discussion_value(context, request, result):
-    # This test is to handle the plone.app.discussion not being installed situation
-    if "allow_discussion" in result:
-        # Check if the content item implements the IContentish interface
-        if IContentish.providedBy(context):
-            result["allow_discussion"] = getMultiAdapter(
-                (context, request), name="conversation_view"
-            ).enabled()
-    else:
-        result["allow_discussion"] = False
+    # This test is to handle the situation of plone.app.discussion not being installed
+    # or not being activated.
+    if "allow_discussion" in result and IContentish.providedBy(context):
+        try:
+            view = getMultiAdapter((context, request), name="conversation_view")
+            result["allow_discussion"] = view.enabled()
+            return
+        except ComponentLookupError:
+            pass
+    result["allow_discussion"] = False
 
 
 @implementer(ISerializeToJson)
