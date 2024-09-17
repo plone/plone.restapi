@@ -2122,7 +2122,7 @@ class TestCommenting(TestDocumentationBase):
         response = self.api_session.get(url + query)
         save_request_and_response_for_docs("aliases_root_get_csv_format", response)
 
-    def test_aliases_root_post_csv_format(self):
+    def test_aliases_root_add_csv_format(self):
         url = f"{self.portal.absolute_url()}/@aliases"
 
         content = b"old path,new path,datetime,manual\n/old-page,/front-page,2022/01/01 00:00:00 GMT+0,True\n"
@@ -2148,7 +2148,7 @@ class TestCommenting(TestDocumentationBase):
         }
 
         response = self.api_session.post(url, headers=headers, data=body)
-        save_request_and_response_for_docs("aliases_root_post_csv_format", response)
+        save_request_and_response_for_docs("aliases_root_add_csv_format", response)
 
     def test_aliases_root_filter(self):
         # Get aliases
