@@ -70,9 +70,9 @@ Response:
 :language: http
 ```
 
-## Adding URL aliases in bulk
+## Adding URL aliases in bulk via JSON
 
-You can add multiple URL aliases for multiple pages by sending a `POST` request to the `/@aliases` endpoint on site `root`. **datetime** parameter is optional:
+You can add multiple URL aliases for multiple pages by sending a `POST` request to the `/@aliases` endpoint on site `root` using JSON payload. **datetime** parameter is optional:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -85,10 +85,25 @@ Response:
 :language: http
 ```
 
+## Adding URL aliases in bulk via CSV
 
-## Listing all available aliases
+You can add multiple URL aliases for multiple pages by sending a `POST` request to the `/@aliases` endpoint on site `root` using CSV file. **datetime** parameter is optional:
 
-To list all aliases, send a `GET` request to the `/@aliases` endpoint on site `root`:
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_add_csv_format.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/aliases_root_add_csv_format.resp
+:language: http
+```
+
+
+## Listing all available aliases via JSON
+
+To list all aliases in JSON format, send a `GET` request to the `/@aliases` endpoint on site `root`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -98,6 +113,21 @@ To list all aliases, send a `GET` request to the `/@aliases` endpoint on site `r
 Response:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/aliases_root_get.resp
+:language: http
+```
+
+## Listing all available aliases via CSV
+
+To download all aliases as a csv file, send a `GET` request to the `/@aliases` endpoint on site `root`:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_get_csv_format.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/aliases_root_get_csv_format.resp
 :language: http
 ```
 
