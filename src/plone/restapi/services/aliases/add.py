@@ -1,4 +1,5 @@
 from DateTime import DateTime
+from DateTime.interfaces import DateTimeError
 from plone.app.redirector.interfaces import IRedirectionStorage
 from plone.restapi import _
 from plone.restapi.deserializer import json_body
@@ -118,7 +119,6 @@ class AliasesRootPost(Service):
         storage = getUtility(IRedirectionStorage)
         data = json_body(self.request)
         aliases = data.get("items", [])
-
         for alias in aliases:
             redirection = alias.get("path")
             target = alias.get("redirect-to")
@@ -140,7 +140,11 @@ class AliasesRootPost(Service):
 
             date = alias.get("datetime", None)
             if date:
-                date = DateTime(date)
+                try:
+                    date = DateTime(date)
+                except DateTimeError:
+                    logger.warning("Failed to parse as DateTime: %s", date)
+                    date = None
 
             storage.add(abs_redirection, abs_target, now=date, manual=True)
 
