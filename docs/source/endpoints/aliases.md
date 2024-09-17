@@ -72,7 +72,8 @@ Response:
 
 ## Adding URL aliases in bulk via JSON
 
-You can add multiple URL aliases for multiple pages by sending a `POST` request to the `/@aliases` endpoint on site `root` using JSON payload. **datetime** parameter is optional:
+You can add multiple URL aliases for multiple pages by sending a `POST` request to the `/@aliases` endpoint on site `root` using a JSON payload.
+**datetime** parameter is optional:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -87,7 +88,8 @@ Response:
 
 ## Adding URL aliases in bulk via CSV
 
-You can add multiple URL aliases for multiple pages by sending a `POST` request to the `/@aliases` endpoint on site `root` using CSV file. **datetime** parameter is optional:
+You can add multiple URL aliases for multiple pages by sending a `POST` request to the `/@aliases` endpoint on site `root` using a CSV file.
+**datetime** parameter is optional:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -118,7 +120,7 @@ Response:
 
 ## Listing all available aliases via CSV
 
-To download all aliases as a csv file, send a `GET` request to the `/@aliases` endpoint on site `root`:
+To download all aliases as a CSV file, send a `GET` request to the `/@aliases` endpoint on site `root`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
