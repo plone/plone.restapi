@@ -50,7 +50,7 @@ jobs:
       - run: pip install virtualenv
       - run: pip install wheel
       - name: pip install
-        run: pip install -r requirements-${{ matrix.plone-version }}.txt -r requirements-docs.txt
+        run: pip install -r requirements-${{ matrix.plone-version }}.txt
 
       # buildout
       - name: buildout
@@ -60,7 +60,7 @@ jobs:
 
       # build sphinx
       - name: sphinx
-        run: if [ "${{ matrix.plone-version }}" == "6.0" ] && [ ${{ matrix.python-version }} == '3.12' ]; then make docs-html; fi
+        run: if [ "${{ matrix.plone-version }}" == "6.0" ] && [ ${{ matrix.python-version }} == '3.12' ]; then pip install -r requirements-docs.txt && make docs-html; fi
 
       # test
       - name: test
