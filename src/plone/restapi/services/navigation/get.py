@@ -135,7 +135,9 @@ class Navigation:
             if brain_parent_path == navtree_path:
                 # This should be already provided by the portal_tabs_view
                 continue
-            if brain.exclude_from_nav and not f"{brain_path}/".startswith(f"{context_path}/"):
+            if brain.exclude_from_nav and not f"{brain_path}/".startswith(
+                f"{context_path}/"
+            ):
                 # skip excluded items if they're not in our context path
                 continue
             url = brain.getURL()
