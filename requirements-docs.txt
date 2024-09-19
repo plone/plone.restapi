@@ -1,6 +1,7 @@
 linkify-it-py
 myst-parser
 plone-sphinx-theme
+setuptools  # required by sphinxcontrib.httpexample
 sphinx-autobuild
 sphinx-copybutton
 sphinxcontrib.httpdomain
