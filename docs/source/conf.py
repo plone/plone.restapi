@@ -26,6 +26,8 @@ sys.path.insert(0, os.path.abspath("../../"))
 
 # General information about the project.
 project = "plone.restapi"
+author = "Plone Community"
+trademark_name = "Plone"
 thisyear = datetime.datetime.now().year
 copyright = "2014-%s, Plone Foundation" % thisyear
 
@@ -159,24 +161,69 @@ ogp_custom_meta_tags = [
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "sphinx_book_theme"
-
+html_theme = "plone_sphinx_theme"
 html_logo = "_static/logo.svg"
 html_favicon = "_static/favicon.ico"
 
-html_css_files = ["custom.css", ("print.css", {"media": "print"})]
+# html_css_files = ["custom.css", ("print.css", {"media": "print"})]
 
 # See http://sphinx-doc.org/ext/todo.html#confval-todo_include_todos
 todo_include_todos = True
 
+# The name for this set of Sphinx documents.  If None, it defaults to
+# "<project> v<release> documentation".
+html_title = "%(project)s v%(release)s" % {"project": project, "release": release}
+
 html_theme_options = {
+    "extra_footer": """<p>The text and illustrations in this website are licensed by the Plone Foundation under a Creative Commons Attribution 4.0 International license. Plone and the Plone® logo are registered trademarks of the Plone Foundation, registered in the United States and other countries. For guidelines on the permitted uses of the Plone trademarks, see <a href="https://plone.org/foundation/logo">https://plone.org/foundation/logo</a>. All other trademarks are owned by their respective owners.</p>
+    <p>Pull request previews by <a href="https://readthedocs.org/">Read the Docs</a>.</p>""",
+    "footer_end": ["version.html"],
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/plone/plone.restapi",
+            "icon": "fa-brands fa-square-github",
+            "type": "fontawesome",
+            "attributes": {
+                "target": "_blank",
+                "rel": "noopener me",
+                "class": "nav-link custom-fancy-css"
+            }
+        },
+        {
+            "name": "Mastodon",
+            "url": "https://plone.social/@plone",
+            "icon": "fa-brands fa-mastodon",
+            "type": "fontawesome",
+            "attributes": {
+                "target": "_blank",
+                "rel": "noopener me",
+                "class": "nav-link custom-fancy-css"
+            }
+        },
+        {
+            "name": "Twitter",
+            "url": "https://twitter.com/plone",
+            "icon": "fa-brands fa-square-twitter",
+            "type": "fontawesome",
+            "attributes": {
+                "target": "_blank",
+                "rel": "noopener me",
+                "class": "nav-link custom-fancy-css"
+            }
+        },
+    ],
+    "logo": {
+        "text": html_title,
+    },
+    "navigation_with_keys": True,
     "path_to_docs": "docs",
-    "repository_url": "https://github.com/plone/plone.restapi",
     "repository_branch": "master",
-    "use_repository_button": True,
-    "use_issues_button": True,
+    "repository_url": "https://github.com/plone/plone.restapi",
+    "search_bar_text": "Search",  # TODO: Confirm usage of search_bar_text
     "use_edit_page_button": True,
-    "extra_footer": """<p>The text and illustrations in this website are licensed by the Plone Foundation under a Creative Commons Attribution 4.0 International license. Plone and the Plone® logo are registered trademarks of the Plone Foundation, registered in the United States and other countries. For guidelines on the permitted uses of the Plone trademarks, see <a href="https://plone.org/foundation/logo">https://plone.org/foundation/logo</a>. All other trademarks are owned by their respective owners.</p>""",
+    "use_issues_button": True,
+    "use_repository_button": True,
 }
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -186,10 +233,6 @@ html_theme_options = {
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
-
-# The name for this set of Sphinx documents.  If None, it defaults to
-# "<project> v<release> documentation".
-html_title = "%(project)s v%(release)s" % {"project": project, "release": release}
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 # html_short_title = None
@@ -274,12 +317,14 @@ htmlhelp_basename = "plonerestapidoc"
 # For more information see:
 # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
 myst_enable_extensions = [
-    "deflist",  # You will be able to utilise definition lists
+    "deflist",  # Support definition lists.
     # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#definition-lists
-    "linkify",  # Identify “bare” web URLs and add hyperlinks.
+    "linkify",  # Identify "bare" web URLs and add hyperlinks.
     "colon_fence",  # You can also use ::: delimiters to denote code fences,\
     #  instead of ```.
-    "substitution",  # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#substitutions-with-jinja2
+    "substitution",  # plone.restapi \
+    # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#substitutions-with-jinja2
+    "html_image",  # For inline images. See https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#html-images
 ]
 
 myst_substitutions = {
