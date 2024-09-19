@@ -136,8 +136,11 @@ class TestServicesNavigation(unittest.TestCase):
         response = self.api_session.get(
             "/folder/@navigation", params={"expand.navigation.depth": 2}
         )
-        self.assertNotIn("Excluded SubFolder", [item["title"] for item in response.json()["items"][1]["items"]])
-        
+        self.assertNotIn(
+            "Excluded SubFolder",
+            [item["title"] for item in response.json()["items"][1]["items"]],
+        )
+
         registry = getUtility(IRegistry)
         settings = registry.forInterface(INavigationSchema, prefix="plone")
         settings.show_excluded_items = True
@@ -145,7 +148,10 @@ class TestServicesNavigation(unittest.TestCase):
         response = self.api_session.get(
             "/folder/@navigation", params={"expand.navigation.depth": 2}
         )
-        self.assertIn("Excluded SubFolder", [item["title"] for item in response.json()["items"][1]["items"]])
+        self.assertIn(
+            "Excluded SubFolder",
+            [item["title"] for item in response.json()["items"][1]["items"]],
+        )
 
     def test_navigation_sorting(self):
         registry = getUtility(IRegistry)
