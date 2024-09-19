@@ -124,6 +124,29 @@ class TestServicesNavigation(unittest.TestCase):
         )
         self.assertIsNone(response.json()["items"][1]["items"][3]["review_state"])
 
+    def test_show_exclude_items(self):
+        createContentInContainer(
+            self.folder,
+            "Folder",
+            id="excluded-subfolder",
+            title="Excluded SubFolder",
+            exclude_from_nav=True,
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            "/folder/@navigation", params={"expand.navigation.depth": 2}
+        )
+        self.assertNotIn("Excluded SubFolder", [item["title"] for item in response.json()["items"][1]["items"]])
+        
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(INavigationSchema, prefix="plone")
+        settings.show_excluded_items = True
+        transaction.commit()
+        response = self.api_session.get(
+            "/folder/@navigation", params={"expand.navigation.depth": 2}
+        )
+        self.assertIn("Excluded SubFolder", [item["title"] for item in response.json()["items"][1]["items"]])
+
     def test_navigation_sorting(self):
         registry = getUtility(IRegistry)
         registry["plone.displayed_types"] = (
