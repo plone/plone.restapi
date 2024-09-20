@@ -1,2 +1,2 @@
-Fix incorrect condition for show_ecluded_items setting in the @navigation API.
+Fix incorrect condition for ``show_excluded_items`` setting in the ``@navigation`` API.
 [mamico]
