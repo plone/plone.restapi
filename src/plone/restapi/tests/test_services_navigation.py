@@ -124,7 +124,7 @@ class TestServicesNavigation(unittest.TestCase):
         )
         self.assertIsNone(response.json()["items"][1]["items"][3]["review_state"])
 
-    def test_show_exclude_items(self):
+    def test_show_excluded_items(self):
         createContentInContainer(
             self.folder,
             "Folder",
