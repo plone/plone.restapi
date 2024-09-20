@@ -162,7 +162,14 @@ ogp_custom_meta_tags = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = "plone_sphinx_theme"
+
+# The name of an image file (relative to this directory) to place at the top
+# of the sidebar.
 html_logo = "_static/logo.svg"
+
+# The name of an image file (within the static path) to use as favicon of the
+# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
+# pixels large.
 html_favicon = "_static/favicon.ico"
 
 # See http://sphinx-doc.org/ext/todo.html#confval-todo_include_todos
@@ -172,6 +179,9 @@ todo_include_todos = True
 # "<project> v<release> documentation".
 html_title = "%(project)s v%(release)s" % {"project": project, "release": release}
 
+# Theme options are theme-specific and customize the look and feel of a theme
+# further.  For a list of options available for each theme, see the
+# documentation.
 html_theme_options = {
     "extra_footer": """<p>The text and illustrations in this website are licensed by the Plone Foundation under a Creative Commons Attribution 4.0 International license. Plone and the Plone® logo are registered trademarks of the Plone Foundation, registered in the United States and other countries. For guidelines on the permitted uses of the Plone trademarks, see <a href="https://plone.org/foundation/logo">https://plone.org/foundation/logo</a>. All other trademarks are owned by their respective owners.</p>
     <p>Pull request previews by <a href="https://readthedocs.org/">Read the Docs</a>.</p>""",
@@ -224,25 +234,11 @@ html_theme_options = {
     "use_repository_button": True,
 }
 
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-# html_theme_options = {}
-
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 # html_short_title = None
-
-# The name of an image file (relative to this directory) to place at the top
-# of the sidebar.
-# html_logo = None
-
-# The name of an image file (within the static path) to use as favicon of the
-# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
-# pixels large.
-# html_favicon = None
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
