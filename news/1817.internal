@@ -1,0 +1,1 @@
+Revert duplication of ``pip install -r requirements-docs.txt`` in GitHub workflow. @stevepiercy
