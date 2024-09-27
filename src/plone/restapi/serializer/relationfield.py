@@ -7,6 +7,7 @@ from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from z3c.relationfield.interfaces import IRelationChoice
 from z3c.relationfield.interfaces import IRelationList
 from z3c.relationfield.interfaces import IRelationValue
+from z3c.relationfield import RelationValue
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.globalrequest import getRequest
@@ -33,4 +34,20 @@ class RelationChoiceFieldSerializer(DefaultFieldSerializer):
 @adapter(IRelationList, IDexterityContent, Interface)
 @implementer(IFieldSerializer)
 class RelationListFieldSerializer(DefaultFieldSerializer):
-    pass
+    def get_value(self, default=[]):
+        """Return field value reduced to list of non-broken Relationvalues.
+
+        Args:
+            default (list, optional): Default field value. Defaults to empty list.
+
+        Returns:
+            list: List of RelationValues
+        """
+        value = getattr(
+            self.field.interface(self.context), self.field.__name__, default
+        )
+        if not value:
+            return []
+        if isinstance(value, RelationValue):
+            return [value]
+        return [el for el in value if el.to_object]
