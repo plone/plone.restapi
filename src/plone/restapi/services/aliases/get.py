@@ -69,6 +69,8 @@ class Aliases:
 
         filestream = RedirectsControlPanel(self.context, self.request).download()
         content = filestream.read()
+        filestream.close()
+
         self.request.response.setHeader("Content-Type", "text/csv")
         self.request.response.setHeader(
             "Content-Disposition", "attachment; filename=redirects.csv"
