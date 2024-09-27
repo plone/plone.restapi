@@ -95,10 +95,13 @@ black:  ## Black
 zpretty:  ## zpretty
 	if [ -f "bin/zpretty" ]; then zpretty -i ./**/*.zcml; fi
 
-.PHONY: docs-clean
-docs-clean:  ## Clean current and legacy docs build directories, and Python virtual environment
-	cd $(DOCS_DIR) && rm -rf $(BUILDDIR)/
+.PHONY: python-clean
+python-clean:  ## Clean Python virtual environment
 	rm -rf bin include lib
+
+.PHONY: docs-clean
+docs-clean:  ## Clean current and legacy docs build directories
+	cd $(DOCS_DIR) && rm -rf $(BUILDDIR)/
 	rm -rf docs/build
 
 .PHONY: docs-html
