@@ -27,6 +27,9 @@ from zope.component import getMultiAdapter
 from zope.component import provideAdapter
 from zope.component import queryUtility
 from zope.interface import Interface
+from z3c.relationfield import RelationValue
+from zope.component import getUtility
+from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
 from importlib import import_module
 
@@ -189,6 +192,26 @@ class TestDXContentSerializer(unittest.TestCase):
             (Interface, IBrowserRequest),
             IExpandableElement,
             "foo",
+        )
+
+    def test_serializer_excludes_deleted_relations(self):
+
+        intids = getUtility(IIntIds)
+        self.portal.invokeFactory(
+            "DXTestDocument",
+            id="doc2",
+        )
+        self.portal.doc1.test_relationlist_field = [
+            RelationValue(intids.getId(self.portal.doc1)),
+            RelationValue(intids.getId(self.portal.doc2)),
+        ]
+        # delete doc2 to make sure we have a None value in the relation list
+        self.portal.manage_delObjects(["doc2"])
+
+        obj = self.serialize()
+        self.assertEqual(1, len(obj["test_relationlist_field"]))
+        self.assertEqual(
+            "http://nohost/plone/doc1", obj["test_relationlist_field"][0]["@id"]
         )
 
     def test_get_is_folderish(self):

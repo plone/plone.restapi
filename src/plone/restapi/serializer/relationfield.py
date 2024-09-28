@@ -7,7 +7,6 @@ from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from z3c.relationfield.interfaces import IRelationChoice
 from z3c.relationfield.interfaces import IRelationList
 from z3c.relationfield.interfaces import IRelationValue
-from z3c.relationfield import RelationValue
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.globalrequest import getRequest
@@ -48,6 +47,4 @@ class RelationListFieldSerializer(DefaultFieldSerializer):
         )
         if not value:
             return []
-        if isinstance(value, RelationValue):
-            return [value]
         return [el for el in value if el.to_object]
