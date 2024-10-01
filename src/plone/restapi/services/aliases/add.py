@@ -94,11 +94,16 @@ class AliasesRootPost(Service):
         form = self.request.form
         if not form.get("file"):
             raise BadRequest("No file uploaded")
+
+        file = form["file"]
+
+        if file.headers.get("Content-Type") not in ("text/csv", "application/csv"):
+            raise BadRequest("Uploaded file is not a valid CSV file")
+
         controlpanel = RedirectsControlPanel(self.context, self.request)
         storage = getUtility(IRedirectionStorage)
         status = IStatusMessage(self.request)
         portal = getSite()
-        file = form["file"]
         controlpanel.upload(file, portal, storage, status)
         file.close()
 
