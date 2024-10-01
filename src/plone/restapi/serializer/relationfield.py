@@ -1,3 +1,4 @@
+from plone import api
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IJsonCompatible
@@ -17,7 +18,12 @@ from zope.interface import Interface
 @adapter(IRelationValue)
 @implementer(IJsonCompatible)
 def relationvalue_converter(value):
-    if value.to_object:
+    has_permission = api.user.has_permission(
+        "Access Contents Information",
+        obj=value.__parent__
+    )
+
+    if value.to_object and has_permission:
         request = getRequest()
         request.form["metadata_fields"] = ["UID"]
         summary = getMultiAdapter((value.to_object, request), ISerializeToJsonSummary)()
@@ -33,4 +39,9 @@ class RelationChoiceFieldSerializer(DefaultFieldSerializer):
 @adapter(IRelationList, IDexterityContent, Interface)
 @implementer(IFieldSerializer)
 class RelationListFieldSerializer(DefaultFieldSerializer):
-    pass
+    def __call__(self):
+        value = self.get_value()
+        if value:
+            return [item for item in json_compatible(value) if item]
+        else:
+            return super().__call__()
