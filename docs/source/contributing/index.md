@@ -13,9 +13,9 @@ This section describes how to contribute to the `plone.restapi` project.
 It extends {doc}`plone:contributing/index`.
 
 
-## Pre-requisites
+## Prerequisites
 
-Prepare your system by installing {ref}`plone:plone-pre-requisites-label`.
+Prepare your system by installing {ref}`plone:plone-prerequisites-label`.
 
 
 ## Set up development environment
