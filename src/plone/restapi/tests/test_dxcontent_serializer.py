@@ -28,6 +28,7 @@ from zope.component import provideAdapter
 from zope.component import queryUtility
 from zope.interface import Interface
 from z3c.relationfield import RelationValue
+from z3c.relationfield.event import _setRelation
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -201,10 +202,14 @@ class TestDXContentSerializer(unittest.TestCase):
             "DXTestDocument",
             id="doc2",
         )
+        rel1 = RelationValue(intids.getId(self.portal.doc1))
+        rel2 = RelationValue(intids.getId(self.portal.doc2))
         self.portal.doc1.test_relationlist_field = [
-            RelationValue(intids.getId(self.portal.doc1)),
-            RelationValue(intids.getId(self.portal.doc2)),
+            rel1,
+            rel2,
         ]
+        _setRelation(self.portal.doc1, "test_relationlist_field", rel1)
+        _setRelation(self.portal.doc1, "test_relationlist_field", rel2)
         # delete doc2 to make sure we have a None value in the relation list
         self.portal.manage_delObjects(["doc2"])
 

@@ -42,9 +42,7 @@ class RelationListFieldSerializer(DefaultFieldSerializer):
         Returns:
             list: List of RelationValues
         """
-        value = getattr(
-            self.field.interface(self.context), self.field.__name__, default
-        )
+        value = super().get_value()
         if not value:
             return []
-        return [el for el in value if el.to_object]
+        return [el for el in value if el.to_id]
