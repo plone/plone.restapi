@@ -2,10 +2,16 @@ from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from plone.restapi.services.model import ErrorOutputDTO
+from pydantic import ValidationError
 from Products.CMFCore.utils import getToolByName
-from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
+from Products.PluggableAuthService.interfaces.plugins import (
+    IAuthenticationPlugin,
+)
 from zope import component
 from zope.interface import alsoProvides
+
+from .model import LoginInputDTO, TokenOutputDTO
 
 import plone.protect.interfaces
 
@@ -13,29 +19,89 @@ import plone.protect.interfaces
 class Login(Service):
     """Handles login and returns a JSON web token (JWT)."""
 
+    @classmethod
+    def __restapi_doc__(cls):
+        return {
+            "post": {
+                "summary": "Login endpoint",
+                "description": "A JWT token can be acquired by posting a user's credentials to the @login endpoint",
+                "requestBody": {
+                    "required": True,
+                    "content": {
+                        "application/json": {
+                            "schema": LoginInputDTO.schema(),
+                        }
+                    },
+                },
+                "responses": {
+                    "200": {
+                        "description": "User succesfully authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": TokenOutputDTO.schema()
+                            }
+                        },
+                    },
+                    "400": {
+                        "description": "User input error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        },
+                    },
+                    "401": {
+                        "description": "User unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        },
+                    },
+                    "501": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        },
+                    },
+                },
+            }
+        }
+
     def reply(self):
-        data = json_body(self.request)
-        if "login" not in data or "password" not in data:
+        try:
+            data = LoginInputDTO(**json_body(self.request))
+        except ValidationError as e:
             self.request.response.setStatus(400)
-            return dict(
-                error=dict(
-                    type="Missing credentials",
-                    message="Login and password must be provided in body.",
-                )
-            )
+            return ErrorOutputDTO(
+                error={
+                    "type": "Missing credentials",
+                    "message": "Login and password must be provided in body.",
+                }
+            ).dict()
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
+            alsoProvides(
+                self.request, plone.protect.interfaces.IDisableCSRFProtection
+            )
 
-        userid = data["login"]
-        password = data["password"]
+        userid = data.login
+        password = data.password
         uf = self._find_userfolder(userid)
 
         # Also put the password in __ac_password on the request.
         # The post-login code in PlonePAS expects to find it there
         # when it calls the PAS updateCredentials plugin.
-        self.request.form["__ac_password"] = data["password"]
+        self.request.form["__ac_password"] = password
 
         if uf is not None:
             plugins = uf._getOb("plugins")
@@ -48,12 +114,12 @@ class Login(Service):
 
             if plugin is None:
                 self.request.response.setStatus(501)
-                return dict(
+                return ErrorOutputDTO(
                     error=dict(
                         type="Login failed",
                         message="JWT authentication plugin not installed.",
                     )
-                )
+                ).dict()
 
             user = uf.authenticate(userid, password, self.request)
         else:
@@ -61,11 +127,12 @@ class Login(Service):
 
         if not user:
             self.request.response.setStatus(401)
-            return dict(
+            return ErrorOutputDTO(
                 error=dict(
-                    type="Invalid credentials", message="Wrong login and/or password."
+                    type="Invalid credentials",
+                    message="Wrong login and/or password.",
                 )
-            )
+            ).dict()
 
         # Perform the same post-login actions as would happen when logging in through
         # the Plone classic HTML login form.  There is a trade-off here, we either
@@ -82,7 +149,9 @@ class Login(Service):
 
         payload = {}
         payload["fullname"] = user.getProperty("fullname")
-        return {"token": plugin.create_token(user.getId(), data=payload)}
+        return TokenOutputDTO(
+            token=plugin.create_token(user.getId(), data=payload)
+        ).dict()
 
     def _find_userfolder(self, userid):
         """Try to find a user folder that contains a user with the given
