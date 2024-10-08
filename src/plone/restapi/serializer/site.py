@@ -24,6 +24,8 @@ from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
 from plone.restapi.serializer.dxcontent import get_allow_discussion_value
+from plone.restapi.serializer.dxcontent import update_with_working_copy_info
+
 
 import json
 
@@ -71,6 +73,9 @@ class SerializeSiteRootToJson:
             "is_folderish": True,
             "description": self.context.description,
         }
+
+        # Insert working copy information
+        update_with_working_copy_info(self.context, result)
 
         if HAS_PLONE_6:
             result["UID"] = self.context.UID()
