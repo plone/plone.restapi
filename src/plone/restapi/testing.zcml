@@ -33,4 +33,6 @@
       provides=".tests.dxtypes.ITestAnnotationsBehavior"
       />
 
+  <adapter factory=".tests.dxtypes.DexterityInstanceBehaviorAssignable" />
+
 </configure>

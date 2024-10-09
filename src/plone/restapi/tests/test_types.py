@@ -4,7 +4,9 @@ from plone.app.multilingual.dx import directives
 from plone.app.textfield import RichText
 from plone.autoform import directives as form
 from plone.dexterity.fti import DexterityFTI
+from plone.dexterity.utils import createContentInContainer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.tests.dxtypes import IInstanceBehaviorAssignableContent
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
@@ -18,6 +20,7 @@ from unittest import TestCase
 from z3c.form.browser.text import TextWidget
 from zope import schema
 from zope.component import getMultiAdapter
+from zope.interface import alsoProvides
 from zope.interface import provider
 from zope.schema.interfaces import IContextAwareDefaultFactory
 from zope.schema.vocabulary import SimpleTerm
@@ -128,6 +131,29 @@ class TestJsonSchemaUtils(TestCase):
             "Document", portal, request, excluded_fields=["title"]
         )
         self.assertNotIn("title", list(jsonschema["properties"]))
+
+    def test_get_jsonschema_for_instance(self):
+        portal = self.portal
+        request = self.request
+        ttool = getToolByName(portal, "portal_types")
+        obj = createContentInContainer(
+            portal,
+            "Document",
+            id="doc",
+            title="Document",
+        )
+        jsonschema = get_jsonschema_for_fti(ttool["Document"], obj, request)
+        behaviors = [field["behavior"] for field in jsonschema["properties"].values()]
+        self.assertIn("plone.dublincore", behaviors)
+        self.assertNotIn("tests.restapi.test_behavior", behaviors)
+
+        # this testing adapter contextually add `test_behavior` and remove
+        # `dublincore`
+        alsoProvides(obj, IInstanceBehaviorAssignableContent)
+        jsonschema = get_jsonschema_for_fti(ttool["Document"], obj, request)
+        behaviors = [field["behavior"] for field in jsonschema["properties"].values()]
+        self.assertNotIn("plone.dublincore", behaviors)
+        self.assertIn("tests.restapi.test_behavior", behaviors)
 
 
 class TestTaggedValuesJsonSchemaUtils(TestCase):
