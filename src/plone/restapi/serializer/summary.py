@@ -83,10 +83,7 @@ class DefaultJSONSummarySerializer:
         self.blocklisted_attributes = metadata["blocklisted_attributes"]
 
     def __call__(self):
-        try:
-            obj = IContentListingObject(self.context)
-        except TypeError:
-            return {}
+        obj = IContentListingObject(self.context)
 
         summary = {}
         for field in self.metadata_fields():
