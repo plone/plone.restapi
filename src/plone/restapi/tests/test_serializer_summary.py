@@ -18,7 +18,6 @@ from zope.interface import alsoProvides
 
 import Missing
 import unittest
-import pkg_resources
 
 
 try:
