@@ -1,6 +1,7 @@
 from base64 import b64encode
 from datetime import datetime
 from datetime import timezone
+import io
 from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import ICommentAddedEvent
@@ -2096,6 +2097,58 @@ class TestCommenting(TestDocumentationBase):
 
         response = self.api_session.get(url + query)
         save_request_and_response_for_docs("aliases_root_get", response)
+
+    def test_aliases_root_get_csv_format(self):
+        url = f"{self.portal.absolute_url()}/@aliases"
+        query = ""
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+        self.api_session.headers.update({"Content-Type": "application/json"})
+        self.api_session.headers.update({"Accept": "text/csv"})
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_get_csv_format", response)
+
+    def test_aliases_root_add_csv_format(self):
+        url = f"{self.portal.absolute_url()}/@aliases"
+
+        content = b"old path,new path,datetime,manual\n/old-page,/front-page,2022/01/01 00:00:00 GMT+0,True\n"
+        csv_file = io.BytesIO(content)
+        csv_file.name = "test_file.csv"
+
+        # Setting a fixed boundary intentionally to make the producing .req and .resp files deterministic
+        boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+
+        # Manually construct the multipart body
+        body = (
+            f"--{boundary}\r\n"
+            f'Content-Disposition: form-data; name="file"; filename="{csv_file.name}"\r\n'
+            "Content-Type: text/csv\r\n\r\n"
+            f"{content.decode()}\r\n"
+            f"--{boundary}--\r\n"
+        )
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": "Basic YWRtaW46c2VjcmV0",
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
+        }
+
+        response = self.api_session.post(url, headers=headers, data=body)
+        save_request_and_response_for_docs("aliases_root_add_csv_format", response)
 
     def test_aliases_root_filter(self):
         # Get aliases
