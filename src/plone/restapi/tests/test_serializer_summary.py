@@ -18,6 +18,13 @@ from zope.interface import alsoProvides
 
 import Missing
 import unittest
+import pkg_resources
+
+
+try:
+    from plone.app.event.adapters import OccurrenceContentListingObject
+except ImportError:
+    OccurrenceContentListingObject = None
 
 
 class TestSummarySerializers(unittest.TestCase):
@@ -245,7 +252,24 @@ class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
     def tearDown(self):
         popGlobalRegistry(getSite())
 
-    def test_dx_event_with_recurrence(self):
+    @unittest.skipIf(
+        OccurrenceContentListingObject is not None,
+        "this test needs a plone.app.event version that does not include a IContentListingObject adapter",
+    )
+    def test_dx_event_with_recurrence_old_version(self):
+        tomorrow = datetime.now() + timedelta(days=1)
+        tomorrow_str = tomorrow.strftime("%Y-%m-%d")
+        ot = OccurrenceTraverser(self.event, self.request)
+        ocurrence = ot.publishTraverse(self.request, tomorrow_str)
+
+        with self.assertRaises(TypeError):
+            getMultiAdapter((ocurrence, self.request), ISerializeToJsonSummary)()
+
+    @unittest.skipIf(
+        OccurrenceContentListingObject is None,
+        "this test needs a plone.app.event version that includes a IContentListingObject adapter",
+    )
+    def test_dx_event_with_recurrence_new_version(self):
         tomorrow = datetime.now() + timedelta(days=1)
         tomorrow_str = tomorrow.strftime("%Y-%m-%d")
         ot = OccurrenceTraverser(self.event, self.request)
