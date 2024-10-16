@@ -3,39 +3,29 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.services import Service
 from zope.component import getMultiAdapter
 from zope.component import getUtility
+from plone.restapi.services.vocabularies.get import VocabulariesGet
 
-class QuerystringEditorGet(Service):
-    """Returns the complete querystring configuration for editors.
-    This maintains all existing functionality but requires edit permissions.
-    """
-    def reply(self):
-        registry = getUtility(IRegistry)
-        reader = getMultiAdapter((registry, self.request), IQuerystringRegistryReader)
-        reader.vocab_context = self.context
-        result = reader()
-        result["@id"] = f"{self.context.absolute_url()}/@querystring"
-        return result
-
-class QuerystringPublicGet(Service):
-    """Returns a filtered querystring configuration for public use.
-    This removes sensitive information like user and group vocabularies.
-    """
+class QuerystringGet(Service):
+    """Returns the querystring configuration, filtering based on user permissions."""
+    
     def reply(self):
         registry = getUtility(IRegistry)
         reader = getMultiAdapter((registry, self.request), IQuerystringRegistryReader)
         reader.vocab_context = self.context
         result = reader()
         
-        # Filter out sensitive information
-        sensitive_vocabs = ['plone.app.vocabularies.Users', 'plone.app.vocabularies.Groups']
+        # Filter vocabularies based on user permissions
+        vocabularies_get_service = VocabulariesGet(self.context, self.request)
         indexes_to_remove = []
         
         for index_name, index_data in result['indexes'].items():
-            if 'vocabulary' in index_data and index_data['vocabulary'] in sensitive_vocabs:
-                indexes_to_remove.append(index_name)
-                
+            if 'vocabulary' in index_data:
+                vocabulary_name = index_data['vocabulary']
+                if not vocabularies_get_service._has_permission_to_access_vocabulary(vocabulary_name):
+                    indexes_to_remove.append(index_name)
+                    
         for index_name in indexes_to_remove:
             del result['indexes'][index_name]
         
-        result["@id"] = f"{self.context.absolute_url()}/@querystring-public"
+        result["@id"] = f"{self.context.absolute_url()}/@querystring"
         return result
