@@ -1,2 +1,1 @@
-Use exisitng aliases controlpanel permissions for aliases endpoint as well
-[jackahl]
+Aliases endpoint: Use "Manage Portal Aliases" and "Manage Content Aliases" permissions. @jackahl
