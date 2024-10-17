@@ -21,7 +21,7 @@ The `operators` property contains additional metadata about each operation.
 If an index uses a vocabulary, the vocabulary values are included in the `values` property.
 The vocabulary is resolved in the same context where the `/@querystring` endpoint is called (requires `plone.app.querystring >= 2.1.0`).
 
-**Note:** This endpoint returns the querystring configuration, filtering out vocabularies that the current user does not have permission to access. The filtering is done based on the same permission checks as the `@vocabularies` endpoint, ensuring that sensitive information, such as user or group data, is not exposed to unauthorized users.
+If an index uses a vocabulary that the current user does not have permission to access, that index will not be included in the results.
 
 ## Get `querystring` configuration
 
