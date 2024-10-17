@@ -81,9 +81,12 @@ class Site:
         This can be used by a client to check for version-dependent features.
         """
         result = {
-            "filter_aliases_by_date": hasattr(RedirectionSet, "supports_date_range_filtering"),
+            "filter_aliases_by_date": hasattr(
+                RedirectionSet, "supports_date_range_filtering"
+            ),
         }
         return result
+
 
 class SiteGet(Service):
     def reply(self):
