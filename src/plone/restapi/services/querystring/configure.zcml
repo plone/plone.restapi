@@ -4,48 +4,27 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:zcml="http://namespaces.zope.org/zcml"
     >
-  
-  <!-- Editor endpoint -->
+
   <plone:service
       method="GET"
-      factory=".get.QuerystringEditorGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      permission="cmf.ModifyPortalContent"
-      name="@querystring"
-      />
-  <plone:service
-      method="GET"
-      factory=".get.QuerystringEditorGet"
-      for="Products.CMFCore.interfaces.IContentish"
-      permission="cmf.ModifyPortalContent"
-      name="@querystring"
-      />
-      
-  <!-- Public endpoint -->
-  <plone:service
-      method="GET"
-      factory=".get.QuerystringPublicGet"
+      factory=".get.QuerystringGet"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="zope2.View"
-      name="@querystring-public"
-      />
-  <plone:service
-      method="GET"
-      factory=".get.QuerystringPublicGet"
-      for="Products.CMFCore.interfaces.IContentish"
-      permission="zope2.View"
-      name="@querystring-public"
+      name="@querystring"
       />
 
-  <!-- Maintain caching for both endpoints -->
+  <plone:service
+      method="GET"
+      factory=".get.QuerystringGet"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@querystring"
+      />
+
   <cache:ruleset
-      for=".get.QuerystringEditorGet"
+      for=".get.QuerystringGet"
       ruleset="plone.content.dynamic"
       zcml:condition="have plone-app-caching-3"
       />
-  <cache:ruleset
-      for=".get.QuerystringPublicGet"
-      ruleset="plone.content.dynamic"
-      zcml:condition="have plone-app-caching-3"
-      />
+
 </configure>
