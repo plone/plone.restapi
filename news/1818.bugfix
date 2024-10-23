@@ -1,1 +1,0 @@
-Fix response of `RelationListFieldSerializer` by filtering out invalid items. @Faakhir30

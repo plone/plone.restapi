@@ -1,2 +1,0 @@
-Fix incorrect condition for ``show_excluded_items`` setting in the ``@navigation`` API.
-[mamico]

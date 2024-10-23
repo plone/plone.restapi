@@ -8,6 +8,34 @@ Changelog
 
 .. towncrier release notes start
 
+9.8.0 (2024-10-23)
+------------------
+
+New features:
+
+
+- Added create and fetch aliases in CSV format. @Faakhir30 (#1812)
+- Site service: Indicate whether the site supports filtering URL aliases by date. @davisagli (#1826)
+
+
+Bug fixes:
+
+
+- Fix error getting allow_discussion value when p.a.discussion is not activated.
+  [maurits] (#1808)
+- Fix incorrect condition for ``show_excluded_items`` setting in the ``@navigation`` API.
+  [mamico] (#1816)
+- Fix response of `RelationListFieldSerializer` by filtering out invalid items. @Faakhir30 (#1818)
+- Aliases endpoint: Use "Manage Portal Aliases" and "Manage Content Aliases" permissions. @jackahl (#1820)
+
+
+Documentation:
+
+
+- Use Plone Sphinx Theme for documentation. Build docs when there are changes to http-examples. @stevepiercy (#1815)
+- Fixed spelling of prerequisites. @stevepiercy (#1822)
+
+
 9.7.2 (2024-09-05)
 ------------------
 
