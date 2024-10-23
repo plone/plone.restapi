@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+9.8.1 (2024-10-23)
+------------------
+
+Bug fixes:
+
+
+- Fix `ComponentLookupError` for `Products.CMFPlone.ManagePortalAliases` permission, which could happen depending on package load order. @davisagli (#1827)
+
+
 9.8.0 (2024-10-23)
 ------------------
 

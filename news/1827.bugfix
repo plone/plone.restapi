@@ -1,1 +1,0 @@
-Fix `ComponentLookupError` for `Products.CMFPlone.ManagePortalAliases` permission, which could happen depending on package load order. @davisagli
