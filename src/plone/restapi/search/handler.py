@@ -75,6 +75,10 @@ class SearchHandler:
             path = "/".join(self.context.getPhysicalPath())
             query["path"]["query"] = path
 
+    def quote_chars(self, query):
+        # Escape parentheses by adding backslashes before them
+        return query.replace('(', '').replace(')', '').strip()
+
     def search(self, query=None):
         if query is None:
             query = {}
@@ -92,6 +96,12 @@ class SearchHandler:
 
         if use_site_search_settings:
             query = self.filter_query(query)
+
+        if "SearchableText" in query:
+            # Sanitize SearchableText by removing parentheses
+            query["SearchableText"] = self.quote_chars(query["SearchableText"])
+            if not query["SearchableText"] or query["SearchableText"] == "*":
+                return []
 
         self._constrain_query_by_path(query)
         query = self._parse_query(query)
