@@ -76,7 +76,7 @@ class SearchHandler:
             query["path"]["query"] = path
 
     def quote_chars(self, query):
-        # Escape parentheses by adding backslashes before them
+        # Remove parentheses from the query
         return query.replace("(", "").replace(")", "").strip()
 
     def search(self, query=None):
