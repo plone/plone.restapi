@@ -77,7 +77,7 @@ class SearchHandler:
 
     def quote_chars(self, query):
         # Escape parentheses by adding backslashes before them
-        return query.replace('(', '').replace(')', '').strip()
+        return query.replace("(", "").replace(")", "").strip()
 
     def search(self, query=None):
         if query is None:
