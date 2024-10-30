@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+9.8.2 (2024-10-30)
+------------------
+
+Bug fixes:
+
+
+- `@search` service: Remove parentheses from search query. @tedw87 (#1828)
+
+
 9.8.1 (2024-10-23)
 ------------------
 
