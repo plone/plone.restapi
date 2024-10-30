@@ -151,6 +151,23 @@ class TestSearchFunctional(unittest.TestCase):
             set(result_paths(response.json())),
         )
 
+    def test_search_with_parentheses(self):
+        query = {"SearchableText": "("}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [], "Expected no items for query with only parentheses")
+
+        query = {"SearchableText": ")"}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [], "Expected no items for query with only parentheses")
+
+        query = {"SearchableText": "lorem(ipsum)"}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        items = [item["title"] for item in response.json().get("items", [])]
+        self.assertIn("Lorem Ipsum", items, "Expected 'Lorem Ipsum' to be found in search results")
+
     def test_search_in_vhm(self):
         # Install a Virtual Host Monster
         if "virtual_hosting" not in self.app.objectIds():

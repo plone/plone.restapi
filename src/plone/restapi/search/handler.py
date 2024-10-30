@@ -77,7 +77,7 @@ class SearchHandler:
 
     def quote_chars(self, query):
         # Remove parentheses from the query
-        return query.replace("(", "").replace(")", "").strip()
+        return query.replace("(", " ").replace(")", " ").strip()
 
     def search(self, query=None):
         if query is None:
@@ -110,7 +110,6 @@ class SearchHandler:
         results = getMultiAdapter((lazy_resultset, self.request), ISerializeToJson)(
             fullobjects=fullobjects
         )
-
         return results
 
     def filter_types(self, types):
