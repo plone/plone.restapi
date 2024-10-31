@@ -1,0 +1,1 @@
+Fixed Plone Site serialization when there is a field with read_permission set. @ericof
