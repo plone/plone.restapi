@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+9.8.3 (2024-11-01)
+------------------
+
+Bug fixes:
+
+
+- Fixed Plone Site serialization when there is a field with read_permission set. @ericof (#1830)
+
+
 9.8.2 (2024-10-30)
 ------------------
 
