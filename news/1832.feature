@@ -1,0 +1,1 @@
+Support the registration of serializers and deserializers per schema [@ericof]

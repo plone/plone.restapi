@@ -1,9 +1,13 @@
 from plone.app.uuid.utils import uuidToCatalogBrain
+from plone.dexterity.content import DexterityContent
 from plone.dexterity.schema import lookup_fti
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
 from zope.i18n import translate
+from plone.dexterity.utils import iterSchemata
+from plone.restapi.interfaces import ISchemaSerializer
+from ZPublisher.HTTPRequest import HTTPRequest
 
 import re
 
@@ -53,3 +57,11 @@ def get_portal_type_title(portal_type):
     if request:
         return translate(getattr(fti, "Title", lambda: portal_type)(), context=request)
     return getattr(fti, "Title", lambda: portal_type)()
+
+
+def serialize_schemas(context: DexterityContent, request: HTTPRequest) -> dict:
+    result = {}
+    for schema in iterSchemata(context):
+        serializer = queryMultiAdapter((schema, context, request), ISchemaSerializer)
+        result.update(serializer())
+    return result
