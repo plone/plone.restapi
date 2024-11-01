@@ -1,7 +1,6 @@
 from .mixins import OrderingMixin
 from AccessControl import getSecurityManager
 from plone.dexterity.interfaces import IDexterityContent
-from plone.restapi import _
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.deserializer.utils import deserialize_schemas

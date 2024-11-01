@@ -7,7 +7,6 @@ from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.deserializer import boolean_value
-from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.interfaces import IPrimaryFieldTarget
 from plone.restapi.interfaces import ISerializeToJson

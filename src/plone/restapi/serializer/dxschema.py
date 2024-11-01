@@ -10,7 +10,6 @@ from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
-from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.content import DexterityContent
 from zope.interface.interfaces import IInterface
 from plone.dexterity.interfaces import IContentType
