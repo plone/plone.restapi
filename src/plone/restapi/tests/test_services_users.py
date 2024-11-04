@@ -1436,3 +1436,56 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(
             "manager@example.com", api.user.get(userid="manager").getProperty("email")
         )
+
+    def test_user_email_change_login_with_email(self):
+        """test that when login with email is enabled and the user changes their email
+        they can log in with the new email
+        """
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+        # Create a user
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        transaction.commit()
+        anon_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(anon_response.ok)
+        auth_token = anon_response.json().get("token")
+
+        user_api_session = RelativeSession(self.portal_url, test=self)
+        user_api_session.headers.update({"Accept": "application/json"})
+        user_api_session.headers.update({"Authorization": f"Bearer {auth_token}"})
+
+        email_change_response = user_api_session.patch(
+            "/@users/howard.zinn@example.com",
+            json={"email": "new_email@example.com"},
+        )
+        self.assertTrue(email_change_response.ok)
+        new_login_with_old_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertFalse(new_login_with_old_email_response.ok)
+        new_login_with_new_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "new_email@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(new_login_with_new_email_response.ok)
