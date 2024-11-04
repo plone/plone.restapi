@@ -1437,7 +1437,58 @@ class TestUsersEndpoint(unittest.TestCase):
             "manager@example.com", api.user.get(userid="manager").getProperty("email")
         )
 
-    def test_user_email_change_login_with_email(self):
+    def test_manager_changes_email_when_login_with_email(self):
+        """test that when login with email is enabled and a manager changes a user's email
+        they can log in with the new email
+        """
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+        # Create a user
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        transaction.commit()
+        anon_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(anon_response.ok)
+
+        email_change_response = self.api_session.patch(
+            "/@users/howard.zinn@example.com",
+            json={
+                "email": "new_email@example.com",
+            },
+        )
+
+        self.assertTrue(email_change_response.ok)
+        new_login_with_old_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertFalse(new_login_with_old_email_response.ok)
+        new_login_with_new_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "new_email@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(new_login_with_new_email_response.ok)
+
+    def test_user_changes_email_when_login_with_email(self):
         """test that when login with email is enabled and the user changes their email
         they can log in with the new email
         """
