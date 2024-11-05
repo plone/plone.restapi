@@ -101,12 +101,22 @@ class AliasesRootPost(Service):
             raise BadRequest("Uploaded file is not a valid CSV file")
 
         controlpanel = RedirectsControlPanel(self.context, self.request)
+        csv_errors = controlpanel.csv_errors = []
         storage = getUtility(IRedirectionStorage)
         status = IStatusMessage(self.request)
         portal = getSite()
         controlpanel.upload(file, portal, storage, status)
         file.close()
 
+        if csv_errors:
+            self.request.response.setHeader("Content-Type", "application/json")
+            self.request.response.setStatus(BadRequest)
+            return {
+                "type": "BadRequest",
+                "message": f"Found {len(csv_errors)} errors in CSV file.",
+                # Skip first item which is a notice about the delimiter
+                "csv_errors": csv_errors[1:],
+            }
         if err := status.show():
             if err[0].type == "error":
                 raise BadRequest(err[0].message)
