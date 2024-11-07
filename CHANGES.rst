@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+9.8.4 (2024-11-05)
+------------------
+
+Bug fixes:
+
+
+- URL Management control panel: Fix error handling in CSV upload. @davisagli (#1837)
+
+
 9.8.3 (2024-11-01)
 ------------------
 
