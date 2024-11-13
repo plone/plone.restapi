@@ -312,6 +312,9 @@ class ITestBehavior(model.Schema):
     test_behavior_field = schema.TextLine(required=False)
     # Add nav_title to test if it gets substituted in Navigation service
     nav_title = schema.TextLine(required=False)
+    # Add a field with read permission set
+    test_secure_field = schema.TextLine(required=False)
+    read_permission(test_secure_field="cmf.ManagePortal")
 
 
 @provider(IFormFieldProvider)

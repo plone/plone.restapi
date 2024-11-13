@@ -8,6 +8,70 @@ Changelog
 
 .. towncrier release notes start
 
+9.8.4 (2024-11-05)
+------------------
+
+Bug fixes:
+
+
+- URL Management control panel: Fix error handling in CSV upload. @davisagli (#1837)
+
+
+9.8.3 (2024-11-01)
+------------------
+
+Bug fixes:
+
+
+- Fixed Plone Site serialization when there is a field with read_permission set. @ericof (#1830)
+
+
+9.8.2 (2024-10-30)
+------------------
+
+Bug fixes:
+
+
+- `@search` service: Remove parentheses from search query. @tedw87 (#1828)
+
+
+9.8.1 (2024-10-23)
+------------------
+
+Bug fixes:
+
+
+- Fix `ComponentLookupError` for `Products.CMFPlone.ManagePortalAliases` permission, which could happen depending on package load order. @davisagli (#1827)
+
+
+9.8.0 (2024-10-23)
+------------------
+
+New features:
+
+
+- Added create and fetch aliases in CSV format. @Faakhir30 (#1812)
+- Site service: Indicate whether the site supports filtering URL aliases by date. @davisagli (#1826)
+
+
+Bug fixes:
+
+
+- Fix error getting allow_discussion value when p.a.discussion is not activated.
+  [maurits] (#1808)
+- Fix incorrect condition for ``show_excluded_items`` setting in the ``@navigation`` API.
+  [mamico] (#1816)
+- Fix response of `RelationListFieldSerializer` by filtering out invalid items. @Faakhir30 (#1818)
+- Aliases endpoint: Use "Manage Portal Aliases" and "Manage Content Aliases" permissions. @jackahl (#1820)
+
+
+Documentation:
+
+
+- Use Plone Sphinx Theme for documentation. Build docs when there are changes to http-examples. @stevepiercy (#1815)
+- Fixed spelling of prerequisites. @stevepiercy (#1822)
+
+
 9.7.2 (2024-09-05)
 ------------------
 

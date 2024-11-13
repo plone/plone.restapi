@@ -4,15 +4,17 @@ from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import IPloneSiteRoot
-from plone.restapi.blocks import visit_blocks, iter_block_transform_handlers
+from plone.restapi.blocks import iter_block_transform_handlers
+from plone.restapi.blocks import visit_blocks
+from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.serializer.dxcontent import get_allow_discussion_value
 from plone.restapi.serializer.expansion import expandable_elements
-from plone.restapi.services.locking import lock_info
 from plone.restapi.serializer.utils import get_portal_type_title
+from plone.restapi.services.locking import lock_info
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
@@ -23,7 +25,6 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
-from plone.restapi.serializer.dxcontent import get_allow_discussion_value
 
 import json
 
@@ -39,6 +40,7 @@ class SerializeSiteRootToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        self.permission_cache = {}
 
     def _build_query(self):
         path = "/".join(self.context.getPhysicalPath())

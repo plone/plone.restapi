@@ -22,6 +22,7 @@
   <include package="plone.behavior" />
   <include package="plone.rest" />
   <include package="plone.schema" />
+  <include package="Products.CMFPlone" />
 
   <include
       package="plone.app.caching"
