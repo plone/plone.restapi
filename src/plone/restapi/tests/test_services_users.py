@@ -1714,6 +1714,12 @@ class TestUsersEndpoint(unittest.TestCase):
             },
         )
         self.assertFalse(email_change_response.ok)
+        self.assertEqual(email_change_response.status_code, 400)
+        email_change_response_json = email_change_response.json()
+        self.assertEqual(
+            email_change_response_json.get("error", {}).get("message"),
+            "Cannot update login name of user to 'second@example.com'.",
+        )
 
         # Email was not changed, so log in with the old one
         new_login_with_old_email_response = self.anon_api_session.post(
@@ -1777,7 +1783,12 @@ class TestUsersEndpoint(unittest.TestCase):
             json={"email": "second@example.com"},
         )
 
-        self.assertFalse(email_change_response.ok)
+        self.assertEqual(email_change_response.status_code, 400)
+        email_change_response_json = email_change_response.json()
+        self.assertEqual(
+            email_change_response_json.get("error", {}).get("message"),
+            "Cannot update login name of user to 'second@example.com'.",
+        )
 
         # email was not changed, so log in with the old one
         new_login_with_old_email_response = self.anon_api_session.post(
