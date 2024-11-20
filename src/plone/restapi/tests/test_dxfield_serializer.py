@@ -325,6 +325,19 @@ class TestDexterityFieldSerializing(TestCase):
             value,
         )
 
+    def test_relation_field_serialization_do_not_change_request(self):
+        self.request.form["metadata_fields"] = ["foo", "bar"]
+        doc2 = self.portal[
+            self.portal.invokeFactory(
+                "DXTestDocument",
+                id="doc2",
+                title="Referenceable Document",
+                description="Description 2",
+            )
+        ]
+        self.serialize("test_relationchoice_field", doc2)
+        self.assertEqual(self.request.form["metadata_fields"], ["foo", "bar"])
+
     def test_remoteurl_field_in_links_get_converted(self):
         link = self.portal[
             self.portal.invokeFactory(
