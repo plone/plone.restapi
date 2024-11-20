@@ -273,7 +273,10 @@ class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
         tomorrow_str = tomorrow.strftime("%Y-%m-%d")
         ot = OccurrenceTraverser(self.event, self.request)
         ocurrence = ot.publishTraverse(self.request, tomorrow_str)
+        self.request.form["metadata_fields"] = ["start"]
         summary = getMultiAdapter((ocurrence, self.request), ISerializeToJsonSummary)()
-
-        self.assertEqual(summary["start"], tomorrow_str)
-        self.assertEqual(summary["Title"], ocurrence.Title())
+        self.assertEqual(
+            datetime.fromisoformat(summary["start"]).date().isoformat(),
+            tomorrow.date().isoformat(),
+        )
+        self.assertEqual(summary["title"], ocurrence.Title())
