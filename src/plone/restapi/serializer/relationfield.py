@@ -18,7 +18,7 @@ from zope.interface import Interface
 @implementer(IJsonCompatible)
 def relationvalue_converter(value):
     if value.to_object:
-        request = getRequest()
+        request = getRequest().clone()
         request.form["metadata_fields"] = ["UID"]
         summary = getMultiAdapter((value.to_object, request), ISerializeToJsonSummary)()
         return json_compatible(summary)
