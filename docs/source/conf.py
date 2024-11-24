@@ -290,7 +290,7 @@ html_use_index = True
 # base URL from which the finished HTML is served.
 # Announce that we have an opensearch plugin
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_use_opensearch
-html_use_opensearch = "https://plonerestapi.readthedocs.org/"
+html_use_opensearch = "https://plonerestapi.readthedocs.org"
 
 
 # This is the file name suffix for HTML files (e.g. ".xhtml").
