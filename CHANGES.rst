@@ -8,6 +8,35 @@ Changelog
 
 .. towncrier release notes start
 
+9.8.5 (2024-11-25)
+------------------
+
+Bug fixes:
+
+
+- Fix log in after changing email when "email as login" is enabled
+  [erral] (#1835)
+- Fix tests after #1839 and plone.app.event#411
+  [erral] (#1844)
+- Do not change request during relation fields serialization
+  [cekk] (#1845)
+
+
+Internal:
+
+
+- Test that recurrence serialization provides correct data
+  [erral] (#1809)
+- Additional tests to login name changes
+  [erral] (#1840)
+
+
+Documentation:
+
+
+- `html_use_opensearch` value must not have a trailing slash. Clean up comments. @stevepiercy (#1846)
+
+
 9.8.4 (2024-11-05)
 ------------------
 
