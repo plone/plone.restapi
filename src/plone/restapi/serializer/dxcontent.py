@@ -6,6 +6,7 @@ from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
+from plone.restapi import HAS_PLONE_6
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
@@ -40,6 +41,19 @@ try:
     from plone.restapi.serializer.working_copy import WorkingCopyInfo
 except ImportError:
     WorkingCopyInfo = None
+
+
+def update_with_working_copy_info(context, result):
+    if WorkingCopyInfo is None:
+        return
+
+    # Does not return working copy information when serializing Portal in Plone 5.2.
+    if not HAS_PLONE_6 and context.portal_type == "Plone Site":
+        return
+
+    working_copy_info = WorkingCopyInfo(context)
+    baseline, working_copy = working_copy_info.get_working_copy_info()
+    result.update({"working_copy": working_copy, "working_copy_of": baseline})
 
 
 def get_allow_discussion_value(context, request, result):
@@ -108,11 +122,7 @@ class SerializeToJson:
             result.update({"previous_item": {}, "next_item": {}})
 
         # Insert working copy information
-        if WorkingCopyInfo is not None:
-            baseline, working_copy = WorkingCopyInfo(
-                self.context
-            ).get_working_copy_info()
-            result.update({"working_copy": working_copy, "working_copy_of": baseline})
+        update_with_working_copy_info(self.context, result)
 
         # Insert locking information
         result.update({"lock": lock_info(obj)})
