@@ -16,11 +16,13 @@ from plone.dexterity.schema import SCHEMA_CACHE
 from plone.namedfile.file import NamedFile
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.test_expansion import ExpandableElementFoo
 from plone.restapi.serializer.utils import get_portal_type_title
 from plone.uuid.interfaces import IMutableUUID
+from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getGlobalSiteManager
 from zope.component import getMultiAdapter
@@ -756,3 +758,38 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
         serializer = getMultiAdapter((self.portal.doc1, self.request), ISerializeToJson)
         data = serializer()
         self.assertNotIn("targetUrl", data)
+
+    def test_primary_field_target_for_link_objects_for_auth_return_none(self):
+        self.portal.invokeFactory(
+            "Document",
+            id="linked",
+        )
+        self.portal.invokeFactory(
+            "Link",
+            id="link",
+            remoteUrl=f"../resolveuid/{IUUID(self.portal.linked)}",
+        )
+        wftool = getToolByName(self.portal, "portal_workflow")
+        wftool.doActionFor(self.portal.linked, "publish")
+        adapter = getMultiAdapter(
+            (self.portal.link, self.request), IObjectPrimaryFieldTarget
+        )
+        self.assertEqual(adapter(), None)
+
+    def test_primary_field_target_for_link_objects_for_anonymous(self):
+        self.portal.invokeFactory(
+            "Document",
+            id="linked",
+        )
+        self.portal.invokeFactory(
+            "Link",
+            id="link",
+            remoteUrl=f"../resolveuid/{IUUID(self.portal.linked)}",
+        )
+        wftool = getToolByName(self.portal, "portal_workflow")
+        wftool.doActionFor(self.portal.linked, "publish")
+        logout()
+        adapter = getMultiAdapter(
+            (self.portal.link, self.request), IObjectPrimaryFieldTarget
+        )
+        self.assertEqual(adapter(), self.portal.linked.absolute_url())
