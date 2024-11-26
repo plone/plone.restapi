@@ -1,6 +1,7 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from plone.app.contenttypes.interfaces import ILink
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
@@ -266,3 +267,27 @@ class DexterityObjectPrimaryFieldTarget:
                     sm.checkPermission(permission.title, obj)
                 )
         return self.permission_cache[permission_name]
+
+
+@adapter(ILink, Interface)
+@implementer(IObjectPrimaryFieldTarget)
+class LinkObjectPrimaryFieldTarget:
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+        self.permission_cache = {}
+
+    def __call__(self):
+        """
+        If user can edit Link object, do not return remoteUrl
+        """
+        pm = getToolByName(self.context, "portal_membership")
+        if bool(pm.isAnonymousUser()):
+            for schema in iterSchemata(self.context):
+                for name, field in getFields(schema).items():
+                    if name == "remoteUrl":
+                        serializer = queryMultiAdapter(
+                            (field, self.context, self.request), IFieldSerializer
+                        )
+                        return serializer()
