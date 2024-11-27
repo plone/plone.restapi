@@ -32,6 +32,18 @@ class IContextawareJsonCompatible(IJsonCompatible):
         """Adapts value and a context"""
 
 
+class ISchemaSerializer(Interface):
+    """The schema serializer multi adapter serializes a schema into
+    JSON compatible python data.
+    """
+
+    def __init__(schema, context, request):
+        """Adapts schema, context and request."""
+
+    def __call__():
+        """Returns JSON compatible python data."""
+
+
 class IFieldSerializer(Interface):
     """The field serializer multi adapter serializes the field value into
     JSON compatible python data.
@@ -73,11 +85,21 @@ class IDeserializeFromJson(Interface):
     """An adapter to deserialize a JSON object into an object in Plone."""
 
 
+class ISchemaDeserializer(Interface):
+    """An adapter to deserialize a JSON value from a schema."""
+
+    def __init__(schema, context, request):
+        """Adapts schema, context and request."""
+
+    def __call__(data, validate_all, create):
+        """Convert the provided JSON value to a field value."""
+
+
 class IFieldDeserializer(Interface):
     """An adapter to deserialize a JSON value into a field value."""
 
     def __init__(field, context, request):
-        """Adapts a field, it's context and the request."""
+        """Adapts a field, its context and the request."""
 
     def __call__(value):
         """Convert the provided JSON value to a field value."""

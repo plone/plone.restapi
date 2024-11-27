@@ -5,6 +5,8 @@
     >
 
   <adapter factory=".site.SerializeSiteRootToJson" />
+  <adapter factory=".dxschema.DXSchemaSerializeToJson" />
+  <adapter factory=".dxschema.SerializeSchemaToJson" />
   <adapter factory=".dxcontent.SerializeToJson" />
   <adapter factory=".dxcontent.SerializeFolderToJson" />
   <adapter factory=".dxcontent.DexterityObjectPrimaryFieldTarget" />
