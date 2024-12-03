@@ -24,9 +24,10 @@ def iterate_children(value):
     queue = deque(value)
     while queue:
         child = queue.pop()
-        yield child
-        if child.get("children"):
-            queue.extend(child["children"] or [])
+        if isinstance(child, dict):
+            yield child
+            if child.get("children", []):
+                queue.extend(child["children"] or [])
 
 
 @implementer(IFieldDeserializer)
