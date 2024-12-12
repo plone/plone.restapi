@@ -17,6 +17,7 @@ from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 
 import Missing
+import pytz
 import unittest
 
 
@@ -234,14 +235,15 @@ class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
         )
         self.portal.portal_types.DXTestDocument.behaviors = behaviors
 
+        self.start = datetime(1995, 7, 31, 13, 45, tzinfo=pytz.timezone("UTC"))
         self.event = createContentInContainer(
             self.portal,
             "DXTestDocument",
             id="doc1",
             title="Lorem Ipsum event",
             description="Description event",
-            start=datetime.now(),
-            end=datetime.now() + timedelta(hours=1),
+            start=self.start,
+            end=self.start + timedelta(hours=1),
             recurrence="RRULE:FREQ=DAILY;COUNT=3",  # see https://github.com/plone/plone.app.event/blob/master/plone/app/event/tests/base_setup.py
         )
 
@@ -256,7 +258,7 @@ class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
         "this test needs a plone.app.event version that does not include a IContentListingObject adapter",
     )
     def test_dx_event_with_recurrence_old_version(self):
-        tomorrow = datetime.now() + timedelta(days=1)
+        tomorrow = self.start + timedelta(days=1)
         tomorrow_str = tomorrow.strftime("%Y-%m-%d")
         ot = OccurrenceTraverser(self.event, self.request)
         ocurrence = ot.publishTraverse(self.request, tomorrow_str)
@@ -269,7 +271,7 @@ class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
         "this test needs a plone.app.event version that includes a IContentListingObject adapter",
     )
     def test_dx_event_with_recurrence_new_version(self):
-        tomorrow = datetime.now() + timedelta(days=1)
+        tomorrow = self.start + timedelta(days=1)
         tomorrow_str = tomorrow.strftime("%Y-%m-%d")
         ot = OccurrenceTraverser(self.event, self.request)
         ocurrence = ot.publishTraverse(self.request, tomorrow_str)
