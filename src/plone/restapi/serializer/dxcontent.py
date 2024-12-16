@@ -225,19 +225,22 @@ class DexterityObjectPrimaryFieldTarget:
         for schema in iterSchemata(self.context):
             read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
-            for name, field in getFields(schema).items():
-                if name != primary_field_name:
-                    continue
+            field = getFields(schema).get(primary_field_name)
+            if field is None:
+                continue
+            print(primary_field_name)
+            if not self.check_permission(
+                read_permissions.get(primary_field_name),
+                self.context,
+            ):
+                return
 
-                if not self.check_permission(read_permissions.get(name), self.context):
-                    return
-
-                target_adapter = queryMultiAdapter(
-                    (field, self.context, self.request), IPrimaryFieldTarget
-                )
-                if not target_adapter:
-                    return
-                return target_adapter()
+            target_adapter = queryMultiAdapter(
+                (field, self.context, self.request), IPrimaryFieldTarget
+            )
+            if not target_adapter:
+                return
+            return target_adapter()
 
     def get_primary_field_name(self):
         fieldname = None
