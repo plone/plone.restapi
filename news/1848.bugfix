@@ -1,0 +1,1 @@
+Fix resolving paths in deserializer if the target was moved in the same request. @cekk
