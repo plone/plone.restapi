@@ -228,7 +228,6 @@ class DexterityObjectPrimaryFieldTarget:
             field = getFields(schema).get(primary_field_name)
             if field is None:
                 continue
-            print(primary_field_name)
             if not self.check_permission(
                 read_permissions.get(primary_field_name),
                 self.context,
