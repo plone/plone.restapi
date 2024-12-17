@@ -737,4 +737,4 @@ class TestBlocksDeserializer(unittest.TestCase):
 
         res = self.deserialize(blocks=blocks)
         link = res.blocks["abc"]["href"]
-        self.assertTrue(link.startswith("../resolveuid/"))
+        self.assertEqual(link, f"../resolveuid/{self.portal['renamed-doc'].UID()}")
