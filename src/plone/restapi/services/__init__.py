@@ -3,6 +3,8 @@ from plone.rest import Service as RestService
 from plone.restapi.permissions import UseRESTAPI
 from zExceptions import Unauthorized
 
+from plone.restapi.services.model import ErrorOutputDTO, ErrorDefinitionDTO
+
 import json
 
 
@@ -11,6 +13,13 @@ _no_content_marker = object()
 
 class Service(RestService):
     """Base class for Plone REST API services"""
+
+    @classmethod
+    def __restapi_doc_component_schemas_extension__(cls):
+        return {
+            "ErrorDefinitionDTO": ErrorDefinitionDTO.schema(),
+            "ErrorResponse": ErrorOutputDTO.schema(ref_template="#/components/schemas/{model}") # noqa
+        }
 
     content_type = "application/json"
 
