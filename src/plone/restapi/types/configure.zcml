@@ -26,6 +26,10 @@
       />
   <adapter factory=".adapters.SetJsonSchemaProvider" />
   <adapter factory=".adapters.TupleJsonSchemaProvider" />
+  <adapter
+      factory=".adapters.SubjectsFieldJsonSchemaProvider"
+      name="subjects"
+      />
   <adapter factory=".adapters.ChoiceJsonSchemaProvider" />
   <adapter factory=".adapters.ObjectJsonSchemaProvider" />
   <adapter factory=".adapters.DictJsonSchemaProvider" />
