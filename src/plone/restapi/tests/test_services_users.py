@@ -1663,3 +1663,139 @@ class TestUsersEndpoint(unittest.TestCase):
             },
         )
         self.assertTrue(new_login_with_new_email_response.ok)
+
+    def test_manager_changes_email_to_existing_when_login_with_email(self):
+        """test that when login with email is enabled and a manager tries to change a user's email
+        to a previously existing one
+        """
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+
+        # Create user 1
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+        userid = response.json()["id"]
+
+        # Create user 2
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "second@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+
+        transaction.commit()
+
+        # Log in
+        anon_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(anon_response.ok)
+
+        # try to change the email to an existing one, it should fail
+        email_change_response = self.api_session.patch(
+            f"/@users/{userid}",
+            json={
+                "email": "second@example.com",
+            },
+        )
+        self.assertFalse(email_change_response.ok)
+        self.assertEqual(email_change_response.status_code, 400)
+        email_change_response_json = email_change_response.json()
+        self.assertEqual(
+            email_change_response_json.get("error", {}).get("message"),
+            "Cannot update login name of user to 'second@example.com'.",
+        )
+
+        # Email was not changed, so log in with the old one
+        new_login_with_old_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(new_login_with_old_email_response.ok)
+
+    def test_user_changes_email_to_existing_one_when_login_with_email(self):
+        """test that when login with email is enabled and the user changes their email
+        they can log in with the new email
+        """
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+
+        # Create user 1
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+        userid = response.json()["id"]
+
+        # Create user 2
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "second@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+        transaction.commit()
+
+        # log in with email
+        anon_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(anon_response.ok)
+        auth_token = anon_response.json().get("token")
+
+        user_api_session = RelativeSession(self.portal_url, test=self)
+        user_api_session.headers.update({"Accept": "application/json"})
+        user_api_session.headers.update({"Authorization": f"Bearer {auth_token}"})
+
+        # try to change e-mail to an existing one, it should fail
+        email_change_response = user_api_session.patch(
+            f"/@users/{userid}",
+            json={"email": "second@example.com"},
+        )
+
+        self.assertEqual(email_change_response.status_code, 400)
+        email_change_response_json = email_change_response.json()
+        self.assertEqual(
+            email_change_response_json.get("error", {}).get("message"),
+            "Cannot update login name of user to 'second@example.com'.",
+        )
+
+        # email was not changed, so log in with the old one
+        new_login_with_old_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(new_login_with_old_email_response.ok)

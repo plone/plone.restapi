@@ -1,17 +1,30 @@
+from datetime import datetime
+from datetime import timedelta
 from DateTime import DateTime
 from plone.app.contentlisting.interfaces import IContentListingObject
+from plone.app.event.dx.traverser import OccurrenceTraverser
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.dexterity.utils import createContentInContainer
+from plone.event.interfaces import IEvent
+from plone.event.interfaces import IEventRecurrence
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 from zope.component.hooks import getSite
+from zope.interface import alsoProvides
 
 import Missing
+import pytz
 import unittest
+
+
+try:
+    from plone.app.event.adapters import OccurrenceContentListingObject
+except ImportError:
+    OccurrenceContentListingObject = None
 
 
 class TestSummarySerializers(unittest.TestCase):
@@ -203,3 +216,69 @@ class TestSummarySerializers(unittest.TestCase):
             },
             summary,
         )
+
+
+class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
+
+        pushGlobalRegistry(getSite())
+        register_static_uuid_utility(prefix="c6dcbd55ab2746e199cd4ed458")
+
+        behaviors = self.portal.portal_types.DXTestDocument.behaviors
+        behaviors = behaviors + (
+            "plone.eventbasic",
+            "plone.eventrecurrence",
+        )
+        self.portal.portal_types.DXTestDocument.behaviors = behaviors
+
+        self.start = datetime(1995, 7, 31, 13, 45, tzinfo=pytz.timezone("UTC"))
+        self.event = createContentInContainer(
+            self.portal,
+            "DXTestDocument",
+            id="doc1",
+            title="Lorem Ipsum event",
+            description="Description event",
+            start=self.start,
+            end=self.start + timedelta(hours=1),
+            recurrence="RRULE:FREQ=DAILY;COUNT=3",  # see https://github.com/plone/plone.app.event/blob/master/plone/app/event/tests/base_setup.py
+        )
+
+        alsoProvides(self.event, IEvent)
+        alsoProvides(self.event, IEventRecurrence)
+
+    def tearDown(self):
+        popGlobalRegistry(getSite())
+
+    @unittest.skipIf(
+        OccurrenceContentListingObject is not None,
+        "this test needs a plone.app.event version that does not include a IContentListingObject adapter",
+    )
+    def test_dx_event_with_recurrence_old_version(self):
+        tomorrow = self.start + timedelta(days=1)
+        tomorrow_str = tomorrow.strftime("%Y-%m-%d")
+        ot = OccurrenceTraverser(self.event, self.request)
+        ocurrence = ot.publishTraverse(self.request, tomorrow_str)
+
+        with self.assertRaises(TypeError):
+            getMultiAdapter((ocurrence, self.request), ISerializeToJsonSummary)()
+
+    @unittest.skipIf(
+        OccurrenceContentListingObject is None,
+        "this test needs a plone.app.event version that includes a IContentListingObject adapter",
+    )
+    def test_dx_event_with_recurrence_new_version(self):
+        tomorrow = self.start + timedelta(days=1)
+        tomorrow_str = tomorrow.strftime("%Y-%m-%d")
+        ot = OccurrenceTraverser(self.event, self.request)
+        ocurrence = ot.publishTraverse(self.request, tomorrow_str)
+        self.request.form["metadata_fields"] = ["start"]
+        summary = getMultiAdapter((ocurrence, self.request), ISerializeToJsonSummary)()
+        self.assertEqual(
+            datetime.fromisoformat(summary["start"]).date().isoformat(),
+            tomorrow.date().isoformat(),
+        )
+        self.assertEqual(summary["title"], ocurrence.Title())

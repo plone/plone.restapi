@@ -1,6 +1,7 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from plone.app.contenttypes.interfaces import ILink
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
@@ -219,23 +220,26 @@ class DexterityObjectPrimaryFieldTarget:
 
     def __call__(self):
         primary_field_name = self.get_primary_field_name()
+        if not primary_field_name:
+            return
         for schema in iterSchemata(self.context):
             read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
-            for name, field in getFields(schema).items():
-                if not self.check_permission(read_permissions.get(name), self.context):
-                    continue
+            field = getFields(schema).get(primary_field_name)
+            if field is None:
+                continue
+            if not self.check_permission(
+                read_permissions.get(primary_field_name),
+                self.context,
+            ):
+                return
 
-                if name != primary_field_name:
-                    continue
-
-                target_adapter = queryMultiAdapter(
-                    (field, self.context, self.request), IPrimaryFieldTarget
-                )
-                if target_adapter:
-                    target = target_adapter()
-                    if target:
-                        return target
+            target_adapter = queryMultiAdapter(
+                (field, self.context, self.request), IPrimaryFieldTarget
+            )
+            if not target_adapter:
+                return
+            return target_adapter()
 
     def get_primary_field_name(self):
         fieldname = None
@@ -266,3 +270,27 @@ class DexterityObjectPrimaryFieldTarget:
                     sm.checkPermission(permission.title, obj)
                 )
         return self.permission_cache[permission_name]
+
+
+@adapter(ILink, Interface)
+@implementer(IObjectPrimaryFieldTarget)
+class LinkObjectPrimaryFieldTarget:
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+        self.permission_cache = {}
+
+    def __call__(self):
+        """
+        If user can edit Link object, do not return remoteUrl
+        """
+        pm = getToolByName(self.context, "portal_membership")
+        if bool(pm.isAnonymousUser()):
+            for schema in iterSchemata(self.context):
+                for name, field in getFields(schema).items():
+                    if name == "remoteUrl":
+                        serializer = queryMultiAdapter(
+                            (field, self.context, self.request), IFieldSerializer
+                        )
+                        return serializer()

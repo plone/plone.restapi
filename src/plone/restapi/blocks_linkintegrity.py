@@ -69,9 +69,8 @@ class SlateBlockLinksRetriever:
     def __call__(self, block):
         value = (block or {}).get(self.field, [])
         children = iterate_children(value or [])
-
         for child in children:
-            node_type = child.get("type")
+            node_type = child.get("type", "")
             if node_type:
                 handler = getattr(self, f"handle_{node_type}", None)
                 if handler:
