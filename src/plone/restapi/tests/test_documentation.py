@@ -43,7 +43,7 @@ from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.restapi.testing import register_static_uuid_utility
 from zope.component import provideAdapter
-from plone.restapi.interfaces import IExternalLoginProviders
+from plone.restapi.interfaces import ILoginProviders
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 
 
@@ -255,7 +255,7 @@ class TestDocumentation(TestDocumentationBase):
         provideAdapter(
             MyExternalLinks,
             adapts=(IPloneSiteRoot,),
-            provides=IExternalLoginProviders,
+            provides=ILoginProviders,
             name="test-external-links",
         )
 

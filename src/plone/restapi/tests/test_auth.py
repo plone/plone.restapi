@@ -8,7 +8,7 @@ from zExceptions import Unauthorized
 from zope.event import notify
 from ZPublisher.pubevents import PubStart
 from zope.component import provideAdapter
-from plone.restapi.interfaces import IExternalLoginProviders
+from plone.restapi.interfaces import ILoginProviders
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 
 
@@ -244,7 +244,7 @@ class TestExternalLoginServices(TestCase):
         provideAdapter(
             MyExternalLinks,
             adapts=(IPloneSiteRoot,),
-            provides=IExternalLoginProviders,
+            provides=ILoginProviders,
             name="test-external-links",
         )
 

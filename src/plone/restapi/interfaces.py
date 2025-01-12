@@ -242,7 +242,7 @@ class IBlockVisitor(Interface):
         """Return an iterable of sub-blocks found inside `block`."""
 
 
-class IExternalLoginProviders(Interface):
+class ILoginProviders(Interface):
     """An interface needed to be implemented by providers that want to be listed
     in the @login endpoint
     """
