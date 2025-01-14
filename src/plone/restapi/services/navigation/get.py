@@ -32,7 +32,7 @@ class Navigation:
         if self.request.form.get("expand.navigation.depth", False):
             try:
                 self.depth = int(self.request.form["expand.navigation.depth"])
-            except ValueError as e:
+            except (ValueError, TypeError) as e:
                 raise BadRequest(e)
         else:
             self.depth = 1
