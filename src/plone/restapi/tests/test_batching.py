@@ -190,6 +190,7 @@ class TestBatchingCollections(TestBatchingDXBase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("invalid literal for int()", response.json()["message"])
 
+
 class TestBatchingDXFolders(TestBatchingDXBase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
