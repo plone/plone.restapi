@@ -1,7 +1,9 @@
 from plone.batching.batch import Batch
 from plone.restapi.deserializer import json_body
+from plone.restapi.exceptions import DeserializationError
 from urllib.parse import parse_qsl
 from urllib.parse import urlencode
+from zExceptions import BadRequest
 
 
 DEFAULT_BATCH_SIZE = 25
@@ -11,13 +13,15 @@ class HypermediaBatch:
     def __init__(self, request, results):
         self.request = request
 
-        self.b_start = int(json_body(self.request).get("b_start", False)) or int(
-            self.request.form.get("b_start", 0)
-        )
-        self.b_size = int(json_body(self.request).get("b_size", False)) or int(
-            self.request.form.get("b_size", DEFAULT_BATCH_SIZE)
-        )
-
+        try:
+            self.b_start = int(json_body(self.request).get("b_start", False)) or int(
+                self.request.form.get("b_start", 0)
+            )
+            self.b_size = int(json_body(self.request).get("b_size", False)) or int(
+                self.request.form.get("b_size", DEFAULT_BATCH_SIZE)
+            )
+        except (ValueError, DeserializationError) as e:
+            raise BadRequest(e)
         self.batch = Batch(results, self.b_size, self.b_start)
 
     def __iter__(self):
