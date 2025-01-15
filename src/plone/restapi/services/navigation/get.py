@@ -18,7 +18,6 @@ from zope.component.hooks import getSite
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
-from zExceptions import BadRequest
 
 
 @implementer(IExpandableElement)
