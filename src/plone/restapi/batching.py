@@ -19,9 +19,11 @@ class HypermediaBatch:
         except DeserializationError as e:
             raise BadRequest(e)
         self.b_start = parse_int(data, "b_start", False) or parse_int(
-            self.request.form, "b_start", 0)
+            self.request.form, "b_start", 0
+        )
         self.b_size = parse_int(data, "b_size", False) or parse_int(
-            self.request.form, "b_size", DEFAULT_BATCH_SIZE)
+            self.request.form, "b_size", DEFAULT_BATCH_SIZE
+        )
         self.batch = Batch(results, self.b_size, self.b_start)
 
     def __iter__(self):
