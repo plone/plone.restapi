@@ -44,4 +44,4 @@ def parse_int(data, prop, default):
     try:
         return int(data.get(prop, default))
     except (ValueError, TypeError):
-        raise BadRequest("Invalid %s" % prop)
+        raise BadRequest(f"Invalid {prop}: Not an integer")
