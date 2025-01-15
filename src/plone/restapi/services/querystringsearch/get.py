@@ -8,6 +8,9 @@ from plone.restapi.services import Service
 from urllib import parse
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
+from plone.restapi.services.querystringsearch.facet import Facet
 
 
 zcatalog_version = get_distribution("Products.ZCatalog").version
@@ -20,11 +23,65 @@ else:
 class QuerystringSearch:
     """Returns the querystring search results given a p.a.querystring data."""
 
-    def __init__(self, context, request):
+    def __init__(self, context, request, params):
         self.context = context
         self.request = request
+        self.params = params
 
     def __call__(self):
+        self.setQuerybuilderParams()
+        querybuilder_mandatory_parameters = self.querybuilder_parameters.copy()
+        querybuilder_mandatory_parameters["query"] = [
+            qs
+            for qs in self.querybuilder_parameters.get("query", [])
+            if "mandatory" in qs and qs["mandatory"] is True
+        ]
+        querybuilder_mandatory_parameters["rids"] = True
+
+        # make serch work also on Plone Root
+        if SUPPORT_NOT_UUID_QUERIES:
+            querybuilder_mandatory_parameters.update(
+                dict(custom_query={"UID": {"not": self.context.UID()}})
+            )
+        querybuilder = getMultiAdapter(
+            (self.context, self.request), name="querybuilderresults"
+        )
+
+        brains_rids_mandatory = querybuilder(**querybuilder_mandatory_parameters)
+
+        if len(self.params) > 0:
+            results = Facet(
+                self.context,
+                self.request,
+                name=self.params[0],
+                querybuilder_parameters=self.querybuilder_parameters,
+                brains_rids_mandatory=brains_rids_mandatory,
+            ).getFacet()
+            if results is None:
+                raise BadRequest("Invalid facet")
+            results["@id"] = (
+                "%s/@querystring-search/%s"
+                % (self.context.absolute_url(), self.params[0]),
+            )
+        else:
+            results = self.getResults()
+            results = getMultiAdapter((results, self.request), ISerializeToJson)(
+                fullobjects=self.fullobjects
+            )
+            results["facets_count"] = {}
+            for facet in self.facets:
+                facet_results = Facet(
+                    self.context,
+                    self.request,
+                    name=facet,
+                    querybuilder_parameters=self.querybuilder_parameters,
+                    brains_rids_mandatory=brains_rids_mandatory,
+                ).getFacet()
+                if facet_results:
+                    results["facets_count"][facet] = facet_results
+        return results
+
+    def setQuerybuilderParams(self):
         try:
             data = json_body(self.request)
         except DeserializationError as err:
@@ -45,7 +102,9 @@ class QuerystringSearch:
             limit = int(data.get("limit", 1000))
         except (ValueError, TypeError):
             raise BadRequest("Invalid limit")
-        fullobjects = bool(data.get("fullobjects", False))
+
+        self.fullobjects = bool(data.get("fullobjects", False))
+        self.facets = data.get("facets", [])
 
         if not query:
             raise BadRequest("No query supplied")
@@ -53,11 +112,7 @@ class QuerystringSearch:
         if sort_order:
             sort_order = "descending" if sort_order == "descending" else "ascending"
 
-        querybuilder = getMultiAdapter(
-            (self.context, self.request), name="querybuilderresults"
-        )
-
-        querybuilder_parameters = dict(
+        self.querybuilder_parameters = dict(
             query=query,
             brains=True,
             b_start=b_start,
@@ -67,37 +122,48 @@ class QuerystringSearch:
             limit=limit,
         )
 
-        # Exclude "self" content item from the results when ZCatalog supports NOT UUID
-        # queries and it is called on a content object.
         if not IPloneSiteRoot.providedBy(self.context) and SUPPORT_NOT_UUID_QUERIES:
-            querybuilder_parameters.update(
+            self.querybuilder_parameters.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
             )
 
-        try:
-            results = querybuilder(**querybuilder_parameters)
-        except KeyError:
-            # This can happen if the query has an invalid operation,
-            # but plone.app.querystring doesn't raise an exception
-            # with specific info.
-            raise BadRequest("Invalid query.")
-
-        results = getMultiAdapter((results, self.request), ISerializeToJson)(
-            fullobjects=fullobjects
+    def getResults(self):
+        querybuilder = getMultiAdapter(
+            (self.context, self.request), name="querybuilderresults"
         )
-        return results
+        return querybuilder(**self.querybuilder_parameters)
 
 
+@implementer(IPublishTraverse)
 class QuerystringSearchPost(Service):
     """Returns the querystring search results given a p.a.querystring data."""
 
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
+
+    def publishTraverse(self, request, name):
+        # Treat any path segments after /@types as parameters
+        self.params.append(name)
+        return self
+
     def reply(self):
-        querystring_search = QuerystringSearch(self.context, self.request)
+        querystring_search = QuerystringSearch(self.context, self.request, self.params)
         return querystring_search()
 
 
+@implementer(IPublishTraverse)
 class QuerystringSearchGet(Service):
     """Returns the querystring search results given a p.a.querystring data."""
+
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
+
+    def publishTraverse(self, request, name):
+        # Treat any path segments after /@types as parameters
+        self.params.append(name)
+        return self
 
     def reply(self):
         # We need to copy the JSON query parameters from the querystring
@@ -108,5 +174,5 @@ class QuerystringSearchGet(Service):
 
         # unset the get parameters
         self.request.form = {}
-        querystring_search = QuerystringSearch(self.context, self.request)
+        querystring_search = QuerystringSearch(self.context, self.request, self.params)
         return querystring_search()
