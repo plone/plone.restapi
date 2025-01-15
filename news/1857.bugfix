@@ -1,1 +1,1 @@
-Handle ValueError on querystringsearch as BadRequest - djay
+Add parse_int to handle all BadRequests from bad ints. @djay
