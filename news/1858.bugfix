@@ -1,0 +1,1 @@
+add parse_int to handle all cases of BadReqests from ints passed in. @djay

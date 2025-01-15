@@ -1,1 +1,1 @@
-Add parse_int to handle all BadRequests from bad ints. @djay
+Handle TypeError on querystringsearch as BadRequest. @djay
