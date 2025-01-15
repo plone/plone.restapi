@@ -1,1 +1,1 @@
-add parse_int to handle all cases of BadReqests from ints passed in. @djay
+Add parse_int to handle all cases of BadRequests from ints passed in. @djay
