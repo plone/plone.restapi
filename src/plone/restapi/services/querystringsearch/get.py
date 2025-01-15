@@ -33,17 +33,17 @@ class QuerystringSearch:
         query = data.get("query", None)
         try:
             b_start = int(data.get("b_start", 0))
-        except ValueError:
+        except (ValueError, TypeError):
             raise BadRequest("Invalid b_start")
         try:
             b_size = int(data.get("b_size", 25))
-        except ValueError:
+        except (ValueError, TypeError):
             raise BadRequest("Invalid b_size")
         sort_on = data.get("sort_on", None)
         sort_order = data.get("sort_order", None)
         try:
             limit = int(data.get("limit", 1000))
-        except ValueError:
+        except (ValueError, TypeError):
             raise BadRequest("Invalid limit")
         fullobjects = bool(data.get("fullobjects", False))
 
