@@ -1,1 +1,1 @@
-Handle ValueError on querystringsearch as BadRequest - djay
+Handle TypeError on querystringsearch as BadRequest. @djay
