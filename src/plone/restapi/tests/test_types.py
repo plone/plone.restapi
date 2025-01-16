@@ -1,6 +1,8 @@
 from datetime import date
 from decimal import Decimal
 from plone.app.multilingual.dx import directives
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.app.textfield import RichText
 from plone.autoform import directives as form
 from plone.dexterity.fti import DexterityFTI
@@ -18,6 +20,7 @@ from unittest import TestCase
 from z3c.form.browser.text import TextWidget
 from zope import schema
 from zope.component import getMultiAdapter
+from zope.component import queryMultiAdapter
 from zope.interface import provider
 from zope.schema.interfaces import IContextAwareDefaultFactory
 from zope.schema.vocabulary import SimpleTerm
@@ -797,3 +800,36 @@ class TestJsonSchemaProviders(TestCase):
             },
             adapter.get_schema(),
         )
+
+    def test_tuple_field_return_always_additionalItems_true(self):
+        field = schema.Tuple(title="Subjects", value_type=schema.TextLine(), default=())
+        adapter = queryMultiAdapter(
+            (field, self.portal, self.request),
+            interface=IJsonSchemaProvider,
+        )
+
+        self.assertTrue(adapter.get_schema()["additionalItems"])
+
+        # now change roles (by default are enabled to change passwords Manager, Site Administrator and Reviewer)
+        setRoles(self.portal, TEST_USER_ID, ["Member", "Contributor", "Editor"])
+        self.assertTrue(adapter.get_schema()["additionalItems"])
+
+        setRoles(self.portal, TEST_USER_ID, ["Member", "Reviewer"])
+        self.assertTrue(adapter.get_schema()["additionalItems"])
+
+    def test_subjects_field_return_additionalItems_flag_based_on_roles(self):
+        field = schema.Tuple(title="Subjects", value_type=schema.TextLine(), default=())
+        adapter = queryMultiAdapter(
+            (field, self.portal, self.request),
+            interface=IJsonSchemaProvider,
+            name="subjects",
+        )
+
+        self.assertTrue(adapter.get_schema()["additionalItems"])
+
+        # now change roles (by default are enabled to change passwords Manager, Site Administrator and Reviewer)
+        setRoles(self.portal, TEST_USER_ID, ["Member", "Contributor", "Editor"])
+        self.assertFalse(adapter.get_schema()["additionalItems"])
+
+        setRoles(self.portal, TEST_USER_ID, ["Member", "Reviewer"])
+        self.assertTrue(adapter.get_schema()["additionalItems"])
