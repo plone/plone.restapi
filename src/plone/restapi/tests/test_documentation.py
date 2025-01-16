@@ -1,16 +1,15 @@
 from base64 import b64encode
 from datetime import datetime
+from datetime import timezone
+import io
 from pkg_resources import resource_filename
 from plone import api
-from plone.uuid.interfaces import IUUID
 from plone.app.discussion.interfaces import ICommentAddedEvent
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import applyProfile
-from plone.app.testing import popGlobalRegistry
-from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -25,16 +24,24 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
-from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
-from plone.restapi.tests.helpers import patch_scale_uuid, patch_addon_versions
+from plone.restapi.tests.helpers import patch_addon_versions
+from plone.restapi.tests.helpers import patch_scale_uuid
 from plone.restapi.tests.statictime import StaticTime
-from plone.testing.z2 import Browser
+from plone.testing.zope import Browser
+from plone.uuid.interfaces import IUUID
+from z3c.relationfield import RelationValue
 from zope.component import createObject
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component.hooks import getSite
+from zope.event import notify
 from zope.interface import alsoProvides
+from zope.intid.interfaces import IIntIds
+from zope.lifecycleevent import ObjectModifiedEvent
+from plone.app.testing import popGlobalRegistry
+from plone.app.testing import pushGlobalRegistry
+from plone.restapi.testing import register_static_uuid_utility
 
 import collections
 import json
@@ -214,14 +221,12 @@ class TestDocumentationBase(unittest.TestCase):
 
 
 class TestDocumentation(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         super().setUp()
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
-
         transaction.commit()
 
     def tearDown(self):
@@ -316,8 +321,8 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.invokeFactory("Event", id="event")
         self.portal.event.title = "Event"
         self.portal.event.description = "This is an event"
-        self.portal.event.start = datetime(2013, 1, 1, 10, 0)
-        self.portal.event.end = datetime(2013, 1, 1, 12, 0)
+        self.portal.event.start = datetime(2013, 1, 1, 10, 0, tzinfo=timezone.utc)
+        self.portal.event.end = datetime(2013, 1, 1, 12, 0, tzinfo=timezone.utc)
         transaction.commit()
         response = self.api_session.get(self.portal.event.absolute_url())
         save_request_and_response_for_docs("event", response)
@@ -988,7 +993,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         api.group.add_user(groupname="Reviewers", username="noam")
         transaction.commit()
@@ -1106,6 +1113,48 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.delete("/@users/noam")
         save_request_and_response_for_docs("users_delete", response)
 
+    def test_documentation_users_delete_no_localroles(self):
+        properties = {
+            "email": "noam.chomsky@example.com",
+            "username": "noamchomsky",
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
+        )
+        transaction.commit()
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_localroles": 0}
+        )
+        save_request_and_response_for_docs("users_delete_no_localroles", response)
+
+    def test_documentation_users_delete_no_memberareas(self):
+        properties = {
+            "email": "noam.chomsky@example.com",
+            "username": "noamchomsky",
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
+        )
+        transaction.commit()
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_memberareas": 0}
+        )
+        save_request_and_response_for_docs("users_delete_no_memberareas", response)
+
     def test_documentation_groups(self):
         gtool = api.portal.get_tool("portal_groups")
         properties = {
@@ -1128,7 +1177,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         api.group.add_user(groupname="ploneteam", username="noam")
         transaction.commit()
@@ -1157,7 +1208,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         api.group.add_user(groupname="ploneteam", username="noam")
         transaction.commit()
@@ -1597,7 +1650,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock", response)
@@ -1610,7 +1664,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock_nonstealable_timeout", response)
@@ -1636,7 +1691,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("refresh_lock", response)
@@ -1655,15 +1711,20 @@ class TestDocumentation(TestDocumentationBase):
             headers={"Lock-Token": token},
             json={"title": "New Title"},
         )
-        response.request.headers[
-            "Lock-Token"
-        ] = "0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
+        response.request.headers["Lock-Token"] = (
+            "0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
+        )
         save_request_and_response_for_docs("lock_update", response)
 
     def test_querystring_get(self):
         url = "/@querystring"
         response = self.api_session.get(url)
         save_request_and_response_for_docs("querystring_get", response)
+
+    def test_querystring_get_contextual(self):
+        url = f"{self.document.absolute_url()}/@querystring"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("querystring_get_contextual", response)
 
     def test_querystringsearch_post(self):
         url = "/@querystring-search"
@@ -1685,6 +1746,18 @@ class TestDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("querystringsearch_post", response)
 
+    def test_querystringsearch_get(self):
+        query = {
+            "query": "%7B%22query%22%3A%5B%7B%22i%22%3A%22portal_type%22%2C%22o%22%3A%20%22plone.app.querystring.operation.selection.any%22%2C%22v%22%3A%5B%22Document%22%5D%7D%5D%7D"
+        }
+        url = "/@querystring-search"
+
+        self.portal.invokeFactory("Document", "testdocument", title="Test Document")
+        transaction.commit()
+
+        response = self.api_session.get(url, params=query)
+        save_request_and_response_for_docs("querystringsearch_get", response)
+
     def test_system_get(self):
         response = self.api_session.get("/@system")
         save_request_for_docs("system_get", response)
@@ -1699,9 +1772,34 @@ class TestDocumentation(TestDocumentationBase):
         )
         save_request_for_docs("addons_install_profile", response)
 
+    def test_site_navroot_get(self):
+        response = self.api_session.get("/@navroot")
+        save_request_and_response_for_docs("navroot_standard_site_get", response)
+
+    def test_site_content_navroot_get(self):
+        response = self.api_session.get("/front-page/@navroot")
+        save_request_and_response_for_docs(
+            "navroot_standard_site_content_get", response
+        )
+
+    def test_site_navroot_get_expansion(self):
+        response = self.api_session.get("/?expand=navroot")
+        save_request_and_response_for_docs(
+            "navroot_standard_site_get_expansion", response
+        )
+
+    def test_site_navroot_content_get_expansion(self):
+        response = self.api_session.get("/front-page?expand=navroot")
+        save_request_and_response_for_docs(
+            "navroot_standard_site_content_get_expansion", response
+        )
+
+    def test_site_get(self):
+        response = self.api_session.get("/@site")
+        save_request_and_response_for_docs("site_get", response)
+
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -1758,7 +1856,6 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
 
 
 class TestCommenting(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -2001,6 +2098,58 @@ class TestCommenting(TestDocumentationBase):
         response = self.api_session.get(url + query)
         save_request_and_response_for_docs("aliases_root_get", response)
 
+    def test_aliases_root_get_csv_format(self):
+        url = f"{self.portal.absolute_url()}/@aliases"
+        query = ""
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+        self.api_session.headers.update({"Content-Type": "application/json"})
+        self.api_session.headers.update({"Accept": "text/csv"})
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_get_csv_format", response)
+
+    def test_aliases_root_add_csv_format(self):
+        url = f"{self.portal.absolute_url()}/@aliases"
+
+        content = b"old path,new path,datetime,manual\n/old-page,/front-page,2022/01/01 00:00:00 GMT+0,True\n"
+        csv_file = io.BytesIO(content)
+        csv_file.name = "test_file.csv"
+
+        # Setting a fixed boundary intentionally to make the producing .req and .resp files deterministic
+        boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+
+        # Manually construct the multipart body
+        body = (
+            f"--{boundary}\r\n"
+            f'Content-Disposition: form-data; name="file"; filename="{csv_file.name}"\r\n'
+            "Content-Type: text/csv\r\n\r\n"
+            f"{content.decode()}\r\n"
+            f"--{boundary}--\r\n"
+        )
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": "Basic YWRtaW46c2VjcmV0",
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
+        }
+
+        response = self.api_session.post(url, headers=headers, data=body)
+        save_request_and_response_for_docs("aliases_root_add_csv_format", response)
+
     def test_aliases_root_filter(self):
         # Get aliases
         url = f"{self.portal.absolute_url()}/@aliases"
@@ -2027,7 +2176,6 @@ class TestCommenting(TestDocumentationBase):
 
 
 class TestControlPanelDocumentation(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def test_controlpanels_get_listing(self):
@@ -2085,7 +2233,6 @@ class TestControlPanelDocumentation(TestDocumentationBase):
 
 
 class TestPAMDocumentation(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -2095,7 +2242,20 @@ class TestPAMDocumentation(TestDocumentationBase):
         language_tool.addSupportedLanguage("en")
         language_tool.addSupportedLanguage("es")
         language_tool.addSupportedLanguage("de")
-        applyProfile(self.portal, "plone.app.multilingual:default")
+        if api.portal.get().portal_setup.profileExists(
+            "plone.app.multilingual:default"
+        ):
+            applyProfile(self.portal, "plone.app.multilingual:default")
+
+        # We manually set the UIDs for LRFs here because the static uuid
+        # generator is not applied for LRFs.
+        # When we have tried to apply it for LRFs we have had several
+        # utility registration problems.
+        #
+        setattr(self.portal.en, "_plone.uuid", "00000000000000000000000000000001")
+        setattr(self.portal.es, "_plone.uuid", "00000000000000000000000000000002")
+        setattr(self.portal.fr, "_plone.uuid", "00000000000000000000000000000003")
+        setattr(self.portal.de, "_plone.uuid", "00000000000000000000000000000004")
 
         en_id = self.portal["en"].invokeFactory(
             "Document", id="test-document", title="Test document"
@@ -2106,9 +2266,6 @@ class TestPAMDocumentation(TestDocumentationBase):
         )
         self.es_content = self.portal["es"].get(es_id)
         transaction.commit()
-
-    def tearDown(self):
-        super().tearDown()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
@@ -2134,6 +2291,7 @@ class TestPAMDocumentation(TestDocumentationBase):
     def test_documentation_translations_get(self):
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
+
         response = self.api_session.get(
             f"{self.en_content.absolute_url()}/@translations"
         )
@@ -2172,9 +2330,50 @@ class TestPAMDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("translation_locator", response)
 
+    def test_documentation_translations_unexpanded_get(self):
+        response = self.api_session.get(
+            f"{self.en_content.absolute_url()}",
+        )
+        save_request_and_response_for_docs("translations_unexpanded_get", response)
+
+    def test_documentation_translations_expand_get(self):
+        self.api_session.post(
+            f"{self.en_content.absolute_url()}/@translations",
+            json={"id": self.es_content.absolute_url()},
+        )
+        response = self.api_session.get(
+            f"{self.en_content.absolute_url()}?expand=translations",
+        )
+        save_request_and_response_for_docs("translations_expand_get", response)
+
+    def test_site_navroot_get(self):
+        response = self.api_session.get("/@navroot")
+        save_request_and_response_for_docs("navroot_site_get", response)
+
+    def test_site_navroot_language_folder_get(self):
+        response = self.api_session.get("/en/@navroot")
+        save_request_and_response_for_docs("navroot_lang_folder_get", response)
+
+    def test_site_navroot_language_content_get(self):
+        response = self.api_session.get("/en/test-document/@navroot")
+        save_request_and_response_for_docs("navroot_lang_content_get", response)
+
+    def test_site_expansion_navroot(self):
+        response = self.api_session.get("?expand=navroot")
+        save_request_and_response_for_docs("site_get_expand_navroot", response)
+
+    def test_site_expansion_navroot_language_folder(self):
+        response = self.api_session.get("/en?expand=navroot")
+        save_request_and_response_for_docs("site_get_expand_lang_folder", response)
+
+    def test_site_expansion_navroot_language_folder_content(self):
+        response = self.api_session.get("/en/test-document?expand=navroot")
+        save_request_and_response_for_docs(
+            "site_get_expand_lang_folder_content", response
+        )
+
 
 class TestIterateDocumentation(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -2278,7 +2477,6 @@ class TestIterateDocumentation(TestDocumentationBase):
 
 
 class TestRules(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -2375,7 +2573,10 @@ class TestRules(TestDocumentationBase):
         # Enable some rules
         url = "/@content-rules"
         self.api_session.post(url)
-        payload = {"form.button.Enable": True, "rule_ids": ["rule-1", "rule-2"]}
+        payload = {
+            "form.button.Enable": True,
+            "rule_ids": ["rule-1", "rule-2"],
+        }
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("rules_enable", response)
 
@@ -2383,7 +2584,10 @@ class TestRules(TestDocumentationBase):
         # Disable some assigned rules
         url = "/@content-rules"
         self.api_session.post(url)
-        payload = {"form.button.Disable": True, "rule_ids": ["rule-1", "rule-2"]}
+        payload = {
+            "form.button.Disable": True,
+            "rule_ids": ["rule-1", "rule-2"],
+        }
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("rules_disable", response)
 
@@ -2391,7 +2595,10 @@ class TestRules(TestDocumentationBase):
         # Enable apply on subfolders
         url = "/@content-rules"
         self.api_session.post(url)
-        payload = {"form.button.Bubble": True, "rule_ids": ["rule-1", "rule-2"]}
+        payload = {
+            "form.button.Bubble": True,
+            "rule_ids": ["rule-1", "rule-2"],
+        }
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("rules_apply_subfolders", response)
 
@@ -2399,7 +2606,10 @@ class TestRules(TestDocumentationBase):
         # Disable apply on subfolders
         url = "/@content-rules"
         self.api_session.post(url)
-        payload = {"form.button.NoBubble": True, "rule_ids": ["rule-1", "rule-2"]}
+        payload = {
+            "form.button.NoBubble": True,
+            "rule_ids": ["rule-1", "rule-2"],
+        }
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("rules_disable_apply_subfolders", response)
 
@@ -2435,7 +2645,10 @@ class TestRules(TestDocumentationBase):
         save_request_and_response_for_docs(
             "controlpanels_post_rule_condition_portaltype", response
         )
-        payload = {"file_extension": "JPG", "type": "plone.conditions.FileExtension"}
+        payload = {
+            "file_extension": "JPG",
+            "type": "plone.conditions.FileExtension",
+        }
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_post_rule_condition_fileextension", response
@@ -2527,7 +2740,10 @@ class TestRules(TestDocumentationBase):
         save_request_and_response_for_docs(
             "controlpanels_post_rule_action_mail", response
         )
-        payload = {"comment": "Some comment", "type": "plone.actions.Versioning"}
+        payload = {
+            "comment": "Some comment",
+            "type": "plone.actions.Versioning",
+        }
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_post_rule_action_versioning", response
@@ -2700,3 +2916,27 @@ class TestRules(TestDocumentationBase):
         url = "/@controlpanels/content-rules/rule-3"
         response = self.api_session.delete(url)
         save_request_and_response_for_docs("controlpanels_delete_rule", response)
+
+
+class TestLinkintegrity(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super().setUp()
+
+        # Create one document with a reference to another
+        self.doc1 = createContentInContainer(
+            self.portal, "Document", id="doc-1", title="First document"
+        )
+        self.doc2 = createContentInContainer(
+            self.portal, "Document", id="doc-2", title="Second document"
+        )
+        intids = getUtility(IIntIds)
+        self.doc1.relatedItems = [RelationValue(intids.getId(self.doc2))]
+        notify(ObjectModifiedEvent(self.doc1))
+        transaction.commit()
+
+    def test_linkintegrity_get(self):
+        response = self.api_session.get("/@linkintegrity?uids=" + self.doc2.UID())
+        save_request_and_response_for_docs("linkintegrity_get", response)

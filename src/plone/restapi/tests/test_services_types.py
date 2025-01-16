@@ -5,16 +5,15 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_PASSWORD
+from plone.restapi.bbb import ISelectableConstrainTypes
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
 
 import transaction
 import unittest
 
 
 class TestServicesTypes(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -81,7 +80,8 @@ class TestServicesTypes(unittest.TestCase):
         )
         for item in response.json():
             self.assertEqual(
-                sorted(item), sorted(["@id", "title", "addable", "immediately_addable"])
+                sorted(item),
+                sorted(["@id", "title", "addable", "immediately_addable", "id"]),
             )
 
     def test_get_types_document(self):
@@ -571,7 +571,6 @@ class TestServicesTypes(unittest.TestCase):
 
 
 class TestServicesTypesTranslatedTitles(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):

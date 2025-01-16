@@ -1,13 +1,14 @@
 """JsonSchema providers."""
+
 from plone.app.textfield.interfaces import IRichText
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.restapi.types.utils import get_multilingual_directives
 from plone.restapi.types.utils import get_querysource_url
 from plone.restapi.types.utils import get_source_url
 from plone.restapi.types.utils import get_vocabulary_url
 from plone.restapi.types.utils import get_widget_params
-from plone.restapi.types.utils import get_multilingual_directives
 from plone.schema import IEmail
 from plone.schema import IJSONField
 from z3c.formwidget.query.interfaces import IQuerySource
@@ -33,11 +34,11 @@ from zope.schema.interfaces import IInt
 from zope.schema.interfaces import IList
 from zope.schema.interfaces import IObject
 from zope.schema.interfaces import IPassword
-from zope.schema.interfaces import IURI
 from zope.schema.interfaces import ISet
 from zope.schema.interfaces import IText
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITuple
+from zope.schema.interfaces import IURI
 
 
 @adapter(IField, Interface, Interface)

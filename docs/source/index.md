@@ -7,7 +7,7 @@ myst:
     "keywords": "Plone, plone.restapi, REST, API"
 ---
 
-% plone.restapi documentation master file, created by
+% plone.restapi documentation index file, created by
 % sphinx-quickstart on Mon Apr 28 13:04:12 2014.
 % You can adapt this file completely to your liking, but it should at least
 % contain the root `toctree` directive.
@@ -31,14 +31,12 @@ contributing/index
 .. include:: ../../README.rst
 ```
 
-
 ## Appendix and Glossary
 
 ```{toctree}
 http-status-codes
 /glossary
 ```
-
 
 ## Index
 

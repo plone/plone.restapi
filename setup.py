@@ -1,13 +1,16 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
+
 import sys
 
-version = "8.34.1.dev0"
 
-assert sys.version_info >= (
-    3,
-    6,
-    0,
-), "plone.restapi 8 requires Python 3.6.0+. Please downgrade to plone.restapi 7 for Python 2 and Plone 4.3/5.1."
+version = "9.9.1.dev0"
+
+if sys.version_info.major == 2:
+    raise ValueError(
+        "plone.restapi 8 requires Python 3. "
+        "Please downgrade to plone.restapi 7 for Python 2 and Plone 4.3/5.1."
+    )
 
 
 def read(filename):
@@ -39,12 +42,13 @@ long_description = (
 TEST_REQUIRES = [
     "collective.MockMailHost",
     "plone.app.caching",
-    "plone.app.contenttypes",
-    "plone.app.robotframework",
-    "plone.app.testing [robot] >= 4.2.2",  # ROBOT_TEST_LEVEL added
+    "plone.app.contenttypes[test]",
+    "plone.app.iterate",
+    "plone.app.discussion[test]",
+    "plone.app.testing",
+    "plone.app.upgrade",
     "plone.api",
     "requests",
-    "plone.tiles",
     "mock",
 ]
 
@@ -61,14 +65,16 @@ setup(
         "Framework :: Plone",
         "Framework :: Plone :: 5.2",
         "Framework :: Plone :: 6.0",
+        "Framework :: Plone :: 6.1",
         "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
@@ -80,7 +86,7 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     namespace_packages=["plone"],
-    python_requires=">=3.6.0",
+    python_requires=">=3.8",
     include_package_data=True,
     zip_safe=False,
     install_requires=[

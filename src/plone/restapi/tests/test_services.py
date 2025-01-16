@@ -111,10 +111,8 @@ class TestTraversal(unittest.TestCase):
             self.assertEqual(
                 "This is an image caption.", response.json()["image_caption"]
             )
-            self.assertDictContainsSubset(
-                {"download": self.portal_url + f"/news1/@@images/{scale_url_uuid}.png"},
-                response.json()["image"],
-            )
+            url = self.portal_url + f"/news1/@@images/{scale_url_uuid}.png"
+            self.assertEqual(response.json()["image"]["download"], url)
 
     def test_get_folder(self):
         self.portal.invokeFactory("Folder", id="folder1", title="My Folder")

@@ -1,34 +1,28 @@
 name: Black
-on: [push]
+on: [push,pull_request]
 jobs:
   build:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8]
+        python-version: [3.12]
 
     steps:
       # git checkout
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       # python setup
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
 
-      # python cache
-      - uses: actions/cache@v1
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      # install black (extract version from versions.cfg)
+      # install black (with constraints)
       - name: install black
-        run: pip install click==$(awk '/^click =/{print $NF}' versions.cfg) black==$(awk '/^black =/{print $NF}' versions.cfg)
+        run: pip install -c constraints.txt black
 
       # run black
       - name: run black

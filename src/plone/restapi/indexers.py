@@ -1,13 +1,8 @@
-# XXX: EXPERIMENTAL!!!
-# This is an experimental feature meant for use in Volto only!
-# This code is likely to change in the future, even within minor releases.
-# We will make sure plone.restapi latest always works with the latest Volto release.
-# This code is planned to being refactored into plone.volto before CMFPlone 6.0 is out.
-# <tisto@plone.org>
-
 from plone.app.contenttypes.indexers import SearchableText
 from plone.indexer.decorator import indexer
+from plone.restapi import HAS_PLONE_6
 from plone.restapi.behaviors import IBlocks
+from plone.restapi.blocks import visit_subblocks
 from plone.restapi.interfaces import IBlockSearchableText
 from zope.component import adapter
 from zope.component import queryMultiAdapter
@@ -70,21 +65,6 @@ class SlateTextIndexer:
         return block.get("plaintext", "")
 
 
-def extract_subblocks(block):
-    """Extract subblocks from a block.
-
-    :param block: Dictionary with block information.
-    :returns: A list with subblocks, if present, or an empty list.
-    """
-    if "data" in block and "blocks" in block["data"]:
-        raw_blocks = block["data"]["blocks"]
-    elif "blocks" in block:
-        raw_blocks = block["blocks"]
-    else:
-        raw_blocks = None
-    return list(raw_blocks.values()) if isinstance(raw_blocks, dict) else []
-
-
 def extract_text(block, obj, request):
     """Extract text information from a block.
 
@@ -102,7 +82,6 @@ def extract_text(block, obj, request):
     :param request: Current request.
     :returns: A string with text found in the block.
     """
-    result = ""
     block_type = block.get("@type", "")
     # searchableText is the conventional way of storing
     # searchable info in a block
@@ -115,15 +94,13 @@ def extract_text(block, obj, request):
     adapter = queryMultiAdapter((obj, request), IBlockSearchableText, name=block_type)
     result = adapter(block) if adapter is not None else ""
     if not result:
-        subblocks = extract_subblocks(block)
-        for subblock in subblocks:
+        for subblock in visit_subblocks(obj, block):
             tmp_result = extract_text(subblock, obj, request)
             result = f"{result}\n{tmp_result}"
     return result
 
 
-@indexer(IBlocks)
-def SearchableText_blocks(obj):
+def get_blocks_text(obj):
     """Extract text to be used by the SearchableText index in the Catalog."""
     request = getRequest()
     blocks = obj.blocks
@@ -132,8 +109,35 @@ def SearchableText_blocks(obj):
     for block_id in blocks_layout.get("items", []):
         block = blocks.get(block_id, {})
         blocks_text.append(extract_text(block, obj, request))
+    return blocks_text
 
-    # Extract text using the base plone.app.contenttypes indexer
-    std_text = SearchableText(obj)
-    blocks_text.append(std_text)
-    return " ".join([text.strip() for text in blocks_text if text.strip()])
+
+def text_strip(text_list):
+    return " ".join([text.strip() for text in text_list if text.strip()])
+
+
+if HAS_PLONE_6:
+    # In Plone 6, uses IDynamicTextIndexExtender to index block texts.
+    # This ensures that indexing with plone.textindexer continues to work. See:
+    # https://github.com/plone/plone.restapi/issues/1744
+    from plone.app.dexterity import textindexer
+
+    @implementer(textindexer.IDynamicTextIndexExtender)
+    @adapter(IBlocks)
+    class BlocksSearchableTextExtender(object):
+        def __init__(self, context):
+            self.context = context
+
+        def __call__(self):
+            return text_strip(get_blocks_text(self.context))
+
+else:
+    # BBB: Plone 5.2 does not have plone.app.dexterity.textindexer.
+    # So we need to index with plone.indexer.
+    @indexer(IBlocks)
+    def SearchableText_blocks(obj):
+        blocks_text = get_blocks_text(obj)
+        # Extract text using the base plone.app.contenttypes indexer
+        std_text = SearchableText(obj)
+        blocks_text.append(std_text)
+        return text_strip(blocks_text)

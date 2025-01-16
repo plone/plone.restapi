@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:cache="http://namespaces.zope.org/cache"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <plone:service
+      method="GET"
+      factory=".get.SiteGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@site"
+      />
+
+  <cache:ruleset
+      for=".get.SiteGet"
+      ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
+      />
+
+</configure>

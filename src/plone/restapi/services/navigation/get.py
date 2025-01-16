@@ -4,12 +4,12 @@ from plone.app.layout.navigation.root import getNavigationRoot
 from plone.memoize.view import memoize
 from plone.memoize.view import memoize_contextless
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import INavigationSchema
+from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
-from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -17,6 +17,7 @@ from zope.component.hooks import getSite
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
+from zExceptions import BadRequest
 
 
 @implementer(IExpandableElement)
@@ -29,7 +30,10 @@ class Navigation:
 
     def __call__(self, expand=False):
         if self.request.form.get("expand.navigation.depth", False):
-            self.depth = int(self.request.form["expand.navigation.depth"])
+            try:
+                self.depth = int(self.request.form["expand.navigation.depth"])
+            except (ValueError, TypeError) as e:
+                raise BadRequest(e)
         else:
             self.depth = 1
 
@@ -99,7 +103,7 @@ class Navigation:
                     entry["title"], domain="plone", context=self.request
                 )
 
-            entry["title"] = safe_unicode(entry["title"])
+            entry["title"] = safe_text(entry["title"])
             ret[navtree_path].append(entry)
 
         query = {
@@ -135,15 +139,17 @@ class Navigation:
             if brain_parent_path == navtree_path:
                 # This should be already provided by the portal_tabs_view
                 continue
-            if brain.exclude_from_nav and not context_path.startswith(brain_path):
+            if brain.exclude_from_nav and not f"{brain_path}/".startswith(
+                f"{context_path}/"
+            ):
                 # skip excluded items if they're not in our context path
                 continue
             url = brain.getURL()
             entry = {
                 "path": brain_path,
                 "@id": url,
-                "title": safe_unicode(brain.Title),
-                "description": safe_unicode(brain.Description),
+                "title": safe_text(brain.Title),
+                "description": safe_text(brain.Description),
                 "review_state": json_compatible(brain.review_state),
                 "use_view_action_in_listings": brain.portal_type in types_using_view,
             }
@@ -163,8 +169,6 @@ class Navigation:
 
         item.update({"items": sub})
 
-        if "title" in item and item["title"]:
-            item["title"] = item["title"]
         if "path" in item:
             del item["path"]
         return item

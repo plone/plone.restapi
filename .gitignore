@@ -24,7 +24,9 @@ docs/.DS_Store
 /lib
 /lib64
 /local
+/venv
 /.mr.developer.cfg
+/.python-version
 *.mo
 docs/_build
 docs/plone.restapi.http-examples

@@ -104,10 +104,10 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertTrue(isinstance(value, str), "Not an <unicode>")
         self.assertEqual("2015-06-20T13:22:04", value)
 
-    def test_decimal_field_serialization_returns_unicode(self):
-        value = self.serialize("test_decimal_field", Decimal("1.1"))
-        self.assertTrue(isinstance(value, str), "Not an <unicode>")
-        self.assertEqual("1.1", value)
+    def test_decimal_field_serialization_returns_str(self):
+        value = self.serialize("test_decimal_field", Decimal("1.111"))
+        self.assertTrue(isinstance(value, str), "Not an <str>")
+        self.assertEqual("1.111", value)
 
     def test_dict_field_serialization_returns_dict(self):
         value = self.serialize(
@@ -273,7 +273,9 @@ class TestDexterityFieldSerializing(TestCase):
             {
                 "@id": "http://nohost/plone/doc2",
                 "@type": "DXTestDocument",
+                "UID": doc2.UID(),
                 "title": "Referenceable Document",
+                "type_title": "DX Test Document",
                 "description": "Description 2",
                 "review_state": "private",
             },
@@ -304,20 +306,37 @@ class TestDexterityFieldSerializing(TestCase):
                 {
                     "@id": "http://nohost/plone/doc2",
                     "@type": "DXTestDocument",
+                    "UID": doc2.UID(),
                     "title": "Referenceable Document",
                     "description": "Description 2",
+                    "type_title": "DX Test Document",
                     "review_state": "private",
                 },
                 {
                     "@id": "http://nohost/plone/doc3",
                     "@type": "DXTestDocument",
+                    "UID": doc3.UID(),
                     "title": "Referenceable Document",
+                    "type_title": "DX Test Document",
                     "description": "Description 3",
                     "review_state": "private",
                 },
             ],
             value,
         )
+
+    def test_relation_field_serialization_do_not_change_request(self):
+        self.request.form["metadata_fields"] = ["foo", "bar"]
+        doc2 = self.portal[
+            self.portal.invokeFactory(
+                "DXTestDocument",
+                id="doc2",
+                title="Referenceable Document",
+                description="Description 2",
+            )
+        ]
+        self.serialize("test_relationchoice_field", doc2)
+        self.assertEqual(self.request.form["metadata_fields"], ["foo", "bar"])
 
     def test_remoteurl_field_in_links_get_converted(self):
         link = self.portal[

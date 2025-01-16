@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from DateTime import DateTime
 from plone import api
 from plone.app.testing import setRoles
@@ -5,20 +6,32 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_PASSWORD
+from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.services.users.get import UsersGet
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getAdapter
 from zope.component import getUtility
 
+import base64
 import os
 import re
 import transaction
 import unittest
+
+
+class TestUnit(unittest.TestCase):
+    def test_extract_media_type(self):
+        from plone.restapi.services.users.get import _extract_media_type as extract
+
+        self.assertIsNone(extract(None))
+        self.assertEqual(extract("text/plain"), "text/plain")
+        self.assertEqual(extract("TEXT/PLAIN"), "text/plain")
+        self.assertEqual(extract("text / plain"), "text/plain")
+        self.assertEqual(extract(" text/plain ; charset=utf-8"), "text/plain")
 
 
 class TestUsersEndpoint(unittest.TestCase):
@@ -39,6 +52,12 @@ class TestUsersEndpoint(unittest.TestCase):
         self.anon_api_session = RelativeSession(self.portal_url, test=self)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
+        api.portal.set_registry_record("plone.enable_user_folders", True)
+        api.content.create(
+            container=self.portal, type="Folder", id="Members", title="Members"
+        )
+
+        transaction.commit()
         properties = {
             "email": "noam.chomsky@example.com",
             "username": "noamchomsky",
@@ -65,12 +84,14 @@ class TestUsersEndpoint(unittest.TestCase):
             password="otherpassword",
         )
         api.group.add_user(groupname="Reviewers", username="otheruser")
+
         transaction.commit()
 
     def tearDown(self):
         self.api_session.close()
         self.anon_api_session.close()
 
+    @contextmanager
     def makeRealImage(self):
         from Products.PlonePAS.tests import dummy
 
@@ -78,9 +99,31 @@ class TestUsersEndpoint(unittest.TestCase):
 
         pas_path = os.path.dirname(ppas.__file__)
         path = os.path.join(pas_path, "tool.gif")
-        image = open(path, "rb")
-        image_upload = dummy.FileUpload(dummy.FieldStorage(image))
-        return image_upload
+        with open(path, "rb") as image:
+            yield dummy.FileUpload(dummy.FieldStorage(image))
+
+    def set_siteadm(self):
+        siteadm_username = "siteadm"
+        siteadm_password = "siteadmpassword"
+        api.user.create(
+            email="siteadm@example.com",
+            roles=["Site Administrator"],
+            username=siteadm_username,
+            password=siteadm_password,
+        )
+        self.api_session = RelativeSession(self.portal_url, test=self)
+        self.api_session.headers.update({"Accept": "application/json"})
+        self.api_session.auth = (siteadm_username, siteadm_password)
+        transaction.commit()
+
+    def create_manager(self):
+        api.user.create(
+            email="manager@example.com",
+            roles=["Manager"],
+            username="manager",
+            password="managerpassword",
+        )
+        transaction.commit()
 
     def test_list_users(self):
         response = self.api_session.get("/@users")
@@ -158,8 +201,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(400, response.status_code)
         self.assertTrue(
-            ("You have to either send a " "password or sendPasswordReset")
-            in response.text
+            "You have to either send a password or sendPasswordReset" in response.text
         )
 
     def test_add_user_email_is_required_if_email_login_is_enabled(self):
@@ -168,7 +210,8 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"username": "noam", "password": TEST_USER_PASSWORD}
+            "/@users",
+            json={"username": "noam", "password": TEST_USER_PASSWORD},
         )
 
         self.assertEqual(400, response.status_code)
@@ -181,7 +224,10 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -213,7 +259,10 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -307,7 +356,10 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -324,7 +376,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual("noam", response.json().get("id"))
         self.assertEqual(
-            self.portal.absolute_url() + "/@users/noam", response.json().get("@id")
+            self.portal.absolute_url() + "/@users/noam",
+            response.json().get("@id"),
         )
         self.assertEqual("noam.chomsky@example.com", response.json().get("email"))
         self.assertEqual("Noam Avram Chomsky", response.json().get("fullname"))
@@ -350,10 +403,10 @@ class TestUsersEndpoint(unittest.TestCase):
         noam_api_session.close()
 
     def test_get_user_with_portrait_set(self):
-        image = self.makeRealImage()
-        pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "noam")
-        transaction.commit()
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
 
         response = self.api_session.get("/@users/noam")
 
@@ -376,7 +429,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual("noam", response.json()[0].get("id"))
         self.assertEqual(
-            self.portal.absolute_url() + "/@users/noam", response.json()[0].get("@id")
+            self.portal.absolute_url() + "/@users/noam",
+            response.json()[0].get("@id"),
         )
         self.assertEqual("noam.chomsky@example.com", response.json()[0].get("email"))
         self.assertEqual(
@@ -510,6 +564,30 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 204)
         transaction.commit()
+
+    def _update_portrait_with_svg(self):
+        here = os.path.dirname(__file__)
+        # icon from https://icons.getbootstrap.com/icons/person/
+        path = os.path.join(here, "image.svg")
+        with open(path, "rb") as image:
+            data = base64.encodebytes(image.read())
+
+        payload = {
+            "portrait": {
+                "filename": "image.svg",
+                "encoding": "base64",
+                "data": data,
+                "content-type": "image/svg+xml",
+            }
+        }
+        self.api_session.auth = ("noam", "password")
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+    def test_update_portrait_with_svg(self):
+        self._update_portrait_with_svg()
 
         user = self.api_session.get("/@users/noam").json()
         self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
@@ -695,7 +773,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_user_set_own_password_checks_old_password(self):
         self.api_session.auth = ("noam", "password")
-        payload = {"new_password": "new_password", "old_password": "wrong_password"}
+        payload = {
+            "new_password": "new_password",
+            "old_password": "wrong_password",
+        }
         response = self.api_session.post("/@users/noam/reset-password", json=payload)
 
         self.assertEqual(response.status_code, 403)
@@ -723,6 +804,20 @@ class TestUsersEndpoint(unittest.TestCase):
         authed = self.portal.acl_users.authenticate("noam", "new_password", {})
         self.assertTrue(authed)
 
+    def test_reset_with_token_validates_password(self):
+        reset_tool = getToolByName(self.portal, "portal_password_reset")
+        reset_info = reset_tool.requestReset("noam")
+        token = reset_info["randomstring"]
+        transaction.commit()
+
+        payload = {"reset_token": token, "new_password": "foo"}
+        response = self.api_session.post("/@users/noam/reset-password", json=payload)
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 400)
+        authed = self.portal.acl_users.authenticate("noam", "foo", {})
+        self.assertFalse(authed)
+
     def test_reset_with_uuid_as_userid_and_login_email_using_id(self):
         # enable use_email_as_login
         security_settings = getAdapter(self.portal, ISecuritySchema)
@@ -732,7 +827,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -762,7 +860,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -791,7 +892,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
@@ -814,6 +918,52 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_delete_user(self):
         response = self.api_session.delete("/@users/noam")
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+    def test_delete_user_but_not_memberareas(self):
+        mtool = getToolByName(self.portal, "portal_membership")
+        mtool.createMemberArea("noam")
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_memberareas": 0}
+        )
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+        memberfolder = self.portal.get("Members", None)
+        self.assertIsNotNone(memberfolder)
+        if memberfolder is not None:
+            self.assertIn("noam", memberfolder)
+
+    def test_delete_user_but_not_localroles(self):
+        self.folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            id="folder",
+            title="My Folder",
+        )
+        api.user.grant_roles(username="noam", roles=["Reviewer"], obj=self.folder)
+
+        self.assertIn("Reviewer", api.user.get_roles(username="noam", obj=self.folder))
+
+        response = self.api_session.delete(
+            "/@users/noam", data={"delete_localroles": 0}
+        )
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, api.user.get(userid="noam"))
+
+        user_local_roles = self.folder.get_local_roles_for_userid(userid="noam")
+        self.assertIn("Reviewer", user_local_roles)
+
+    def test_delete_deletes_localroles(self):
+        response = self.api_session.delete("/@users/noam?delete_localroles=0")
         transaction.commit()
 
         self.assertEqual(response.status_code, 204)
@@ -842,7 +992,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.anon_api_session.post(
             "/@users",
-            json={"username": "new_user", "email": "avram.chomsky@example.com"},
+            json={
+                "username": "new_user",
+                "email": "avram.chomsky@example.com",
+            },
         )
         transaction.commit()
 
@@ -855,7 +1008,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.anon_api_session.post(
             "/@users",
-            json={"username": "new_user", "email": "avram.chomsky@example.com"},
+            json={
+                "username": "new_user",
+                "email": "avram.chomsky@example.com",
+            },
         )
         transaction.commit()
 
@@ -956,10 +1112,10 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(1, len(response["roles"]))
 
     def test_get_own_user_portrait(self):
-        image = self.makeRealImage()
-        pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "noam")
-        transaction.commit()
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
 
         self.assertEqual("noam", pm.getPersonalPortrait("noam").getId())
 
@@ -973,6 +1129,23 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.headers["Content-Type"], "image/gif")
+        noam_api_session.close()
+
+    def test_get_own_user_portrait_with_svg(self):
+        self._update_portrait_with_svg()
+
+        noam_api_session = RelativeSession(self.portal_url, test=self)
+        noam_api_session.headers.update({"Accept": "application/json"})
+        noam_api_session.auth = ("noam", "password")
+
+        response = noam_api_session.get("/@portrait")
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/svg+xml")
+        self.assertEqual(
+            response.headers["Content-Disposition"],
+            "attachment; filename*=UTF-8''noam.svg",
+        )
         noam_api_session.close()
 
     def test_get_own_user_portrait_logged_out(self):
@@ -990,10 +1163,13 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(404, response.status_code)
 
     def test_get_user_portrait(self):
-        image = self.makeRealImage()
-        pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "noam")
-        transaction.commit()
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            # Note: if you would set an SVG in this way, this would give a
+            # PIL.UnidentifiedImageError, which is what happens in ClassicUI
+            # as well.
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
 
         response = self.api_session.get(
             "/@portrait/noam",
@@ -1001,12 +1177,32 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.headers["Content-Type"], "image/gif")
+        self.assertIsNone(response.headers.get("Content-Disposition"))
+
+    def test_get_user_portrait_with_svg(self):
+        # If we would upload an SVG in the same way as in
+        # test_get_user_portrait, with pm.changeMemberPortrait,
+        # this would actually give PIL.UnidentifiedImageError,
+        # which is what happens in ClassicUI as well.
+        # So update it with a restapi call instead.
+        self._update_portrait_with_svg()
+
+        response = self.api_session.get(
+            "/@portrait/noam",
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/svg+xml")
+        self.assertEqual(
+            response.headers["Content-Disposition"],
+            "attachment; filename*=UTF-8''noam.svg",
+        )
 
     def test_get_user_portrait_anonymous(self):
-        image = self.makeRealImage()
-        pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "admin")
-        transaction.commit()
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "admin")
+            transaction.commit()
 
         response = self.anon_api_session.get(
             "/@portrait/admin",
@@ -1014,6 +1210,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.headers["Content-Type"], "image/gif")
+        self.assertIsNone(response.headers.get("Content-Disposition"))
 
     def test_get_user_portrait_if_email_login_enabled(self):
         # enable use_email_as_login
@@ -1023,14 +1220,17 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.api_session.post(
             "/@users",
-            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
         )
         transaction.commit()
 
-        image = self.makeRealImage()
-        pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "howard.zinn@example.com")
-        transaction.commit()
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "howard.zinn@example.com")
+            transaction.commit()
 
         response = self.api_session.get("/@users/howard.zinn@example.com")
         self.assertEqual(200, response.status_code)
@@ -1135,3 +1335,467 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(len(users), 2)
         self.assertEqual(users[0].userid, "user1")
         self.assertEqual(users[1].userid, "user2")
+
+    def test_siteadm_not_update_manager(self):
+        self.set_siteadm()
+        payload = {
+            "roles": {
+                "Contributor": False,
+                "Editor": False,
+                "Reviewer": False,
+                "Manager": True,
+                "Member": True,
+                "Reader": False,
+                "Site Administrator": False,
+            }
+        }
+
+        self.api_session.patch("/@users/noam", json=payload)
+        transaction.commit()
+
+        noam = api.user.get(userid="noam")
+        self.assertNotIn("Manager", noam.getRoles())
+
+    def test_manager_update_manager(self):
+        payload = {
+            "roles": {
+                "Contributor": False,
+                "Editor": False,
+                "Reviewer": False,
+                "Manager": True,
+                "Member": True,
+                "Reader": False,
+                "Site Administrator": False,
+            }
+        }
+
+        self.api_session.patch("/@users/noam", json=payload)
+        transaction.commit()
+
+        noam = api.user.get(userid="noam")
+        self.assertIn("Manager", noam.getRoles())
+
+    def test_siteadm_not_delete_manager(self):
+        self.set_siteadm()
+        api.user.grant_roles(username="noam", roles=["Manager"])
+        transaction.commit()
+        self.api_session.delete("/@users/noam")
+        transaction.commit()
+
+        self.assertIsNotNone(api.user.get(userid="noam"))
+
+    def test_siteadm_not_add_manager(self):
+        self.set_siteadm()
+        self.api_session.post(
+            "/@users",
+            json={
+                "username": "howard",
+                "email": "howard.zinn2@example.com",
+                "password": "peopleshistory",
+                "roles": ["Manager"],
+            },
+        )
+        transaction.commit()
+
+        self.assertIsNone(api.user.get(userid="howard"))
+
+    def test_siteadm_not_change_manager_password(self):
+        self.set_siteadm()
+        self.create_manager()
+        self.api_session.patch(
+            "/@users/manager",
+            json={
+                "password": "newmanagerpassword",
+            },
+        )
+        transaction.commit()
+
+        response = self.api_session.post(
+            "/@login",
+            json={
+                "login": "manager",
+                "password": "newmanagerpassword",
+            },
+        )
+
+        self.assertEqual(
+            "Wrong login and/or password.", response.json()["error"]["message"]
+        )
+
+    def test_siteadm_not_change_manager_email(self):
+        self.set_siteadm()
+        self.create_manager()
+        self.api_session.patch(
+            "/@users/manager",
+            json={
+                "email": "newmanageremail@test.com",
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(
+            "manager@example.com", api.user.get(userid="manager").getProperty("email")
+        )
+
+    def test_manager_changes_email_when_login_with_email(self):
+        """test that when login with email is enabled and a manager changes a user's email
+        they can log in with the new email
+        """
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+        # Create a user
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+        userid = response.json()["id"]
+
+        transaction.commit()
+        anon_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(anon_response.ok)
+
+        email_change_response = self.api_session.patch(
+            f"/@users/{userid}",
+            json={
+                "email": "new_email@example.com",
+            },
+        )
+        self.assertTrue(email_change_response.ok)
+        new_login_with_old_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertFalse(new_login_with_old_email_response.ok)
+        new_login_with_new_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "new_email@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(new_login_with_new_email_response.ok)
+
+    def test_user_changes_email_when_login_with_email(self):
+        """test that when login with email is enabled and the user changes their email
+        they can log in with the new email
+        """
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+        # Create a user
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+        userid = response.json()["id"]
+
+        transaction.commit()
+        anon_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(anon_response.ok)
+        auth_token = anon_response.json().get("token")
+
+        user_api_session = RelativeSession(self.portal_url, test=self)
+        user_api_session.headers.update({"Accept": "application/json"})
+        user_api_session.headers.update({"Authorization": f"Bearer {auth_token}"})
+
+        email_change_response = user_api_session.patch(
+            f"/@users/{userid}",
+            json={"email": "new_email@example.com"},
+        )
+
+        self.assertTrue(email_change_response.ok)
+        new_login_with_old_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertFalse(new_login_with_old_email_response.ok)
+        new_login_with_new_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "new_email@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(new_login_with_new_email_response.ok)
+
+    def test_manager_changes_email_when_login_with_email_and_uuid_userids(self):
+        """test that when login with email is enabled and a manager changes a user's email
+        they can log in with the new email.
+
+        The site is configured to save userids as uuid
+
+        """
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        security_settings.use_uuid_as_userid = True
+        transaction.commit()
+        # Create a user
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+        userid = response.json()["id"]
+        transaction.commit()
+        anon_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(anon_response.ok)
+
+        email_change_response = self.api_session.patch(
+            f"/@users/{userid}",
+            json={
+                "email": "new_email@example.com",
+            },
+        )
+        self.assertTrue(email_change_response.ok)
+        new_login_with_old_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertFalse(new_login_with_old_email_response.ok)
+        new_login_with_new_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "new_email@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(new_login_with_new_email_response.ok)
+
+    def test_user_changes_email_when_login_with_email_and_uuid_userids(self):
+        """test that when login with email is enabled and the user changes their email
+        they can log in with the new email
+
+        The site is configured to save userids as uuid
+
+        """
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        security_settings.use_uuid_as_userid = True
+
+        transaction.commit()
+        # Create a user
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+        userid = response.json()["id"]
+        transaction.commit()
+        anon_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(anon_response.ok)
+        auth_token = anon_response.json().get("token")
+
+        user_api_session = RelativeSession(self.portal_url, test=self)
+        user_api_session.headers.update({"Accept": "application/json"})
+        user_api_session.headers.update({"Authorization": f"Bearer {auth_token}"})
+
+        email_change_response = user_api_session.patch(
+            f"/@users/{userid}",
+            json={"email": "new_email@example.com"},
+        )
+
+        self.assertTrue(email_change_response.ok)
+        new_login_with_old_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertFalse(new_login_with_old_email_response.ok)
+        new_login_with_new_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "new_email@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(new_login_with_new_email_response.ok)
+
+    def test_manager_changes_email_to_existing_when_login_with_email(self):
+        """test that when login with email is enabled and a manager tries to change a user's email
+        to a previously existing one
+        """
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+
+        # Create user 1
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+        userid = response.json()["id"]
+
+        # Create user 2
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "second@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+
+        transaction.commit()
+
+        # Log in
+        anon_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(anon_response.ok)
+
+        # try to change the email to an existing one, it should fail
+        email_change_response = self.api_session.patch(
+            f"/@users/{userid}",
+            json={
+                "email": "second@example.com",
+            },
+        )
+        self.assertFalse(email_change_response.ok)
+        self.assertEqual(email_change_response.status_code, 400)
+        email_change_response_json = email_change_response.json()
+        self.assertEqual(
+            email_change_response_json.get("error", {}).get("message"),
+            "Cannot update login name of user to 'second@example.com'.",
+        )
+
+        # Email was not changed, so log in with the old one
+        new_login_with_old_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(new_login_with_old_email_response.ok)
+
+    def test_user_changes_email_to_existing_one_when_login_with_email(self):
+        """test that when login with email is enabled and the user changes their email
+        they can log in with the new email
+        """
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+
+        # Create user 1
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+        userid = response.json()["id"]
+
+        # Create user 2
+        response = self.api_session.post(
+            "/@users",
+            json={
+                "email": "second@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(response.ok)
+        transaction.commit()
+
+        # log in with email
+        anon_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(anon_response.ok)
+        auth_token = anon_response.json().get("token")
+
+        user_api_session = RelativeSession(self.portal_url, test=self)
+        user_api_session.headers.update({"Accept": "application/json"})
+        user_api_session.headers.update({"Authorization": f"Bearer {auth_token}"})
+
+        # try to change e-mail to an existing one, it should fail
+        email_change_response = user_api_session.patch(
+            f"/@users/{userid}",
+            json={"email": "second@example.com"},
+        )
+
+        self.assertEqual(email_change_response.status_code, 400)
+        email_change_response_json = email_change_response.json()
+        self.assertEqual(
+            email_change_response_json.get("error", {}).get("message"),
+            "Cannot update login name of user to 'second@example.com'.",
+        )
+
+        # email was not changed, so log in with the old one
+        new_login_with_old_email_response = self.anon_api_session.post(
+            "/@login",
+            json={
+                "login": "howard.zinn@example.com",
+                "password": TEST_USER_PASSWORD,
+            },
+        )
+        self.assertTrue(new_login_with_old_email_response.ok)

@@ -15,6 +15,7 @@ exclude Makefile
 exclude bootstrap-buildout.py
 exclude CODEOWNERS
 exclude docs/make.bat
+exclude .python-version
 recursive-exclude docs/doctrees *
 recursive-exclude docs/html *
 recursive-exclude performance *

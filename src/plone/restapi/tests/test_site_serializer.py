@@ -15,6 +15,7 @@ from zope.component import queryUtility
 import json
 import unittest
 
+
 HAS_PLONE_6 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
 )
@@ -37,6 +38,7 @@ class TestSiteSerializer(unittest.TestCase):
         if fti is not None:
             behavior_list = [a for a in fti.behaviors]
             behavior_list.append("volto.blocks")
+            behavior_list.append("tests.restapi.test_behavior")
             fti.behaviors = tuple(behavior_list)
             # Invalidating the cache is required for the FTI to be applied
             # on the existing object

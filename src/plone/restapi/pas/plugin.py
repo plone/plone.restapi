@@ -6,8 +6,8 @@ from datetime import datetime
 from datetime import timedelta
 from plone.keyring.interfaces import IKeyManager
 from plone.keyring.keyring import GenerateSecret
-from plone.restapi import exceptions
 from plone.restapi import deserializer
+from plone.restapi import exceptions
 from Products.CMFCore.permissions import ManagePortal
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
@@ -96,13 +96,14 @@ class JWTAuthenticationPlugin(BasePlugin):
         # Prefer any credentials in a JSON POST request under the assumption that any
         # such requested sent when a JWT token is already in the `Authorization` header
         # is intended to change or update the logged in user.
-        try:
-            creds = deserializer.json_body(request)
-        except exceptions.DeserializationError:
-            pass
-        else:
-            if "login" in creds and "password" in creds:
-                return creds
+        if request.getHeader("Content-Type") == "application/json":
+            try:
+                creds = deserializer.json_body(request)
+            except exceptions.DeserializationError:
+                pass
+            else:
+                if "login" in creds and "password" in creds:
+                    return creds
 
         creds = {}
         auth = request._auth

@@ -21,10 +21,10 @@ authentication
 batching
 content
 customization
+expansion
 exploring
 i18n
 serialization
-sharing
 types-schema
 blocks
 ```

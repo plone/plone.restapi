@@ -2,7 +2,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "created": "1995-07-31T17:30:00Z",
+    "created": "1995-07-31T17:30:00+00:00",
     "creator": "admin",
     "creator_name": "admin",
     "creator_url": "http://localhost:55001/plone/author/admin",

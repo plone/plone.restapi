@@ -8,6 +8,673 @@ Changelog
 
 .. towncrier release notes start
 
+9.9.0 (2024-12-18)
+------------------
+
+New features:
+
+
+- When a Link content item is linked by UID, resolve its URL as the linked target URL for anonymous users. @cekk (#1847)
+
+
+Bug fixes:
+
+
+- Fix resolving paths in deserializer if the target was moved in the same request. @cekk (#1848)
+- Make slate block linkintegrity checking more robust in case data isn't in the expected format. @cekk (#1849)
+- Optimized performance of DexterityObjectPrimaryFieldTarget adapter. @maurits (#1851)
+
+
+Internal:
+
+
+- Fix time-dependence of tests. @davisagli (#1850)
+
+
+9.8.5 (2024-11-25)
+------------------
+
+Bug fixes:
+
+
+- Fix log in after changing email when "email as login" is enabled
+  [erral] (#1835)
+- Fix tests after #1839 and plone.app.event#411
+  [erral] (#1844)
+- Do not change request during relation fields serialization
+  [cekk] (#1845)
+
+
+Internal:
+
+
+- Test that recurrence serialization provides correct data
+  [erral] (#1809)
+- Additional tests to login name changes
+  [erral] (#1840)
+
+
+Documentation:
+
+
+- `html_use_opensearch` value must not have a trailing slash. Clean up comments. @stevepiercy (#1846)
+
+
+9.8.4 (2024-11-05)
+------------------
+
+Bug fixes:
+
+
+- URL Management control panel: Fix error handling in CSV upload. @davisagli (#1837)
+
+
+9.8.3 (2024-11-01)
+------------------
+
+Bug fixes:
+
+
+- Fixed Plone Site serialization when there is a field with read_permission set. @ericof (#1830)
+
+
+9.8.2 (2024-10-30)
+------------------
+
+Bug fixes:
+
+
+- `@search` service: Remove parentheses from search query. @tedw87 (#1828)
+
+
+9.8.1 (2024-10-23)
+------------------
+
+Bug fixes:
+
+
+- Fix `ComponentLookupError` for `Products.CMFPlone.ManagePortalAliases` permission, which could happen depending on package load order. @davisagli (#1827)
+
+
+9.8.0 (2024-10-23)
+------------------
+
+New features:
+
+
+- Added create and fetch aliases in CSV format. @Faakhir30 (#1812)
+- Site service: Indicate whether the site supports filtering URL aliases by date. @davisagli (#1826)
+
+
+Bug fixes:
+
+
+- Fix error getting allow_discussion value when p.a.discussion is not activated.
+  [maurits] (#1808)
+- Fix incorrect condition for ``show_excluded_items`` setting in the ``@navigation`` API.
+  [mamico] (#1816)
+- Fix response of `RelationListFieldSerializer` by filtering out invalid items. @Faakhir30 (#1818)
+- Aliases endpoint: Use "Manage Portal Aliases" and "Manage Content Aliases" permissions. @jackahl (#1820)
+
+
+Documentation:
+
+
+- Use Plone Sphinx Theme for documentation. Build docs when there are changes to http-examples. @stevepiercy (#1815)
+- Fixed spelling of prerequisites. @stevepiercy (#1822)
+
+
+9.7.2 (2024-09-05)
+------------------
+
+Bug fixes:
+
+
+- Fixed Dexterity content serializer:
+  Return an empty object for `next_item` and `previous_item`
+  unless the parent has next/previous support enabled.
+  @JeffersonBledsoe, @davisagli (#1799)
+- Fixed implementation of the `jwt_auth` plugin. It now can be added, and its properties, `use_keyring` and `store_tokens`, can be updated. @sauzher (#1802)
+
+
+Internal:
+
+
+- Explicitly globally disable comments in the tests that need it.
+  [maurits] (#244)
+
+
+Documentation:
+
+
+- Update contributing docs for Plone 6, and switch from Netlify to Read the Docs for pull request previews. @stevepiercy (#1798)
+
+
+9.7.1 (2024-06-29)
+------------------
+
+Bug fixes:
+
+
+- Remove use of `portal_properties` in context navigation.
+  Theoretically we checked `portal_properties.site_properties.sortAttribute`.
+  [maurits] (#125)
+
+
+Internal:
+
+
+- Update test-no-uncommitted-doc-changes to run on Python 3.12 instead of 3.9. @tisto, @davisagli (#1794)
+
+
+9.7.0 (2024-06-15)
+------------------
+
+New features:
+
+
+- Add cache rules for `@site` and `@navroot`. @mamico (#1779)
+- Added TeaserBlockSerializer which updates the contents of a teaser block from its target if the block has `"overwrite": false`. @pbauer, @davisagli (#1788)
+
+
+Bug fixes:
+
+
+- Returns an error message when an Invalid error occurs when validating a controlpanel field. Also translates the message. @wesleybl (#1771)
+- Users service: Fixed edge case AttributeError if a user is enumerated but doesn't actually exist. @davisagli (#1775)
+- Add Plone 6.1 support to classifiers and test against it. @tisto (#1780)
+- Make plone.app.discussion an optional dependency (core add-on). @jensens (#1781)
+- Fix require plone.app.iterate on test extras. @jensens (#1782)
+- Fix require plone.app.upgrade on test extras. @jensens (#1783)
+
+
+Documentation:
+
+
+- Fix event start & end timezone in documentation examples. @davisagli (#1776)
+- Move sharing endpoint docs to the correct section. @davisagli (#1778)
+
+
+9.6.1 (2024-04-25)
+------------------
+
+Bug fixes:
+
+
+- Fixed password reset issue by replacing `username` with `target_user` to correctly authenticate using email. @Hrittik20 (#943)
+- In Plone 6, uses ``plone.textindexer`` to add block texts to the SearchableText index, instead of ``plone.indexer``. This ensures that behaviors can add fields to SearchableText with ``plone.textindexer``. @wesleybl (#1744)
+- Use the ``mode`` parameter instead of ``direction`` when calling the ``scale`` method. Also change value to ``scale``. @wesleybl (#1758)
+- image_scales in serializer are returned as json_compatible format. @cekk (#1772)
+
+
+Internal:
+
+
+- Test to ensure that the scale hash of an image is the same as the hash of the image block with this image. @sneridagh (#1716)
+- Bump all the versions in GitHub workflows. @stevepiercy (#1762)
+
+
+9.6.0 (2024-03-03)
+------------------
+
+New features:
+
+
+- Add available languages information to the @site endpoint. @erral (#1738)
+- Add the site timezone to the @site endpoint return result. @folix-01 (#1749)
+
+
+Internal:
+
+
+- Use last version of Python 3.12 in tests. https://github.com/python/cpython/issues/113267 has been fixed. @wesleybl (#1740)
+
+
+9.5.0 (2024-02-27)
+------------------
+
+Bug fixes:
+
+
+- Fixed the permission check for adding users to groups and removing users from groups, so that it is allowed for users with the Site Administrator role. @wesleybl (#1750)
+- Enhanced Makefile paths to address whitespace compatibility issues. @Vivek-04022001 (#1753)
+
+
+9.4.2 (2024-02-16)
+------------------
+
+Bug fixes:
+
+
+- Fixed `allow_discussion` serialization for the Plone Site, to return a boolean like other content types. @Akshat2Jain (#1674)
+- Fixed an edge case in the blocks resolveuid transforms with a trailing slash before a fragment. @sneridagh (#1748)
+
+
+Internal:
+
+
+- Remove debug-exceptions = on from the buildout instance section. @wesleybl (#1734)
+
+
+9.4.1 (2024-02-02)
+------------------
+
+Bug fixes:
+
+
+- Fixed the logic for converting public URLs to and from internal UID-based URLs. Now if the URL includes a fragment, it is preserved. @sneridagh (#1746)
+
+
+9.4.0 (2024-01-26)
+------------------
+
+New features:
+
+
+- Translate validation error messages in the deserializer. @wesleybl (#1742)
+
+
+9.3.0 (2024-01-10)
+------------------
+
+New features:
+
+
+- Give Site Administrator permission to manage users. To make this possible, we now check the "plone.app.controlpanel.UsersAndGroups" permission instead of "cmf.ManagePortal" in a lot of operations in the users and groups endpoints. @wesleybl (#1712)
+
+
+Internal:
+
+
+- Use Python 3.12.0 in tests to work around https://github.com/python/cpython/issues/113267. @wesleybl (#1740)
+
+
+9.2.1 (2023-12-14)
+------------------
+
+Bug fixes:
+
+
+- Remove wrong `preview_image_link` addition from blocks (de)serializers. @sneridagh (#1737)
+
+
+9.2.0 (2023-11-23)
+------------------
+
+New features:
+
+
+- Added preview_image and preview_image_link to the list of smart fields for resolveuid and link integrity. @sneridagh (#1735)
+
+
+Internal:
+
+
+- Does not test Python 3.7. @wesleybl (#1732)
+- Use plone.recipe.precompiler to generate mo files to test. @wesleybl (#1733)
+
+
+9.1.2 (2023-11-04)
+------------------
+
+Bug fixes:
+
+
+- Fix jwt_auth extractCredentials plugin to only try to read credentials from the request body if there is a `Content-Type: application/json` header. @davisagli (#1728)
+- Temporarily disable form memory limit checking for files and images.
+  This fixes a regression due to a low Zope form memory limit of 1MB used since Plone 6.0.7.
+  See `CMFPlone issue 3848 <https://github.com/plone/Products.CMFPlone/issues/3848>`_ and `Zope PR 1142 <https://github.com/zopefoundation/Zope/pull/1142>`_.
+  @maurits (#3848)
+
+
+Documentation:
+
+
+- Remove regular expression from `sphinx-copybutton` configuration, now that `linenos` are excluded by default. @stevepiercy (#1725)
+
+
+9.1.1 (2023-10-28)
+------------------
+
+Bug fixes:
+
+
+- Be more strict when checking if mimetype is allowed to be displayed inline.
+  [maurits] (#1167)
+
+
+9.1.0 (2023-10-18)
+------------------
+
+New features:
+
+
+- Add support for Python 3.12. @tisto (#1722)
+
+
+Bug fixes:
+
+
+- Treat sub-items like items in ``@linkintegrity`` endpoint. @jaroel (#1714)
+- Limits the use of multilingual services only if multilingual is actually installed. @mamico (#1723)
+
+
+Internal:
+
+
+- Remove unused code. @davisagli (#1703)
+- Replace deprecated assert methods. @gforcada (#1719)
+- Drop, already unused plone.app.robotframework test. @gforcada (#1720)
+
+
+Documentation:
+
+
+- Fix redirect for https://json-schema.org/. @stevepiercy (#1718)
+
+
+9.0.0 (2023-09-23)
+------------------
+
+Breaking changes:
+
+
+- Remove deprecated @unlock, @refresh-lock endpoints @avoinea (#1235)
+- Remove `plone.tiles` and the `@tiles` endpoint. @tisto (#1308)
+- Change the @linkintegrity endpoint to add `items_total`, the number of contained items which would be deleted. @davisagli, @danalvrz, @pgrunewald (#1636)
+- The default branch was renamed from `master` to `main`. @tisto, @davisagli (#1695)
+- Drop support for Python 3.7. Set python_requires to >= 3.8 @tisto (#1709)
+
+
+New features:
+
+
+- Add Spanish translation @macagua (#1684)
+- Add support for getting the `/@querystring` endpoint in a specific context. @davisagli (#1704)
+
+
+Bug fixes:
+
+
+- Fix stored XSS (Cross Site Scripting) for SVG image in user portrait.
+  Done by forcing a download instead of displaying inline.
+  Normal accessing via an image tag is not affected and is safe.
+  See `security advisory <https://github.com/plone/plone.restapi/security/advisories/GHSA-hc5c-r8m5-2gfh>`_. @maurits (#1)
+- Use incoming request to produce location for `@tus-upload`. @instification (#1570)
+- Undeprecate comma separated expansion parameters (that were deprecated in plone.restapi 8) @tisto (#1696)
+- Undeprecate token parameter from vocabularies endpoint @tisto (#1697)
+- Improve RESOLVEUID_RE regexp to catch also paths generated by Link content-types. @cekk (#1699)
+
+
+Internal:
+
+
+- Upgrade buildout: Plone 6.0.6 -> 6.0.7 and Plone 5.2.12 -> 5.2.14 @tisto (#1706)
+
+
+Documentation:
+
+
+- Added translation code through expansion. @Akshat2Jain (#1374)
+- Restores formatting and fixes some MyST syntax from #1689. @stevepiercy (#1691)
+- Documentation fixes for #1599. @stevepiercy (#1692)
+- Fix linkcheckbroken 301 redirect to https://www.4teamwork.ch/en. @stevepiercy (#1693)
+- Polish docs for v9 release. @stevepiercy (#1698)
+
+
+8.43.0 (2023-08-23)
+-------------------
+
+New features:
+
+
+- Allow passing additional parameters to the delete users endpoint to request not to delete local roles and memberareas
+  [erral] (#1598)
+
+
+8.42.1 (2023-08-23)
+-------------------
+
+Bug fixes:
+
+
+- Fix broken relations info. @ksuess (#1673)
+
+
+Internal:
+
+
+- Fix test cleanup. @davisagli (#1680)
+
+
+Documentation:
+
+
+- Move expansion docs from endpoints to usage, and add a list of all expandable components. Fixes #1677. @stevepiercy (#1678)
+
+
+8.42.0 (2023-07-17)
+-------------------
+
+New features:
+
+
+- When serializing blocks, `image_scales` is now added to blocks that contain a resolveuid-based `url`.
+  When deserializing blocks, `image_scales` is removed. @davisagli (#1642)
+
+
+Bug fixes:
+
+
+- Remove the hard code dependency by plone.app.multilingual, use it conditionaly instead
+  [@folix-01] (#1639)
+- Fix timezone of dates for revisions in the `@history` service. @davisagli (#1647)
+- Fix types expander in root for Plone 5.2 (for non-Dexterity Plone Site Root) @sneridagh (#1669)
+
+
+Internal:
+
+
+- Updated package installation to use constraints.txt for black package, ensuring compatibility and consistent versions. @Akshat2Jain (#1671)
+- Update Makefile and buildout to use Plone 6.0.6. @davisagli (#1672)
+
+
+Documentation:
+
+
+- added instruction to ensure consistent code formatting. @Akshat2Jain (#1664)
+
+
+8.41.0 (2023-06-29)
+-------------------
+
+New features:
+
+
+- Add `visit_blocks` util for finding all nested blocks. @davisagli (#1648)
+
+
+Bug fixes:
+
+
+- Fix path2uid method, to handle suffix with non-traversable objects. @cekk @mamico (#1649)
+
+
+Internal:
+
+
+- Allow GHA tests to run on PRs from forks. @Akshat2Jain (#1656)
+
+
+Documentation:
+
+
+- Fix html_meta tags, and remove stray spaces that prevented the glossary from rendering. @stevepiercy (#1663)
+
+
+8.40.0 (2023-06-06)
+-------------------
+
+New features:
+
+
+- Added `@site` and `@navroot` endpoints. @erral (#1464)
+
+
+Bug fixes:
+
+
+- Validate input to the `@querystring-search` service. Input which can't be processed now results in a 400 response instead of 500. @davisagli (#1653)
+
+
+8.39.2 (2023-06-01)
+-------------------
+
+Bug fixes:
+
+
+- Fix content serializer with an old version of an item that was renamed. @davisagli (#1651)
+
+
+8.39.1 (2023-05-30)
+-------------------
+
+Bug fixes:
+
+
+- Fix possible startup error by explicitly loading ``plone.app.contentrules`` zcml.
+  Also: only load code related to contentrules when this package is available.
+  [maurits] (#1644)
+
+
+8.39.0 (2023-05-23)
+-------------------
+
+New features:
+
+
+- Create relations service. Query, add, delete. @ksuess (#1432)
+
+
+8.38.0 (2023-05-19)
+-------------------
+
+New features:
+
+
+- Add portal_type title (`type_title`) to content response @razvanMiu @nileshgulia1 (#1355)
+- Added support for nested schemas with resolveuid deserializer @JeffersonBledsoe (#1595)
+
+
+Bug fixes:
+
+
+- Fix missing metadata_fields in Response via GET Request to Endpoint /@querystring-search @1letter (#1628)
+- Respect Password Policy @tschorr (#1630)
+
+
+Internal:
+
+
+- Update buildout and requirements to Plone-6.0.4 @1letter (#1632)
+
+
+8.37.0 (2023-04-19)
+-------------------
+
+New features:
+
+
+- Apply a cache ruleset to the /@querystring-search endpoint.
+  [ericof] (#1626)
+
+
+8.36.1 (2023-04-17)
+-------------------
+
+Bug fixes:
+
+
+- Fix bugs in handling parameters when the `@querystringsearch` endpoint is called with the GET method. @davisagli (#1621)
+
+
+8.36.0 (2023-04-07)
+-------------------
+
+New features:
+
+
+- Add UID to relationvalue_converter summary. [ksuess] (#1605)
+- Add querystring_search get method. [robgietema] (#1616)
+
+
+Bug fixes:
+
+
+- Fix a bunch of deprecation warnings in a Plone 5.2 compatible way.
+  Applied proper isort.
+  Fixed unclosed file issues in a test.
+  Added Python 3.11 to test matrix.
+  [jensens] (#1606)
+- No longer declare support for Python 3.6 (it was already not tested). [davisagli] (#1615)
+- Fixed encoding issue on Python 3 for some mail servers.
+  This could result in missing characters in an email body.
+  [maurits] (#3754)
+
+
+8.35.3 (2023-03-23)
+-------------------
+
+Bug fixes:
+
+
+- Fix UnboundLocalError in RelationChoice deserializer. @davisagli (#1600)
+
+
+Internal:
+
+
+- Fixed tests in combination with newer ``plone.app.z3cform``.
+  [maurits] (#162)
+
+
+Documentation:
+
+
+- Update intersphinx_mapping for training @ksuess (#1596)
+
+
+8.35.2 (2023-03-10)
+-------------------
+
+Bug fixes:
+
+
+- Fix missing `Decimal` field deserializer.
+  [jensens] (#903)
+- Fix translation of the error message for a password that is too short while
+  adding a user. [davisagli] (#4395)
+
+
+8.35.1 (2023-03-02)
+-------------------
+
+Bug fixes:
+
+
+- Provide slateTable block serializer/deserializer to properly convert URLs to uids (#1590)
+
+
+8.35.0 (2023-02-18)
+-------------------
+
+New features:
+
+
+- Request of own user data provides joined groups @ksuess (#1581)
+- Implement IPurgePaths for RestAPI traversal (++api++) @ericof (#1587)
+
+
 8.34.0 (2023-02-06)
 -------------------
 
@@ -159,9 +826,9 @@ Bug fixes:
 
 
 - Added url field to Actions (#817)
-- Update statictime tests following changes to p.a.disucssion (see 
-  https://github.com/plone/plone.app.discussion/pull/204) - [instification] (#1520)
-- Update @portrait endpoint to use sanitized user id [instification] (#1524)
+- Updated ``statictime`` tests following changes to ``p.a.discussion`` (see
+  https://github.com/plone/plone.app.discussion/pull/204). @instification (#1520)
+- Updated ``@portrait`` endpoint to use sanitized user id. @instification (#1524)
 
 
 8.31.0 (2022-10-20)

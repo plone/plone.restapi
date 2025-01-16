@@ -19,6 +19,9 @@ Location: http://localhost:55001/plone/de/mydocument
         "navigation": {
             "@id": "http://localhost:55001/plone/de/mydocument/@navigation"
         },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/de/mydocument/@navroot"
+        },
         "translations": {
             "@id": "http://localhost:55001/plone/de/mydocument/@translations"
         },
@@ -35,7 +38,7 @@ Location: http://localhost:55001/plone/de/mydocument
     "allow_discussion": false,
     "changeNote": "",
     "contributors": [],
-    "created": "1995-07-31T13:45:00",
+    "created": "1995-07-31T13:45:00+00:00",
     "creators": [
         "admin"
     ],
@@ -54,21 +57,17 @@ Location: http://localhost:55001/plone/de/mydocument
         "locked": false,
         "stealable": true
     },
-    "modified": "1995-07-31T17:30:00",
+    "modified": "1995-07-31T17:30:00+00:00",
     "next_item": {},
     "parent": {
         "@id": "http://localhost:55001/plone/de",
         "@type": "LRF",
         "description": "",
         "review_state": "published",
-        "title": "Deutsch"
+        "title": "Deutsch",
+        "type_title": "Basisordner einer Sprache"
     },
-    "previous_item": {
-        "@id": "http://localhost:55001/plone/de/assets",
-        "@type": "LIF",
-        "description": "",
-        "title": "Assets"
-    },
+    "previous_item": {},
     "relatedItems": [],
     "review_state": "private",
     "rights": "",
@@ -76,6 +75,7 @@ Location: http://localhost:55001/plone/de/mydocument
     "table_of_contents": null,
     "text": null,
     "title": "My German Document",
+    "type_title": "Seite",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,

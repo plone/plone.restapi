@@ -69,4 +69,13 @@
       handler="plone.restapi.upgrades.to0006.rename_iface_to_name_in_blocks_behavior"
       />
 
+  <genericsetup:upgradeStep
+      title="Give permission plone.restapi: Access Plone user information to Site Administrator"
+      description=""
+      profile="plone.restapi:default"
+      source="0006"
+      destination="0007"
+      handler="plone.restapi.upgrades.to0007.site_administrator_permission"
+      />
+
 </configure>

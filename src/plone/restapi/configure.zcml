@@ -22,6 +22,7 @@
   <include package="plone.behavior" />
   <include package="plone.rest" />
   <include package="plone.schema" />
+  <include package="Products.CMFPlone" />
 
   <include
       package="plone.app.caching"
@@ -97,6 +98,7 @@
   <include package=".deserializer" />
   <include package=".types" />
   <include package=".search" />
+  <include package=".cache" />
 
   <include package=".upgrades" />
 
@@ -127,6 +129,11 @@
       factory=".setuphandlers.HiddenProfiles"
       provides="Products.CMFPlone.interfaces.INonInstallable"
       name="plone.restapi"
+      />
+
+  <subscriber
+      factory=".blocks.NestedBlocksVisitor"
+      provides="plone.restapi.interfaces.IBlockVisitor"
       />
 
   <!-- blocks link integrity -->

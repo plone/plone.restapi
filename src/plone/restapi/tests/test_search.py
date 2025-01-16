@@ -151,6 +151,29 @@ class TestSearchFunctional(unittest.TestCase):
             set(result_paths(response.json())),
         )
 
+    def test_search_with_parentheses(self):
+        query = {"SearchableText": "("}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), [], "Expected no items for query with only parentheses"
+        )
+
+        query = {"SearchableText": ")"}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), [], "Expected no items for query with only parentheses"
+        )
+
+        query = {"SearchableText": "lorem(ipsum)"}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        items = [item["title"] for item in response.json().get("items", [])]
+        self.assertIn(
+            "Lorem Ipsum", items, "Expected 'Lorem Ipsum' to be found in search results"
+        )
+
     def test_search_in_vhm(self):
         # Install a Virtual Host Monster
         if "virtual_hosting" not in self.app.objectIds():
@@ -247,15 +270,11 @@ class TestSearchFunctional(unittest.TestCase):
         }
         response = self.api_session.get("/@search", params=query)
 
-        self.assertDictContainsSubset(
-            {
-                "@id": self.portal_url + "/folder/doc",
-                "title": "Lorem Ipsum",
-                "portal_type": "DXTestDocument",
-                "review_state": "private",
-            },
-            response.json()["items"][0],
-        )
+        item = response.json()["items"][0]
+        self.assertEqual(item["@id"], self.portal_url + "/folder/doc")
+        self.assertEqual(item["title"], "Lorem Ipsum")
+        self.assertEqual(item["portal_type"], "DXTestDocument")
+        self.assertEqual(item["review_state"], "private")
 
     def test_full_metadata_retrieval(self):
         query = {"SearchableText": "lorem", "metadata_fields": "_all"}
@@ -708,7 +727,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(set(types), {"Folder", "DXTestDocument"})
 
         registry = getUtility(IRegistry)
-        from Products.CMFPlone.interfaces import ISearchSchema
+        from plone.restapi.bbb import ISearchSchema
 
         search_settings = registry.forInterface(ISearchSchema, prefix="plone")
         old = search_settings.types_not_searched

@@ -21,13 +21,16 @@ from plone.behavior.interfaces import IBehavior
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import getAdditionalSchemata
+from plone.dexterity.schema import splitSchemaName
 from plone.i18n.normalizer import idnormalizer
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.serializer.converters import IJsonCompatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
+from plone.restapi import HAS_MULTILINGUAL
 from plone.supermodel import serializeModel
 from plone.supermodel.interfaces import FIELDSETS_KEY
 from plone.supermodel.utils import mergedTaggedValueDict
+from plone.supermodel.utils import mergedTaggedValueList
 from plone.supermodel.utils import syncSchema
 from Products.CMFCore.utils import getToolByName
 from z3c.form import form as z3c_form
@@ -40,16 +43,9 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
-from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
-from plone.supermodel.utils import mergedTaggedValueList
 
-try:
-    # Plone 5.1+
-    from plone.dexterity.schema import splitSchemaName
-except ImportError:
-    # Plone 4.3
-    from plone.dexterity.utils import splitSchemaName
-
+if HAS_MULTILINGUAL:
+    from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
 
 _marker = []  # Create a new marker object.
 
@@ -119,9 +115,11 @@ def get_form_fieldsets(form):
         fieldset = {
             "id": group.__name__,
             "title": translate(group.label, context=getRequest()),
-            "description": translate(group.description, context=getRequest())
-            if group.description is not None
-            else "",
+            "description": (
+                translate(group.description, context=getRequest())
+                if group.description is not None
+                else ""
+            ),
             "fields": list(group.fields.values()),
             "behavior": "plone",
         }
@@ -202,6 +200,8 @@ def get_widget_params(schemas):
 
 
 def get_multilingual_directives(schemas):
+    if not HAS_MULTILINGUAL:
+        return {}
     params = {}
     for schema in schemas:
         if not schema:

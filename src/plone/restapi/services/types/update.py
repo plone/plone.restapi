@@ -1,10 +1,10 @@
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
-from plone.restapi.types.utils import serializeSchema
 from plone.restapi.types.utils import add_field
 from plone.restapi.types.utils import add_fieldset
 from plone.restapi.types.utils import get_info_for_type
+from plone.restapi.types.utils import serializeSchema
 from plone.restapi.types.utils import update_field
 from plone.restapi.types.utils import update_fieldset
 from zExceptions import BadRequest
@@ -13,6 +13,7 @@ from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import noLongerProvides
 from zope.publisher.interfaces import IPublishTraverse
+
 import plone.protect.interfaces
 
 
