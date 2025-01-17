@@ -39,13 +39,13 @@ class MyExternalLinks:
             {
                 "id": "myprovider",
                 "title": "Provider",
-                "plugin": "myprovider",
+                "plugin": "pas.plugins.authomatic",
                 "url": "https://some.example.com/login-url",
             },
             {
                 "id": "github",
                 "title": "GitHub",
-                "plugin": "github",
+                "plugin": "pas.plugins.authomatic",
                 "url": "https://some.example.com/login-authomatic/github",
             },
         ]
