@@ -96,7 +96,7 @@ class TestContentPatch(unittest.TestCase):
             data="foo",
         )
         self.assertEqual(400, response.status_code)
-        self.assertIn("DeserializationError", response.text)
+        self.assertIn("No JSON object could be decoded", response.text)
 
     def test_patch_undeserializable_object_returns_501(self):
         obj = PortalContent()
