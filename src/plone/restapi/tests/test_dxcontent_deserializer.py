@@ -48,7 +48,7 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         return deserializer(validate_all=validate_all, create=create)
 
     def test_deserializer_raises_with_invalid_body(self):
-        with self.assertRaises(DeserializationError) as cm:
+        with self.assertRaises(BadRequest) as cm:
             self.deserialize(body="Not a JSON object")
         self.assertEqual("No JSON object could be decoded", cm.exception.msg)
 

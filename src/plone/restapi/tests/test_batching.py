@@ -188,7 +188,11 @@ class TestBatchingCollections(TestBatchingDXBase):
     def test_batching_badrequests(self):
         response = self.api_session.get("/collection?b_size=php")
         self.assertEqual(response.status_code, 400)
-        self.assertIn("invalid literal for int()", response.json()["message"])
+        self.assertIn("Invalid b_size", response.json()["message"])
+
+        response = self.api_session.get("/collection?b_size:list=1")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Invalid b_size", response.json()["message"])
 
 
 class TestBatchingDXFolders(TestBatchingDXBase):

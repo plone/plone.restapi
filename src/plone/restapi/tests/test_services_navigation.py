@@ -246,4 +246,4 @@ class TestServicesNavigation(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
-        self.assertIn("invalid literal for int()", response.json()["message"])
+        self.assertIn("Invalid expand.navigation.depth", response.json()["message"])

@@ -6,6 +6,7 @@ from plone.memoize.view import memoize_contextless
 from plone.registry.interfaces import IRegistry
 from plone.restapi.bbb import INavigationSchema
 from plone.restapi.bbb import safe_text
+from plone.restapi.deserializer import parse_int
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
@@ -17,7 +18,6 @@ from zope.component.hooks import getSite
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
-from zExceptions import BadRequest
 
 
 @implementer(IExpandableElement)
@@ -29,13 +29,7 @@ class Navigation:
         self.portal = getSite()
 
     def __call__(self, expand=False):
-        if self.request.form.get("expand.navigation.depth", False):
-            try:
-                self.depth = int(self.request.form["expand.navigation.depth"])
-            except (ValueError, TypeError) as e:
-                raise BadRequest(e)
-        else:
-            self.depth = 1
+        self.depth = parse_int(self.request.form, "expand.navigation.depth", 1)
 
         result = {"navigation": {"@id": f"{self.context.absolute_url()}/@navigation"}}
         if not expand:
