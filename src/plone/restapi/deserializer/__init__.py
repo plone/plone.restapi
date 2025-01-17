@@ -11,7 +11,8 @@ def json_body(request):
     try:
         data = json.loads(request.get("BODY") or "{}")
     except ValueError:
-        raise DeserializationError("No JSON object could be decoded")
+        # Often from spam/pentests which we want to ignore
+        raise BadRequest("No JSON object could be decoded")
     if not isinstance(data, dict):
         raise DeserializationError("Malformed body")
     return data
@@ -34,14 +35,15 @@ def boolean_value(value):
 def parse_int(data, prop, default):
     """
     Args:
-        data: dict from a request
+        data: dict from a request to get str, or str itself
         prop: name of a integer paramater in the dict
         default: default if not found
 
     Returns: an integer
     Raises: BadRequest if not an int
     """
+    value = data if type(data) in (str, int) else data.get(prop, default)
     try:
-        return int(data.get(prop, default))
+        return int(value)
     except (ValueError, TypeError):
         raise BadRequest(f"Invalid {prop}: Not an integer")
