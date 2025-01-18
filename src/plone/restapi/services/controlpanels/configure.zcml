@@ -19,7 +19,7 @@
   <plone:service
       method="POST"
       factory=".add.ControlpanelsAdd"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="plone.app.controlpanel.Overview"
       name="@controlpanels"
       />
@@ -27,7 +27,7 @@
   <plone:service
       method="GET"
       factory=".get.ControlpanelsGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="plone.app.controlpanel.Overview"
       name="@controlpanels"
       />
@@ -35,7 +35,7 @@
   <plone:service
       method="PATCH"
       factory=".update.ControlpanelsUpdate"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="plone.app.controlpanel.Overview"
       name="@controlpanels"
       />
@@ -43,7 +43,7 @@
   <plone:service
       method="DELETE"
       factory=".delete.ControlpanelsDelete"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="plone.app.controlpanel.Overview"
       name="@controlpanels"
       />

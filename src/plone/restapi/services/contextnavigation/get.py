@@ -6,12 +6,12 @@ from Acquisition import aq_inner
 from Acquisition import aq_parent
 from collections import UserDict
 from plone import api
-from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.layout.navigation.navtree import buildFolderTree
-from plone.app.layout.navigation.root import getNavigationRoot
+from plone.restapi.bbb import get_navigation_root
 from plone.i18n.normalizer.interfaces import IIDNormalizer
 from plone.memoize.instance import memoize
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import INavigationRoot
 from plone.restapi.bbb import INavigationSchema
 from plone.restapi.bbb import INonStructuralFolder
 from plone.restapi.bbb import is_default_page
@@ -353,7 +353,7 @@ class NavigationPortletRenderer:
             if not node["normalized_portal_type"] == "file":
                 return
             fileo = node["item"].getObject().file
-            portal_url = getNavigationRoot(self.context)
+            portal_url = get_navigation_root(self.context)
             mtt = getToolByName(self.context, "mimetypes_registry")
             if fileo.contentType:
                 ctype = mtt.lookup(fileo.contentType)
@@ -562,7 +562,7 @@ def getRootPath(context, currentFolderOnly, topLevel, root_path):
     if root is not None:
         rootPath = "/".join(root.getPhysicalPath())
     else:
-        rootPath = getNavigationRoot(context)
+        rootPath = get_navigation_root(context)
 
     # Adjust for topLevel
     if topLevel > 0:
@@ -637,7 +637,7 @@ class QueryBuilder:
         if root is not None:
             rootPath = "/".join(root.getPhysicalPath())
         else:
-            rootPath = getNavigationRoot(context)
+            rootPath = get_navigation_root(context)
 
         currentPath = "/".join(context.getPhysicalPath())
 

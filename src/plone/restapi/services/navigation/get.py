@@ -1,6 +1,6 @@
 from Acquisition import aq_inner
 from collections import defaultdict
-from plone.app.layout.navigation.root import getNavigationRoot
+from plone.restapi.bbb import get_navigation_root
 from plone.memoize.view import memoize
 from plone.memoize.view import memoize_contextless
 from plone.registry.interfaces import IRegistry
@@ -66,7 +66,7 @@ class Navigation:
 
     @property
     def navtree_path(self):
-        return getNavigationRoot(self.context)
+        return get_navigation_root(self.context)
 
     @property
     def current_language(self):
