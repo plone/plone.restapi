@@ -1,42 +1,57 @@
-HTTP/1.1 500 Internal Server Error
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "message": "((<plone.app.registry.registry.Registry object at 0x726b50d5cc20 oid 0x364d3c206bbe03c0 in <ZODB.Connection.Connection object at 0x726b50ff3830>>, <WSGIRequest, URL=http://localhost:55001/plone/@registry>, {'Products.CMFPlone.i18nl10n.override_dateformat.Enabled': <Record Products.CMFPlone.i18nl10n.override_dateformat.Enabled>, 'Products.CMFPlone.i18nl10n.override_dateformat.date_format_long': <Record Products.CMFPlone.i18nl10n.override_dateformat.date_format_long>, 'Products.CMFPlone.i18nl10n.override_dateformat.date_format_short': <Record Products.CMFPlone.i18nl10n.override_dateformat.date_format_short>, 'Products.CMFPlone.i18nl10n.override_dateformat.time_format': <Record Products.CMFPlone.i18nl10n.override_dateformat.time_format>}), <InterfaceClass plone.restapi.interfaces.ISerializeToJson>, '')",
-    "traceback": [
-        "File \"/home/f/w/oss/plone/plone.restapi/eggs/Zope-5.10-py3.12.egg/ZPublisher/WSGIPublisher.py\", line 181, in transaction_pubevents",
-        "    yield",
-        "",
-        "  File \"/home/f/w/oss/plone/plone.restapi/eggs/Zope-5.10-py3.12.egg/ZPublisher/WSGIPublisher.py\", line 391, in publish_module",
-        "    response = _publish(request, new_mod_info)",
-        "               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
-        "",
-        "  File \"/home/f/w/oss/plone/plone.restapi/eggs/Zope-5.10-py3.12.egg/ZPublisher/WSGIPublisher.py\", line 285, in publish",
-        "    result = mapply(obj,",
-        "             ^^^^^^^^^^^",
-        "",
-        "  File \"/home/f/w/oss/plone/plone.restapi/eggs/Zope-5.10-py3.12.egg/ZPublisher/mapply.py\", line 98, in mapply",
-        "    return debug(object, args, context)",
-        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
-        "",
-        "  File \"/home/f/w/oss/plone/plone.restapi/eggs/Zope-5.10-py3.12.egg/ZPublisher/WSGIPublisher.py\", line 68, in call_object",
-        "    return obj(*args)",
-        "           ^^^^^^^^^^",
-        "",
-        "  File \"/home/f/w/oss/plone/plone.restapi/eggs/plone.rest-4.1.3-py3.12.egg/plone/rest/service.py\", line 21, in __call__",
-        "    return self.render()",
-        "           ^^^^^^^^^^^^^",
-        "",
-        "  File \"/home/f/w/oss/plone/plone.restapi/src/plone/restapi/services/__init__.py\", line 19, in render",
-        "    content = self.reply()",
-        "              ^^^^^^^^^^^^",
-        "",
-        "  File \"/home/f/w/oss/plone/plone.restapi/src/plone/restapi/services/registry/get.py\", line 45, in reply",
-        "    serializer = getMultiAdapter(",
-        "                 ^^^^^^^^^^^^^^^^",
-        "",
-        "  File \"/home/f/w/oss/plone/plone.restapi/eggs/zope.component-6.0-py3.12.egg/zope/component/_api.py\", line 113, in getMultiAdapter",
-        "    raise ComponentLookupError(objects, interface, name)"
+    "@id": "http://localhost:55001/plone/@registry?q=Products.CMFPlone",
+    "items": [
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.Enabled",
+            "schema": {
+                "properties": {
+                    "description": "Override the translation machinery",
+                    "factory": "Yes/No",
+                    "title": "Enabled",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_long",
+            "schema": {
+                "properties": {
+                    "description": "Default value: %Y-%m-%d %H:%M (2038-01-19 03:14)",
+                    "factory": "Text line (String)",
+                    "title": "old ZMI property: localLongTimeFormat",
+                    "type": "string"
+                }
+            },
+            "value": "%Y-%m-%d %H:%M"
+        },
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_short",
+            "schema": {
+                "properties": {
+                    "description": "Default value: %Y-%m-%d (2038-01-19)",
+                    "factory": "Text line (String)",
+                    "title": "old ZMI property: localTimeFormat",
+                    "type": "string"
+                }
+            },
+            "value": "%Y-%m-%d"
+        },
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.time_format",
+            "schema": {
+                "properties": {
+                    "description": "Default value: %H:%M (03:14)",
+                    "factory": "Text line (String)",
+                    "title": "old ZMI property: localTimeOnlyFormat",
+                    "type": "string"
+                }
+            },
+            "value": "%H:%M"
+        }
     ],
-    "type": "ComponentLookupError"
+    "items_total": 4
 }
