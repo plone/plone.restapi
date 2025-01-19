@@ -239,3 +239,11 @@ class TestServicesNavigation(unittest.TestCase):
         )
 
         self.assertEqual(response.json()["items"][1]["items"][-1]["title"], nav_title)
+
+    def test_navigation_badrequests(self):
+        response = self.api_session.get(
+            "/folder/@navigation", params={"expand.navigation.depth": "php"}
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("invalid literal for int()", response.json()["message"])
