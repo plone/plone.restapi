@@ -51,3 +51,16 @@ class TestRegistrySerializer(unittest.TestCase):
         self.assertEqual(set(item["schema"]), {"properties"})
         self.assertEqual(item["name"], "foo.bar")
         self.assertEqual(item["value"], "Lorem Ipsum")
+
+    def test_filtered(self):
+        registry = Registry()
+        registry.records["foo.bar"] = Record(
+            field.TextLine(title="Foo Bar"), "Lorem Ipsum"
+        )
+        registry.records["foo.baz"] = Record(
+            field.TextLine(title="Foo Baz"), "Lorem Ipsum"
+        )
+        obj = self.serialize(registry, [registry.records["foo.bar"]])
+        self.assertEqual(len(obj["items"]), 1)
+        self.assertEqual(obj["items"][0]["name"], "foo.bar")
+        self.assertEqual(obj["items"][0]["value"], "Lorem Ipsum")
