@@ -52,6 +52,20 @@ Example response:
 :language: http
 ```
 
+## Filtering registry records
+
+Filtering registry records is done by passing a `q` parameter with the prefix of the record name. Filtering also supports {doc}`../usage/batching` like listing registry records.
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/registry_get_list_filtered.req
+```
+
+Example response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/registry_get_list_filtered.resp
+:language: http
+```
 
 ## Updating registry records
 
