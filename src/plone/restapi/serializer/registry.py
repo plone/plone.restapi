@@ -8,6 +8,7 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 from zope.interface import Interface
 
+
 class SerializeRegistryMixin:
     def serialize(self):
         batch = HypermediaBatch(self.request, list(self.records.keys()))
@@ -15,9 +16,7 @@ class SerializeRegistryMixin:
             "@id": batch.canonical_url,
             "items_total": batch.items_total,
             "batching": batch.links if batch.links else {},
-            "items": [
-                self.make_item(key) for key in batch
-            ]
+            "items": [self.make_item(key) for key in batch],
         }
         return results
 
@@ -32,6 +31,7 @@ class SerializeRegistryMixin:
             "schema": {"properties": schema.get_schema()},
         }
 
+
 @implementer(ISerializeToJson)
 @adapter(IRegistry, IRequest, Interface)
 class SerializeRegistryToJsonWithFilters(SerializeRegistryMixin):
@@ -39,6 +39,7 @@ class SerializeRegistryToJsonWithFilters(SerializeRegistryMixin):
         self.registry = registry
         self.request = request
         self.records = records
+
     def __call__(self):
         return self.serialize()
 
