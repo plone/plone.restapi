@@ -1,3 +1,4 @@
+from plone.registry import Registry
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.converters import json_compatible
@@ -6,6 +7,8 @@ from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
+import plone.protect.interfaces
+from zope.interface import alsoProvides
 
 
 @implementer(IPublishTraverse)
@@ -35,15 +38,20 @@ class RegistryGet(Service):
             value = registry[self._get_record_name]
             return json_compatible(value)
         else:  # batched listing
-            records_dict = dict(**registry.records)
             if q := self.request.form.get("q"):
-                filtered_records = {}
-                for key in records_dict.keys():
+                # Disable CSRF protection
+                if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+                    alsoProvides(
+                        self.request, plone.protect.interfaces.IDisableCSRFProtection
+                    )
+
+                tmp_registry = Registry()
+                for key in registry.records.keys():
                     if key.startswith(q):
-                        filtered_records[key] = records_dict[key]
-                records_dict = filtered_records
+                        tmp_registry.records[key] = registry.records[key]
+                registry = tmp_registry
             serializer = getMultiAdapter(
-                (registry, self.request, records_dict),
+                (registry, self.request),
                 ISerializeToJson,
             )
             return serializer()

@@ -6,51 +6,35 @@ from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
-from zope.interface import Interface
-
-
-class SerializeRegistryMixin:
-    def serialize(self):
-        batch = HypermediaBatch(self.request, list(self.records.keys()))
-        results = {
-            "@id": batch.canonical_url,
-            "items_total": batch.items_total,
-            "batching": batch.links if batch.links else {},
-            "items": [self.make_item(key) for key in batch],
-        }
-        return results
-
-    def make_item(self, key):
-        record = self.records[key]
-        schema = getMultiAdapter(
-            (record.field, record, self.request), IJsonSchemaProvider
-        )
-        return {
-            "name": key,
-            "value": self.records[key],
-            "schema": {"properties": schema.get_schema()},
-        }
-
-
-@implementer(ISerializeToJson)
-@adapter(IRegistry, IRequest, Interface)
-class SerializeRegistryToJsonWithFilters(SerializeRegistryMixin):
-    def __init__(self, registry, request, records):
-        self.registry = registry
-        self.request = request
-        self.records = records
-
-    def __call__(self):
-        return self.serialize()
 
 
 @implementer(ISerializeToJson)
 @adapter(IRegistry, IRequest)
-class SerializeRegistryToJson(SerializeRegistryMixin):
+class SerializeRegistryToJson:
     def __init__(self, registry, request):
         self.registry = registry
         self.request = request
-        self.records = registry.records
 
     def __call__(self):
-        return self.serialize()
+        records = self.registry.records
+        # Batch keys, because that is a simple BTree
+        batch = HypermediaBatch(self.request, list(records))
+
+        results = {}
+        results["@id"] = batch.canonical_url
+        results["items_total"] = batch.items_total
+        if batch.links:
+            results["batching"] = batch.links
+
+        def make_item(key):
+            record = records[key]
+            schema = getMultiAdapter(
+                (record.field, record, self.request), IJsonSchemaProvider
+            )
+            data = {"name": key, "value": self.registry[key]}
+            __traceback_info__ = (record, record.field, schema)
+            data["schema"] = {"properties": schema.get_schema()}
+            return data
+
+        results["items"] = [make_item(key) for key in batch]
+        return results
