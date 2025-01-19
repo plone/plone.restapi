@@ -549,6 +549,10 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@registry")
         save_request_and_response_for_docs("registry_get_list", response)
 
+    def test_documentation_registry_get_list_filtered(self):
+        response = self.api_session.get("/@registry?q=Products.CMFPlone")
+        save_request_and_response_for_docs("registry_get_list_filtered", response)
+
     def test_documentation_types(self):
         response = self.api_session.get("/@types")
         save_request_and_response_for_docs("types", response)

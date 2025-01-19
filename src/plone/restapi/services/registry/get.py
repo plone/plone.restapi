@@ -35,5 +35,15 @@ class RegistryGet(Service):
             value = registry[self._get_record_name]
             return json_compatible(value)
         else:  # batched listing
-            serializer = getMultiAdapter((registry, self.request), ISerializeToJson)
+            records_dict = dict(**registry.records)
+            if q := self.request.form.get("q"):
+                filtered_records = {}
+                for key in records_dict.keys():
+                    if key.startswith(q):
+                        filtered_records[key] = records_dict[key]
+                records_dict = filtered_records
+            serializer = getMultiAdapter(
+                (registry, self.request, records_dict),
+                ISerializeToJson,
+            )
             return serializer()

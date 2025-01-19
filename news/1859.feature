@@ -1,0 +1,1 @@
+Add search param to querystring for registry listing. @Faakhir30

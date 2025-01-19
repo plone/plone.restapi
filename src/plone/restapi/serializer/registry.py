@@ -6,19 +6,19 @@ from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
+from zope.interface import Interface
 
 
 @implementer(ISerializeToJson)
-@adapter(IRegistry, IRequest)
+@adapter(IRegistry, IRequest, Interface)
 class SerializeRegistryToJson:
-    def __init__(self, registry, request):
+    def __init__(self, registry, request, records=None):
         self.registry = registry
         self.request = request
+        self.records = records or registry.records
 
     def __call__(self):
-        records = self.registry.records
-        # Batch keys, because that is a simple BTree
-        batch = HypermediaBatch(self.request, list(records))
+        batch = HypermediaBatch(self.request, list(self.records.keys()))
 
         results = {}
         results["@id"] = batch.canonical_url
@@ -27,7 +27,7 @@ class SerializeRegistryToJson:
             results["batching"] = batch.links
 
         def make_item(key):
-            record = records[key]
+            record = self.records[key]
             schema = getMultiAdapter(
                 (record.field, record, self.request), IJsonSchemaProvider
             )
