@@ -54,7 +54,6 @@ Example response:
 
 ## Filter list of registry records
 
-
 ```{versionadded} plone.restapi 9.10.0
 ```
 
