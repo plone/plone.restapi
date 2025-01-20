@@ -54,6 +54,10 @@ Example response:
 
 ## Filter list of registry records
 
+
+```{versionadded} plone.restapi 9.10.0
+```
+
 You can filter a list of registry records and batch the results.
 To do so, append a query string to the listing endpoint with a `q` parameter and its value set to the prefix of the desired record name.
 See {doc}`../usage/batching` for details of how to work with batched results.
