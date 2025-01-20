@@ -52,9 +52,11 @@ Example response:
 :language: http
 ```
 
-## Filtering registry records
+## Filter list of registry records
 
-Filtering registry records is done by passing a `q` parameter with the prefix of the record name. Filtering also supports {doc}`../usage/batching` like listing registry records.
+You can filter a list of registry records and batch the results.
+To do so, append a query string to the listing endpoint with a `q` parameter and its value set to the prefix of the desired record name.
+See {doc}`../usage/batching` for details of how to work with batched results.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests

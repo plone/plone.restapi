@@ -1,1 +1,1 @@
-Add search param to querystring for registry listing. @Faakhir30
+Support filtering the list of registry records. @Faakhir30
