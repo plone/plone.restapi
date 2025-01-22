@@ -357,7 +357,8 @@ class NavigationPortletRenderer:
             mtt = getToolByName(self.context, "mimetypes_registry")
             if fileo.contentType:
                 ctype = mtt.lookup(fileo.contentType)
-                return os.path.join(portal_url, guess_icon_path(ctype[0]))
+                if ctype:
+                    return os.path.join(portal_url, guess_icon_path(ctype[0]))
         except AttributeError:
             pass
 

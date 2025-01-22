@@ -107,3 +107,12 @@ class TestRegistry(unittest.TestCase):
         self.assertIn("items", response)
         self.assertIn("batching", response)
         self.assertIn("next", response["batching"])
+
+    def test_get_filtered_listing(self):
+        response = self.api_session.get("/@registry?q=foo.bar1")
+        self.assertEqual(response.status_code, 200)
+        response = response.json()
+        # 10 records from foo.bar10 to foo.bar19 and 1 record foo.bar1
+        self.assertEqual(len(response["items"]), 11)
+        self.assertEqual(response["items"][0]["name"], "foo.bar1")
+        self.assertEqual(response["items"][0]["value"], "Lorem Ipsum")

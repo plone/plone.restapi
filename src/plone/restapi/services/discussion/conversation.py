@@ -2,7 +2,7 @@ from datetime import datetime
 from plone.app.discussion.browser.comment import EditCommentForm
 from plone.app.discussion.browser.comments import CommentForm
 from plone.app.discussion.interfaces import IConversation
-from plone.restapi.deserializer import json_body
+from plone.restapi.deserializer import json_body, parse_int
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.discussion.utils import can_delete
@@ -38,7 +38,7 @@ class CommentsGet(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = int(name)
+            self.comment_id = parse_int(dict(comment_id=name), "comment_id", None)
         return self
 
     def reply(self):
@@ -57,7 +57,7 @@ class CommentsAdd(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = int(name)
+            self.comment_id = parse_int(dict(comment_id=name), "comment_id", None)
             request["form.widgets.in_reply_to"] = name
         return self
 
@@ -96,7 +96,7 @@ class CommentsUpdate(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = int(name)
+            self.comment_id = parse_int(dict(comment_id=name), "comment_id", None)
             request["form.widgets.comment_id"] = name
         return self
 
@@ -140,7 +140,7 @@ class CommentsDelete(Service):
     comment_id = None
 
     def publishTraverse(self, request, name):
-        self.comment_id = int(name)
+        self.comment_id = parse_int(dict(comment_id=name), "comment_id", None)
         return self
 
     def reply(self):

@@ -2,6 +2,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.namedfile.file import NamedBlobFile
 from plone.registry.interfaces import IRegistry
 from plone.restapi.bbb import INavigationRoot
 from plone.restapi.services.contextnavigation.get import ContextNavigation
@@ -99,6 +100,9 @@ class TestServicesContextNavigation(unittest.TestCase):
         folder2.invokeFactory("Document", "doc22")
         folder2.invokeFactory("Document", "doc23")
         folder2.invokeFactory("File", "file21")
+        folder2.file21.file = NamedBlobFile(
+            data="Hello World", contentType="text/plain", filename="file.txt"
+        )
         folder2.invokeFactory("Folder", "folder21")
         folder21 = getattr(folder2, "folder21")
         folder21.invokeFactory("Document", "doc211")
@@ -995,4 +999,29 @@ class TestServicesContextNavigation(unittest.TestCase):
             res["@components"]["contextnavigation"]["items"][0]["@id"].endswith(
                 "/plone/folder1/doc11",
             )
+        )
+
+    def testIcon(self):
+        view = self.renderer(
+            self.portal.folder2.file21,
+            opts(root_path="/folder2", topLevel=0),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(
+            tree["items"][0]["icon"],
+            "/plone/++resource++mimetype.icons/txt.png",
+        )
+
+    def testIconNotRegisteredMimetype(self):
+        self.portal.folder2.file21.file.contentType = "plain/x-text"
+        view = self.renderer(
+            self.portal.folder2.file21,
+            opts(root_path="/folder2", topLevel=0),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(
+            tree["items"][0]["icon"],
+            None,
         )

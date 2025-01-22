@@ -4,7 +4,7 @@ Content-Type: application/json
 {
     "@id": "http://localhost:55001/plone/@site",
     "features": {
-        "filter_aliases_by_date": false
+        "filter_aliases_by_date": true
     },
     "plone.allowed_sizes": [
         "huge 1600:65536",
