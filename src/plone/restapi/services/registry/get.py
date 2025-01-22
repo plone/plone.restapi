@@ -7,8 +7,6 @@ from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-import plone.protect.interfaces
-from zope.interface import alsoProvides
 
 
 @implementer(IPublishTraverse)
@@ -39,11 +37,6 @@ class RegistryGet(Service):
             return json_compatible(value)
         else:  # batched listing
             if q := self.request.form.get("q"):
-                # Disable CSRF protection
-                if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-                    alsoProvides(
-                        self.request, plone.protect.interfaces.IDisableCSRFProtection
-                    )
 
                 tmp_registry = Registry()
                 for key in registry.records.keys():
