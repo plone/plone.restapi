@@ -1,1 +1,1 @@
-Fix the context navigation bug that occurs when a file type is unknown. @mamico
+In the `@contextnavigation` endpoint, return `"icon": null` for Files with a mimetype not found in the `content_type_registry`, instead of raising `TypeError`. @mamico
