@@ -9,7 +9,10 @@ from plone.locking.interfaces import ILockable
 
 def creator_name(username):
     user = api.user.get(username=username)
-    return user.getProperty("fullname") or username
+    if user:
+        return user.getProperty("fullname") or username
+    else:
+        return username
 
 
 def creator_url(username):

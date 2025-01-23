@@ -1,3 +1,4 @@
+from plone import api
 from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -112,3 +113,21 @@ class TestLocking(unittest.TestCase):
         transaction.commit()
         self.assertEqual(response.status_code, 204)
         self.assertEqual(self.doc.Title(), "New Title")
+
+    def test_lock_user_removed(self):
+        lockable = ILockable(self.doc)
+        api.user.create(
+            username="foo",
+            email="foo@bar.com",
+            roles=["Manager"],
+        )
+        with api.env.adopt_user(username="foo"):
+            lockable.lock()
+        api.user.delete(username="foo")
+        transaction.commit()
+        # the user that locked the object is no longer present
+        response = self.api_session.get("/@lock")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["creator"], "foo")
+        self.assertEqual(response.json()["creator_name"], "foo")
+        self.assertTrue(lockable.locked())
