@@ -1,6 +1,8 @@
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_PASSWORD
+from plone.restapi.bbb import IPloneSiteRoot
+from plone.restapi.interfaces import ILoginProviders
 from plone.restapi.permissions import UseRESTAPI
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest import TestCase
@@ -8,8 +10,6 @@ from zExceptions import Unauthorized
 from zope.event import notify
 from ZPublisher.pubevents import PubStart
 from zope.component import provideAdapter
-from plone.restapi.interfaces import ILoginProviders
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 
 
 class TestLogin(TestCase):

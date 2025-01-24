@@ -21,6 +21,8 @@ from plone.locking.interfaces import ITTWLockable
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import IPloneSiteRoot
+from plone.restapi.interfaces import ILoginProviders
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
@@ -43,9 +45,6 @@ from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.restapi.testing import register_static_uuid_utility
 from zope.component import provideAdapter
-from plone.restapi.interfaces import ILoginProviders
-from Products.CMFPlone.interfaces import IPloneSiteRoot
-
 
 import collections
 import json

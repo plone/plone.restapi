@@ -7,6 +7,7 @@ from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
+from plone.restapi.bbb import base_hasattr
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
@@ -21,7 +22,6 @@ from plone.restapi.serializer.utils import get_portal_type_title
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import base_hasattr
 from Products.CMFCore.interfaces import IContentish
 from zope.component import adapter
 from zope.component import ComponentLookupError

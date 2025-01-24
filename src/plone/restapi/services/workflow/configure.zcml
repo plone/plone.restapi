@@ -7,7 +7,7 @@
   <plone:service
       method="GET"
       factory=".info.WorkflowInfoService"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       name="@workflow"
       />

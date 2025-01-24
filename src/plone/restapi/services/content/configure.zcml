@@ -8,7 +8,7 @@
   <plone:service
       method="GET"
       factory=".get.ContentGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       />
 
@@ -27,7 +27,7 @@
   <plone:service
       method="PATCH"
       factory=".update.ContentPatch"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       />
 
@@ -55,7 +55,7 @@
   <plone:service
       method="GET"
       factory=".sharing.SharingGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       name="@sharing"
       />
@@ -71,7 +71,7 @@
   <plone:service
       method="POST"
       factory=".sharing.SharingPost"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       name="@sharing"
       />
@@ -119,7 +119,7 @@
   <plone:service
       method="HEAD"
       factory=".tus.UploadHead"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.AddPortalContent"
       name="@tus-upload"
       />
@@ -135,7 +135,7 @@
   <plone:service
       method="PATCH"
       factory=".tus.UploadPatch"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.AddPortalContent"
       name="@tus-upload"
       />
