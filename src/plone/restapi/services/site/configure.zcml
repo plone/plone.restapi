@@ -8,7 +8,7 @@
   <plone:service
       method="GET"
       factory=".get.SiteGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       name="@site"
       />

@@ -6,7 +6,7 @@
   <plone:service
       method="GET"
       factory=".get.UpgradeSiteGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.ManagePortal"
       name="@upgrade"
       />
@@ -14,7 +14,7 @@
   <plone:service
       method="POST"
       factory=".post.UpgradeSitePost"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.ManagePortal"
       name="@upgrade"
       />
