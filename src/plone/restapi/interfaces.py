@@ -240,3 +240,14 @@ class IBlockVisitor(Interface):
 
     def __call__(self, block):
         """Return an iterable of sub-blocks found inside `block`."""
+
+
+class ILoginProviders(Interface):
+    """An interface needed to be implemented by providers that want to be listed
+    in the @login endpoint
+    """
+
+    def get_providers():
+        """
+        return a list of login providers, with its id, title, plugin and url
+        """

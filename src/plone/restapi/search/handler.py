@@ -1,18 +1,11 @@
 from plone.registry.interfaces import IRegistry
 from plone.restapi.bbb import ISearchSchema
+from plone.restapi.bbb import get_navigation_root
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 from zope.component import getUtility
-
-
-try:
-    from plone.base.navigationroot import get_navigation_root
-except ImportError:
-    from plone.app.layout.navigation.root import (
-        getNavigationRoot as get_navigation_root,
-    )
 
 
 class SearchHandler:

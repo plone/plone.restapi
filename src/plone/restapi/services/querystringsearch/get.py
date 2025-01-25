@@ -2,6 +2,7 @@ from pkg_resources import get_distribution
 from pkg_resources import parse_version
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
+from plone.restapi.deserializer import parse_int
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
@@ -31,20 +32,12 @@ class QuerystringSearch:
             raise BadRequest(str(err))
 
         query = data.get("query", None)
-        try:
-            b_start = int(data.get("b_start", 0))
-        except ValueError:
-            raise BadRequest("Invalid b_start")
-        try:
-            b_size = int(data.get("b_size", 25))
-        except ValueError:
-            raise BadRequest("Invalid b_size")
+
+        b_start = parse_int(data, "b_start", 0)
+        b_size = parse_int(data, "b_size", 25)
         sort_on = data.get("sort_on", None)
         sort_order = data.get("sort_order", None)
-        try:
-            limit = int(data.get("limit", 1000))
-        except ValueError:
-            raise BadRequest("Invalid limit")
+        limit = parse_int(data, "limit", 1000)
         fullobjects = bool(data.get("fullobjects", False))
 
         if not query:

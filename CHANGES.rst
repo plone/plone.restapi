@@ -8,6 +8,29 @@ Changelog
 
 .. towncrier release notes start
 
+9.9.0 (2024-12-18)
+------------------
+
+New features:
+
+
+- When a Link content item is linked by UID, resolve its URL as the linked target URL for anonymous users. @cekk (#1847)
+
+
+Bug fixes:
+
+
+- Fix resolving paths in deserializer if the target was moved in the same request. @cekk (#1848)
+- Make slate block linkintegrity checking more robust in case data isn't in the expected format. @cekk (#1849)
+- Optimized performance of DexterityObjectPrimaryFieldTarget adapter. @maurits (#1851)
+
+
+Internal:
+
+
+- Fix time-dependence of tests. @davisagli (#1850)
+
+
 9.8.5 (2024-11-25)
 ------------------
 
