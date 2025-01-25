@@ -6,7 +6,6 @@ from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
-from plone.restapi import HAS_PLONE_6
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import base_hasattr
 from plone.restapi.deserializer import boolean_value
@@ -47,12 +46,12 @@ def update_with_working_copy_info(context, result):
     if WorkingCopyInfo is None:
         return
 
-    # Does not return working copy information when serializing Portal in Plone 5.2.
-    if not HAS_PLONE_6 and context.portal_type == "Plone Site":
-        return
-
     working_copy_info = WorkingCopyInfo(context)
-    baseline, working_copy = working_copy_info.get_working_copy_info()
+    try:
+        baseline, working_copy = working_copy_info.get_working_copy_info()
+    except TypeError:
+        # not supported for this content type
+        return
     result.update({"working_copy": working_copy, "working_copy_of": baseline})
 
 
