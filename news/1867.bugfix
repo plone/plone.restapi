@@ -1,3 +1,1 @@
-In the `creator_name` function for locking endpoint, return the userid if the user is not found, instead of raising `AttributeError`. @mamico
-
-Zope locks store their creator using the userid, not the username (login name), changed accordly the `creator_name` and `creatur_url` function. @davisagli @mamico
+In the `@locking` endpoint, fixed edge cases where the user who owns the lock was not found correctly. @mamico
