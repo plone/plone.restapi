@@ -1,3 +1,4 @@
+from plone import api
 from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -112,3 +113,45 @@ class TestLocking(unittest.TestCase):
         transaction.commit()
         self.assertEqual(response.status_code, 204)
         self.assertEqual(self.doc.Title(), "New Title")
+
+    def test_lock_user_removed(self):
+        lockable = ILockable(self.doc)
+        api.user.create(
+            username="foo",
+            email="foo@bar.com",
+            roles=["Manager"],
+        )
+        with api.env.adopt_user(username="foo"):
+            lockable.lock()
+        api.user.delete(username="foo")
+        transaction.commit()
+        # the user that locked the object is no longer present
+        response = self.api_session.get("/@lock")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["creator"], "foo")
+        self.assertEqual(response.json()["creator_name"], "foo")
+        self.assertTrue(lockable.locked())
+
+    def test_lock_username_vs_userid(self):
+        lockable = ILockable(self.doc)
+        api.user.create(
+            username="foo1234",
+            email="foo@bar.com",
+            roles=["Manager"],
+            properties={"fullname": "Foo Bar"},
+        )
+        pas = api.portal.get_tool("acl_users")
+        # generally the username and userid are the same...
+        self.assertEqual(pas.getUserById("foo1234").getUserName(), "foo1234")
+        # ...but we can change it
+        pas.updateLoginName("foo1234", "foo")
+        self.assertEqual(pas.getUserById("foo1234").getUserName(), "foo")
+        with api.env.adopt_user(username="foo"):
+            lockable.lock()
+        transaction.commit()
+        response = self.api_session.get("/@lock")
+        self.assertEqual(response.status_code, 200)
+        # here the userid
+        self.assertEqual(response.json()["creator"], "foo1234")
+        self.assertEqual(response.json()["creator_name"], "Foo Bar")
+        self.assertTrue(lockable.locked())

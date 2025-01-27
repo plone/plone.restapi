@@ -1,0 +1,1 @@
+In the `@locking` endpoint, fixed edge cases where the user who owns the lock was not found correctly. @mamico
