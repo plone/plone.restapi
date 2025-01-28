@@ -1,1 +1,0 @@
-In the `@registry` endpoint, added support for filtering the list of registry records. @Faakhir30

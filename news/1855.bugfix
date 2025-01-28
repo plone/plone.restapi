@@ -1,1 +1,0 @@
-Changed bad int inputs into 500 Exceptions to 400 BadRequest so they can be filtered out of logs more easily. @djay
