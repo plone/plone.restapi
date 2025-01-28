@@ -42,6 +42,19 @@ except ImportError:
     WorkingCopyInfo = None
 
 
+def update_with_working_copy_info(context, result):
+    if WorkingCopyInfo is None:
+        return
+
+    working_copy_info = WorkingCopyInfo(context)
+    try:
+        baseline, working_copy = working_copy_info.get_working_copy_info()
+    except TypeError:
+        # not supported for this content type
+        return
+    result.update({"working_copy": working_copy, "working_copy_of": baseline})
+
+
 def get_allow_discussion_value(context, request, result):
     # This test is to handle the situation of plone.app.discussion not being installed
     # or not being activated.
@@ -108,11 +121,7 @@ class SerializeToJson:
             result.update({"previous_item": {}, "next_item": {}})
 
         # Insert working copy information
-        if WorkingCopyInfo is not None:
-            baseline, working_copy = WorkingCopyInfo(
-                self.context
-            ).get_working_copy_info()
-            result.update({"working_copy": working_copy, "working_copy_of": baseline})
+        update_with_working_copy_info(self.context, result)
 
         # Insert locking information
         result.update({"lock": lock_info(obj)})

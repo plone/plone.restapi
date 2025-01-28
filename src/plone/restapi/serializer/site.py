@@ -12,6 +12,7 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxcontent import get_allow_discussion_value
+from plone.restapi.serializer.dxcontent import update_with_working_copy_info
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.utils import get_portal_type_title
 from plone.restapi.services.locking import lock_info
@@ -25,6 +26,7 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
+
 
 import json
 
@@ -73,6 +75,9 @@ class SerializeSiteRootToJson:
             "is_folderish": True,
             "description": self.context.description,
         }
+
+        # Insert working copy information
+        update_with_working_copy_info(self.context, result)
 
         if HAS_PLONE_6:
             result["UID"] = self.context.UID()
