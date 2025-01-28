@@ -26,7 +26,7 @@ class Aliases:
         context_path = "/".join(self.context.getPhysicalPath())
         redirects = storage.redirects(context_path)
         aliases = [deroot_path(alias) for alias in redirects]
-        self.request.response.setStatus(201)
+        self.request.response.setStatus(200)
         self.request.response.setHeader("Content-Type", "application/json")
         return [{"path": alias} for alias in aliases], len(aliases)
 
@@ -42,7 +42,7 @@ class Aliases:
         for redirect in redirects:
             del redirect["redirect"]
             redirect["datetime"] = datetimelike_to_iso(redirect["datetime"])
-        self.request.response.setStatus(201)
+        self.request.response.setStatus(200)
 
         self.request.form["b_start"] = "0"
         self.request.form["b_size"] = "1000000"
@@ -61,7 +61,7 @@ class Aliases:
         for redirect in redirects:
             del redirect["redirect"]
             redirect["datetime"] = datetimelike_to_iso(redirect["datetime"])
-        self.request.response.setStatus(201)
+        self.request.response.setStatus(200)
 
         self.request.form["b_start"] = "0"
         self.request.form["b_size"] = "1000000"
