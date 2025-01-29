@@ -15,9 +15,15 @@ from zope.interface.exceptions import Invalid
 from zope.schema import getFields
 from zope.schema.interfaces import ValidationError
 
+from plone.restapi.behaviors import IBlocks
+from zope.globalrequest import getRequest
 
-@implementer(IDexterityContent)
+
+@implementer(IDexterityContent, IBlocks)
 class FakeDXContext:
+    def __init__(self, request):
+        self.request = request
+        self.REQUEST = getRequest()
     """Fake DX content class, so we can re-use the DX field deserializers"""
 
 
@@ -43,7 +49,7 @@ class ControlpanelDeserializeFromJson:
         errors = []
 
         # Make a fake context
-        fake_context = FakeDXContext()
+        fake_context = FakeDXContext(self.request)
 
         for name, field in getFields(self.schema).items():
             field_data = schema_data.setdefault(self.schema, {})
