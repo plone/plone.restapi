@@ -63,6 +63,38 @@ class TestUserSchemaEndpoint(unittest.TestCase):
 
         self.assertTrue("object", response["type"])
 
+    def test_registration_userschema_get(self):
+        response = self.api_session.get("/@userschema/registration")
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+
+        self.assertIn("fullname", response["fieldsets"][0]["fields"])
+        self.assertIn("email", response["fieldsets"][0]["fields"])
+        self.assertIn("password", response["fieldsets"][0]["fields"])
+        self.assertIn("password_ctl", response["fieldsets"][0]["fields"])
+        self.assertIn("username", response["fieldsets"][0]["fields"])
+        self.assertIn("mail_me", response["fieldsets"][0]["fields"])
+
+        self.assertIn("fullname", response["properties"])
+        self.assertIn("email", response["properties"])
+        self.assertIn("password", response["properties"])
+        self.assertIn("password_ctl", response["properties"])
+        self.assertIn("username", response["properties"])
+        self.assertIn("mail_me", response["properties"])
+
+        self.assertIn("email", response["required"])
+        self.assertIn("username", response["required"])
+        self.assertIn("password", response["required"])
+        self.assertIn("password_ctl", response["required"])
+
+        self.assertTrue("object", response["type"])
+
+    def test_userschema_with_invalid_params(self):
+        response = self.api_session.get("/@userschema/something-invalid")
+
+        self.assertEqual(400, response.status_code)
+
 
 @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
 class TestCustomUserSchema(unittest.TestCase):
@@ -133,7 +165,7 @@ class TestCustomUserSchema(unittest.TestCase):
       <required>False</required>
       <title>Age</title>
     </field>
-    <field name="department" type="zope.schema.Choice" users:forms="In User Profile">
+    <field name="department" type="zope.schema.Choice" users:forms="In User Profile|On Registration">
       <description/>
       <required>False</required>
       <title>Department</title>
@@ -159,7 +191,7 @@ class TestCustomUserSchema(unittest.TestCase):
       <required>False</required>
       <title>Pi</title>
     </field>
-    <field name="vegetarian" type="zope.schema.Bool" users:forms="In User Profile">
+    <field name="vegetarian" type="zope.schema.Bool" users:forms="In User Profile|On Registration">
       <description/>
       <required>False</required>
       <title>Vegetarian</title>
@@ -196,3 +228,31 @@ class TestCustomUserSchema(unittest.TestCase):
         self.assertIn("skills", response["fieldsets"][0]["fields"])
         self.assertIn("pi", response["fieldsets"][0]["fields"])
         self.assertIn("vegetarian", response["fieldsets"][0]["fields"])
+
+    def test_userschema_for_registration_get(self):
+        response = self.api_session.get("/@userschema/registration")
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        # Default fields
+        self.assertIn("fullname", response["fieldsets"][0]["fields"])
+        self.assertIn("email", response["fieldsets"][0]["fields"])
+        self.assertIn("username", response["fieldsets"][0]["fields"])
+        self.assertIn("password", response["fieldsets"][0]["fields"])
+        self.assertIn("password_ctl", response["fieldsets"][0]["fields"])
+        self.assertIn("mail_me", response["fieldsets"][0]["fields"])
+
+        # added fields
+        self.assertIn("department", response["fieldsets"][0]["fields"])
+        self.assertIn("vegetarian", response["fieldsets"][0]["fields"])
+
+        # fields not shown in the regisration form
+        self.assertNotIn("home_page", response["fieldsets"][0]["fields"])
+        self.assertNotIn("description", response["fieldsets"][0]["fields"])
+        self.assertNotIn("location", response["fieldsets"][0]["fields"])
+        self.assertNotIn("portrait", response["fieldsets"][0]["fields"])
+        self.assertNotIn("birthdate", response["fieldsets"][0]["fields"])
+        self.assertNotIn("another_date", response["fieldsets"][0]["fields"])
+        self.assertNotIn("age", response["fieldsets"][0]["fields"])
+        self.assertNotIn("skills", response["fieldsets"][0]["fields"])
+        self.assertNotIn("pi", response["fieldsets"][0]["fields"])

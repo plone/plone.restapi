@@ -37,3 +37,22 @@ The server will respond with the user schema.
 The user schema uses the same serialization as the type's JSON schema.
 
 See {ref}`types-schema` for detailed documentation about the available field types.
+
+## Getting the registration form
+
+In Plone we can configure each of the fields of the user schema to be available only in the user edit form, in the registration form or in both of them.
+
+To get the user schema available for the user registration form, make a request to the `/@registration-userschema` endpoint.
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/registration_userschema.req
+```
+
+The server will respond with the user schema.
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/registration_userschema.resp
+   :language: http
+```
+
+The user schema uses the same serialization as the type's JSON schema.
