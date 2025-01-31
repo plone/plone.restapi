@@ -46,12 +46,12 @@ To get the user schema available for the user registration form, make a request 
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/registration_userschema.req
+    :request: ../../../src/plone/restapi/tests/http-examples/userschema_registration.req
 ```
 
 The server will respond with the user schema.
 
-```{literalinclude} ../../../src/plone/restapi/tests/http-examples/registration_userschema.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/userschema_registration.resp
    :language: http
 ```
 
