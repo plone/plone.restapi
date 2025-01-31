@@ -49,7 +49,6 @@ class ControlpanelDeserializeFromJson:
         fake_context = FakeDXContext()
         wrapped_context = ImplicitAcquisitionWrapper(fake_context, self.context)
 
-
         for name, field in getFields(self.schema).items():
             field_data = schema_data.setdefault(self.schema, {})
 
