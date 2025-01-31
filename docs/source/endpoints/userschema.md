@@ -38,7 +38,7 @@ The user schema uses the same serialization as the type's JSON schema.
 
 See {ref}`types-schema` for detailed documentation about the available field types.
 
-## Getting the registration form
+## Get the registration form
 
 In Plone we can configure each of the fields of the user schema to be available only in the user edit form, in the registration form or in both of them.
 
