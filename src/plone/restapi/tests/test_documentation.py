@@ -2516,7 +2516,7 @@ class TestIterateDocumentation(TestDocumentationBase):
 
         save_request_and_response_for_docs("userschema", response)
 
-    def test_documentation_registration_schema_user(self):
+    def test_documentation_schema_user_registration(self):
         response = self.api_session.get("/@userschema/registration")
 
         save_request_and_response_for_docs("registration_userschema", response)
