@@ -63,7 +63,7 @@ class TestUserSchemaEndpoint(unittest.TestCase):
 
         self.assertTrue("object", response["type"])
 
-    def test_registration_userschema_get(self):
+    def test_userschema_registration_get(self):
         response = self.api_session.get("/@userschema/registration")
 
         self.assertEqual(200, response.status_code)
