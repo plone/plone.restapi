@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+9.11.0 (2025-01-31)
+-------------------
+
+New features:
+
+
+- Support working copies of the Plone Site. This feature is available when using `plone.app.iterate` 6.1.0 or later. @wesleybl (#1823)
+
+
 9.10.0 (2025-01-27)
 -------------------
 
