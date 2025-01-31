@@ -40,7 +40,7 @@ See {ref}`types-schema` for detailed documentation about the available field typ
 
 ## Get the registration form
 
-In Plone we can configure each of the fields of the user schema to be available only in the user edit form, in the registration form or in both of them.
+In Plone you can configure each of the fields of the user schema to be available in only one of either the user edit form or registration form, or in both of them.
 
 To get the user schema available for the user registration form, make a request to the `/@registration-userschema` endpoint.
 
