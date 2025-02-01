@@ -99,8 +99,16 @@
   <include package=".types" />
   <include package=".search" />
   <include package=".cache" />
-
   <include package=".upgrades" />
+
+  <!-- Register new @registration-userschema endpoint -->
+  <browser:page
+      for="*"
+      name="registration-userschema"
+      class=".services.RegistrationUserSchemaGet"
+      permission="plone.AccessContent"
+      allowed_methods="GET"
+  />
 
   <configure zcml:condition="installed plone.app.dexterity">
 

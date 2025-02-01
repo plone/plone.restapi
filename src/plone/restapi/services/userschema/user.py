@@ -2,30 +2,29 @@
 from plone.app.users.browser.userdatapanel import getUserDataSchema
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
-from plone.restapi.types.utils import get_fieldset_infos
-from plone.restapi.types.utils import get_fieldsets
-from plone.restapi.types.utils import get_jsonschema_properties
-from plone.restapi.types.utils import iter_fields
+from plone.restapi.types.utils import get_fieldset_infos, get_fieldsets, get_jsonschema_properties, iter_fields
+from plone.registry.interfaces import IRegistry
+from zope.component import getUtility
 
 
-class UserSchemaGet(Service):
+class RegistrationUserSchemaGet(Service):
     def reply(self):
+        registry = getUtility(IRegistry)
+        visibility_settings = registry.get("plone.userfield_visibility", {})
+
         user_schema = getUserDataSchema()
         fieldsets = get_fieldsets(self.context, self.request, user_schema)
 
-        # Build JSON schema properties
         properties = get_jsonschema_properties(self.context, self.request, fieldsets)
+        required = [field.field.getName() for field in iter_fields(fieldsets) if field.field.required]
 
-        # Determine required fields
-        required = []
-        for field in iter_fields(fieldsets):
-            if field.field.required:
-                required.append(field.field.getName())
-
-        # Include field modes
-        for field in iter_fields(fieldsets):
-            if field.mode:
-                properties[field.field.getName()]["mode"] = field.mode
+        # Filter only registration fields
+        properties = {
+            field.field.getName(): properties[field.field.getName()]
+            for field in iter_fields(fieldsets)
+            if visibility_settings.get(field.field.getName(), "both") in ["registration", "both"]
+        }
+        required = [field for field in required if field in properties]
 
         return {
             "type": "object",
