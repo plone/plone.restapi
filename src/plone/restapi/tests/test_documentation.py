@@ -2516,6 +2516,11 @@ class TestIterateDocumentation(TestDocumentationBase):
 
         save_request_and_response_for_docs("userschema", response)
 
+    def test_documentation_schema_user_registration(self):
+        response = self.api_session.get("/@userschema/registration")
+
+        save_request_and_response_for_docs("userschema_registration", response)
+
 
 class TestRules(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
