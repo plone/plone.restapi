@@ -12,15 +12,6 @@ import transaction
 import unittest
 
 
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
-
-
-@unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
 class TestUserSchemaEndpoint(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -96,7 +87,6 @@ class TestUserSchemaEndpoint(unittest.TestCase):
         self.assertEqual(400, response.status_code)
 
 
-@unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
 class TestCustomUserSchema(unittest.TestCase):
     """test userschema endpoint with a custom defined schema.
     we have taken the same example as in plone.app.users, thatç
