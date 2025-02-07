@@ -1,5 +1,6 @@
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.bbb import IConstrainTypes
+from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
@@ -7,7 +8,6 @@ from plone.restapi.types.utils import get_info_for_field
 from plone.restapi.types.utils import get_info_for_fieldset
 from plone.restapi.types.utils import get_info_for_type
 from Products.CMFCore.interfaces import IFolderish
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
 from zope.component import adapter

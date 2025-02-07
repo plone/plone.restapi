@@ -14,7 +14,7 @@
   <plone:service
       method="GET"
       factory=".get.Lock"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       name="@lock"
       />
@@ -30,7 +30,7 @@
   <plone:service
       method="POST"
       factory=".add.Lock"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       name="@lock"
       />
@@ -46,7 +46,7 @@
   <plone:service
       method="PATCH"
       factory=".update.Lock"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       name="@lock"
       />
@@ -62,7 +62,7 @@
   <plone:service
       method="DELETE"
       factory=".delete.Lock"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       name="@lock"
       />

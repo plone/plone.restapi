@@ -14,7 +14,7 @@
   <plone:service
       method="POST"
       factory=".post.AddonsPost"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.ManagePortal"
       name="@addons"
       />

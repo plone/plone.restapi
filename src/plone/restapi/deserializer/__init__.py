@@ -1,4 +1,5 @@
 from plone.restapi.exceptions import DeserializationError
+from zExceptions import BadRequest
 
 import json
 
@@ -28,3 +29,19 @@ def boolean_value(value):
 
     """
     return value not in {False, "false", "False", "0", 0}
+
+
+def parse_int(data, prop, default):
+    """
+    Args:
+        data: dict from a request
+        prop: name of a integer paramater in the dict
+        default: default if not found
+
+    Returns: an integer
+    Raises: BadRequest if not an int
+    """
+    try:
+        return int(data.get(prop, default))
+    except (ValueError, TypeError):
+        raise BadRequest(f"Invalid {prop}: Not an integer")

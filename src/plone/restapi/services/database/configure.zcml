@@ -19,7 +19,7 @@
   <plone:service
       method="GET"
       factory=".get.DatabaseGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="plone.app.controlpanel.Overview"
       name="@database"
       />

@@ -8,7 +8,7 @@
   <!-- Upgrade to fix ordering, call manually via this browser-view if necessary -->
   <browser:page
       name="plone-restapi-upgrade-fix-ordering"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       class=".ordering.FixOrderingView"
       permission="cmf.ManagePortal"
       />
@@ -28,7 +28,7 @@
       title="plone.restapi.upgrades.0002"
       description=""
       provides="Products.GenericSetup.interfaces.EXTENSION"
-      for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+      for="plone.restapi.bbb.IMigratingPloneSiteRoot"
       directory="profiles/0002"
       />
 
@@ -47,7 +47,7 @@
       title="plone.restapi.upgrades.0004"
       description=""
       provides="Products.GenericSetup.interfaces.EXTENSION"
-      for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+      for="plone.restapi.bbb.IMigratingPloneSiteRoot"
       directory="profiles/0004"
       />
 

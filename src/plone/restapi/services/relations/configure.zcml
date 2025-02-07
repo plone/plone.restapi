@@ -7,7 +7,7 @@
       method="GET"
       accept="application/json,application/schema+json"
       factory=".get.GetRelations"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       name="@relations"
       />
@@ -15,7 +15,7 @@
   <plone:service
       method="POST"
       factory=".add.PostRelations"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       name="@relations"
       />
@@ -23,7 +23,7 @@
   <plone:service
       method="DELETE"
       factory=".delete.DeleteRelations"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       name="@relations"
       />

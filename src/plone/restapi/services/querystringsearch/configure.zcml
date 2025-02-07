@@ -8,7 +8,7 @@
   <plone:service
       method="POST"
       factory=".get.QuerystringSearchPost"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       name="@querystring-search"
       />
@@ -24,7 +24,7 @@
   <plone:service
       method="GET"
       factory=".get.QuerystringSearchGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       name="@querystring-search"
       />

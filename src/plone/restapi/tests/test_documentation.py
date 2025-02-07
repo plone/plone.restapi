@@ -21,6 +21,8 @@ from plone.locking.interfaces import ITTWLockable
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import IPloneSiteRoot
+from plone.restapi.interfaces import ILoginProviders
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
@@ -42,6 +44,7 @@ from zope.lifecycleevent import ObjectModifiedEvent
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.restapi.testing import register_static_uuid_utility
+from zope.component import provideAdapter
 
 import collections
 import json
@@ -84,6 +87,27 @@ UPLOAD_PDF_FILENAME = "file.pdf"
 
 # How do we open files?
 open_kw = {"newline": "\n"}
+
+
+class MyExternalLinks:
+    def __init__(self, context):
+        self.context = context
+
+    def get_providers(self):
+        return [
+            {
+                "id": "myprovider",
+                "title": "Provider",
+                "plugin": "myprovider",
+                "url": "https://some.example.com/login-url",
+            },
+            {
+                "id": "github",
+                "title": "GitHub",
+                "plugin": "github",
+                "url": "https://some.example.com/login-authomatic/github",
+            },
+        ]
 
 
 def normalize_test_port(value):
@@ -227,6 +251,13 @@ class TestDocumentation(TestDocumentationBase):
         super().setUp()
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
+        provideAdapter(
+            MyExternalLinks,
+            adapts=(IPloneSiteRoot,),
+            provides=ILoginProviders,
+            name="test-external-links",
+        )
+
         transaction.commit()
 
     def tearDown(self):
@@ -517,6 +548,10 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@registry")
         save_request_and_response_for_docs("registry_get_list", response)
 
+    def test_documentation_registry_get_list_filtered(self):
+        response = self.api_session.get("/@registry?q=Products.CMFPlone")
+        save_request_and_response_for_docs("registry_get_list_filtered", response)
+
     def test_documentation_types(self):
         response = self.api_session.get("/@types")
         save_request_and_response_for_docs("types", response)
@@ -786,6 +821,12 @@ class TestDocumentation(TestDocumentationBase):
             headers={"Authorization": f"Bearer {token}"},
         )
         save_request_and_response_for_docs("jwt_logout", response)
+
+    def test_documentation_external_doc_links(self):
+        response = self.api_session.get(
+            f"{self.portal.absolute_url()}/@login",
+        )
+        save_request_and_response_for_docs("external_authentication_links", response)
 
     def test_documentation_batching(self):
         folder = self.portal[
@@ -2474,6 +2515,11 @@ class TestIterateDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@userschema")
 
         save_request_and_response_for_docs("userschema", response)
+
+    def test_documentation_schema_user_registration(self):
+        response = self.api_session.get("/@userschema/registration")
+
+        save_request_and_response_for_docs("userschema_registration", response)
 
 
 class TestRules(TestDocumentationBase):
