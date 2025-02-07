@@ -1,5 +1,6 @@
 from datetime import datetime as dt
 from datetime import timezone
+import plone.protect.interfaces
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import ISerializeToJson
@@ -7,7 +8,8 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
-from zope.interface import implementer
+from zope.interface import implementer, alsoProvides
+
 from zope.publisher.interfaces import IPublishTraverse
 
 
@@ -24,6 +26,11 @@ class HistoryGet(Service):
     def reply(self):
         # Traverse to historical version
         if self.version:
+            if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+                alsoProvides(
+                    self.request,
+                    plone.protect.interfaces.IDisableCSRFProtection,
+                )
             serializer = queryMultiAdapter(
                 (self.context, self.request), ISerializeToJson
             )
