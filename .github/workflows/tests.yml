@@ -3,15 +3,13 @@ on: [push, pull_request]
 jobs:
   build:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         include:
           - python-version: "3.8"
             plone-version: "5.2"
-          - python-version: "3.8"
-            plone-version: "6.0"
           - python-version: "3.9"
             plone-version: "6.0"
           - python-version: "3.10"
@@ -50,11 +48,11 @@ jobs:
       - run: pip install virtualenv
       - run: pip install wheel
       - name: pip install
-        run: pip install -r requirements-${{ matrix.plone-version }}.txt -r requirements-docs.txt
+        run: pip install -r requirements-${{ matrix.plone-version }}.txt
 
       # buildout
       - name: buildout
-        run: buildout -t 10 -c plone-${{ matrix.plone-version }}.x.cfg
+        run: if [ "${{ matrix.plone-version }}" == "6.0" ] && [ ${{ matrix.python-version }} == '3.8' ]; then buildout -t 10 -c plone-6.0.x-python3.8.cfg; else buildout -t 10 -c plone-${{ matrix.plone-version }}.x.cfg; fi;
         env:
           CI: true
 

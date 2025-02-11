@@ -59,11 +59,11 @@ Content-Type: application/json+schema
     ],
     "layouts": [
         "album_view",
+        "event_listing",
         "full_view",
         "listing_view",
         "summary_view",
-        "tabular_view",
-        "event_listing"
+        "tabular_view"
     ],
     "properties": {
         "allow_discussion": {

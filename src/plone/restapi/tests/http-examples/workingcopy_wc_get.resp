@@ -58,13 +58,7 @@ Content-Type: application/json
         "title": "Plone site",
         "type_title": "Plone Site"
     },
-    "previous_item": {
-        "@id": "http://localhost:55001/plone/document",
-        "@type": "Document",
-        "description": "",
-        "title": "Test document",
-        "type_title": "Page"
-    },
+    "previous_item": {},
     "relatedItems": [],
     "review_state": "private",
     "rights": "",

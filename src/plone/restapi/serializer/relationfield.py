@@ -18,7 +18,7 @@ from zope.interface import Interface
 @implementer(IJsonCompatible)
 def relationvalue_converter(value):
     if value.to_object:
-        request = getRequest()
+        request = getRequest().clone()
         request.form["metadata_fields"] = ["UID"]
         summary = getMultiAdapter((value.to_object, request), ISerializeToJsonSummary)()
         return json_compatible(summary)
@@ -33,4 +33,16 @@ class RelationChoiceFieldSerializer(DefaultFieldSerializer):
 @adapter(IRelationList, IDexterityContent, Interface)
 @implementer(IFieldSerializer)
 class RelationListFieldSerializer(DefaultFieldSerializer):
-    pass
+    def get_value(self, default=[]):
+        """Return field value reduced to list of non-broken Relationvalues.
+
+        Args:
+            default (list, optional): Default field value. Defaults to empty list.
+
+        Returns:
+            list: List of RelationValues
+        """
+        value = super().get_value()
+        if not value:
+            return []
+        return [el for el in value if el.to_id]

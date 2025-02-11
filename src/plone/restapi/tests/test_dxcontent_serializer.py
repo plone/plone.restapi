@@ -11,26 +11,37 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.interfaces import ITransformer
 from plone.app.textfield.value import RichTextValue
+from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.schema import SCHEMA_CACHE
 from plone.namedfile.file import NamedFile
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.test_expansion import ExpandableElementFoo
 from plone.restapi.serializer.utils import get_portal_type_title
 from plone.uuid.interfaces import IMutableUUID
+from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getGlobalSiteManager
 from zope.component import getMultiAdapter
 from zope.component import provideAdapter
 from zope.component import queryUtility
 from zope.interface import Interface
+from z3c.relationfield import RelationValue
+from z3c.relationfield.event import _setRelation
+from zope.component import getUtility
+from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
 from importlib import import_module
 
 import json
 import unittest
 
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 HAS_PLONE_61 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE61MARKER", False
 )
@@ -186,6 +197,30 @@ class TestDXContentSerializer(unittest.TestCase):
             "foo",
         )
 
+    def test_serializer_excludes_deleted_relations(self):
+
+        intids = getUtility(IIntIds)
+        self.portal.invokeFactory(
+            "DXTestDocument",
+            id="doc2",
+        )
+        rel1 = RelationValue(intids.getId(self.portal.doc1))
+        rel2 = RelationValue(intids.getId(self.portal.doc2))
+        self.portal.doc1.test_relationlist_field = [
+            rel1,
+            rel2,
+        ]
+        _setRelation(self.portal.doc1, "test_relationlist_field", rel1)
+        _setRelation(self.portal.doc1, "test_relationlist_field", rel2)
+        # delete doc2 to make sure we have a None value in the relation list
+        self.portal.manage_delObjects(["doc2"])
+
+        obj = self.serialize()
+        self.assertEqual(1, len(obj["test_relationlist_field"]))
+        self.assertEqual(
+            "http://nohost/plone/doc1", obj["test_relationlist_field"][0]["@id"]
+        )
+
     def test_get_is_folderish(self):
         obj = self.serialize()
         self.assertIn("is_folderish", obj)
@@ -200,12 +235,42 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertIn("is_folderish", obj)
         self.assertEqual(True, obj["is_folderish"])
 
+    def test_enable_disable_nextprev(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+            nextPreviousEnabled=False,
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Previous item",
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Current item",
+        )
+        api.content.create(
+            container=folder, type="Document", title="Item 2", description="Next item"
+        )
+
+        data = self.serialize(doc)
+
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual({}, data["next_item"])
+
     def test_nextprev_no_nextprev(self):
         folder = api.content.create(
             container=self.portal,
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         doc = api.content.create(
             container=folder,
@@ -223,6 +288,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,
@@ -255,6 +321,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         doc = api.content.create(
             container=folder,
@@ -284,6 +351,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,
@@ -327,7 +395,16 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual({}, data["previous_item"])
         self.assertEqual({}, data["next_item"])
 
+    @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_prev(self):
+        fti = queryUtility(IDexterityFTI, name="Plone Site")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.append("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+        # Invalidating the cache is required for the FTI to be applied
+        # on the existing object
+        SCHEMA_CACHE.invalidate("Plone Site")
+
         doc = api.content.create(
             container=self.portal,
             type="Document",
@@ -347,7 +424,16 @@ class TestDXContentSerializer(unittest.TestCase):
         )
         self.assertEqual({}, data["next_item"])
 
+    @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_next(self):
+        fti = queryUtility(IDexterityFTI, name="Plone Site")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.append("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+        # Invalidating the cache is required for the FTI to be applied
+        # on the existing object
+        SCHEMA_CACHE.invalidate("Plone Site")
+
         api.content.create(
             container=self.portal,
             type="Document",
@@ -367,7 +453,16 @@ class TestDXContentSerializer(unittest.TestCase):
             data["next_item"],
         )
 
+    @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_nextprev(self):
+        fti = queryUtility(IDexterityFTI, name="Plone Site")
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.append("plone.nextpreviousenabled")
+        fti.behaviors = tuple(behavior_list)
+        # Invalidating the cache is required for the FTI to be applied
+        # on the existing object
+        SCHEMA_CACHE.invalidate("Plone Site")
+
         api.content.create(
             container=self.portal,
             type="Document",
@@ -414,6 +509,7 @@ class TestDXContentSerializer(unittest.TestCase):
             type="Folder",
             title="Folder with items",
             description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         folder.setOrdering("unordered")
         doc = api.content.create(
@@ -461,6 +557,9 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(False, obj["allow_discussion"])
 
     def test_allow_discussion_obj_instance_allows_but_not_global_enabled(self):
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = False
         self.portal.invokeFactory("Document", id="doc2")
         self.portal.doc2.allow_discussion = True
         serializer = getMultiAdapter((self.portal.doc2, self.request), ISerializeToJson)
@@ -470,6 +569,9 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(False, obj["allow_discussion"])
 
     def test_allow_discussion_fti_allows_not_global_enabled(self):
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = False
         self.portal.invokeFactory("Document", id="doc2")
         portal_types = getToolByName(self.portal, "portal_types")
         document_fti = getattr(portal_types, self.portal.doc2.portal_type)
@@ -656,3 +758,38 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
         serializer = getMultiAdapter((self.portal.doc1, self.request), ISerializeToJson)
         data = serializer()
         self.assertNotIn("targetUrl", data)
+
+    def test_primary_field_target_for_link_objects_for_auth_return_none(self):
+        self.portal.invokeFactory(
+            "Document",
+            id="linked",
+        )
+        self.portal.invokeFactory(
+            "Link",
+            id="link",
+            remoteUrl=f"../resolveuid/{IUUID(self.portal.linked)}",
+        )
+        wftool = getToolByName(self.portal, "portal_workflow")
+        wftool.doActionFor(self.portal.linked, "publish")
+        adapter = getMultiAdapter(
+            (self.portal.link, self.request), IObjectPrimaryFieldTarget
+        )
+        self.assertEqual(adapter(), None)
+
+    def test_primary_field_target_for_link_objects_for_anonymous(self):
+        self.portal.invokeFactory(
+            "Document",
+            id="linked",
+        )
+        self.portal.invokeFactory(
+            "Link",
+            id="link",
+            remoteUrl=f"../resolveuid/{IUUID(self.portal.linked)}",
+        )
+        wftool = getToolByName(self.portal, "portal_workflow")
+        wftool.doActionFor(self.portal.linked, "publish")
+        logout()
+        adapter = getMultiAdapter(
+            (self.portal.link, self.request), IObjectPrimaryFieldTarget
+        )
+        self.assertEqual(adapter(), self.portal.linked.absolute_url())

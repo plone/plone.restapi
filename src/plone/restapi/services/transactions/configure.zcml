@@ -9,7 +9,7 @@
   <plone:service
       method="GET"
       factory=".get.TransactionsGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.ListUndoableChanges"
       name="@transactions"
       />
@@ -17,7 +17,7 @@
   <plone:service
       method="PATCH"
       factory=".patch.TransactionsPatch"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.Undo"
       name="@transactions"
       />

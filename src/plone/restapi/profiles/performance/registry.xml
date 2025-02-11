@@ -1,6 +1,6 @@
 <registry xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="plone">  
   <!-- Allowed sizes -->
-  <record name="plone.allowed_sizes" interface="Products.CMFPlone.interfaces.controlpanel.IImagingSchema" field="allowed_sizes">
+  <record name="plone.allowed_sizes" interface="plone.restapi.bbb.IImagingSchema" field="allowed_sizes">
     <value>
       <element>icon 32:32</element>
       <element>tile 64:64</element>

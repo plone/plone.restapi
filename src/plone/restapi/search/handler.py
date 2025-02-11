@@ -1,18 +1,11 @@
 from plone.registry.interfaces import IRegistry
 from plone.restapi.bbb import ISearchSchema
+from plone.restapi.bbb import get_navigation_root
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 from zope.component import getUtility
-
-
-try:
-    from plone.base.navigationroot import get_navigation_root
-except ImportError:
-    from plone.app.layout.navigation.root import (
-        getNavigationRoot as get_navigation_root,
-    )
 
 
 class SearchHandler:
@@ -75,6 +68,10 @@ class SearchHandler:
             path = "/".join(self.context.getPhysicalPath())
             query["path"]["query"] = path
 
+    def quote_chars(self, query):
+        # Remove parentheses from the query
+        return query.replace("(", " ").replace(")", " ").strip()
+
     def search(self, query=None):
         if query is None:
             query = {}
@@ -93,6 +90,12 @@ class SearchHandler:
         if use_site_search_settings:
             query = self.filter_query(query)
 
+        if "SearchableText" in query:
+            # Sanitize SearchableText by removing parentheses
+            query["SearchableText"] = self.quote_chars(query["SearchableText"])
+            if not query["SearchableText"] or query["SearchableText"] == "*":
+                return []
+
         self._constrain_query_by_path(query)
         query = self._parse_query(query)
 
@@ -100,7 +103,6 @@ class SearchHandler:
         results = getMultiAdapter((lazy_resultset, self.request), ISerializeToJson)(
             fullobjects=fullobjects
         )
-
         return results
 
     def filter_types(self, types):

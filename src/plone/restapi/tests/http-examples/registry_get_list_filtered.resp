@@ -1,0 +1,57 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@registry?q=Products.CMFPlone",
+    "items": [
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.Enabled",
+            "schema": {
+                "properties": {
+                    "description": "Override the translation machinery",
+                    "factory": "Yes/No",
+                    "title": "Enabled",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_long",
+            "schema": {
+                "properties": {
+                    "description": "Default value: %Y-%m-%d %H:%M (2038-01-19 03:14)",
+                    "factory": "Text line (String)",
+                    "title": "old ZMI property: localLongTimeFormat",
+                    "type": "string"
+                }
+            },
+            "value": "%Y-%m-%d %H:%M"
+        },
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_short",
+            "schema": {
+                "properties": {
+                    "description": "Default value: %Y-%m-%d (2038-01-19)",
+                    "factory": "Text line (String)",
+                    "title": "old ZMI property: localTimeFormat",
+                    "type": "string"
+                }
+            },
+            "value": "%Y-%m-%d"
+        },
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.time_format",
+            "schema": {
+                "properties": {
+                    "description": "Default value: %H:%M (03:14)",
+                    "factory": "Text line (String)",
+                    "title": "old ZMI property: localTimeOnlyFormat",
+                    "type": "string"
+                }
+            },
+            "value": "%H:%M"
+        }
+    ],
+    "items_total": 4
+}

@@ -91,13 +91,7 @@ Content-Type: application/json
                 "layout": "folder_listing",
                 "lock": {},
                 "modified": "1995-07-31T17:30:00+00:00",
-                "next_item": {
-                    "@id": "http://localhost:55001/plone/de",
-                    "@type": "LRF",
-                    "description": "",
-                    "title": "Deutsch",
-                    "type_title": "Language Root Folder"
-                },
+                "next_item": {},
                 "parent": {
                     "@id": "http://localhost:55001/plone",
                     "@type": "Plone Site",
@@ -161,13 +155,7 @@ Content-Type: application/json
         "title": "English",
         "type_title": "Language Root Folder"
     },
-    "previous_item": {
-        "@id": "http://localhost:55001/plone/en/assets",
-        "@type": "LIF",
-        "description": "",
-        "title": "Assets",
-        "type_title": "Language Independent Folder"
-    },
+    "previous_item": {},
     "relatedItems": [],
     "review_state": "private",
     "rights": "",

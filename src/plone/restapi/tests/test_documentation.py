@@ -1,6 +1,7 @@
 from base64 import b64encode
 from datetime import datetime
 from datetime import timezone
+import io
 from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import ICommentAddedEvent
@@ -20,6 +21,8 @@ from plone.locking.interfaces import ITTWLockable
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import IPloneSiteRoot
+from plone.restapi.interfaces import ILoginProviders
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
@@ -41,6 +44,7 @@ from zope.lifecycleevent import ObjectModifiedEvent
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.restapi.testing import register_static_uuid_utility
+from zope.component import provideAdapter
 
 import collections
 import json
@@ -83,6 +87,27 @@ UPLOAD_PDF_FILENAME = "file.pdf"
 
 # How do we open files?
 open_kw = {"newline": "\n"}
+
+
+class MyExternalLinks:
+    def __init__(self, context):
+        self.context = context
+
+    def get_providers(self):
+        return [
+            {
+                "id": "myprovider",
+                "title": "Provider",
+                "plugin": "myprovider",
+                "url": "https://some.example.com/login-url",
+            },
+            {
+                "id": "github",
+                "title": "GitHub",
+                "plugin": "github",
+                "url": "https://some.example.com/login-authomatic/github",
+            },
+        ]
 
 
 def normalize_test_port(value):
@@ -226,6 +251,13 @@ class TestDocumentation(TestDocumentationBase):
         super().setUp()
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
+        provideAdapter(
+            MyExternalLinks,
+            adapts=(IPloneSiteRoot,),
+            provides=ILoginProviders,
+            name="test-external-links",
+        )
+
         transaction.commit()
 
     def tearDown(self):
@@ -516,6 +548,10 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@registry")
         save_request_and_response_for_docs("registry_get_list", response)
 
+    def test_documentation_registry_get_list_filtered(self):
+        response = self.api_session.get("/@registry?q=Products.CMFPlone")
+        save_request_and_response_for_docs("registry_get_list_filtered", response)
+
     def test_documentation_types(self):
         response = self.api_session.get("/@types")
         save_request_and_response_for_docs("types", response)
@@ -785,6 +821,12 @@ class TestDocumentation(TestDocumentationBase):
             headers={"Authorization": f"Bearer {token}"},
         )
         save_request_and_response_for_docs("jwt_logout", response)
+
+    def test_documentation_external_doc_links(self):
+        response = self.api_session.get(
+            f"{self.portal.absolute_url()}/@login",
+        )
+        save_request_and_response_for_docs("external_authentication_links", response)
 
     def test_documentation_batching(self):
         folder = self.portal[
@@ -2097,6 +2139,58 @@ class TestCommenting(TestDocumentationBase):
         response = self.api_session.get(url + query)
         save_request_and_response_for_docs("aliases_root_get", response)
 
+    def test_aliases_root_get_csv_format(self):
+        url = f"{self.portal.absolute_url()}/@aliases"
+        query = ""
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+        self.api_session.headers.update({"Content-Type": "application/json"})
+        self.api_session.headers.update({"Accept": "text/csv"})
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_get_csv_format", response)
+
+    def test_aliases_root_add_csv_format(self):
+        url = f"{self.portal.absolute_url()}/@aliases"
+
+        content = b"old path,new path,datetime,manual\n/old-page,/front-page,2022/01/01 00:00:00 GMT+0,True\n"
+        csv_file = io.BytesIO(content)
+        csv_file.name = "test_file.csv"
+
+        # Setting a fixed boundary intentionally to make the producing .req and .resp files deterministic
+        boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+
+        # Manually construct the multipart body
+        body = (
+            f"--{boundary}\r\n"
+            f'Content-Disposition: form-data; name="file"; filename="{csv_file.name}"\r\n'
+            "Content-Type: text/csv\r\n\r\n"
+            f"{content.decode()}\r\n"
+            f"--{boundary}--\r\n"
+        )
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": "Basic YWRtaW46c2VjcmV0",
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
+        }
+
+        response = self.api_session.post(url, headers=headers, data=body)
+        save_request_and_response_for_docs("aliases_root_add_csv_format", response)
+
     def test_aliases_root_filter(self):
         # Get aliases
         url = f"{self.portal.absolute_url()}/@aliases"
@@ -2421,6 +2515,11 @@ class TestIterateDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@userschema")
 
         save_request_and_response_for_docs("userschema", response)
+
+    def test_documentation_schema_user_registration(self):
+        response = self.api_session.get("/@userschema/registration")
+
+        save_request_and_response_for_docs("userschema_registration", response)
 
 
 class TestRules(TestDocumentationBase):

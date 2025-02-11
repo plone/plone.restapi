@@ -8,6 +8,184 @@ Changelog
 
 .. towncrier release notes start
 
+9.11.0 (2025-01-31)
+-------------------
+
+New features:
+
+
+- Support working copies of the Plone Site. This feature is available when using `plone.app.iterate` 6.1.0 or later. @wesleybl (#1823)
+
+
+9.10.0 (2025-01-27)
+-------------------
+
+New features:
+
+
+- Add a `@login` endpoint to get external login services' links. @erral (#1757)
+- In the `@registry` endpoint, added support for filtering the list of registry records. @Faakhir30 (#1861)
+
+
+Bug fixes:
+
+
+- Changed bad int inputs into 500 Exceptions to 400 BadRequest so they can be filtered out of logs more easily. @djay (#1855)
+- Handle TypeError on querystringsearch as BadRequest. @djay (#1857)
+- Add parse_int to handle all cases of BadRequests from ints passed in. @djay (#1858)
+- In the `@contextnavigation` endpoint, return `"icon": null` for Files with a mimetype not found in the `content_type_registry`, instead of raising `TypeError`. @mamico (#1864)
+- In the `@locking` endpoint, fixed edge cases where the user who owns the lock was not found correctly. @mamico (#1867)
+- Prevent deprecation warnings. @mauritsvanrees (#4090)
+
+
+Internal:
+
+
+- Update CI. @davisagli (#1685)
+
+
+9.9.0 (2024-12-18)
+------------------
+
+New features:
+
+
+- When a Link content item is linked by UID, resolve its URL as the linked target URL for anonymous users. @cekk (#1847)
+
+
+Bug fixes:
+
+
+- Fix resolving paths in deserializer if the target was moved in the same request. @cekk (#1848)
+- Make slate block linkintegrity checking more robust in case data isn't in the expected format. @cekk (#1849)
+- Optimized performance of DexterityObjectPrimaryFieldTarget adapter. @maurits (#1851)
+
+
+Internal:
+
+
+- Fix time-dependence of tests. @davisagli (#1850)
+
+
+9.8.5 (2024-11-25)
+------------------
+
+Bug fixes:
+
+
+- Fix log in after changing email when "email as login" is enabled
+  [erral] (#1835)
+- Fix tests after #1839 and plone.app.event#411
+  [erral] (#1844)
+- Do not change request during relation fields serialization
+  [cekk] (#1845)
+
+
+Internal:
+
+
+- Test that recurrence serialization provides correct data
+  [erral] (#1809)
+- Additional tests to login name changes
+  [erral] (#1840)
+
+
+Documentation:
+
+
+- `html_use_opensearch` value must not have a trailing slash. Clean up comments. @stevepiercy (#1846)
+
+
+9.8.4 (2024-11-05)
+------------------
+
+Bug fixes:
+
+
+- URL Management control panel: Fix error handling in CSV upload. @davisagli (#1837)
+
+
+9.8.3 (2024-11-01)
+------------------
+
+Bug fixes:
+
+
+- Fixed Plone Site serialization when there is a field with read_permission set. @ericof (#1830)
+
+
+9.8.2 (2024-10-30)
+------------------
+
+Bug fixes:
+
+
+- `@search` service: Remove parentheses from search query. @tedw87 (#1828)
+
+
+9.8.1 (2024-10-23)
+------------------
+
+Bug fixes:
+
+
+- Fix `ComponentLookupError` for `Products.CMFPlone.ManagePortalAliases` permission, which could happen depending on package load order. @davisagli (#1827)
+
+
+9.8.0 (2024-10-23)
+------------------
+
+New features:
+
+
+- Added create and fetch aliases in CSV format. @Faakhir30 (#1812)
+- Site service: Indicate whether the site supports filtering URL aliases by date. @davisagli (#1826)
+
+
+Bug fixes:
+
+
+- Fix error getting allow_discussion value when p.a.discussion is not activated.
+  [maurits] (#1808)
+- Fix incorrect condition for ``show_excluded_items`` setting in the ``@navigation`` API.
+  [mamico] (#1816)
+- Fix response of `RelationListFieldSerializer` by filtering out invalid items. @Faakhir30 (#1818)
+- Aliases endpoint: Use "Manage Portal Aliases" and "Manage Content Aliases" permissions. @jackahl (#1820)
+
+
+Documentation:
+
+
+- Use Plone Sphinx Theme for documentation. Build docs when there are changes to http-examples. @stevepiercy (#1815)
+- Fixed spelling of prerequisites. @stevepiercy (#1822)
+
+
+9.7.2 (2024-09-05)
+------------------
+
+Bug fixes:
+
+
+- Fixed Dexterity content serializer:
+  Return an empty object for `next_item` and `previous_item`
+  unless the parent has next/previous support enabled.
+  @JeffersonBledsoe, @davisagli (#1799)
+- Fixed implementation of the `jwt_auth` plugin. It now can be added, and its properties, `use_keyring` and `store_tokens`, can be updated. @sauzher (#1802)
+
+
+Internal:
+
+
+- Explicitly globally disable comments in the tests that need it.
+  [maurits] (#244)
+
+
+Documentation:
+
+
+- Update contributing docs for Plone 6, and switch from Netlify to Read the Docs for pull request previews. @stevepiercy (#1798)
+
+
 9.7.1 (2024-06-29)
 ------------------
 

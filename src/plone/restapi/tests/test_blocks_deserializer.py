@@ -1,3 +1,4 @@
+from plone import api
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.behaviors import IBlocks
@@ -724,3 +725,16 @@ class TestBlocksDeserializer(unittest.TestCase):
         res = self.deserialize(blocks=blocks)
         self.assertTrue(res.blocks["123"]["url"].startswith("../resolveuid/"))
         self.assertNotIn("image_scales", res.blocks["123"])
+
+    def test_deserializer_resolve_path_also_if_it_is_an_alias(self):
+
+        self.portal.invokeFactory(
+            "Document",
+            id="doc",
+        )
+        api.content.move(source=self.portal.doc, id="renamed-doc")
+        blocks = {"abc": {"href": "%s/doc" % self.portal.absolute_url()}}
+
+        res = self.deserialize(blocks=blocks)
+        link = res.blocks["abc"]["href"]
+        self.assertEqual(link, f"../resolveuid/{self.portal['renamed-doc'].UID()}")

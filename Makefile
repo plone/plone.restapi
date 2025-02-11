@@ -95,14 +95,13 @@ black:  ## Black
 zpretty:  ## zpretty
 	if [ -f "bin/zpretty" ]; then zpretty -i ./**/*.zcml; fi
 
-.PHONY: Build Docs
-docs:  ## Build Docs
-	bin/sphinxbuilder
+.PHONY: python-clean
+python-clean:  ## Clean Python virtual environment
+	rm -rf bin include lib
 
 .PHONY: docs-clean
-docs-clean:  ## Clean current and legacy docs build directories, and Python virtual environment
+docs-clean:  ## Clean current and legacy docs build directories
 	cd $(DOCS_DIR) && rm -rf $(BUILDDIR)/
-	rm -rf bin include lib
 	rm -rf docs/build
 
 .PHONY: docs-html
@@ -138,10 +137,11 @@ docs-vale:  ## Run Vale style, grammar, and spell checks
 	@echo
 	@echo "Vale is finished; look for any errors in the above output."
 
-.PHONY: netlify
-netlify:
+.PHONY: rtd-pr-preview
+rtd-pr-preview:  ## Build pull request preview on Read the Docs
+	pip install -r requirements.txt
 	pip install -r requirements-docs.txt
-	cd $(DOCS_DIR) && sphinx-build -b html $(ALLSPHINXOPTS) ../$(BUILDDIR)/html
+	cd $(DOCS_DIR) && sphinx-build -b html $(ALLSPHINXOPTS) ${READTHEDOCS_OUTPUT}/html/
 
 .PHONY: Test Release
 test-release:  ## Run Pyroma and Check Manifest
