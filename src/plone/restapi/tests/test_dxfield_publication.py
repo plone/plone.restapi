@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
 from DateTime import DateTime
-from plone.app.dexterity.behaviors.metadata import IPublication
 from plone.registry.interfaces import IRegistry
-from plone.restapi.interfaces import IFieldDeserializer
-from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from transaction import commit
-from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 
@@ -50,8 +47,7 @@ class TestPublicationFields(unittest.TestCase):
         commit()
 
     def tearDown(self):
-        if "TZ" in os.environ:
-            del os.environ["TZ"]
+        os.environ["TZ"] = "UTC"
         time.tzset()
 
         from DateTime import DateTime
@@ -70,26 +66,18 @@ class TestPublicationFields(unittest.TestCase):
 
     def test_effective_date_deserialization_localized(self):
         self.portal.invokeFactory("Document", id="doc-test", title="Test Document")
-        field_name = "effective"
-        field = IPublication.get(field_name)
-        serializer = getMultiAdapter(
-            (field, self.portal["doc-test"], self.request), IFieldDeserializer
+        doc = self.portal["doc-test"]
+        deserializer = getMultiAdapter(
+            (self.portal["doc-test"], self.request), IDeserializeFromJson
         )
-        value = serializer("2015-05-20T10:39:54.361+00")
-        self.assertEqual(datetime(2015, 12, 20, 12, 39, 54, 361000), value)
+        deserializer(data={"effective": "2015-05-20T10:39:54.361+00"})
+        self.assertEqual(str(doc.effective_date), "2015/05/20 12:39:00 Europe/Rome")
 
     def test_effective_date_serialization_localized(self):
         self.portal.invokeFactory("Document", id="doc-test", title="Test Document")
         doc = self.portal["doc-test"]
-        field_name = "effective"
-        field = IPublication.get(field_name)
-        deserializer = getMultiAdapter((field, doc, self.request), IFieldDeserializer)
-        value = deserializer("2015-05-20T10:39:54.361+00")
+        doc.effective_date = DateTime("2015/05/20 12:39:00 Europe/Rome")
 
-        #  set value on content
-        dm = getMultiAdapter((doc, field), IDataManager)
-        dm.set(value)
-
-        serializer = getMultiAdapter((field, doc, self.request), IFieldSerializer)
-        self.assertEqual(doc.effective().timezone(), "Europe/Rome")
-        self.assertEqual(serializer(), "2015-05-20T10:39:00+00:00")
+        serializer = getMultiAdapter((doc, self.request), ISerializeToJson)
+        data = serializer()
+        self.assertEqual(data["effective"], "2015-05-20T10:39:00+00:00")

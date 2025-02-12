@@ -2,7 +2,6 @@ from datetime import timedelta
 from decimal import Decimal
 from plone.app.contenttypes.interfaces import ILink
 from plone.app.dexterity.behaviors.metadata import IPublication
-from plone.app.event.base import default_timezone
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
@@ -92,26 +91,6 @@ class LinkTextLineFieldDeserializer(TextLineFieldDeserializer):
 @adapter(IDatetime, IDexterityContent, IBrowserRequest)
 class DatetimeFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
-        # Datetime fields may contain timezone naive or timezone aware
-        # objects. Unfortunately the zope.schema.Datetime field does not
-        # contain any information if the field value should be timezone naive
-        # or timezone aware. While some fields (start, end) store timezone
-        # aware objects others (effective, expires) store timezone naive
-        # objects.
-        # We try to guess the correct deserialization from the current field
-        # value.
-        is_publication_field = self.field.interface == IPublication
-        if is_publication_field:
-            # because IPublication datamanager strips timezones
-            tzinfo = timezone(default_timezone())
-        else:
-            dm = queryMultiAdapter((self.context, self.field), IDataManager)
-            current = dm.get()
-            if current is not None:
-                tzinfo = current.tzinfo
-            else:
-                tzinfo = None
-
         # This happens when a 'null' is posted for a non-required field.
         if value is None:
             self.field.validate(value)
@@ -129,16 +108,29 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
         else:
             dt = utc.localize(dt)
 
-        # Convert to local TZ aware or naive UTC
-        if tzinfo is not None:
-            tz = timezone(tzinfo.zone)
-            value = tz.normalize(dt.astimezone(tz))
+        # Datetime fields may contain timezone naive or timezone aware
+        # objects. Unfortunately the zope.schema.Datetime field does not
+        # contain any information if the field value should be timezone naive
+        # or timezone aware. While some fields (start, end) store timezone
+        # aware objects others (effective, expires) store timezone naive
+        # objects.
+        # We try to guess the correct deserialization from the current field
+        # value.
+        if self.field.interface == IPublication:
+            # The IPublication adapter is a special case that expects
+            # a timezone-naive local datetime
+            value = dt.astimezone().replace(tzinfo=None)
         else:
-            value = utc.normalize(dt.astimezone(utc)).replace(tzinfo=None)
-
-        # if it's an IPublication field, remove timezone info to not break field validation
-        if is_publication_field:
-            value = value.replace(tzinfo=None)
+            # Otherwise let's check what is currently stored.
+            dm = queryMultiAdapter((self.context, self.field), IDataManager)
+            current = dm.get()
+            if current is not None:
+                # Timezone-aware. Convert to the same timezone.
+                tz = timezone(current.tzinfo.zone)
+                value = tz.normalize(dt.astimezone(tz))
+            else:
+                # Timezone-naive. Convert to UTC and remove the tzinfo.
+                value = utc.normalize(dt.astimezone(utc)).replace(tzinfo=None)
 
         self.field.validate(value)
         return value
