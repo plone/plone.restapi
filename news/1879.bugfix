@@ -1,1 +1,1 @@
-Do not hardcode show_inactive in search; let CMFPlone handle that.
+Do not hardcode ``show_inactive`` in search; let ``Products.CMFPlone`` handle that. @gyst
