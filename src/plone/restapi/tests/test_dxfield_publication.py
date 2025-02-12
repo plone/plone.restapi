@@ -28,7 +28,9 @@ class TestPublicationFields(unittest.TestCase):
 
         # Patch DateTime's timezone for deterministic behavior.
         self.DT_orig_localZone = DateTime.localZone
+        self.DT_orig_calcTimezoneName = DateTime._calcTimezoneName
         DateTime.localZone = lambda cls=None, ltm=None: tz
+        DateTime._calcTimezoneName = lambda self, x, ms: tz
 
         from plone.dexterity import content
 
@@ -53,6 +55,7 @@ class TestPublicationFields(unittest.TestCase):
         from DateTime import DateTime
 
         DateTime.localZone = self.DT_orig_localZone
+        DateTime._calcTimezoneName = self.DT_orig_calcTimezoneName
 
         from plone.dexterity import content
 
