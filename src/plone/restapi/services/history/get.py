@@ -2,7 +2,6 @@ from datetime import datetime as dt
 from datetime import timezone
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-import plone.protect.interfaces
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import ISerializeToJson
