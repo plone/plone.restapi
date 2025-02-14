@@ -28,9 +28,7 @@ class HistoryGet(Service):
         # Traverse to historical version
         if self.version:
             parent = aq_parent(aq_inner(self.context))
-            if "IPortletAssignment" in dir(
-                plone.portlets.interfaces
-            ) and not IPortletAssignment.providedBy(parent):
+            if not IPortletAssignment.providedBy(parent):
                 alsoProvides(parent, IPortletAssignment)
             serializer = queryMultiAdapter(
                 (self.context, self.request), ISerializeToJson
