@@ -10,8 +10,12 @@ from plone.restapi.services import Service
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer, alsoProvides
-from plone.portlets.interfaces import IPortletAssignment
 from zope.publisher.interfaces import IPublishTraverse
+
+try:
+    from plone.portlets.interfaces import IPortletAssignment
+except ImportError:
+    IPortletAssignment = None
 
 
 @implementer(IPublishTraverse)
@@ -28,7 +32,10 @@ class HistoryGet(Service):
         # Traverse to historical version
         if self.version:
             parent = aq_parent(aq_inner(self.context))
-            if not IPortletAssignment.providedBy(parent):
+            if (
+                IPortletAssignment is not None
+                and not IPortletAssignment.providedBy(parent)
+            ):
                 alsoProvides(parent, IPortletAssignment)
             serializer = queryMultiAdapter(
                 (self.context, self.request), ISerializeToJson
