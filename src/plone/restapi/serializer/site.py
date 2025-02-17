@@ -39,10 +39,87 @@ HAS_PLONE_6 = getattr(
 @implementer(ISerializeToJson)
 @adapter(IPloneSiteRoot, Interface)
 class SerializeSiteRootToJson:
+    @classmethod
+    def __restapi_doc_component_schema__(cls, context, request):
+        fields_adapter = []
+        for schema in iterSchemata(context):
+            for name, field in getFields(schema).items():
+                fields_adapter.append(
+                    (
+                        name,
+                        queryMultiAdapter((field, context, request), IFieldSerializer),
+                    )
+                )
+
+        schema = {}
+        for name, field in fields_adapter:
+            method = getattr(field, "__restapi_schema_json_type__", None)
+
+            if callable(method):
+                schema[name] = field.__restapi_schema_json_type__()
+            else:
+                schema[name] = {type: "string"}
+
+        return {
+            "ParentShema": {"type": "string"},
+            "LockInfo": {"type": "string"},
+            "Block": {"type": "string"},
+            "BlocksLayout": {"type": "string"},
+            "PloneSite": {
+                "type": "object",
+                "properties": {
+                    "@id": {"type": "string"},
+                    "id": {"type": "string"},
+                    "@type": {"type": "string"},
+                    "type_title": {"type": "string"},
+                    "title": {"type": "string"},
+                    "parent": {
+                        "items": {"$ref": "#/components/schemas/ParentShema"},
+                    },
+                    "is_folderish": {"type": "boolean"},
+                    "description": {"type": "string"},
+                    "review_state": {"type": "string"},
+                    **schema,
+                    "lock": {"$ref": "#/components/schemas/LockInfo"},
+                    "blocks": {
+                        "type": "array",
+                        "items": {"$ref": "#/components/schemas/Block"},
+                    },
+                    "blocks_layout": {
+                        "type": "object",
+                        "items": {"$ref": "#/components/schemas/BlocksLayout"},
+                    },
+                    "items_total": {"type": "integer"},
+                    "batching": {"type": "string"},
+                    "items": {
+                        "type": "array",
+                        "items": {"$ref": "#/components/schemas/BrainItem"},
+                    },
+                    "allow_discussion": {"type": "boolean"},
+                },
+            },
+        }
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
         self.permission_cache = {}
+
+    def _get_context_field_serializers(self):
+        for schema in iterSchemata(self.context):
+            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
+
+            for name, field in getFields(schema).items():
+                if not self.check_permission(read_permissions.get(name), self.context):
+                    continue
+
+                # serialize the field
+                yield (
+                    name,
+                    queryMultiAdapter(
+                        (field, self.context, self.request), IFieldSerializer
+                    ),
+                )
 
     def _build_query(self):
         path = "/".join(self.context.getPhysicalPath())
@@ -87,22 +164,9 @@ class SerializeSiteRootToJson:
                 ob=self.context, name="review_state", default=None
             )
 
-            # Insert Plone Site DX root field values
-            for schema in iterSchemata(self.context):
-                read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
-
-                for name, field in getFields(schema).items():
-                    if not self.check_permission(
-                        read_permissions.get(name), self.context
-                    ):
-                        continue
-
-                    # serialize the field
-                    serializer = queryMultiAdapter(
-                        (field, self.context, self.request), IFieldSerializer
-                    )
-                    value = serializer()
-                    result[json_compatible(name)] = value
+            for name, serializer in self._get_context_field_serializers():
+                value = serializer()
+                result[json_compatible(name)] = value
 
             # Insert locking information
             result.update({"lock": lock_info(self.context)})
