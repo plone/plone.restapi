@@ -1,1 +1,1 @@
-Fix wrong status code from aliases GET service. @Faakhir30
+Correct the HTTP response status code to `200 OK` from `201 Create` for the `aliases` GET service. @Faakhir30
