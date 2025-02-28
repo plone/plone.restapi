@@ -40,6 +40,7 @@
   <include package=".site" />
   <include package=".system" />
   <include package=".sources" />
+  <include package=".swagger" />
   <include package=".transactions" />
   <include package=".types" />
   <include package=".upgrade" />

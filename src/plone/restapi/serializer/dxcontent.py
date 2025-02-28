@@ -19,6 +19,7 @@ from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
 from plone.restapi.services.locking import lock_info
 from plone.restapi.serializer.utils import get_portal_type_title
+from plone import api
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
@@ -71,6 +72,77 @@ def get_allow_discussion_value(context, request, result):
 @implementer(ISerializeToJson)
 @adapter(IDexterityContent, Interface)
 class SerializeToJson:
+    @classmethod
+    def __restapi_doc_component_schema__(cls, context, request):
+        fields_adapter = []
+        portal_types = getToolByName(api.portal.get(), "portal_types")
+        for schema in iterSchemata(context):
+            for name, field in getFields(schema).items():
+                fields_adapter.append(
+                    (
+                        name,
+                        queryMultiAdapter((field, context, request), IFieldSerializer),
+                    )
+                )
+
+        schema = {}
+        for name, field in fields_adapter:
+            method = getattr(field, "__restapi_schema_json_type__", None)
+
+            if callable(method):
+                schema[name] = field.__restapi_schema_json_type__()
+            else:
+                schema[name] = {type: "string"}
+
+        return {
+            "PreviousItemSchema": {
+                "type": "string",
+            },
+            "NextItemSchema": {
+                "type": "string",
+            },
+            "WorkingCopy": {"type": "string"},
+            "WorkingCopyOf": {"type": "string"},
+            "LockInfo": {"type": "string"},
+            "ExpandableItems": {"type": "string"},
+            "TargetUrl": {"type": "string"},
+            "ParentShema": {"type": "string"},
+            portal_types.get(context.portal_type).id.replace(" ", ""): {
+                "type": "object",
+                "properties": {
+                    "@id": {"type": "string"},
+                    "id": {"type": "string"},
+                    "@type": {"type": "string"},
+                    "type_title": {"type": "string"},
+                    "parent": {
+                        "items": {"$ref": "#/components/schemas/ParentShema"},
+                    },
+                    "created": {"type": "string"},
+                    "modified": {"type": "string"},
+                    "review_state": {"type": "string"},
+                    "UID": {"type": "string"},
+                    "version": {"type": "string"},
+                    "layout": {"type": "string"},
+                    "is_folderish": {"type": "boolean"},
+                    "previous_item": {
+                        "type": "array",
+                        "items": {"$ref": "#/components/schemas/PreviousItemSchema"},
+                    },
+                    "next_item": {
+                        "type": "array",
+                        "items": {"$ref": "#/components/schemas/NextItemSchema"},
+                    },
+                    "working_copy": {"$ref": "#/components/schemas/WorkingCopy"},
+                    "working_copy_of": {"$ref": "#/components/schemas/WorkingCopyOf"},
+                    "lock": {"$ref": "#/components/schemas/LockInfo"},
+                    "@components": {"$ref": "#/components/schemas/ExpandableItems"},
+                    **schema,
+                    "targetUrl": {"$ref": "#/components/schemas/TargetUrl"},
+                    "allow_discussion": {"type": "boolean"},
+                },
+            },
+        }
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -113,7 +185,10 @@ class SerializeToJson:
         try:
             nextprevious = NextPrevious(obj)
             result.update(
-                {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
+                {
+                    "previous_item": nextprevious.previous,
+                    "next_item": nextprevious.next,
+                }
             )
         except ValueError:
             # If we're serializing an old version that was renamed or moved,
@@ -129,20 +204,9 @@ class SerializeToJson:
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))
 
-        # Insert field values
-        for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
-
-            for name, field in getFields(schema).items():
-                if not self.check_permission(read_permissions.get(name), obj):
-                    continue
-
-                # serialize the field
-                serializer = queryMultiAdapter(
-                    (field, obj, self.request), IFieldSerializer
-                )
-                value = serializer()
-                result[json_compatible(name)] = value
+        for name, serializer in self._get_context_field_serializers(obj):
+            value = serializer()
+            result[json_compatible(name)] = value
 
         target_url = getMultiAdapter(
             (self.context, self.request), IObjectPrimaryFieldTarget
@@ -153,6 +217,21 @@ class SerializeToJson:
         get_allow_discussion_value(self.context, self.request, result)
 
         return result
+
+    def _get_context_field_serializers(self, obj):
+        # Insert field values
+        for schema in iterSchemata(self.context):
+            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
+
+            for name, field in getFields(schema).items():
+                if not self.check_permission(read_permissions.get(name), obj):
+                    continue
+
+                # serialize the field
+                yield (
+                    name,
+                    queryMultiAdapter((field, obj, self.request), IFieldSerializer),
+                )
 
     def _get_workflow_state(self, obj):
         wftool = getToolByName(self.context, "portal_workflow")
@@ -178,6 +257,32 @@ class SerializeToJson:
 @implementer(ISerializeToJson)
 @adapter(IDexterityContainer, Interface)
 class SerializeFolderToJson(SerializeToJson):
+    @classmethod
+    def __restapi_doc_component_schema__(cls, context, request):
+        result = super(cls, SerializeFolderToJson).__restapi_doc_component_schema__(
+            context, request
+        )
+        # portal_types = getToolByName(api.portal.get(), "portal_types")
+
+        # ct: dict = result[portal_types.get(context.portal_type).id.replace(" ", "")]
+
+        result.update({"BrainItem": {"type": "string"}})
+        # ct.update(
+        #     {
+        #         "items": {
+        #             "type": "array",
+        #             "items": {
+        #                 "$ref": "#/components/schemas/BrainItem",
+        #                 "is_folderish": {"type": "boolean"},
+        #                 "items_total": {"type": "integer"},
+        #                 "batching": {"type": "string"}
+        #             },
+        #         },
+        #     }
+        # )
+
+        return result
+
     def _build_query(self):
         path = "/".join(self.context.getPhysicalPath())
         query = {

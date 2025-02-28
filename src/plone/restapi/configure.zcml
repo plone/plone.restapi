@@ -24,6 +24,15 @@
   <include package="plone.schema" />
   <include package="Products.CMFPlone" />
 
+  <plone:CORSPolicy
+      allow_origin="*"
+      allow_methods="DELETE,GET,OPTIONS,PATCH,POST,PUT"
+      allow_credentials="true"
+      expose_headers="Content-Length,X-My-Header"
+      allow_headers="Accept,Authorization,Content-Type,X-Custom-Header"
+      max_age="3600"
+      />
+
   <include
       package="plone.app.caching"
       zcml:condition="installed plone.app.caching"
