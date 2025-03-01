@@ -91,7 +91,7 @@ setup(
     zip_safe=False,
     install_requires=[
         "setuptools",
-        "importlib-metadata; python_version<'3.8'",
+        "packaging",
         "python-dateutil",
         "plone.rest",  # json renderer moved to plone.restapi
         "plone.schema>=1.2.1",  # new/fixed json field
