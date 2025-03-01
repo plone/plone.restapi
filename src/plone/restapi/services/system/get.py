@@ -1,3 +1,4 @@
+from importlib.metadata import distribution
 from plone.restapi.services import Service
 
 
@@ -6,10 +7,8 @@ try:
 except ImportError:
     from plone.app.controlpanel.overview import OverviewControlPanel
 
-import pkg_resources
 
-
-plone_restapi_version = pkg_resources.require("plone.restapi")[0].version
+plone_restapi_version = distribution("plone.restapi").version
 
 
 class SystemGet(Service):

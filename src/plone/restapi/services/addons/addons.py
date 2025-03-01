@@ -1,3 +1,5 @@
+from importlib.metadata import distribution
+from importlib.metadata import PackageNotFoundError
 from plone.memoize import view
 from plone.restapi.bbb import INonInstallable
 from Products.CMFCore.utils import getToolByName
@@ -7,7 +9,7 @@ from zope.component import getAllUtilitiesRegisteredFor
 from zope.i18n import translate
 
 import logging
-import pkg_resources
+import packaging
 
 
 try:
@@ -228,9 +230,9 @@ class Addons:
         That implementation used to fall back to getting the version.txt.
         """
         try:
-            dist = pkg_resources.get_distribution(product_id)
+            dist = distribution(product_id)
             return dist.version
-        except pkg_resources.DistributionNotFound:
+        except PackageNotFoundError:
             if "." in product_id:
                 return ""
         # For CMFPlacefulWorkflow we need to try Products.CMFPlacefulWorkflow.
@@ -247,7 +249,7 @@ class Addons:
             available = self.ps.listUpgrades(profile_id, True)
             if available:  # could return empty sequence
                 latest = available[-1]
-                profile_version = max(latest["dest"], key=pkg_resources.parse_version)
+                profile_version = max(latest["dest"], key=packaging.version.parse)
         except Exception:
             pass
         return profile_version

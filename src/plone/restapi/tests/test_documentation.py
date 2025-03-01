@@ -2,7 +2,7 @@ from base64 import b64encode
 from datetime import datetime
 from datetime import timezone
 import io
-from pkg_resources import resource_filename
+from importlib.resources import files
 from plone import api
 from plone.app.discussion.interfaces import ICommentAddedEvent
 from plone.app.discussion.interfaces import IConversation
@@ -75,7 +75,7 @@ REQUEST_HEADER_KEYS = [
 RESPONSE_HEADER_KEYS = ["content-type", "allow", "location"] + TUS_HEADERS
 
 
-base_path = resource_filename("plone.restapi.tests", "http-examples")
+base_path = str(files("plone.restapi").joinpath("tests/http-examples"))
 
 UPLOAD_DATA = b"abcdefgh"
 UPLOAD_MIMETYPE = b"text/plain"
