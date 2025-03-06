@@ -12,7 +12,6 @@ exclude .editorconfig
 exclude .flake8
 exclude Dockerfile
 exclude Makefile
-exclude bootstrap-buildout.py
 exclude CODEOWNERS
 exclude docs/make.bat
 exclude .python-version
@@ -28,5 +27,4 @@ global-exclude *.pyc
 include pyproject.toml
 include netlify.toml
 prune ideas
-exclude test-no-sphinx-warnings
 exclude test-no-uncommitted-doc-changes

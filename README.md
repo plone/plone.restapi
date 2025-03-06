@@ -45,18 +45,9 @@ curl -i -X POST https://demo.plone.org/++api++ \
 
 # Installation
 
-Install `plone.restapi` by adding it to your buildout.
+`plone.restapi` is included in Plone 6 if you install the `Plone` package.
 
-```ini
-[buildout]
-
-# ...
-
-eggs =
-    plone.restapi
-```
-
-...and then running `bin/buildout`.
+If it is not installed, add it using requirements.txt or as a dependency of another package.
 
 # Python / Plone Compatibility
 

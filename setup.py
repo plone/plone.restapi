@@ -1,39 +1,24 @@
 from setuptools import find_packages
 from setuptools import setup
 
+import pathlib
 import sys
 
 
-version = "9.11.1.dev0"
+version = "10.0.0.dev0"
 
 if sys.version_info.major == 2:
     raise ValueError(
-        "plone.restapi 8 requires Python 3. "
+        "plone.restapi 10 requires Python 3. "
         "Please downgrade to plone.restapi 7 for Python 2 and Plone 4.3/5.1."
     )
 
 
-def read(filename):
-    with open(filename) as myfile:
-        try:
-            return myfile.read()
-        except UnicodeDecodeError:
-            # Happens on one Jenkins node on Python 3.6,
-            # so maybe it happens for users too.
-            pass
-    # Opening and reading as text failed, so retry opening as bytes.
-    with open(filename, "rb") as myfile:
-        contents = myfile.read()
-        return contents.decode("utf-8")
-
-
-long_description = (
-    read("README.md")
-    + "\n"
-    + read("CONTRIBUTORS.md")
-    + "\n"
-    + read("CHANGES.md")
-    + "\n"
+long_description = "\n".join(
+    [
+        pathlib.Path(filename).read_text()
+        for filename in ("README.md", "CONTRIBUTORS.md", "CHANGES.md")
+    ]
 )
 
 TEST_REQUIRES = [
@@ -61,15 +46,11 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 5.2",
-        "Framework :: Plone :: 6.0",
-        "Framework :: Plone :: 6.1",
+        "Framework :: Plone :: 6.2",
         "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
@@ -84,16 +65,15 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     namespace_packages=["plone"],
-    python_requires=">=3.8",
+    python_requires=">=3.10",
     include_package_data=True,
     zip_safe=False,
     install_requires=[
         "setuptools",
-        "importlib-metadata; python_version<'3.8'",
         "python-dateutil",
         "plone.rest",  # json renderer moved to plone.restapi
         "plone.schema>=1.2.1",  # new/fixed json field
-        "Products.CMFPlone>=5.2",
+        "Products.CMFPlone>=6.0",
         "PyJWT>=1.7.0",
         "pytz",
     ],
