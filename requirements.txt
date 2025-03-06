@@ -1,2 +1,2 @@
 -c constraints.txt
-Plone
+plone.restapi[test]

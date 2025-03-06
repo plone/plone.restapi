@@ -97,8 +97,8 @@ instance/etc/zope.ini: $(BIN_FOLDER)/pipx  ## Create instance configuration
 	@echo "$(GREEN)==> Create instance configuration$(RESET)"
 	$(BIN_FOLDER)/pipx run cookiecutter -f --no-input --config-file instance.yaml gh:plone/cookiecutter-zope-instance
 
-$(BIN_FOLDER)/runwsgi: ## Install Plone
-	@echo "$(CREEN)==> Install Plone$(RESET)"
+$(BIN_FOLDER)/runwsgi $(BIN_FOLDER)/zope-testrunner: ## Install Plone
+	@echo "$(GREEN)==> Install Plone$(RESET)"
 	$(BIN_FOLDER)/mxdev -c mx.ini
 	$(BIN_FOLDER)/pip install -r requirements-mxdev.txt
 
@@ -114,8 +114,8 @@ check: $(BIN_FOLDER)/tox ## Check and fix code base according to Plone standards
 	$(BIN_FOLDER)/tox -e lint
 
 .PHONY: test
-test: $(BIN_FOLDER)/tox ## Run tests
-	$(BIN_FOLDER)/tox -e test
+test: $(BIN_FOLDER)/zope-testrunner ## Run tests
+	$(BIN_FOLDER)/zope-testrunner --all --test-path=src -s plone.restapi
 
 ## Performance tests (need to be updated)
 
