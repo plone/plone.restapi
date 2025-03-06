@@ -97,7 +97,7 @@ instance/etc/zope.ini: $(BIN_FOLDER)/pipx  ## Create instance configuration
 	@echo "$(GREEN)==> Create instance configuration$(RESET)"
 	$(BIN_FOLDER)/pipx run cookiecutter -f --no-input --config-file instance.yaml gh:plone/cookiecutter-zope-instance
 
-$(BIN_FOLDER)/runwsgi $(BIN_FOLDER)/zope-testrunner: ## Install Plone
+$(BIN_FOLDER)/runwsgi $(BIN_FOLDER)/zope-testrunner: $(BIN_FOLDER)/pip ## Install Plone
 	@echo "$(GREEN)==> Install Plone$(RESET)"
 	$(BIN_FOLDER)/mxdev -c mx.ini
 	$(BIN_FOLDER)/pip install -r requirements-mxdev.txt
