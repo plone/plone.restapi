@@ -138,7 +138,7 @@ docs-clean:  ## Clean current and legacy docs build directories
 	cd $(DOCS_DIR) && rm -rf $(BUILDDIR)/
 	rm -rf docs/build
 
-$(BIN_FOLDER)/sphinx-autobuild $(BIN_FOLDER)/sphinx-build:  ## Install dependencies for building docs
+$(BIN_FOLDER)/sphinx-autobuild $(BIN_FOLDER)/sphinx-build: $(BIN_FOLDER)/pip  ## Install dependencies for building docs
 	$(BIN_FOLDER)/pip install -r requirements-docs.txt
 
 .PHONY: docs-livehtml
