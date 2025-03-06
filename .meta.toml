@@ -4,3 +4,9 @@
 [meta]
 template = "default"
 commit-id = "2.0.0"
+
+[editorconfig]
+extra_lines = """
+[*.resp]
+trim_trailing_whitespace = false
+"""

@@ -6,9 +6,11 @@ requires = ["setuptools>=68.2"]
 
 [tool.towncrier]
 directory = "news/"
-filename = "CHANGES.rst"
-title_format = "{version} ({project_date})"
-underlines = ["-", ""]
+filename = "CHANGES.md"
+start_string = "<!-- towncrier release notes start -->\n"
+title_format = "## {version} ({project_date})"
+template = "news/.changelog_template.jinja"
+underlines = ["", "", ""]
 
 [[tool.towncrier.type]]
 directory = "breaking"

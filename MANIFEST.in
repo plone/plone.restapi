@@ -1,6 +1,6 @@
 graft src/plone/restapi
 graft docs
-include *.rst
+include *.md
 include *.txt
 exclude *.cfg
 exclude *.yml

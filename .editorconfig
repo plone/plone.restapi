@@ -46,6 +46,8 @@ indent_style = tab
 indent_size = unset
 tab_width = unset
 
+[*.resp]
+trim_trailing_whitespace = false
 
 ##
 # Add extra configuration options in .meta.toml:

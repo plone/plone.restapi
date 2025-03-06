@@ -28,14 +28,11 @@ def read(filename):
 
 
 long_description = (
-    read("README.rst")
+    read("README.md")
     + "\n"
-    + "Contributors\n"
-    + "============\n"
+    + read("CONTRIBUTORS.md")
     + "\n"
-    + read("CONTRIBUTORS.rst")
-    + "\n"
-    + read("CHANGES.rst")
+    + read("CHANGES.md")
     + "\n"
 )
 
@@ -57,6 +54,7 @@ setup(
     version=version,
     description="plone.restapi is a RESTful hypermedia API for Plone.",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     # Get more strings from
     # https://pypi.org/classifiers/
     classifiers=[
