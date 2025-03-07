@@ -10,3 +10,11 @@ extra_lines = """
 [*.resp]
 trim_trailing_whitespace = false
 """
+
+[github]
+jobs = [
+   "qa",
+   "coverage",
+   "release_ready",
+   "circular",
+   ]
