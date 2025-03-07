@@ -69,5 +69,7 @@ Content-Type: application/json
     "table_of_contents": null,
     "text": null,
     "title": "Plone site",
-    "type_title": "Plone Site"
+    "type_title": "Plone Site",
+    "working_copy": null,
+    "working_copy_of": null
 }
