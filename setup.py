@@ -5,7 +5,7 @@ import pathlib
 import sys
 
 
-version = "10.0.0.dev0"
+version = "9.11.1.dev0"
 
 if sys.version_info.major == 2:
     raise ValueError(
@@ -46,11 +46,16 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Framework :: Plone",
+        "Framework :: Plone :: 5.2",
+        "Framework :: Plone :: 6.0",
+        "Framework :: Plone :: 6.1",
         "Framework :: Plone :: 6.2",
         "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
@@ -65,7 +70,7 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     namespace_packages=["plone"],
-    python_requires=">=3.10",
+    python_requires=">=3.8",
     include_package_data=True,
     zip_safe=False,
     install_requires=[
@@ -73,7 +78,7 @@ setup(
         "python-dateutil",
         "plone.rest",  # json renderer moved to plone.restapi
         "plone.schema>=1.2.1",  # new/fixed json field
-        "Products.CMFPlone>=6.0",
+        "Products.CMFPlone>=5.2",
         "PyJWT>=1.7.0",
         "pytz",
     ],
