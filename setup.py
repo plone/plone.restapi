@@ -31,6 +31,7 @@ TEST_REQUIRES = [
     "plone.app.testing",
     "plone.app.upgrade",
     "plone.api",
+    "plone.rest>=3.0.1",
     "requests",
 ]
 
