@@ -86,6 +86,8 @@ setup(
     extras_require={"test": TEST_REQUIRES},
     entry_points="""
       # -*- Entry points: -*-
+      [console_scripts]
+      update_restapi_locales = plone.restapi.locales.update:update_locale
       [z3c.autoinclude.plugin]
       target = plone
       """,

@@ -97,7 +97,7 @@ instance/etc/zope.ini: $(BIN_FOLDER)/pipx  ## Create instance configuration
 	@echo "$(GREEN)==> Create instance configuration$(RESET)"
 	$(BIN_FOLDER)/pipx run cookiecutter -f --no-input --config-file instance.yaml gh:plone/cookiecutter-zope-instance
 
-$(BIN_FOLDER)/runwsgi $(BIN_FOLDER)/zope-testrunner: $(BIN_FOLDER)/pip ## Install Plone
+$(BIN_FOLDER)/runwsgi $(BIN_FOLDER)/zope-testrunner $(BIN_FOLDER)/update_restapi_locales: $(BIN_FOLDER)/pip ## Install Plone
 	@echo "$(GREEN)==> Install Plone$(RESET)"
 	$(BIN_FOLDER)/mxdev -c mx.ini
 	$(BIN_FOLDER)/pip install -r requirements-mxdev.txt
@@ -116,6 +116,11 @@ check: $(BIN_FOLDER)/tox ## Check and fix code base according to Plone standards
 .PHONY: test
 test: $(BIN_FOLDER)/zope-testrunner ## Run tests
 	$(BIN_FOLDER)/zope-testrunner --all --test-path=src -s plone.restapi
+
+.PHONY: i18n
+i18n: $(BIN_FOLDER)/update_restapi_locales ## Update locales
+	@echo "$(GREEN)==> Updating locales$(RESET)"
+	$(BIN_FOLDER)/update_restapi_locales
 
 ## Performance tests (need to be updated)
 
