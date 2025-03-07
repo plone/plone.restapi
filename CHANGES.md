@@ -450,7 +450,7 @@ New features:
 Bug fixes:
 
 - Remove the hard code dependency by plone.app.multilingual, use it
-  conditionaly instead @@folix-01 (#1639)
+  conditionally instead @@folix-01 (#1639)
 - Fix timezone of dates for revisions in the `@history` service.
   @davisagli (#1647)
 - Fix types expander in root for Plone 5.2 (for non-Dexterity Plone
@@ -673,7 +673,7 @@ Documentation:
 - Fix ogp_image URL. @stevepiercy (#1556)
 - Update makefile to use Vale for spell, grammar, and style checking.
   Fix linkcheckbroken to return the correct exit code for broken
-  links. Prepare links ot use 5.docs.plone.org in preparation for
+  links. Prepare links to use 5.docs.plone.org in preparation for
   Plone 6 docs launch. @stevepiercy (#1561)
 
 ## 8.32.6 (2022-12-10)
@@ -1094,7 +1094,7 @@ Bug fixes:
 - Remove all traces of `Products.CMFQuickInstaller`. It was removed in
   Plone 5.2. BBB code was in `plone.app.upgrade` only. Plone with
   Restapi broke if
-  `plone.app.upgrade` was not available, like when dependening on `Products.CMFPlone`
+  `plone.app.upgrade` was not available, like when depending on `Products.CMFPlone`
   only. @jensens (#1267)
 - Fix installation of JWT PAS plugin with default profile. @jensens
   (#1269)
@@ -1291,7 +1291,7 @@ New features:
 Bug fixes:
 
 - Remove code to support Python 2, Plone 4.3/5.0/5.1 @timo (#1140)
-- Remove unecessary check for plone.app.iterate which breaks the
+- Remove unnecessary check for plone.app.iterate which breaks the
   @components attributes. @timo (#1148)
 
 ## 8.2.0 (2021-06-02)
@@ -1732,7 +1732,7 @@ Bug fixes:
 
 - call unescape method on received html for richtext before save it in
   Plone. @cekk (#913)
-- Small fix in IBlocks test, addedd a missing assert call
+- Small fix in IBlocks test, added a missing assert call
   @tiberiuichim (#914)
 
 ## 6.6.0 (2020-04-07)
@@ -2077,7 +2077,7 @@ New features:
 
 Bug fixes:
 
-- Fixed Python 3 incompatiblity with workflow service (#676) @ajung
+- Fixed Python 3 incompatibility with workflow service (#676) @ajung
 - Hide performance, testing, and tiles profile. (#700) @timo
 
 ## 3.8.0 (2019-03-21)
@@ -2455,7 +2455,7 @@ Bugfixes:
   @jaroel
 - Fixed NamedFieldDeserializer to validate required fields. @jaroel
 - Prevent a fatal error when we get @workflow without permission to
-  get review_history worfklow variable. @thomasdesvenain
+  get review_history workflow variable. @thomasdesvenain
 - Make user registration work as default Plone behavior by adding the
   Member role to the user. @sneridagh
 

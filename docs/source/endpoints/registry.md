@@ -10,7 +10,7 @@ myst:
 # Registry
 
 Registry records can be addressed through the `@registry` endpoint on the Plone site.
-To address a specific record, the fully qualified dotted name of the registry record has to be passed as a path segment, for example, `/plone/@registy/my.record`.
+To address a specific record, the fully qualified dotted name of the registry record has to be passed as a path segment, for example, `/plone/@registry/my.record`.
 
 Reading or writing registry records require the `cmf.ManagePortal` permission.
 

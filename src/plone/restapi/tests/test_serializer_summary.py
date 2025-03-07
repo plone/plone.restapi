@@ -260,11 +260,11 @@ class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
     def test_dx_event_with_recurrence_old_version(self):
         tomorrow = self.start + timedelta(days=1)
         tomorrow_str = tomorrow.strftime("%Y-%m-%d")
-        ot = OccurrenceTraverser(self.event, self.request)
-        ocurrence = ot.publishTraverse(self.request, tomorrow_str)
+        traverser = OccurrenceTraverser(self.event, self.request)
+        occurrence = traverser.publishTraverse(self.request, tomorrow_str)
 
         with self.assertRaises(TypeError):
-            getMultiAdapter((ocurrence, self.request), ISerializeToJsonSummary)()
+            getMultiAdapter((occurrence, self.request), ISerializeToJsonSummary)()
 
     @unittest.skipIf(
         OccurrenceContentListingObject is None,
@@ -273,12 +273,12 @@ class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
     def test_dx_event_with_recurrence_new_version(self):
         tomorrow = self.start + timedelta(days=1)
         tomorrow_str = tomorrow.strftime("%Y-%m-%d")
-        ot = OccurrenceTraverser(self.event, self.request)
-        ocurrence = ot.publishTraverse(self.request, tomorrow_str)
+        traverser = OccurrenceTraverser(self.event, self.request)
+        occurrence = traverser.publishTraverse(self.request, tomorrow_str)
         self.request.form["metadata_fields"] = ["start"]
-        summary = getMultiAdapter((ocurrence, self.request), ISerializeToJsonSummary)()
+        summary = getMultiAdapter((occurrence, self.request), ISerializeToJsonSummary)()
         self.assertEqual(
             datetime.fromisoformat(summary["start"]).date().isoformat(),
             tomorrow.date().isoformat(),
         )
-        self.assertEqual(summary["title"], ocurrence.Title())
+        self.assertEqual(summary["title"], occurrence.Title())

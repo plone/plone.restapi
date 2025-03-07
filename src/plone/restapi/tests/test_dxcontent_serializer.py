@@ -4,6 +4,7 @@ from datetime import time
 from datetime import timedelta
 from DateTime import DateTime
 from decimal import Decimal
+from importlib import import_module
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import logout
@@ -18,26 +19,26 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.serializer.utils import get_portal_type_title
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.test_expansion import ExpandableElementFoo
-from plone.restapi.serializer.utils import get_portal_type_title
 from plone.uuid.interfaces import IMutableUUID
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
+from z3c.relationfield import RelationValue
+from z3c.relationfield.event import _setRelation
 from zope.component import getGlobalSiteManager
 from zope.component import getMultiAdapter
+from zope.component import getUtility
 from zope.component import provideAdapter
 from zope.component import queryUtility
 from zope.interface import Interface
-from z3c.relationfield import RelationValue
-from z3c.relationfield.event import _setRelation
-from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
-from importlib import import_module
 
 import json
 import unittest
+
 
 HAS_PLONE_6 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
@@ -526,7 +527,7 @@ class TestDXContentSerializer(unittest.TestCase):
         """This checks if the context is passed in correctly.
 
         We define a ITransformer, which returns the contexts portal_type.
-        This is then verfied.
+        This is then verified.
         """
 
         class RichtextTransform:

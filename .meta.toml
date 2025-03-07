@@ -25,3 +25,13 @@ test_environment_variables = """
 """
 test_matrix = {"6.2" = ["3.13", "3.10"], "6.1" = ["3.13", "3.10"], "6.0" = ["3.13", "3.9"], "5.2" = ["3.8"]}
 constraints_files = {"6.2" = "https://dist.plone.org/release/6.2-dev/constraints.txt", "6.1" = "https://dist.plone.org/release/6.1-dev/constraints.txt", "6.0" = "https://dist.plone.org/release/6.0-dev/constraints.txt", "5.2" = "https://dist.plone.org/release/5.2-latest/constraints.txt"}
+
+[flake8]
+extra_lines = """
+per-file-ignores =
+    src/plone/restapi/bbb.py:F401
+"""
+
+[pyproject]
+codespell_ignores = "checkin"
+codespell_skip = "*.resp,performance/*,src/plone/restapi/tests/performance.py"

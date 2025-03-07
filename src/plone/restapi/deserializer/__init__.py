@@ -35,7 +35,7 @@ def parse_int(data, prop, default):
     """
     Args:
         data: dict from a request
-        prop: name of a integer paramater in the dict
+        prop: name of a integer parameter in the dict
         default: default if not found
 
     Returns: an integer

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.linkintegrity.utils import linkintegrity_enabled
 from plone.app.uuid.utils import uuidToObject
 from plone.restapi.interfaces import ISerializeToJsonSummary

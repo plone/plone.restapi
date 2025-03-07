@@ -1303,14 +1303,14 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_get_users_filtering(self):
         class MockUsersGet(UsersGet):
             def __init__(self):
-                class MockUser(object):
+                class MockUser:
                     def __init__(self, userid):
                         self.userid = userid
 
                     def getProperty(self, key, default):
                         return "Full Name " + self.userid
 
-                class MockAclUsers(object):
+                class MockAclUsers:
                     def searchUsers(self, **kw):
                         return [
                             {"userid": "user2"},
@@ -1320,7 +1320,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
                 self.acl_users = MockAclUsers()
 
-                class MockPortalMembership(object):
+                class MockPortalMembership:
                     def getMemberById(self, userid):
                         if userid == "NONEUSER":
                             return None

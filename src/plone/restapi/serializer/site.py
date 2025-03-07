@@ -27,7 +27,6 @@ from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
 
-
 import json
 
 

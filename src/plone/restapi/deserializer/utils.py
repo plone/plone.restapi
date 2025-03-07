@@ -1,11 +1,12 @@
 from Acquisition import aq_parent
+from plone.app.redirector.interfaces import IRedirectionStorage
 from plone.uuid.interfaces import IUUID
 from plone.uuid.interfaces import IUUIDAware
 from zope.component import getMultiAdapter
-from plone.app.redirector.interfaces import IRedirectionStorage
 from zope.component import getUtility
 
 import re
+
 
 PATH_RE = re.compile(r"^(.*?)((?=/@@|#).*)?$")
 

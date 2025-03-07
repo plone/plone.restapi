@@ -31,7 +31,6 @@ from zope.schema.interfaces import IVocabularyTokenized
 
 import codecs
 import dateutil
-
 import html as html_parser
 
 

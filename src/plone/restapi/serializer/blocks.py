@@ -2,7 +2,8 @@ from plone import api
 from plone.app.uuid.utils import uuidToCatalogBrain
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.blocks import visit_blocks, iter_block_transform_handlers
+from plone.restapi.blocks import iter_block_transform_handlers
+from plone.restapi.blocks import visit_blocks
 from plone.restapi.deserializer.blocks import iterate_children
 from plone.restapi.deserializer.blocks import SlateBlockTransformer
 from plone.restapi.deserializer.blocks import transform_links
@@ -11,7 +12,8 @@ from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
-from plone.restapi.serializer.utils import resolve_uid, uid_to_url
+from plone.restapi.serializer.utils import resolve_uid
+from plone.restapi.serializer.utils import uid_to_url
 from plone.schema import IJSONField
 from zope.component import adapter
 from zope.component import getMultiAdapter

@@ -1,33 +1,63 @@
 <h1 tal:replace="structure here/manage_page_header">Header</h1>
 
-<main class="container-fluid">
+<main class="container-fluid"
+      i18n:ignore=""
+>
 
-  <h2 tal:define="form_title string:Add JWT Authentication Plugin"
-      tal:replace="structure here/manage_form_title">Form Title</h2>
+  <h2 tal:define="
+        form_title string:Add JWT Authentication Plugin;
+      "
+      tal:replace="structure here/manage_form_title"
+  >Form Title</h2>
 
-    <p class="form-help">
+  <p class="form-help">
       Plone PAS plugin for authentication with JSON web tokens (JWT).
-    </p>
+  </p>
 
-    <form action="addJWTAuthenticationPlugin" method="post" enctype="multipart/form-data">
+  <form action="addJWTAuthenticationPlugin"
+        enctype="multipart/form-data"
+        method="post"
+  >
 
-      <div class="form-group row">
-        <label for="id_" class="form-label col-sm-3 col-md-2">Id</label>
-        <div class="col-sm-9 col-md-10">
-          <input id="id_" name="id_" class="form-control" type="text" tal:attributes="value request/id_|string:jwt_auth" />
-        </div>
+    <div class="form-group row">
+      <label class="form-label col-sm-3 col-md-2"
+             for="id_"
+      >Id</label>
+      <div class="col-sm-9 col-md-10">
+        <input class="form-control"
+               id="id_"
+               name="id_"
+               type="text"
+               tal:attributes="
+                 value request/id_|string:jwt_auth;
+               "
+        />
       </div>
+    </div>
 
-      <div class="form-group row form-optional">
-        <label for="title" class="form-label col-sm-3 col-md-2">Title</label>
-        <div class="col-sm-9 col-md-10">
-          <input id="title" name="title" class="form-control" type="text" tal:attributes="value request/title|string:JWT Authentication" />
-        </div>
+    <div class="form-group row form-optional">
+      <label class="form-label col-sm-3 col-md-2"
+             for="title"
+      >Title</label>
+      <div class="col-sm-9 col-md-10">
+        <input class="form-control"
+               id="title"
+               name="title"
+               type="text"
+               tal:attributes="
+                 value request/title|string:JWT Authentication;
+               "
+        />
       </div>
+    </div>
 
-      <div class="zmi-controls">
-        <input class="btn btn-primary" type="submit" name="submit" value="Add" />
-      </div>
+    <div class="zmi-controls">
+      <input class="btn btn-primary"
+             name="submit"
+             type="submit"
+             value="Add"
+      />
+    </div>
 
   </form>
 

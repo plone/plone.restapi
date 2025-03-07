@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -114,9 +113,9 @@ class TestLinkIntegrity(unittest.TestCase):
                         "entityMap": {
                             "0": {
                                 "data": {
-                                    "href": "../resolveuid/{}".format(uid),
+                                    "href": f"../resolveuid/{uid}",
                                     "rel": "nofollow",
-                                    "url": "../resolveuid/{}".format(uid),
+                                    "url": f"../resolveuid/{uid}",
                                 },
                                 "mutability": "MUTABLE",
                                 "type": "LINK",
@@ -162,9 +161,9 @@ class TestLinkIntegrity(unittest.TestCase):
                         "entityMap": {
                             "0": {
                                 "data": {
-                                    "href": "../resolveuid/{}".format(uid),
+                                    "href": f"../resolveuid/{uid}",
                                     "rel": "nofollow",
-                                    "url": "../resolveuid/{}".format(uid),
+                                    "url": f"../resolveuid/{uid}",
                                 },
                                 "mutability": "MUTABLE",
                                 "type": "LINK",

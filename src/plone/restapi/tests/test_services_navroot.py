@@ -2,10 +2,8 @@ from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.bbb import INavigationRoot
-from plone.restapi.testing import (
-    PLONE_RESTAPI_DX_FUNCTIONAL_TESTING,
-    PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING,
-)
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
