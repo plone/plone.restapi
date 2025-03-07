@@ -33,6 +33,8 @@ jobs:
       # Run tests
       - name: Install dependencies
         run: make test
+        env:
+          zope_i18n_compile_mo_files: True
 
       # test no uncommitted changes
       - name: test no uncommitted changes
