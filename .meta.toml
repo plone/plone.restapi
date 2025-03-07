@@ -18,3 +18,8 @@ jobs = [
    "release_ready",
    "circular",
    ]
+
+[tox]
+test_environment_variables = """
+    zope_i18n_compile_mo_files=True
+"""
