@@ -5,6 +5,7 @@ from plone.event.utils import default_timezone as fallback_default_timezone
 from plone.event.utils import validated_timezone
 from plone.i18n.interfaces import ILanguageSchema
 from plone.registry.interfaces import IRegistry
+from plone.restapi import HAS_MULTILINGUAL
 from plone.restapi.bbb import IImagingSchema
 from plone.restapi.bbb import ISiteSchema
 from plone.restapi.interfaces import IExpandableElement
@@ -16,6 +17,10 @@ from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.interface import Interface
+
+
+if HAS_MULTILINGUAL:
+    from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
 
 
 @implementer(IExpandableElement)
@@ -53,6 +58,11 @@ class Site:
                 "features": self.features(),
             }
         )
+
+        if HAS_MULTILINGUAL and IPloneAppMultilingualInstalled.providedBy(self.request):
+            result["site"]["plone.is_multilingual"] = True
+        else:
+            result["site"]["plone.is_multilingual"] = False
 
         return result
 
