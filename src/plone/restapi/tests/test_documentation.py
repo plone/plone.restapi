@@ -1,7 +1,6 @@
 from base64 import b64encode
 from datetime import datetime
 from datetime import timezone
-from importlib.resources import files
 from plone import api
 from plone.app.discussion.interfaces import ICommentAddedEvent
 from plone.app.discussion.interfaces import IConversation
@@ -49,6 +48,7 @@ import collections
 import io
 import json
 import os
+import pathlib
 import re
 import transaction
 import unittest
@@ -74,8 +74,7 @@ REQUEST_HEADER_KEYS = [
 
 RESPONSE_HEADER_KEYS = ["content-type", "allow", "location"] + TUS_HEADERS
 
-
-base_path = str(files("plone.restapi").joinpath("tests/http-examples"))
+base_path = str(pathlib.Path(__file__).parent / "http-examples")
 
 UPLOAD_DATA = b"abcdefgh"
 UPLOAD_MIMETYPE = b"text/plain"
