@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-from plone.restapi.interfaces import IExpandableElement, ISerializeToJson
+from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from zope.component import adapter
 from zope.component import getMultiAdapter

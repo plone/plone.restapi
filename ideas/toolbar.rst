@@ -196,7 +196,7 @@ Request::
   GET localhost:8080/Plone/folder/@toolbar
   Accept application/json
 
-Reponse if user does not have the ShowToolbar permission::
+Response if user does not have the ShowToolbar permission::
 
   401 Unauthorized
 

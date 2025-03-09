@@ -1,4 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <layers>
-  <layer name="plone.restapi" remove="true" />
+  <layer name="plone.restapi"
+         remove="true"
+  />
 </layers>

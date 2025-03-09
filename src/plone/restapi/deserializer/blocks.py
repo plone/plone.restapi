@@ -3,7 +3,8 @@ from copy import deepcopy
 from plone import api
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.blocks import iter_block_transform_handlers, visit_blocks
+from plone.restapi.blocks import iter_block_transform_handlers
+from plone.restapi.blocks import visit_blocks
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
 from plone.restapi.deserializer.utils import path2uid
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer

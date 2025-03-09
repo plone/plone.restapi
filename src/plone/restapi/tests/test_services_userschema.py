@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -236,7 +235,7 @@ class TestCustomUserSchema(unittest.TestCase):
         self.assertIn("department", response["fieldsets"][0]["fields"])
         self.assertIn("vegetarian", response["fieldsets"][0]["fields"])
 
-        # fields not shown in the regisration form
+        # fields not shown in the registration form
         self.assertNotIn("home_page", response["fieldsets"][0]["fields"])
         self.assertNotIn("description", response["fieldsets"][0]["fields"])
         self.assertNotIn("location", response["fieldsets"][0]["fields"])

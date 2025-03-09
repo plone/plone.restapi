@@ -12,28 +12,27 @@ myst:
 # Vocabularies and Sources
 
 Vocabularies are a set of allowed choices that back a particular field.
-They contain so-called *terms* which represent those allowed choices.
+They contain so-called _terms_ which represent those allowed choices.
 Sources are similar, but are a more generic and dynamic concept.
-
 
 ## Concepts
 
-*Vocabularies* contain a list of terms.
+_Vocabularies_ contain a list of terms.
 These terms are usually tokenized, meaning that in addition to a term's value, it also has a `token`, which is a machine-friendly identifier for the term in 7-bit ASCII.
 
 ```{note}
 Since the underlying value of a term might not necessarily be serializable (it could be an arbitrary Python object), `plone.restapi` only exposes and accepts tokens.
-It will transparently convert between tokens and values during serialization and deseralization.
+It will transparently convert between tokens and values during serialization and deserialization.
 For this reason, the following endpoints only support *tokenized* vocabularies and sources, and they do not expose the terms' values.
 ```
 
 Terms can also have a `title`, which is intended to be the user-facing label for the term.
 For vocabularies or sources whose terms are only tokenized but not titled, `plone.restapi` will fall back to using the token as the term title.
 
-*Sources* are similar to vocabularies, but they tend to be more dynamic in nature, and are often used for larger sets of terms.
+_Sources_ are similar to vocabularies, but they tend to be more dynamic in nature, and are often used for larger sets of terms.
 They are also not registered with a global name like vocabularies, but are instead addressed via the field they are assigned to.
 
-*Query Sources* are sources that are capable of being queried or searched.
+_Query Sources_ are sources that are capable of being queried or searched.
 The source will then return only the subset of terms that match the query.
 
 The use of such a source is usually a strong indication that no attempt should be made to enumerate the full set of terms.
@@ -45,7 +44,6 @@ This means that they take the context into account and their contents may theref
 This section can only provide a basic overview of vocabularies and related concepts.
 For a more in-depth explanation please refer to the [Plone documentation](https://5.docs.plone.org/develop/plone/forms/vocabularies.html).
 
-
 ## Endpoints overview
 
 In `plone.restapi` these three concepts are exposed through three separate endpoints, described in more detail below:
@@ -54,8 +52,7 @@ In `plone.restapi` these three concepts are exposed through three separate endpo
 - **`@sources`**`/<field_name>`
 - **`@querysources`**`/<field_name>`**`?query=`**`<search_query>`
 
-While the `@vocabularies` and `@sources` endpoints allow *enumeration* of terms and optionally filter terms server-side, the `@querysources` endpoint *only* allows for searching the respective source.
-
+While the `@vocabularies` and `@sources` endpoints allow _enumeration_ of terms and optionally filter terms server-side, the `@querysources` endpoint _only_ allows for searching the respective source.
 
 ## List all vocabularies
 
@@ -75,7 +72,6 @@ The response will include a list with the URL (`@id`) and the names (`title`) of
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/vocabularies.resp
 :language: http
 ```
-
 
 ## Get a vocabulary
 
@@ -106,7 +102,6 @@ See {doc}`../usage/batching` for more details on how to work with batched result
 
 By default, the vocabularies are batched.
 However, you can pass the parameter `b_size=-1` to force the endpoint to return all the terms, instead of a batched response.
-
 
 ### Filter Vocabularies
 
@@ -165,7 +160,6 @@ Use the `tokens` parameter to filter vocabulary terms by a list of tokens:
 :language: http
 ```
 
-
 ## Get a source
 
 ```{eval-rst}
@@ -200,7 +194,6 @@ These cannot be enumerated using the `@sources` endpoint.
 It will respond with a corresponding error.
 ```
 
-
 ## Querying a query source
 
 ```{eval-rst}
@@ -227,7 +220,7 @@ The token is what should be sent to the server to address that term:
 ```
 
 ```{note}
-Technically, even though sources that implement `IQuerySource` are required to implement `__iter__` as well when strictly following the interface interitance hierarchy, they usually are used in Plone in situations where their full contents should not or cannot be enumerated.
+Technically, even though sources that implement `IQuerySource` are required to implement `__iter__` as well when strictly following the interface inheritance hierarchy, they usually are used in Plone in situations where their full contents should not or cannot be enumerated.
 For example, imagine a source of all users, backed by a large LDAP.
 
 For this reason, `plone.restapi` takes the stance that the `IQuerySource` interface is a strong indication that this source should *only* be queried, and therefore does not support enumeration of terms via the `@querysources` endpoint.

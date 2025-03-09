@@ -1,15 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <rolemap>
   <permissions>
-    <permission name="plone.restapi: Use REST API" acquire="True">
-      <role name="Anonymous"/>
+    <permission acquire="True"
+                name="plone.restapi: Use REST API"
+    >
+      <role name="Anonymous" />
     </permission>
-    <permission name="plone.restapi: Access Plone vocabularies" acquire="True">
-      <role name="Manager"/>
-      <role name="Site Administrator"/>
+    <permission acquire="True"
+                name="plone.restapi: Access Plone vocabularies"
+    >
+      <role name="Manager" />
+      <role name="Site Administrator" />
     </permission>
-    <permission name="plone.restapi: Access Plone user information" acquire="True">
-      <role name="Manager"/>
-      <role name="Site Administrator"/>
+    <permission acquire="True"
+                name="plone.restapi: Access Plone user information"
+    >
+      <role name="Manager" />
+      <role name="Site Administrator" />
     </permission>
   </permissions>
 </rolemap>

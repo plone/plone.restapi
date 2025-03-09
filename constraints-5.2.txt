@@ -1,0 +1,514 @@
+AccessControl==4.4
+Acquisition==4.13
+AuthEncoding==4.3
+BTrees==4.11.3
+Babel==2.9.1; python_version < "3.0"
+Babel==2.11.0; python_version >= "3.0"
+Chameleon==3.9.1; python_version < "3.0"
+Chameleon==3.10.2; python_version >= "3.0"
+DateTime==4.9
+Deprecated==1.2.13
+DocumentTemplate==3.4; python_version < "3.0"
+DocumentTemplate==4.1; python_version >= "3.0"
+ExtensionClass==4.9
+FormEncode==1.3.1; python_version < "3.0"
+FormEncode==2.0.1; python_version >= "3.0"
+Genshi==0.7.7
+GitPython==2.1.15
+Jinja2==2.11.3; python_version < "3.0"
+Jinja2==3.1.2; python_version >= "3.0"
+MarkupSafe==1.1.1; python_version < "3.0"
+MarkupSafe==2.1.1; python_version >= "3.0"
+Missing==4.2
+MultiMapping==4.1
+Paste==3.5.2
+PasteDeploy==2.1.1; python_version < "3.0"
+PasteDeploy==3.0.1; python_version >= "3.0"
+Persistence==3.6
+Plone==5.2.15
+Products.ATContentTypes==3.0.7; python_version < "3.0"
+Products.Archetypes==1.16.6; python_version < "3.0"
+Products.BTreeFolder2==4.4
+Products.CMFCore==2.7.1
+Products.CMFDiffTool==3.3.3
+Products.CMFDynamicViewFTI==6.0.3
+Products.CMFEditions==3.3.5
+Products.CMFFormController==4.1.4
+Products.CMFPlacefulWorkflow==2.0.4
+Products.CMFPlone==5.2.15
+Products.CMFQuickInstallerTool==4.0.4
+Products.CMFUid==3.5
+Products.DCWorkflow==2.7.0
+Products.DateRecurringIndex==3.0.1
+Products.ExtendedPathIndex==4.0.1
+Products.ExternalEditor==3.1.0
+Products.ExternalMethod==4.7
+Products.GenericSetup==2.3.0
+Products.MailHost==4.13
+Products.Marshall==2.4.1; python_version < "3.0"
+Products.MimetypesRegistry==2.1.9
+Products.PDBDebugMode==2.0
+Products.PloneLanguageTool==3.2.10
+Products.PlonePAS==6.0.8
+Products.PloneTestCase==0.9.18
+Products.PluggableAuthService==2.8.1
+Products.PluginRegistry==1.11
+Products.PortalTransforms==3.2.2
+Products.PrintingMailHost==1.1.6
+Products.PythonScripts==4.15
+Products.SecureMailHost==1.1.2
+Products.Sessions==4.15
+Products.SiteErrorLog==5.7
+Products.StandardCacheManagers==4.2
+Products.TemporaryFolder==5.3
+Products.TinyMCE==1.4.3; python_version < "3.0"
+Products.ZCatalog==5.4
+Products.ZODBMountPoint==1.3
+Products.ZSQLMethods==3.16
+Products.ZopeVersionControl==3.0.0
+Products.contentmigration==2.2.2; python_version < "3.0"
+Products.isurlinportal==1.2.1
+Products.statusmessages==5.0.5
+Products.validation==2.1.3
+PyGithub==1.45; python_version < "3.0"
+PyGithub==1.47; python_version >= "3.0"
+PyYAML==5.4.1
+Pygments==2.5.2; python_version < "3.0"
+Pygments==2.13.0; python_version >= "3.0"
+Record==3.6
+RestrictedPython==5.4
+SecretStorage==2.3.1; python_version < "3.0"
+SecretStorage==3.3.3; python_version >= "3.0"
+Sphinx==1.8.6
+WSGIProxy2==0.4.6; python_version < "3.0"
+WSGIProxy2==0.5.1; python_version >= "3.0"
+WebOb==1.8.7
+WebTest==2.0.35; python_version < "3.0"
+WebTest==3.0.0; python_version >= "3.0"
+ZConfig==3.6.1
+ZEO==5.3.0
+ZODB==5.8.0
+ZODB3==3.11.0
+ZServer==4.0.2; python_version < "3.0"
+Zope==4.8.10
+Zope2==4.0
+ZopeUndo==4.3
+alabaster==0.7.12
+appdirs==1.4.4
+archetypes.multilingual==3.0.9; python_version < "3.0"
+archetypes.referencebrowserwidget==2.5.11; python_version < "3.0"
+archetypes.schemaextender==3.0.2; python_version < "3.0"
+argcomplete==1.11.1
+argh==0.26.2
+args==0.1.0
+asn1crypto==1.3.0
+attrs==21.4.0
+backports.entry-points-selectable==1.1.1
+backports.functools-lru-cache==1.6.4
+beautifulsoup4==4.9.3; python_version < "3.0"
+beautifulsoup4==4.11.1; python_version >= "3.0"
+bleach==3.3.1
+borg.localrole==3.1.9
+build==0.1.0
+buildout.requirements==0.2.2
+buildout.wheel==0.2.0
+cachecontrol==0.12.6; python_version < "3.0"
+cachecontrol==0.12.11; python_version >= "3.0"
+cached-property==1.5.2
+calmjs.parse==1.2.5
+certifi==2020.4.5.1; python_version < "3.0"
+certifi==2022.12.7; python_version >= "3.0"
+cffi==1.15.1
+chardet==4.0.0; python_version < "3.0"
+chardet==5.1.0; python_version >= "3.0"
+check-manifest==0.41; python_version < "3.0"
+check-manifest==0.49; python_version >= "3.0"
+click==7.1.2
+click-default-group==1.2.2
+clint==0.5.1
+cmarkgfm==0.6.0
+collective.MockMailHost==2.0.0
+collective.js.jqueryui==2.1.8
+collective.monkeypatcher==1.2.1
+collective.recipe.cmd==0.11
+collective.recipe.omelette==1.1.0
+collective.recipe.sphinxbuilder==1.1
+collective.recipe.template==2.2
+collective.xmltestreport==2.0.2
+collective.z3cform.datagridfield==1.5.3
+collective.z3cform.datetimewidget==1.2.9
+colorama==0.4.6
+configparser==4.0.2
+contextlib2==0.6.0.post1
+coverage==5.5
+cryptography==3.3.2
+cssselect==1.1.0
+decorator==4.4.2
+diazo==1.5.0
+distlib==0.3.6
+distro==1.5.0
+docutils==0.15.2; python_version < "3.0"
+docutils==0.17.1; python_version >= "3.0"
+ecdsa==0.15
+entrypoints==0.3
+enum34==1.1.10
+fancycompleter==0.9.1
+feedparser==5.2.1; python_version < "3.0"
+feedparser==6.0.8; python_version >= "3.0"
+filelock==3.2.1; python_version < "3.0"
+filelock==3.9.0; python_version >= "3.0"
+five.customerize==2.1.0
+five.globalrequest==99.1
+five.intid==1.2.6
+five.localsitemanager==3.4
+freezegun==0.3.15
+funcsigs==1.0.2
+functools32==3.2.3.post2; python_version < "3.0"
+future==0.18.2
+futures==3.3.0; python_version < "3.0"
+gitdb==0.6.4
+gitdb2==2.0.6
+html5lib==1.1
+httplib2==0.21.0
+i18ndude==5.5.0
+icalendar==4.1.0
+idna==2.10; python_version < "3.0"
+idna==3.4; python_version >= "3.0"
+imagesize==1.4.1
+importlib-metadata==0.23
+importlib-resources==3.3.1
+incremental==17.5.0
+interlude==1.3.1
+ipaddress==1.0.23
+jsonschema==3.2.0
+keyring==4.1.1; python_version < "3.0"
+keyring==19.3.0; python_version >= "3.0"
+launchpadlib==1.10.18
+lazr.authentication==0.1.3
+lazr.restfulclient==0.14.5
+lazr.uri==1.0.6
+lockfile==0.12.2
+lxml==4.8.0
+manuel==1.10.1
+markdown==3.1.1; python_version < "3.0"
+markdown==3.2.2; python_version >= "3.0"
+mock==3.0.5; python_version < "3.0"
+mock==4.0.3; python_version >= "3.0"
+mockup==3.2.8
+mr.developer==2.0.1
+msgpack==0.6.2
+multipart==0.1.1; python_version < "3.0"
+multipart==0.2.4; python_version >= "3.0"
+nose==1.3.7
+nt-svcutils==2.13.0
+oauth==1.0.1
+oauthlib==3.1.0; python_version < "3.0"
+oauthlib==3.2.2; python_version >= "3.0"
+olefile==0.46
+ordereddict==1.1
+packaging==20.9; python_version < "3.0"
+packaging==22.0; python_version >= "3.0"
+pathlib==1.0.1
+pathlib2==2.3.7.post1
+pathtools==0.1.2
+pbr==5.11.0
+pdbpp==0.10.3
+pep517==0.9.1
+persistent==4.9.3
+piexif==1.1.3
+pillow==6.2.2
+pip==20.3.4; python_version < "3.0"
+pkginfo==1.8.3
+platformdirs==2.0.2
+plone.alterego==1.1.5
+plone.api==1.11.1
+plone.app.blob==1.8.2; python_version < "3.0"
+plone.app.blocks==5.2.2
+plone.app.caching==2.2.1
+plone.app.collection==1.2.8; python_version < "3.0"
+plone.app.content==3.8.10
+plone.app.contentlisting==2.0.8
+plone.app.contentmenu==2.3.4
+plone.app.contentrules==4.1.6
+plone.app.contenttypes==2.2.3
+plone.app.controlpanel==4.0.1; python_version < "3.0"
+plone.app.customerize==1.3.12
+plone.app.debugtoolbar==1.4.0
+plone.app.dexterity==2.6.11
+plone.app.discussion==3.4.9
+plone.app.drafts==1.1.3
+plone.app.event==3.2.14
+plone.app.folder==1.3.2
+plone.app.i18n==3.0.6
+plone.app.imaging==2.1.2; python_version < "3.0"
+plone.app.intid==1.1.4
+plone.app.iterate==4.0.3
+plone.app.layout==3.5.2
+plone.app.linkintegrity==3.6.2
+plone.app.locales==5.1.34
+plone.app.lockingbehavior==1.0.7
+plone.app.mosaic==2.2.5
+plone.app.multilingual==5.6.6
+plone.app.portlets==4.4.9
+plone.app.querystring==1.6.1
+plone.app.redirector==2.2.1
+plone.app.referenceablebehavior==0.7.9; python_version < "3.0"
+plone.app.registry==1.7.9
+plone.app.relationfield==2.0.3
+plone.app.robotframework==1.5.6
+plone.app.standardtiles==2.5.0
+plone.app.testing==6.1.9
+plone.app.textfield==1.3.7
+plone.app.theming==4.1.8
+plone.app.tiles==3.3.0
+plone.app.upgrade==2.1.8
+plone.app.users==2.6.8
+plone.app.uuid==2.0.2
+plone.app.versioningbehavior==1.4.6
+plone.app.viewletmanager==3.1.3
+plone.app.vocabularies==4.3.0
+plone.app.widgets==3.0.7
+plone.app.workflow==4.0.4
+plone.app.z3cform==3.2.5
+plone.autoform==1.9.1
+plone.batching==1.1.7
+plone.behavior==1.4.0
+plone.browserlayer==2.2.4
+plone.cachepurging==2.0.4
+plone.caching==1.2.2
+plone.contentrules==2.1.3
+plone.dexterity==2.10.5
+plone.event==1.4.2
+plone.folder==3.1.0
+plone.formwidget.autocomplete==1.4.1
+plone.formwidget.contenttree==1.2.0
+plone.formwidget.datetime==1.3.5
+plone.formwidget.namedfile==2.1.3
+plone.formwidget.querystring==1.1.10
+plone.formwidget.recurrence==2.1.5
+plone.i18n==4.0.7
+plone.indexer==1.0.7
+plone.intelligenttext==3.1.0
+plone.jsonserializer==0.9.11
+plone.keyring==3.2.1
+plone.locking==2.3.0
+plone.memoize==3.0.0
+plone.mockup==1.0
+plone.namedfile==5.6.1
+plone.outputfilters==4.1.0
+plone.portlet.collection==3.3.7
+plone.portlet.static==3.1.6
+plone.portlets==2.3.3
+plone.protect==4.1.8
+plone.recipe.alltests==1.5.2
+plone.recipe.command==1.1
+plone.recipe.precompiler==0.7.2
+plone.recipe.zeoserver==2.0.3
+plone.recipe.zope2instance==6.13.0
+plone.registry==1.2.1
+plone.releaser==1.8.9
+plone.reload==3.0.2
+plone.resource==2.1.4
+plone.resourceeditor==3.0.4
+plone.rest==3.0.1  # override
+plone.restapi==7.9.0
+plone.rfc822==2.0.2
+plone.scale==3.1.2
+plone.schema==1.4.0
+plone.schemaeditor==3.0.3
+plone.session==3.7.5
+plone.staticresources==1.4.6
+plone.stringinterp==1.3.3
+plone.subrequest==1.9.3
+plone.supermodel==1.6.5
+plone.synchronize==1.0.4
+plone.testing==8.0.3
+plone.theme==3.0.7
+plone.tiles==2.3.1
+plone.transformchain==2.0.2
+plone.uuid==1.0.6
+plone.versioncheck==1.8.1
+plone.z3cform==1.1.3
+plonetheme.barceloneta==2.1.11
+plonetheme.sunburst==1.5.5
+pluggy==0.13.1
+ply==3.11
+progress==1.6
+prompt-toolkit==1.0.18
+py==1.11.0
+pycparser==2.21
+pycrypto==2.6.1
+pyjwt==1.7.1
+pyparsing==2.4.7; python_version < "3.0"
+pyparsing==3.0.9; python_version >= "3.0"
+pyrepl==0.9.0
+pyroma==2.6.1; python_version < "3.0"
+pyroma==3.3; python_version >= "3.0"
+pyrsistent==0.15.7
+pyscss==1.3.7
+python-dateutil==2.8.2
+python-dotenv==0.18.0; python_version < "3.0"
+python-dotenv==0.21.0; python_version >= "3.0"
+python-gettext==4.1
+pytz==2022.7
+readme-renderer==28.0
+repoze.xmliter==0.6.1
+requests==2.27.1; python_version < "3.0"
+requests==2.28.1; python_version >= "3.0"
+requests-toolbelt==0.10.1
+robotframework==3.1.2
+robotframework-debuglibrary==1.2.1
+robotframework-python3==2.9
+robotframework-ride==1.7.4.1
+robotframework-selenium2library==3.0.0
+robotframework-selenium2screenshots==0.8.1
+robotframework-seleniumlibrary==3.3.1
+robotsuite==2.2.1
+roman==3.3
+scandir==1.10.0
+selenium==3.141.0
+setuptools==42.0.2; python_version < "3.0"
+setuptools==65.7.0; python_version >= "3.0"
+shutilwhich==1.1.0
+simplejson==3.18.1
+singledispatch==3.7.0
+six==1.16.0
+smmap==3.0.5
+smmap2==3.0.1
+snowballstemmer==2.2.0
+soupsieve==1.9.6; python_version < "3.0"
+soupsieve==2.3.2.post1; python_version >= "3.0"
+sourcecodegen==0.6.14; python_version < "3.0"
+sphinx-rtd-theme==1.1.1
+stdlib-list==0.8.0
+tempstorage==5.2
+testresources==2.0.1
+toml==0.10.2
+towncrier==19.2.0
+tox==3.28.0
+tqdm==4.64.1
+transaction==3.0.1
+trollius==2.2.post1; python_version < "3.0"
+twine==1.15.0; python_version < "3.0"
+twine==3.3.0; python_version >= "3.0"
+typing==3.10.0.0; python_version < "3.0"
+unidecode==0.04.1
+urllib3==1.26.13
+virtualenv==20.15.1
+wadllib==1.3.6
+waitress==1.4.4; python_version < "3.0"
+waitress==2.1.2; python_version >= "3.0"
+watchdog==0.10.6; python_version < "3.0"
+watchdog==1.0.2; python_version >= "3.0"
+wcwidth==0.1.9
+webencodings==0.5.1
+wheel==0.37.1; python_version < "3.0"
+wheel==0.38.4; python_version >= "3.0"
+wmctrl==0.3
+wrapt==1.12.1
+wxPython==4.0.7.post2; python_version < "3.0"
+wxPython==4.1.1; python_version >= "3.0"
+z3c.autoinclude==0.4.1
+z3c.batching==2.2
+z3c.blobfile==0.1.5
+z3c.caching==2.2
+z3c.checkversions==1.2
+z3c.dependencychecker==2.7; python_version < "3.0"
+z3c.dependencychecker==2.8; python_version >= "3.0"
+z3c.form==3.7.1
+z3c.formwidget.query==1.0.0
+z3c.jbot==1.1.1
+z3c.objpath==1.3
+z3c.pt==3.3.1
+z3c.relationfield==0.9.0
+z3c.template==3.2
+z3c.unconfigure==1.1
+z3c.zcmlhook==1.1
+zExceptions==4.3
+zc.buildout==2.13.8; python_version < "3.0"
+zc.buildout==3.0.1; python_version >= "3.0"
+zc.lockfile==2.0
+zc.recipe.egg==2.0.7
+zc.recipe.testrunner==2.2
+zc.relation==1.1.post2
+zc.relationship==2.0.post1
+zc.sourcefactory==1.1
+zdaemon==4.4
+zest.pocompile==1.6.0
+zest.releaser==6.22.2
+zestreleaser.towncrier==1.2.0
+zipp==1.2.0
+zodbpickle==2.6
+zodbupdate==1.5
+zodbverify==1.2.0
+zope.annotation==4.8
+zope.app.intid==3.7.1
+zope.app.locales==4.3
+zope.browser==2.4
+zope.browsermenu==4.4
+zope.browserpage==4.4.0
+zope.browserresource==4.4
+zope.cachedescriptors==4.4
+zope.component==4.6.2
+zope.componentvocabulary==2.3.0
+zope.configuration==4.4.1
+zope.container==4.10; python_version < "3.0"
+zope.container==5.1; python_version >= "3.0"
+zope.contentprovider==4.2.1
+zope.contenttype==4.6
+zope.copy==4.3
+zope.copypastemove==4.2.1
+zope.datetime==4.3.0
+zope.deferredimport==4.4
+zope.deprecation==4.4.0
+zope.dottedname==4.3; python_version < "3.0"
+zope.dottedname==5.0; python_version >= "3.0"
+zope.dublincore==4.3.0
+zope.event==4.6
+zope.exceptions==4.6
+zope.filerepresentation==5.0.0
+zope.formlib==5.0.1
+zope.globalrequest==1.6
+zope.hookable==5.4
+zope.i18n==4.9.0
+zope.i18nmessageid==5.1.1
+zope.interface==5.5.2
+zope.intid==4.4.0
+zope.keyreference==4.2.0
+zope.lifecycleevent==4.4
+zope.location==4.3
+zope.mkzeoinstance==4.1
+zope.pagetemplate==4.6.0
+zope.password==4.4
+zope.processlifetime==2.4
+zope.proxy==4.6.1
+zope.ptresource==4.3.0
+zope.publisher==6.1.0
+zope.ramcache==2.4
+zope.schema==6.2.1
+zope.security==5.8
+zope.sendmail==5.3
+zope.sequencesort==4.2
+zope.site==4.6.1
+zope.size==4.4
+zope.structuredtext==4.4
+zope.tal==4.5
+zope.tales==5.2
+zope.testbrowser==5.6.1
+zope.testing==4.10
+zope.testrunner==5.6
+zope.traversing==4.4.1
+zope.viewlet==4.3
+charset-normalizer==2.1.1; python_version >= "3.0"
+jeepney==0.8.0; python_version >= "3.0"
+rfc3986==2.0.0; python_version >= "3.0"
+sgmllib3k==1.0.0; python_version >= "3.0"
+sphinxcontrib-applehelp==1.0.2; python_version >= "3.0"
+sphinxcontrib-devhelp==1.0.2; python_version >= "3.0"
+sphinxcontrib-htmlhelp==2.0.0; python_version >= "3.0"
+sphinxcontrib-jsmath==1.0.1; python_version >= "3.0"
+sphinxcontrib-qthelp==1.0.3; python_version >= "3.0"
+sphinxcontrib-serializinghtml==1.1.5; python_version >= "3.0"
+sphinxcontrib-websupport==1.2.4; python_version >= "3.0"
+tomli==2.0.1; python_version >= "3.0"
+typing-extensions==4.4.0; python_version >= "3.0"

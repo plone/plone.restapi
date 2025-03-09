@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.users.browser.register import getRegisterSchema
 from plone.app.users.browser.userdatapanel import getUserDataSchema
 from plone.restapi.serializer.converters import json_compatible

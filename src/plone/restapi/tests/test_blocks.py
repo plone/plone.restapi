@@ -2,6 +2,7 @@ from plone.dexterity.interfaces import IDexterityFTI
 from plone.restapi.blocks import visit_blocks
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import queryUtility
+
 import unittest
 
 

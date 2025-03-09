@@ -17,12 +17,12 @@ from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
-from plone.restapi.services.locking import lock_info
 from plone.restapi.serializer.utils import get_portal_type_title
+from plone.restapi.services.locking import lock_info
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.interfaces import IContentish
+from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import ComponentLookupError
 from zope.component import getMultiAdapter

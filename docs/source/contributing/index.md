@@ -60,7 +60,7 @@ Include them in the documentation using MyST syntax.
 Build the documentation locally to test the rendering.
 
 ```shell
-make docs-html
+make docs-livehtml
 ```
 
 Add and commit the generated files in `src/plone/restapi/tests/http-examples/`.

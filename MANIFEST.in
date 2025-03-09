@@ -1,6 +1,6 @@
 graft src/plone/restapi
 graft docs
-include *.rst
+include *.md
 include *.txt
 exclude *.cfg
 exclude *.yml
@@ -12,10 +12,11 @@ exclude .editorconfig
 exclude .flake8
 exclude Dockerfile
 exclude Makefile
-exclude bootstrap-buildout.py
 exclude CODEOWNERS
 exclude docs/make.bat
 exclude .python-version
+exclude constraints-mxdev.txt
+exclude requirements-mxdev.txt
 recursive-exclude docs/doctrees *
 recursive-exclude docs/html *
 recursive-exclude performance *
@@ -28,5 +29,4 @@ global-exclude *.pyc
 include pyproject.toml
 include netlify.toml
 prune ideas
-exclude test-no-sphinx-warnings
 exclude test-no-uncommitted-doc-changes

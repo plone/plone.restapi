@@ -124,7 +124,7 @@ if HAS_PLONE_6:
 
     @implementer(textindexer.IDynamicTextIndexExtender)
     @adapter(IBlocks)
-    class BlocksSearchableTextExtender(object):
+    class BlocksSearchableTextExtender:
         def __init__(self, context):
             self.context = context
 

@@ -7,9 +7,9 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi import HAS_MULTILINGUAL
 from plone.restapi.bbb import ILanguage
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
 

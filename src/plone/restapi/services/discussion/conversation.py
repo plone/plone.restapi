@@ -2,7 +2,8 @@ from datetime import datetime
 from plone.app.discussion.browser.comment import EditCommentForm
 from plone.app.discussion.browser.comments import CommentForm
 from plone.app.discussion.interfaces import IConversation
-from plone.restapi.deserializer import json_body, parse_int
+from plone.restapi.deserializer import json_body
+from plone.restapi.deserializer import parse_int
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.discussion.utils import can_delete
