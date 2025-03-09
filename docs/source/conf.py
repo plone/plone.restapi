@@ -10,6 +10,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+from importlib.metadata import version
+
 import datetime
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -34,9 +36,7 @@ copyright = "2014-%s, Plone Foundation" % thisyear
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-# TODO: There must be a way to import this from `setup.py` so we don't have to
-# update it manually for each release.
-version = "9.7.2.dev0"
+version = release = version("plone.restapi")
 release = version
 
 # -- General configuration ----------------------------------------------------
