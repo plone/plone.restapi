@@ -9,14 +9,15 @@ from Products.CMFPlone.controlpanel.browser.redirects import RedirectsControlPan
 from Products.statusmessages.interfaces import IStatusMessage
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
-from zope.component.hooks import getSite
 from zope.component import getUtility
+from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-import plone.protect.interfaces
 import logging
+import plone.protect.interfaces
+
 
 logger = logging.getLogger(__name__)
 

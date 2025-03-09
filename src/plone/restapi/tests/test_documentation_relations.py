@@ -5,12 +5,13 @@ from plone.app.vocabularies.catalog import StaticCatalogVocabulary
 from plone.restapi.services.relations import api_relation_create
 from plone.restapi.services.relations.get import getStaticCatalogVocabularyQuery
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.tests.test_documentation import TestDocumentationBase
 from plone.restapi.tests.test_documentation import save_request_and_response_for_docs
+from plone.restapi.tests.test_documentation import TestDocumentationBase
 from zope.component import provideUtility
 from zope.schema.interfaces import IVocabularyFactory
 
 import transaction
+
 
 try:
     from Products.CMFPlone.relationhelper import rebuild_relations
@@ -91,25 +92,21 @@ class TestRelationsDocumentation(TestDocumentationBase):
     def test_documentation_GET_relations(self):
         if api_relation_create:
             self.assertEqual(
-                set(
-                    [
-                        relationvalue.to_object
-                        for relationvalue in api.relation.get(
-                            source=self.doc1, relationship="comprisesComponentPart"
-                        )
-                    ]
-                ),
+                {
+                    relationvalue.to_object
+                    for relationvalue in api.relation.get(
+                        source=self.doc1, relationship="comprisesComponentPart"
+                    )
+                },
                 {self.doc2, self.doc3},
             )
             self.assertEqual(
-                set(
-                    [
-                        relationvalue.to_object
-                        for relationvalue in api.relation.get(
-                            source=self.doc1, relationship="relatedItems"
-                        )
-                    ]
-                ),
+                {
+                    relationvalue.to_object
+                    for relationvalue in api.relation.get(
+                        source=self.doc1, relationship="relatedItems"
+                    )
+                },
                 {self.doc3},
             )
 

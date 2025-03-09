@@ -19,11 +19,11 @@ Content-Type: application/json+schema
             "behavior": "plone",
             "description": "",
             "fields": [
-                "allow_discussion",
                 "exclude_from_nav",
                 "id",
                 "versioning_enabled",
-                "table_of_contents"
+                "table_of_contents",
+                "allow_discussion"
             ],
             "id": "settings",
             "title": "Settings"
@@ -73,7 +73,7 @@ Content-Type: application/json+schema
     ],
     "properties": {
         "allow_discussion": {
-            "behavior": "plone.allowdiscussion",
+            "behavior": "plone.app.discussion.behavior.IAllowDiscussion",
             "choices": [
                 [
                     "True",

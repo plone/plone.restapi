@@ -310,11 +310,11 @@ class TUSUpload:
         self._metadata = None
 
         if metadata is not None:
-            self.initalize(metadata)
+            self.initialize(metadata)
 
         self._file = None
 
-    def initalize(self, metadata):
+    def initialize(self, metadata):
         """Initialize a new TUS upload by writing its metadata to disk."""
         self.cleanup_expired()
         with open(self.metadata_path, "w") as f:

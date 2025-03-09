@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from DateTime import DateTime
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -8,9 +7,9 @@ from transaction import commit
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 
-import unittest
 import os
 import time
+import unittest
 
 
 class TestPublicationFields(unittest.TestCase):

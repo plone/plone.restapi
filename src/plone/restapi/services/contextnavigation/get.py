@@ -1,5 +1,4 @@
-""" A flexible navigation service that uses class navigation portlet semantics
-"""
+"""A flexible navigation service that uses class navigation portlet semantics"""
 
 from Acquisition import aq_base
 from Acquisition import aq_inner
@@ -7,10 +6,10 @@ from Acquisition import aq_parent
 from collections import UserDict
 from plone import api
 from plone.app.layout.navigation.navtree import buildFolderTree
-from plone.restapi.bbb import get_navigation_root
 from plone.i18n.normalizer.interfaces import IIDNormalizer
 from plone.memoize.instance import memoize
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import get_navigation_root
 from plone.restapi.bbb import INavigationRoot
 from plone.restapi.bbb import INavigationSchema
 from plone.restapi.bbb import INonStructuralFolder

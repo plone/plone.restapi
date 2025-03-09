@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-12-22 19:57+0000\n"
+"POT-Creation-Date: 2025-03-07 17:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,104 +21,108 @@ msgstr ""
 msgid "${field_name} is a required field. Setting it to null is not allowed."
 msgstr ""
 
-#: plone/restapi/services/email_send/post.py:88
+#: plone/restapi/services/email_send/post.py:89
 msgid "${sender_fullname} via ${portal_title}"
 msgstr ""
 
-#: plone/restapi/services/email_send/post.py:81
+#: plone/restapi/services/email_send/post.py:82
 msgid "A portal user via ${portal_title}"
 msgstr ""
 
-#: plone/restapi/configure.zcml:73
+#: plone/restapi/configure.zcml:74
 msgid "Adds sample content for performance testing"
 msgstr ""
 
-#: plone/restapi/configure.zcml:56
+#: plone/restapi/configure.zcml:57
 msgid "Adds sample content types for testing"
 msgstr ""
 
-#: plone/restapi/configure.zcml:65
+#: plone/restapi/configure.zcml:66
 msgid "Adds sample workflows for testing"
 msgstr ""
 
-#: plone/restapi/services/aliases/add.py:107
+#: plone/restapi/services/aliases/add.py:150
 msgid "Alternative urls that point to themselves will cause an endless cycle of redirects."
 msgstr ""
 
-#: plone/restapi/configure.zcml:116
+#: plone/restapi/configure.zcml:117
 msgid "Blocks"
 msgstr ""
 
-#: plone/restapi/configure.zcml:123
+#: plone/restapi/configure.zcml:124
 msgid "Blocks (Editable Layout)"
 msgstr ""
 
-#: plone/restapi/configure.zcml:123
+#: plone/restapi/services/users/update.py:117
+msgid "Cannot update login name of user to '${new_email}'."
+msgstr ""
+
+#: plone/restapi/configure.zcml:124
 msgid "Enables Volto Blocks (editable layout) support"
 msgstr ""
 
-#: plone/restapi/configure.zcml:116
+#: plone/restapi/configure.zcml:117
 msgid "Enables Volto Blocks support"
 msgstr ""
 
-#: plone/restapi/configure.zcml:81
+#: plone/restapi/configure.zcml:82
 msgid "Enables blocks on the Document content type"
 msgstr ""
 
-#: plone/restapi/services/contextnavigation/get.py:136
+#: plone/restapi/services/contextnavigation/get.py:135
 msgid "Enter a valid scale name (see 'Image Handling' control panel) to override (e.g. icon, tile, thumb, mini, preview, ... ). Leave empty to use default (see 'Site' control panel)."
 msgstr ""
 
-#: plone/restapi/services/users/add.py:163
+#: plone/restapi/services/users/add.py:164
 msgid "Error in fields. ${errors_to_string}"
 msgstr ""
 
 #. Default: "The reset_token is expired."
-#: plone/restapi/services/users/add.py:319
+#: plone/restapi/services/users/add.py:320
 msgid "Expired Token"
 msgstr ""
 
-#: plone/restapi/services/contextnavigation/get.py:129
+#: plone/restapi/services/contextnavigation/get.py:128
 msgid "If enabled, the portlet will not show document type icons."
 msgstr ""
 
-#: plone/restapi/services/contextnavigation/get.py:148
+#: plone/restapi/services/contextnavigation/get.py:147
 msgid "If enabled, the portlet will not show thumbs."
 msgstr ""
 
-#: plone/restapi/services/users/add.py:296
+#: plone/restapi/services/users/add.py:297
 msgid "If you pass 'old_password' you have to pass 'new_password'"
 msgstr ""
 
-#: plone/restapi/services/users/add.py:290
+#: plone/restapi/services/users/add.py:291
 msgid "If you pass 'reset_token' you have to pass 'new_password'"
 msgstr ""
 
-#: plone/restapi/behaviors.py:23
+#: plone/restapi/behaviors.py:31
 msgid "Layout"
 msgstr ""
 
-#: plone/restapi/services/contextnavigation/get.py:197
+#: plone/restapi/services/contextnavigation/get.py:196
 msgid "Navigation"
 msgstr ""
 
-#: plone/restapi/services/contextnavigation/get.py:135
+#: plone/restapi/services/contextnavigation/get.py:134
 msgid "Override thumb scale"
 msgstr ""
 
-#: plone/restapi/services/users/add.py:97
+#: plone/restapi/services/users/add.py:98
 msgid "Property '${fieldname}' is not allowed."
 msgstr ""
 
-#: plone/restapi/services/users/add.py:87
+#: plone/restapi/services/users/add.py:88
 msgid "Property '${fieldname}' is required."
 msgstr ""
 
-#: plone/restapi/configure.zcml:89
+#: plone/restapi/configure.zcml:90
 msgid "RESTful hypermedia API for Plone - Uninstall"
 msgstr ""
 
-#: plone/restapi/configure.zcml:47
+#: plone/restapi/configure.zcml:48
 msgid "RESTful hypermedia API for Plone."
 msgstr ""
 
@@ -126,75 +130,75 @@ msgstr ""
 msgid "Reverted to revision ${version}"
 msgstr ""
 
-#: plone/restapi/services/users/add.py:48
+#: plone/restapi/services/users/add.py:49
 msgid "Roles"
 msgstr ""
 
-#: plone/restapi/services/users/add.py:357
+#: plone/restapi/services/users/add.py:360
 msgid "See the user endpoint documentation for the valid parameters."
 msgstr ""
 
-#: plone/restapi/services/contextnavigation/get.py:128
+#: plone/restapi/services/contextnavigation/get.py:127
 msgid "Suppress Icons"
 msgstr ""
 
-#: plone/restapi/services/contextnavigation/get.py:147
+#: plone/restapi/services/contextnavigation/get.py:146
 msgid "Suppress thumbs"
 msgstr ""
 
-#: plone/restapi/services/users/add.py:349
+#: plone/restapi/services/users/add.py:352
 msgid "The password passed as 'old_password' is wrong."
 msgstr ""
 
-#: plone/restapi/services/users/add.py:314
+#: plone/restapi/services/users/add.py:315
 msgid "The reset_token is unknown/not valid."
 msgstr ""
 
-#: plone/restapi/configure.zcml:81
+#: plone/restapi/configure.zcml:82
 msgid "Volto Blocks"
 msgstr ""
 
-#: plone/restapi/services/users/update.py:151
+#: plone/restapi/services/users/update.py:182
 msgid "You are not authorized to perform this action"
 msgstr ""
 
-#: plone/restapi/services/email_send/post.py:98
+#: plone/restapi/services/email_send/post.py:99
 msgid "You are receiving this mail because ${sender_fullname} sent this message via the site ${portal_title}:"
 msgstr ""
 
-#: plone/restapi/services/users/add.py:114
+#: plone/restapi/services/users/add.py:115
 msgid "You can't send both password and sendPasswordReset."
 msgstr ""
 
-#: plone/restapi/services/users/add.py:329
+#: plone/restapi/services/users/add.py:330
 msgid "You can't set a password without a password reset token."
 msgstr ""
 
-#: plone/restapi/services/users/update.py:120
+#: plone/restapi/services/users/update.py:137
 msgid "You can't update roles of this user"
 msgstr ""
 
-#: plone/restapi/services/users/update.py:157
+#: plone/restapi/services/users/update.py:188
 msgid "You can't update the properties of this user"
 msgstr ""
 
-#: plone/restapi/services/users/update.py:94
+#: plone/restapi/services/users/update.py:93
 msgid "You can't update this user"
 msgstr ""
 
-#: plone/restapi/services/users/add.py:284
+#: plone/restapi/services/users/add.py:285
 msgid "You can't use 'reset_token' and 'old_password' together."
 msgstr ""
 
-#: plone/restapi/services/users/add.py:109
+#: plone/restapi/services/users/add.py:110
 msgid "You have to either send a password or sendPasswordReset."
 msgstr ""
 
-#: plone/restapi/services/users/add.py:154
+#: plone/restapi/services/users/add.py:155
 msgid "You need AddPortalMember permission."
 msgstr ""
 
-#: plone/restapi/services/users/add.py:336
+#: plone/restapi/services/users/add.py:337
 msgid "You need to be logged in as the user '${username}' to set the password."
 msgstr ""
 
@@ -204,78 +208,78 @@ msgid "dependency_missing"
 msgstr ""
 
 #. Default: "If selected, the navigation tree will only show the current folder and its children at all times."
-#: plone/restapi/services/contextnavigation/get.py:87
+#: plone/restapi/services/contextnavigation/get.py:86
 msgid "help_current_folder_only"
 msgstr ""
 
 #. Default: "Whether or not to show the top, or 'root', node in the navigation tree. This is affected by the 'Start level' setting."
-#: plone/restapi/services/contextnavigation/get.py:72
+#: plone/restapi/services/contextnavigation/get.py:71
 msgid "help_include_top_node"
 msgstr ""
 
 #. Default: "You may search for and choose a folder to act as the root of the navigation tree. Leave blank to use the Plone site root."
-#: plone/restapi/services/contextnavigation/get.py:61
+#: plone/restapi/services/contextnavigation/get.py:60
 msgid "help_navigation_root"
 msgstr ""
 
 #. Default: "An integer value that specifies the number of folder levels below the site root that must be exceeded before the navigation tree will display. 0 means that the navigation tree should be displayed everywhere including pages in the root of the site. 1 means the tree only shows up inside folders located in the root and downwards, never showing at the top level."
-#: plone/restapi/services/contextnavigation/get.py:99
+#: plone/restapi/services/contextnavigation/get.py:98
 msgid "help_navigation_start_level"
 msgstr ""
 
 #. Default: "The title of the navigation tree."
-#: plone/restapi/services/contextnavigation/get.py:52
+#: plone/restapi/services/contextnavigation/get.py:51
 msgid "help_navigation_title"
 msgstr ""
 
 #. Default: "How many folders should be included before the navigation tree stops. 0 means no limit. 1 only includes the root folder."
-#: plone/restapi/services/contextnavigation/get.py:116
+#: plone/restapi/services/contextnavigation/get.py:115
 msgid "help_navigation_tree_depth"
 msgstr ""
 
 #. Default: "Only show the contents of the current folder."
-#: plone/restapi/services/contextnavigation/get.py:83
+#: plone/restapi/services/contextnavigation/get.py:82
 msgid "label_current_folder_only"
 msgstr ""
 
 #. Default: "Include top node"
-#: plone/restapi/services/contextnavigation/get.py:71
+#: plone/restapi/services/contextnavigation/get.py:70
 msgid "label_include_top_node"
 msgstr ""
 
 #. Default: "Root node"
-#: plone/restapi/services/contextnavigation/get.py:60
+#: plone/restapi/services/contextnavigation/get.py:59
 msgid "label_navigation_root_path"
 msgstr ""
 
 #. Default: "Start level"
-#: plone/restapi/services/contextnavigation/get.py:98
+#: plone/restapi/services/contextnavigation/get.py:97
 msgid "label_navigation_startlevel"
 msgstr ""
 
 #. Default: "Title"
-#: plone/restapi/services/contextnavigation/get.py:51
+#: plone/restapi/services/contextnavigation/get.py:50
 msgid "label_navigation_title"
 msgstr ""
 
 #. Default: "Navigation tree depth"
-#: plone/restapi/services/contextnavigation/get.py:115
+#: plone/restapi/services/contextnavigation/get.py:114
 msgid "label_navigation_tree_depth"
 msgstr ""
 
-#: plone/restapi/configure.zcml:47
+#: plone/restapi/configure.zcml:48
 msgid "plone.restapi"
 msgstr ""
 
-#: plone/restapi/configure.zcml:73
+#: plone/restapi/configure.zcml:74
 msgid "plone.restapi performance testing"
 msgstr ""
 
-#: plone/restapi/configure.zcml:56
+#: plone/restapi/configure.zcml:57
 msgid "plone.restapi testing"
 msgstr ""
 
-#: plone/restapi/configure.zcml:65
+#: plone/restapi/configure.zcml:66
 msgid "plone.restapi testing-workflows"
 msgstr ""
 

@@ -15,7 +15,7 @@ from zope.interface import implementer
 
 @implementer(IDexterityContent)
 class FakeDXContext:
-    """Fake DX content class, so we can re-use the DX field serializers"""
+    """Fake DX content class, so we can reuse the DX field serializers"""
 
 
 def rule_schema_as_json(schema, request):

@@ -74,7 +74,7 @@ For every link [Postman] has prepared, another request sharing the same headers 
 {{ postman_response }}
 
 ```{admonition} Conclusion
-You can now explore the whole stucture of your application easily via the API using `GET` requests.
+You can now explore the whole structure of your application easily via the API using `GET` requests.
 ```
 
 (rest-api-onboarding-glossary)=

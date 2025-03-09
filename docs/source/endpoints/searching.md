@@ -16,8 +16,8 @@ GET /plone/@search HTTP/1.1
 Accept: application/json
 ```
 
-A search is *contextual* by default.
-In other words, it is bound to a specific context—a *collection* in HTTP REST terms—and searches within that collection and any sub-collections.
+A search is _contextual_ by default.
+In other words, it is bound to a specific context—a _collection_ in HTTP REST terms—and searches within that collection and any sub-collections.
 
 A Plone site is also a collection.
 We therefore have a global search by invoking the `/@search` endpoint on the site root.
@@ -173,7 +173,7 @@ To retrieve all metadata columns that the catalog knows about, use `metadata_fie
 There is a difference between the full set of fields contained in an object and the set of all possible metadata columns that can be specified with `metadata_fields`.
 In other words, using `metadata_fields=_all` will produce objects with a set of fields that is generally smaller than the set of fields produced by `fullobjects` (see next section).
 Briefly, the fields in `metadata_fields=_all` are a subset of `fullobjects`.
-A consequence of this is that certain fields can not be specifed with `metadata_fields`.
+A consequence of this is that certain fields can not be specified with `metadata_fields`.
 Doing so will result in a TypeError `"No converter for making <...> JSON compatible."`
 In [ZCatalog](https://zope.readthedocs.io/en/latest/zopebook/SearchingZCatalog.html) terms, this reflects the difference between *catalog brains* and objects that have been *woken up*.
 ```

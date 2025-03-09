@@ -360,7 +360,7 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
                 }
             }
 
-        # Unamed ISource or vocabulary - render link addressing it via field
+        # Unnamed ISource or vocabulary - render link addressing it via field
         #
         # Even though the URL will point to the @sources endpoint, we also
         # list it under the 'vocabulary' key, because the semantics for an
