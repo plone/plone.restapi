@@ -1,6 +1,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
+import pathlib
 import sys
 
 
@@ -8,35 +9,16 @@ version = "9.11.1.dev0"
 
 if sys.version_info.major == 2:
     raise ValueError(
-        "plone.restapi 8 requires Python 3. "
+        "plone.restapi 10 requires Python 3. "
         "Please downgrade to plone.restapi 7 for Python 2 and Plone 4.3/5.1."
     )
 
 
-def read(filename):
-    with open(filename) as myfile:
-        try:
-            return myfile.read()
-        except UnicodeDecodeError:
-            # Happens on one Jenkins node on Python 3.6,
-            # so maybe it happens for users too.
-            pass
-    # Opening and reading as text failed, so retry opening as bytes.
-    with open(filename, "rb") as myfile:
-        contents = myfile.read()
-        return contents.decode("utf-8")
-
-
-long_description = (
-    read("README.rst")
-    + "\n"
-    + "Contributors\n"
-    + "============\n"
-    + "\n"
-    + read("CONTRIBUTORS.rst")
-    + "\n"
-    + read("CHANGES.rst")
-    + "\n"
+long_description = "\n".join(
+    [
+        pathlib.Path(filename).read_text()
+        for filename in ("README.md", "CONTRIBUTORS.md", "CHANGES.md")
+    ]
 )
 
 TEST_REQUIRES = [
@@ -45,11 +27,12 @@ TEST_REQUIRES = [
     "plone.app.contenttypes[test]",
     "plone.app.iterate",
     "plone.app.discussion[test]",
+    "plone.app.multilingual",
     "plone.app.testing",
     "plone.app.upgrade",
     "plone.api",
+    "plone.rest>=3.0.1",
     "requests",
-    "mock",
 ]
 
 setup(
@@ -57,6 +40,7 @@ setup(
     version=version,
     description="plone.restapi is a RESTful hypermedia API for Plone.",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     # Get more strings from
     # https://pypi.org/classifiers/
     classifiers=[
@@ -66,6 +50,7 @@ setup(
         "Framework :: Plone :: 5.2",
         "Framework :: Plone :: 6.0",
         "Framework :: Plone :: 6.1",
+        # "Framework :: Plone :: 6.2",
         "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
@@ -91,7 +76,6 @@ setup(
     zip_safe=False,
     install_requires=[
         "setuptools",
-        "importlib-metadata; python_version<'3.8'",
         "python-dateutil",
         "plone.rest",  # json renderer moved to plone.restapi
         "plone.schema>=1.2.1",  # new/fixed json field
@@ -102,6 +86,8 @@ setup(
     extras_require={"test": TEST_REQUIRES},
     entry_points="""
       # -*- Entry points: -*-
+      [console_scripts]
+      update_restapi_locales = plone.restapi.locales.update:update_locale
       [z3c.autoinclude.plugin]
       target = plone
       """,

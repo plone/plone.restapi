@@ -14,12 +14,13 @@ from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
+from zope.interface import alsoProvides
 from zope.intid.interfaces import IIntIds
 from zope.intid.interfaces import IntIdMissingError
-from zope.interface import alsoProvides
 from zope.schema.interfaces import IVocabularyFactory
 
 import plone.protect.interfaces
+
 
 MAX = 2500
 

@@ -1,6 +1,6 @@
 from plone.registry.interfaces import IRegistry
-from plone.restapi.bbb import ISearchSchema
 from plone.restapi.bbb import get_navigation_root
+from plone.restapi.bbb import ISearchSchema
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName

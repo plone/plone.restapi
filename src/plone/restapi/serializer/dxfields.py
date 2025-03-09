@@ -214,7 +214,7 @@ class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
 @implementer(IFieldSerializer)
 class DateTimeFieldSerializer(DefaultFieldSerializer):
     def get_value(self, default=None):
-        value = super(DateTimeFieldSerializer, self).get_value(default=default)
+        value = super().get_value(default=default)
         if value and self.field.interface == IPublication:
             # We want the dates with full tz infos
             # default value is taken from

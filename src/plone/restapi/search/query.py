@@ -16,7 +16,7 @@ Index types used in a default Plone 4.3:
 - DateRangeIndex
 - ExtendedPathIndex
 - FieldIndex
-- GopipIndex (not queriable)
+- GopipIndex (not queryable)
 - KeywordIndex
 - UUIDIndex
 - ZCTextIndex

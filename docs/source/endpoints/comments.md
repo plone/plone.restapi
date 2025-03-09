@@ -97,7 +97,7 @@ If the creation of the comment has been successful, the server will respond with
 ## Updating a Comment
 
 ```{note}
-The permission to update a comment is, by default, only granted to the creater (owner role) of the comment.
+The permission to update a comment is, by default, only granted to the creator (owner role) of the comment.
 ```
 
 An existing comment can be updated by sending a `PATCH` request to the URL of the comment.

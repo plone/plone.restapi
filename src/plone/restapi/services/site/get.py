@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.event.base import FALLBACK_TIMEZONE
 from plone.app.event.base import replacement_zones
 from plone.event.utils import default_timezone as fallback_default_timezone
@@ -9,8 +8,8 @@ from plone.restapi.bbb import IImagingSchema
 from plone.restapi.bbb import ISiteSchema
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
-from Products.CMFPlone.utils import getSiteLogo
 from Products.CMFPlone.controlpanel.browser.redirects import RedirectionSet
+from Products.CMFPlone.utils import getSiteLogo
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility

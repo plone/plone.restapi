@@ -27,8 +27,7 @@ upgrade-guide
 contributing/index
 ```
 
-```{eval-rst}
-.. include:: ../../README.rst
+```{include} ../../README.md
 ```
 
 ## Appendix and Glossary

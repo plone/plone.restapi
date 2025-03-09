@@ -1,8 +1,6 @@
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from plone.app.dexterity.behaviors.nextprevious import (
-    INextPreviousProvider,
-)
+from plone.app.dexterity.behaviors.nextprevious import INextPreviousProvider
 from plone.restapi.serializer.utils import get_portal_type_title
 
 

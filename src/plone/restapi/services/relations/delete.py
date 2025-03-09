@@ -1,10 +1,11 @@
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
-from plone.restapi.services.relations import plone_api_content_get
 from plone.restapi.services.relations import api_relation_delete
+from plone.restapi.services.relations import plone_api_content_get
 from zope.interface import alsoProvides
-import plone.protect.interfaces
+
 import logging
+import plone.protect.interfaces
 
 
 log = logging.getLogger(__name__)
