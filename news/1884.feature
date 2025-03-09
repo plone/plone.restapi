@@ -1,1 +1,1 @@
-Added `is_multilingual` to @site endpoint. @sneridagh
+Added `multilingual` feature to @site endpoint. @sneridagh

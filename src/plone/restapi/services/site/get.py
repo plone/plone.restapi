@@ -58,11 +58,6 @@ class Site:
             }
         )
 
-        if HAS_MULTILINGUAL and IPloneAppMultilingualInstalled.providedBy(self.request):
-            result["site"]["plone.is_multilingual"] = True
-        else:
-            result["site"]["plone.is_multilingual"] = False
-
         return result
 
     def plone_timezone(self):
@@ -93,6 +88,8 @@ class Site:
             "filter_aliases_by_date": hasattr(
                 RedirectionSet, "supports_date_range_filtering"
             ),
+            "multilingual": HAS_MULTILINGUAL
+            and IPloneAppMultilingualInstalled.providedBy(self.request),
         }
         return result
 

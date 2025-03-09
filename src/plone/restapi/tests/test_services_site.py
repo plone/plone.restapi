@@ -40,7 +40,7 @@ class TestServicesSite(unittest.TestCase):
         self.assertIn("plone.available_languages", response.json())
         self.assertIn("plone.default_language", response.json())
         self.assertEqual(response.json()["plone.portal_timezone"], "UTC")
-        self.assertEqual(response.json()["plone.is_multilingual"], False)
+        self.assertEqual(response.json()["features"]["multilingual"], False)
 
 
 class TestServicesSiteMultilingual(unittest.TestCase):
@@ -64,5 +64,4 @@ class TestServicesSiteMultilingual(unittest.TestCase):
         response = self.api_session.get("/@site")
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("plone.is_multilingual", response.json())
-        self.assertEqual(response.json()["plone.is_multilingual"], True)
+        self.assertEqual(response.json()["features"]["multilingual"], True)
