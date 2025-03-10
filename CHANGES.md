@@ -9,6 +9,27 @@
 
 <!-- towncrier release notes start -->
 
+## 9.12.0 (2025-03-10)
+
+
+### New features:
+
+- Add a `@userschema/registration` endpoint to get the fields for the registration form. @erral #1873
+- Added `multilingual` feature to @site endpoint. @sneridagh #1884
+
+
+### Bug fixes:
+
+- Save effective and expires date into Plone with right hours (according to current timezone) @cekk #1192
+- Correct the HTTP response status code to `200 OK` from `201 Create` for the `aliases` GET service. @Faakhir30 #1862
+- Do not hardcode `show_inactive` in search; let `Products.CMFPlone` handle that. @gyst #1879
+- Replace `pkg_resources` with `importlib.metadata`/`importlib.resources`/`packaging` @gforcada #4126
+
+
+### Internal:
+
+- Update configuration files @plone 
+
 ## 9.11.0 (2025-01-31)
 
 New features:
