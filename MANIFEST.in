@@ -10,6 +10,7 @@ exclude *.yaml
 exclude .coveragerc
 exclude .editorconfig
 exclude .flake8
+exclude .vale.ini
 exclude Dockerfile
 exclude Makefile
 exclude CODEOWNERS
@@ -20,6 +21,7 @@ exclude requirements-mxdev.txt
 recursive-exclude docs/doctrees *
 recursive-exclude docs/html *
 recursive-exclude performance *
+recursive-exclude styles *.txt
 exclude docs/Makefile
 prune docs/Makefile
 prune docs/_build
