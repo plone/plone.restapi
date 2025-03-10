@@ -45,6 +45,7 @@ SPHINXAUTOBUILD = "$(realpath bin/sphinx-autobuild)"
 DOCS_DIR        = ./docs/source/
 BUILDDIR        = ../_build/
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(SPHINXOPTS) .
+VALEFILES       := $(shell find $(DOCS_DIR) -type f -name "*.md" -print)
 
 all: help
 
@@ -158,6 +159,13 @@ docs-linkcheckbroken: $(BIN_FOLDER)/sphinx-build  ## Run linkcheck and show only
 	@echo
 	@echo "Link check complete; look for any errors in the above output " \
 		"or in $(BUILDDIR)/linkcheck/ ."
+
+.PHONY: docs-vale
+docs-vale:  ## Run Vale style, grammar, and spell checks
+	$(BIN_FOLDER)/vale sync
+	$(BIN_FOLDER)/vale --no-wrap $(VALEFILES)
+	@echo
+	@echo "Vale is finished; look for any errors in the above output."
 
 .PHONY: rtd-pr-preview
 rtd-pr-preview: $(BIN_FOLDER)/sphinx-build  ## Build pull request preview on Read the Docs

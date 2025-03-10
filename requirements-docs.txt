@@ -7,4 +7,4 @@ sphinx-copybutton
 sphinxcontrib.httpdomain
 sphinxcontrib.httpexample
 sphinxext-opengraph
-vale==2.30.0
+vale
