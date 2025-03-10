@@ -1,5 +1,5 @@
-from pkg_resources import get_distribution
-from pkg_resources import parse_version
+from importlib.metadata import distribution
+from packaging.version import parse as version_parse
 from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -14,8 +14,8 @@ import transaction
 import unittest
 
 
-linkintegrity_version = get_distribution("plone.app.linkintegrity").version
-if parse_version(linkintegrity_version) >= parse_version("3.0.dev0"):
+linkintegrity_version = distribution("plone.app.linkintegrity").version
+if version_parse(linkintegrity_version) >= version_parse("3.0.dev0"):
     NEW_LINKINTEGRITY = True
 else:
     NEW_LINKINTEGRITY = False

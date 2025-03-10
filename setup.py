@@ -76,6 +76,7 @@ setup(
     zip_safe=False,
     install_requires=[
         "setuptools",
+        "packaging",
         "python-dateutil",
         "plone.rest",  # json renderer moved to plone.restapi
         "plone.schema>=1.2.1",  # new/fixed json field

@@ -1,7 +1,6 @@
 from datetime import date
 from DateTime import DateTime
-from pkg_resources import get_distribution
-from pkg_resources import parse_version
+from importlib.metadata import distribution
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import SITE_OWNER_NAME
@@ -22,13 +21,14 @@ from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.interface import noLongerProvides
 
+import packaging
 import transaction
 import unittest
 
 
-HAS_PLONE_6 = parse_version(
-    get_distribution("Products.CMFPlone").version
-) >= parse_version("6.0.0a1")
+HAS_PLONE_6 = packaging.version.parse(
+    distribution("Products.CMFPlone").version
+) >= packaging.version.parse("6.0.0a1")
 
 
 class TestSearchFunctional(unittest.TestCase):

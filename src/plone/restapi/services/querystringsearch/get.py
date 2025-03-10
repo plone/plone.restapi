@@ -1,5 +1,4 @@
-from pkg_resources import get_distribution
-from pkg_resources import parse_version
+from importlib.metadata import distribution
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
 from plone.restapi.deserializer import parse_int
@@ -10,9 +9,11 @@ from urllib import parse
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 
+import packaging
 
-zcatalog_version = get_distribution("Products.ZCatalog").version
-if parse_version(zcatalog_version) >= parse_version("5.1"):
+
+zcatalog_version = distribution("Products.ZCatalog").version
+if packaging.version.parse(zcatalog_version) >= packaging.version.parse("5.1"):
     SUPPORT_NOT_UUID_QUERIES = True
 else:
     SUPPORT_NOT_UUID_QUERIES = False
