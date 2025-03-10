@@ -37,7 +37,6 @@ copyright = "2014-%s, Plone Foundation" % thisyear
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 version = release = version("plone.restapi")
-release = version
 
 # -- General configuration ----------------------------------------------------
 
