@@ -34,4 +34,9 @@ per-file-ignores =
 
 [pyproject]
 codespell_ignores = "checkin"
-codespell_skip = "*.resp,performance/*,src/plone/restapi/tests/performance.py"
+codespell_skip = "*.resp,performance/*,src/plone/restapi/tests/performance.py,docs/styles/**"
+
+[gitignore]
+extra_lines = """
+/docs/styles/Microsoft/
+"""

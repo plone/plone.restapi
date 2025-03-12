@@ -18,13 +18,10 @@ exclude docs/make.bat
 exclude .python-version
 exclude constraints-mxdev.txt
 exclude requirements-mxdev.txt
-recursive-exclude docs/doctrees *
-recursive-exclude docs/html *
 recursive-exclude performance *
-recursive-exclude styles *.txt
 exclude docs/Makefile
-prune docs/Makefile
 prune docs/_build
+prune docs/styles/Microsoft
 prune src/plone/restapi/tests/images
 prune news
 global-exclude *.pyc

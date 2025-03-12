@@ -74,7 +74,7 @@ target-version = ["py38"]
 
 [tool.codespell]
 ignore-words-list = "discreet,assertin,thet,checkin"
-skip = "*.po,*.resp,performance/*,src/plone/restapi/tests/performance.py,styles/**"
+skip = "*.po,*.resp,performance/*,src/plone/restapi/tests/performance.py,docs/styles/**"
 ##
 # Add extra configuration options in .meta.toml:
 #  [pyproject]
