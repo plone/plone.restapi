@@ -43,3 +43,4 @@ this file, one to a line, like so:
 - Katja Süss
 - Jon Pentland
 - Leonardo J. Caballero G.
+- Steve Piercy
