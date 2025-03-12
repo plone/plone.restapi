@@ -1838,6 +1838,26 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@site")
         save_request_and_response_for_docs("site_get", response)
 
+    def test_inherit_get(self):
+        self.doc = self.portal.invokeFactory(
+            "Document", id="document", title="Test document"
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            "/document/@inherit?expand.inherit.behaviors=plone.navigationroot"
+        )
+        save_request_and_response_for_docs("inherit_get", response)
+
+    def test_inherit_expansion(self):
+        self.doc = self.portal.invokeFactory(
+            "Document", id="document", title="Test document"
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            "/document/?expand=inherit&expand.inherit.behaviors=plone.navigationroot"
+        )
+        save_request_and_response_for_docs("inherit_expansion", response)
+
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING

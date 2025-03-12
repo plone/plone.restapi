@@ -116,7 +116,7 @@ check: $(BIN_FOLDER)/tox ## Check and fix code base according to Plone standards
 
 .PHONY: test
 test: $(BIN_FOLDER)/zope-testrunner ## Run tests
-	$(BIN_FOLDER)/zope-testrunner --all --test-path=src -s plone.restapi
+	zope_i18n_compile_mo_files=True $(BIN_FOLDER)/zope-testrunner --all --test-path=src -s plone.restapi
 
 .PHONY: i18n
 i18n: $(BIN_FOLDER)/update_restapi_locales ## Update locales

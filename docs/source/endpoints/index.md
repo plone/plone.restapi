@@ -31,6 +31,7 @@ email-notification
 email-send
 groups
 history
+inherit
 linkintegrity
 locking
 login
