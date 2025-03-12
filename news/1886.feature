@@ -1,1 +1,2 @@
-Convert internal URLs to resolveuid URLs in JSON fields. @davisagli
+Apply block serialization and deserialization transforms also to JSON fields.
+This includes converting internal URLs to resolveuid URLs. @davisagli
