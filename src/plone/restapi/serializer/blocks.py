@@ -26,7 +26,7 @@ import os
 import re
 
 
-@adapter(IJSONField, IBlocks, Interface)
+@adapter(IJSONField, Interface, Interface)
 @implementer(IFieldSerializer)
 class BlocksJSONFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
@@ -41,6 +41,14 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                     new_block = handler(new_block)
                 block.clear()
                 block.update(new_block)
+        else:
+            fake_block = {"@type": "jsonfield", "value": value}
+            for handler in iter_block_transform_handlers(
+                self.context, fake_block, IBlockFieldSerializationTransformer
+            ):
+                fake_block = handler(fake_block)
+            value = fake_block["value"]
+
         return json_compatible(value)
 
 
@@ -112,9 +120,9 @@ class TextBlockSerializerBase:
 
 
 @implementer(IBlockFieldSerializationTransformer)
-@adapter(IBlocks, IBrowserRequest)
+@adapter(Interface, IBrowserRequest)
 class ResolveUIDSerializer(ResolveUIDSerializerBase):
-    """Serializer for content-types with IBlocks behavior"""
+    """UID-to-URL transformer for all content types"""
 
 
 @implementer(IBlockFieldSerializationTransformer)
