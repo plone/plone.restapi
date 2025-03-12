@@ -1,1 +1,0 @@
-Replace `pkg_resources` with `importlib.metadata`/`importlib.resources`/`packaging` @gforcada
