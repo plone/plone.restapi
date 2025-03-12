@@ -34,7 +34,6 @@ class SerializeSiteRootToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self.permission_cache = {}
 
     def _build_query(self):
         path = "/".join(self.context.getPhysicalPath())

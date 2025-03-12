@@ -33,6 +33,8 @@ and `data` (values for any fields that are part of the behavior).
 :language: http
 ```
 
+Ancestor items for which the current user lacks the View permission will be skipped.
+
 (inherit-behaviors-expansion-label)=
 
 ## Expansion

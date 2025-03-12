@@ -74,8 +74,6 @@ class SerializeToJson:
         self.context = context
         self.request = request
 
-        self.permission_cache = {}
-
     def getVersion(self, version):
         if version == "current":
             return self.context
@@ -205,8 +203,6 @@ class DexterityObjectPrimaryFieldTarget:
         self.context = context
         self.request = request
 
-        self.permission_cache = {}
-
     def __call__(self):
         primary_field_name = self.get_primary_field_name()
         if not primary_field_name:
@@ -256,8 +252,6 @@ class LinkObjectPrimaryFieldTarget:
     def __init__(self, context, request):
         self.context = context
         self.request = request
-
-        self.permission_cache = {}
 
     def __call__(self):
         """
