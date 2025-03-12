@@ -66,6 +66,21 @@ make docs-livehtml
 Add and commit the generated files in `src/plone/restapi/tests/http-examples/`.
 
 
+## Documentation checks
+
+Run a link checker on documentation.
+
+```shell
+make docs-linkcheckbroken
+```
+
+Run a spelling, grammar, and style checker on documentation.
+
+```shell
+make docs-vale
+```
+
+
 ## Conventions
 
 ```{toctree}
