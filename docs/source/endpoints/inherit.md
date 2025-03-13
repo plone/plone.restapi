@@ -11,7 +11,10 @@ myst:
 
 # Inherit behaviors
 
-The `@inherit` service makes it possible to inherit data from behaviors defined on ancestors in the object hierarchy.
+Plone content is arranged in a hierarchy: a content item has a parent, which has its own parent, all the way up to the Plone site root.
+Together, all these parents are _ancestors_.
+
+The `@inherit` service makes it possible to access data from a behavior defined on one of these ancestors.
 
 ```{tip}
 Inheriting behaviors is similar to the concept of {term}`acquisition` in Zope, but it doesn't happen automatically, so it's safer.
