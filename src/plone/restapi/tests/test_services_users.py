@@ -1022,6 +1022,29 @@ class TestUsersEndpoint(unittest.TestCase):
             msg = msg.decode("utf-8")
         self.assertTrue("To: avram.chomsky@example.com" in msg)
 
+    def test_anonymous_with_sendPasswordReset_sends_mail(self):
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.enable_self_reg = True
+        security_settings.use_email_as_login = True
+        transaction.commit()
+
+        response = self.anon_api_session.post(
+            "/@users",
+            json={
+                "fullname": "Jane Doe",
+                "email": "avram.chomsky@example.com",
+                "sendPasswordReset": True,
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+        msg = self.mailhost.messages[0]
+        if isinstance(msg, bytes) and bytes is not str:
+            # Python 3 with Products.MailHost 4.10+
+            msg = msg.decode("utf-8")
+        self.assertTrue("To: avram.chomsky@example.com" in msg)
+
     def test_anonymous_can_set_password_with_enable_user_pwd_choice(self):
         security_settings = getAdapter(self.portal, ISecuritySchema)
         security_settings.enable_self_reg = True

@@ -1,0 +1,1 @@
+In the `@users` add endpoint, ignore the `sendPasswordReset` parameter if self registration is enabled. @MrTango
