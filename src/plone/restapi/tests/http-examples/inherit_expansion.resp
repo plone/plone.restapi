@@ -15,19 +15,21 @@ Content-Type: application/json
         "contextnavigation": {
             "@id": "http://localhost:55001/plone/document/@contextnavigation"
         },
+        "inherit": {
+            "@id": "http://localhost:55001/plone/document/@inherit?expand.inherit.behaviors=plone.navigationroot",
+            "plone.navigationroot": {
+                "data": {},
+                "from": {
+                    "@id": "http://localhost:55001/plone",
+                    "title": "Plone site"
+                }
+            }
+        },
         "navigation": {
             "@id": "http://localhost:55001/plone/document/@navigation"
         },
         "navroot": {
             "@id": "http://localhost:55001/plone/document/@navroot"
-        },
-        "plone.navigationroot": {
-            "@id": "http://localhost:55001/plone/document/@inherit?expand.inherit.behaviors=plone.navigationroot",
-            "data": {},
-            "from": {
-                "@id": "http://localhost:55001/plone",
-                "title": "Plone site"
-            }
         },
         "types": {
             "@id": "http://localhost:55001/plone/document/@types"

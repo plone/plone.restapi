@@ -21,11 +21,11 @@ class InheritedBehaviorExpander:
         self.behavior_names = behavior_names.split(",") if behavior_names else []
 
     def __call__(self, expand=False):
-        result = {}
+        if not self.behavior_names:
+            return {}
+        url = f"{self.context.absolute_url()}/@inherit?expand.inherit.behaviors={','.join(self.behavior_names)}"
+        result = {"@id": url}
         for name in self.behavior_names:
-            result[name] = {
-                "@id": f"{self.context.absolute_url()}/@inherit?expand.inherit.behaviors={name}"
-            }
             if expand:
                 try:
                     registration = lookup_behavior_registration(name=name)
@@ -46,16 +46,14 @@ class InheritedBehaviorExpander:
                         (schema, self.context, self.request), ISchemaSerializer
                     )
                     data = serializer()
-                    result[name].update(
-                        {
-                            "from": {
-                                "@id": closest.absolute_url(),
-                                "title": closest.title,
-                            },
-                            "data": data,
-                        }
-                    )
-        return result
+                    result[name] = {
+                        "from": {
+                            "@id": closest.absolute_url(),
+                            "title": closest.title,
+                        },
+                        "data": data,
+                    }
+        return {"inherit": result}
 
 
 class InheritedBehaviorGet(Service):
