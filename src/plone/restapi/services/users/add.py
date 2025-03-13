@@ -70,6 +70,9 @@ class UsersPost(Service):
             required.append("username")
             allowed.append("username")
 
+        if security.enable_self_reg:
+            allowed.append("sendPasswordReset")
+
         if self.can_manage_users:
             allowed.append("password")
             allowed.append("sendPasswordReset")
