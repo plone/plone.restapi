@@ -1,4 +1,3 @@
-from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.app.contenttypes.interfaces import ILink
@@ -12,11 +11,13 @@ from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.interfaces import IPrimaryFieldTarget
+from plone.restapi.interfaces import ISchemaSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
+from plone.restapi.serializer.schema import check_permission as _check_permission
 from plone.restapi.serializer.utils import get_portal_type_title
 from plone.restapi.services.locking import lock_info
 from plone.rfc822.interfaces import IPrimaryFieldInfo
@@ -27,11 +28,9 @@ from zope.component import adapter
 from zope.component import ComponentLookupError
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
-from zope.component import queryUtility
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
-from zope.security.interfaces import IPermission
 
 
 try:
@@ -74,8 +73,6 @@ class SerializeToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request
-
-        self.permission_cache = {}
 
     def getVersion(self, version):
         if version == "current":
@@ -131,18 +128,10 @@ class SerializeToJson:
 
         # Insert field values
         for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
-
-            for name, field in getFields(schema).items():
-                if not self.check_permission(read_permissions.get(name), obj):
-                    continue
-
-                # serialize the field
-                serializer = queryMultiAdapter(
-                    (field, obj, self.request), IFieldSerializer
-                )
-                value = serializer()
-                result[json_compatible(name)] = value
+            schema_serializer = getMultiAdapter(
+                (schema, obj, self.request), ISchemaSerializer
+            )
+            result.update(schema_serializer())
 
         target_url = getMultiAdapter(
             (self.context, self.request), IObjectPrimaryFieldTarget
@@ -160,19 +149,8 @@ class SerializeToJson:
         return review_state
 
     def check_permission(self, permission_name, obj):
-        if permission_name is None:
-            return True
-
-        if permission_name not in self.permission_cache:
-            permission = queryUtility(IPermission, name=permission_name)
-            if permission is None:
-                self.permission_cache[permission_name] = True
-            else:
-                sm = getSecurityManager()
-                self.permission_cache[permission_name] = bool(
-                    sm.checkPermission(permission.title, obj)
-                )
-        return self.permission_cache[permission_name]
+        # Here for backwards-compatibility
+        return _check_permission(permission_name, obj)
 
 
 @implementer(ISerializeToJson)
@@ -225,8 +203,6 @@ class DexterityObjectPrimaryFieldTarget:
         self.context = context
         self.request = request
 
-        self.permission_cache = {}
-
     def __call__(self):
         primary_field_name = self.get_primary_field_name()
         if not primary_field_name:
@@ -266,19 +242,8 @@ class DexterityObjectPrimaryFieldTarget:
         return fieldname
 
     def check_permission(self, permission_name, obj):
-        if permission_name is None:
-            return True
-
-        if permission_name not in self.permission_cache:
-            permission = queryUtility(IPermission, name=permission_name)
-            if permission is None:
-                self.permission_cache[permission_name] = True
-            else:
-                sm = getSecurityManager()
-                self.permission_cache[permission_name] = bool(
-                    sm.checkPermission(permission.title, obj)
-                )
-        return self.permission_cache[permission_name]
+        # for backwards-compatibility
+        return _check_permission(permission_name, obj)
 
 
 @adapter(ILink, Interface)
@@ -287,8 +252,6 @@ class LinkObjectPrimaryFieldTarget:
     def __init__(self, context, request):
         self.context = context
         self.request = request
-
-        self.permission_cache = {}
 
     def __call__(self):
         """

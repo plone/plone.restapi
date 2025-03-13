@@ -32,6 +32,17 @@ class IContextawareJsonCompatible(IJsonCompatible):
         """Adapts value and a context"""
 
 
+class ISchemaSerializer(Interface):
+    """The schema serializer serializes all field values from a schema
+    into JSON-compatible Python data."""
+
+    def __init__(schema, context, request):
+        """Adapts schema, context, and request."""
+
+    def __call__():
+        """Returns JSON-compatible Python data."""
+
+
 class IFieldSerializer(Interface):
     """The field serializer multi adapter serializes the field value into
     JSON compatible python data.
@@ -41,7 +52,7 @@ class IFieldSerializer(Interface):
         """Adapts field, context and request."""
 
     def __call__():
-        """Returns JSON compatible python data."""
+        """Returns JSON-compatible Python data."""
 
 
 class IPrimaryFieldTarget(Interface):

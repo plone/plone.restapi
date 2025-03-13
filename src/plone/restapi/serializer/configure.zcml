@@ -18,6 +18,8 @@
   <adapter factory=".summary.DefaultJSONSummarySerializer" />
   <adapter factory=".summary.SiteRootJSONSummarySerializer" />
 
+  <adapter factory=".schema.SerializeSchemaToJson" />
+
   <adapter factory=".dxfields.DefaultFieldSerializer" />
   <adapter factory=".dxfields.ChoiceFieldSerializer" />
   <adapter factory=".dxfields.CollectionFieldSerializer" />
