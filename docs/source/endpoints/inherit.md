@@ -11,8 +11,9 @@ myst:
 
 # Inherit behaviors
 
-Plone content is arranged in a hierarchy: a content item has a parent, which has its own parent, all the way up to the Plone site root.
-Together, all these parents are _ancestors_.
+Plone content items are arranged in a hierarchy.
+Each content item has a parent, each of which may have its own parent, continuing all the way to the Plone site root.
+Together, the chain of parents are _ancestors_ of the content item.
 
 The `@inherit` service makes it possible to access data from a behavior defined on one of these ancestors.
 
