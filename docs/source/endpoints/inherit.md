@@ -29,14 +29,13 @@ Specify the `expand.inherit.behaviors` parameter as a comma-separated list of be
 ```
 
 For each behavior, the service will find the closest ancestor which provides that behavior.
-The result includes `from` (the `@id` and `title` of the item from which values were inherited)
-and `data` (values for any fields that are part of the behavior).
+The result includes `from` (the `@id` and `title` of the item from which values were inherited) and `data` (values for any fields that are part of the behavior).
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/inherit_get.resp
 :language: http
 ```
 
-Ancestor items for which the current user lacks the View permission will be skipped.
+Ancestor items for which the current user lacks the `View` permission will be skipped.
 
 (inherit-behaviors-expansion-label)=
 

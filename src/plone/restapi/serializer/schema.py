@@ -44,9 +44,9 @@ def check_permission(permission_name, context) -> bool:
     if permission_name is None:
         return True
 
-    if not hasattr(context, "_v_permission_cache"):
-        context._v_permission_cache = {}
-    permission_cache = context._v_permission_cache
+    permission_cache = getattr(context, "_v_permission_cache", {})
+    if not permission_cache:
+        context._v_permission_cache = permission_cache
 
     if permission_name not in permission_cache:
         permission = queryUtility(IPermission, name=permission_name)
