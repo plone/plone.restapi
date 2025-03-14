@@ -1,0 +1,1 @@
+Fix wheel compatibility with older versions of setuptools and buildout. @davisagli
