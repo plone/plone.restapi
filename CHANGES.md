@@ -9,6 +9,13 @@
 
 <!-- towncrier release notes start -->
 
+## 9.13.1 (2025-03-14)
+
+
+### Bug fixes:
+
+- Fix wheel compatibility with older versions of setuptools and buildout. @davisagli #1890
+
 ## 9.13.0 (2025-03-13)
 
 
