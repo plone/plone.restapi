@@ -9,6 +9,25 @@
 
 <!-- towncrier release notes start -->
 
+## 9.13.0 (2025-03-13)
+
+
+### New features:
+
+- Apply block serialization and deserialization transforms also to JSON fields.
+  This includes converting internal URLs to resolveuid URLs. @davisagli #1886
+- Add a new endpoint, `@inherit`, for getting values from behaviors inherited from ancestors in the object hierarchy. @davisagli #1887
+
+
+### Bug fixes:
+
+- In the `@users` add endpoint, ignore the `sendPasswordReset` parameter if self registration is enabled. @MrTango #1888
+
+
+### Internal:
+
+- Restore configuration of Vale, and upgrade to its latest version. @stevepiercy #1885
+
 ## 9.12.0 (2025-03-10)
 
 
