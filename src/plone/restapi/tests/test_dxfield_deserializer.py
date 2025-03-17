@@ -123,6 +123,11 @@ class TestDXFieldDeserializer(unittest.TestCase):
         value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361+01")
         self.assertEqual(datetime(2015, 12, 20, 9, 39, 54, 361000), value)
 
+    def test_datetime_deserialization_with_tznaive_stored(self):
+        self.portal.doc1.test_datetime_field = datetime.now()
+        value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361")
+        self.assertEqual(datetime(2015, 12, 20, 10, 39, 54, 361000), value)
+
     def test_datetime_with_tz_deserialization_keeps_timezone(self):
         value = self.deserialize("test_datetime_tz_field", "2015-12-20T10:39:54.361+01")
         self.assertEqual(
