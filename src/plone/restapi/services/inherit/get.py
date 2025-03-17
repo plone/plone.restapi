@@ -43,7 +43,7 @@ class InheritedBehaviorExpander:
                 )
                 if closest:
                     serializer = getMultiAdapter(
-                        (schema, self.context, self.request), ISchemaSerializer
+                        (schema, closest, self.request), ISchemaSerializer
                     )
                     data = serializer()
                     result[name] = {
