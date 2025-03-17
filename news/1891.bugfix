@@ -1,1 +1,0 @@
-Fix deserializing datetime fields when timezone naive values are stored. @petschki

@@ -1,1 +1,0 @@
-Fix `@inherit` service to serialize data with the correct context. @davisagli

@@ -9,6 +9,15 @@
 
 <!-- towncrier release notes start -->
 
+## 9.13.2 (2025-03-17)
+
+
+### Bug fixes:
+
+- Fix deserializing datetime fields when timezone naive values are stored. @petschki #1891
+- Fix imports from packaging.version. @davisagli #1893
+- Fix `@inherit` service to serialize data with the correct context. @davisagli #1895
+
 ## 9.13.1 (2025-03-14)
 
 
