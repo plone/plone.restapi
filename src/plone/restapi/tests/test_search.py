@@ -21,7 +21,7 @@ from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.interface import noLongerProvides
 
-import packaging
+import packaging.version
 import transaction
 import unittest
 
