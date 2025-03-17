@@ -9,7 +9,7 @@ from zope.component import getAllUtilitiesRegisteredFor
 from zope.i18n import translate
 
 import logging
-import packaging
+import packaging.version
 
 
 try:

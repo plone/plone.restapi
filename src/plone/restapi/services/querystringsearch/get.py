@@ -9,7 +9,7 @@ from urllib import parse
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 
-import packaging
+import packaging.version
 
 
 zcatalog_version = distribution("Products.ZCatalog").version

@@ -8,7 +8,7 @@ from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 
-import packaging
+import packaging.version
 import unittest
 
 
