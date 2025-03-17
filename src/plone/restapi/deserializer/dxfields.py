@@ -123,7 +123,7 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
             # Otherwise let's check what is currently stored.
             dm = queryMultiAdapter((self.context, self.field), IDataManager)
             current = dm.get()
-            if current is not None:
+            if current is not None and current.tzinfo is not None:
                 # Timezone-aware. Convert to the same timezone.
                 tz = timezone(current.tzinfo.zone)
                 value = tz.normalize(dt.astimezone(tz))
