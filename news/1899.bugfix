@@ -1,0 +1,1 @@
+In the `@inherit` endpoint, don't nest results under `inherit` unless it is used as an expander. @davisagli
