@@ -9,6 +9,13 @@
 
 <!-- towncrier release notes start -->
 
+## 9.13.3 (2025-03-25)
+
+
+### Bug fixes:
+
+- In the `@inherit` endpoint, don't nest results under `inherit` unless it is used as an expander. @davisagli #1899
+
 ## 9.13.2 (2025-03-17)
 
 
