@@ -59,4 +59,7 @@ class InheritedBehaviorExpander:
 class InheritedBehaviorGet(Service):
     def reply(self):
         expander = InheritedBehaviorExpander(self.context, self.request)
-        return expander(expand=True)
+        result = expander(expand=True)
+        if "inherit" in result:
+            result = result["inherit"]
+        return result
