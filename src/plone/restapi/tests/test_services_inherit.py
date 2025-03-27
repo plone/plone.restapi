@@ -171,7 +171,7 @@ class TestServiceInherit(unittest.TestCase):
         response = self.api_session.get(url)
 
         self.assertEqual(response.status_code, 200)
-        data = response.json()["inherit"]
+        data = response.json()
         behavior_data = data["plone.testbehavior.ITestBehavior"]
 
         self.assertEqual(behavior_data["data"]["test_field"], "Inherited Value")
@@ -184,7 +184,7 @@ class TestServiceInherit(unittest.TestCase):
     def test_inherit_service_invalid_behavior(self):
         url = f"{self.child.absolute_url()}/@inherit?expand.inherit.behaviors=invalid.behavior"
         response = self.api_session.get(url)
-        self.assertNotIn("invalid.behavior", response.json()["inherit"])
+        self.assertNotIn("invalid.behavior", response.json())
 
     def test_inherit_multiple_behaviors(self):
         self.register_behavior(
@@ -200,7 +200,7 @@ class TestServiceInherit(unittest.TestCase):
 
         url = f"{self.child.absolute_url()}/@inherit?expand.inherit.behaviors=plone.testbehavior.ITestBehavior,plone.testbehavior.ISecondBehavior"
         response = self.api_session.get(url)
-        data = response.json()["inherit"]
+        data = response.json()
 
         self.assertIn("plone.testbehavior.ISecondBehavior", data)
         self.assertEqual(
@@ -228,7 +228,7 @@ class TestServiceInherit(unittest.TestCase):
 
         url = f"{validated_child.absolute_url()}/@inherit?expand.inherit.behaviors=plone.testbehavior.IValidatedBehavior"
         response = self.api_session.get(url)
-        data = response.json()["inherit"]
+        data = response.json()
         self.assertEqual(
             data["plone.testbehavior.IValidatedBehavior"]["data"]["email"],
             "test@example.com",
@@ -242,7 +242,7 @@ class TestServiceInherit(unittest.TestCase):
 
         url = f"{grandchild.absolute_url()}/@inherit?expand.inherit.behaviors=plone.testbehavior.ITestBehavior"
         response = self.api_session.get(url)
-        data = response.json()["inherit"]
+        data = response.json()
         self.assertEqual(
             data["plone.testbehavior.ITestBehavior"]["from"]["title"], "Parent Folder"
         )
