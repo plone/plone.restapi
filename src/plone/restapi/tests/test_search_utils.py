@@ -23,3 +23,10 @@ class TestUnflattenDottedDict(unittest.TestCase):
     def test_leaves_regular_keys_untouched(self):
         dct = {"foo": 1, "bar": 2}
         self.assertEqual(dct, unflatten_dotted_dict(dct))
+
+    def test_expand(self):
+        dct = {"expand": "navigation,actions", "expand.navigation.depth": 2}
+        self.assertEqual(
+            {"expand": {"actions": {}, "navigation": {"depth": 2}}},
+            unflatten_dotted_dict(dct),
+        )
