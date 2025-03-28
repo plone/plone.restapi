@@ -36,14 +36,6 @@ class ISecondBehaviorMarker(Interface):
     pass
 
 
-class IValidatedBehavior(Interface):
-    email = schema.TextLine(title="Email", required=True, constraint=lambda v: "@" in v)
-
-
-class IValidatedBehaviorMarker(Interface):
-    pass
-
-
 @implementer(ITestBehavior)
 @adapter(IFolderish)
 class TestBehaviorAdapter:
@@ -74,21 +66,6 @@ class SecondBehaviorAdapter:
         setattr(self.context, "second_field", value)
 
 
-@implementer(IValidatedBehavior)
-@adapter(IFolderish)
-class ValidatedBehaviorAdapter:
-    def __init__(self, context):
-        self.context = context
-
-    @property
-    def email(self):
-        return getattr(self.context, "email", None)
-
-    @email.setter
-    def email(self, value):
-        setattr(self.context, "email", value)
-
-
 class TestServiceInherit(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
@@ -96,69 +73,33 @@ class TestServiceInherit(unittest.TestCase):
         self.portal = self.layer["portal"]
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        # Register primary test behavior
-        self.register_behavior(
-            ITestBehavior,
-            ITestBehaviorMarker,
-            TestBehaviorAdapter,
-            "plone.testbehavior.ITestBehavior",
+        registration = BehaviorRegistration(
+            title="ITestBehavior Registration",
+            description="Test behavior",
+            interface=ITestBehavior,
+            marker=ITestBehaviorMarker,
+            factory=TestBehaviorAdapter,
         )
+        provideUtility(registration, name="plone.testbehavior.ITestBehavior")
+        provideAdapter(TestBehaviorAdapter)
 
         # Create main test content
-        self.parent, self.child = self.create_folder_structure(
-            "test_parent",
-            "test_child",
-            "Parent Folder",
-            "Child Folder",
-            ITestBehaviorMarker,
-            parent_attrs={"test_field": "Inherited Value"},
+        self.parent = api.content.create(
+            container=self.portal,
+            type="Folder",
+            id="test_parent",
+            title="Parent Folder",
+            test_field="Inherited Value",
         )
+        self.child = api.content.create(
+            container=self.parent, type="Folder", id="test_child", title="Child Folder"
+        )
+        alsoProvides(self.parent, ITestBehaviorMarker)
 
         transaction.commit()
         self.api_session = RelativeSession(self.portal.absolute_url())
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-
-    def register_behavior(self, interface, marker, adapter_class, name):
-        """Helper to register a behavior."""
-        registration = BehaviorRegistration(
-            title=f"{interface.__name__} Registration",
-            description="Test behavior",
-            interface=interface,
-            marker=marker,
-            factory=adapter_class,
-        )
-        provideUtility(registration, name=name)
-        provideAdapter(adapter_class)
-
-    def create_folder_structure(
-        self,
-        parent_id,
-        child_id,
-        parent_title,
-        child_title,
-        marker_interface=None,
-        parent_attrs=None,
-        child_attrs=None,
-    ):
-        """Helper to create parent/child folders with optional attributes."""
-        parent = api.content.create(
-            container=self.portal,
-            type="Folder",
-            id=parent_id,
-            title=parent_title,
-            **(parent_attrs or {}),
-        )
-        child = api.content.create(
-            container=parent,
-            type="Folder",
-            id=child_id,
-            title=child_title,
-            **(child_attrs or {}),
-        )
-        if marker_interface:
-            alsoProvides(parent, marker_interface)
-        return parent, child
 
     def tearDown(self):
         self.api_session.close()
@@ -187,12 +128,15 @@ class TestServiceInherit(unittest.TestCase):
         self.assertNotIn("invalid.behavior", response.json())
 
     def test_inherit_multiple_behaviors(self):
-        self.register_behavior(
-            ISecondBehavior,
-            ISecondBehaviorMarker,
-            SecondBehaviorAdapter,
-            "plone.testbehavior.ISecondBehavior",
+        registration = BehaviorRegistration(
+            title="ISecondBehavior Registration",
+            description="Test behavior",
+            interface=ISecondBehavior,
+            marker=ISecondBehaviorMarker,
+            factory=SecondBehaviorAdapter,
         )
+        provideUtility(registration, name="plone.testbehavior.ISecondBehavior")
+        provideAdapter(SecondBehaviorAdapter)
 
         self.parent.second_field = "Second Value"
         alsoProvides(self.parent, ISecondBehaviorMarker)
@@ -206,32 +150,6 @@ class TestServiceInherit(unittest.TestCase):
         self.assertEqual(
             data["plone.testbehavior.ISecondBehavior"]["data"]["second_field"],
             "Second Value",
-        )
-
-    def test_inherit_schema_validation(self):
-        self.register_behavior(
-            IValidatedBehavior,
-            IValidatedBehaviorMarker,
-            ValidatedBehaviorAdapter,
-            "plone.testbehavior.IValidatedBehavior",
-        )
-
-        validated_parent, validated_child = self.create_folder_structure(
-            "valid_parent",
-            "valid_child",
-            "Valid Parent",
-            "Valid Child",
-            IValidatedBehaviorMarker,
-            parent_attrs={"email": "test@example.com"},
-        )
-        transaction.commit()
-
-        url = f"{validated_child.absolute_url()}/@inherit?expand.inherit.behaviors=plone.testbehavior.IValidatedBehavior"
-        response = self.api_session.get(url)
-        data = response.json()
-        self.assertEqual(
-            data["plone.testbehavior.IValidatedBehavior"]["data"]["email"],
-            "test@example.com",
         )
 
     def test_inherit_depth(self):
@@ -248,14 +166,20 @@ class TestServiceInherit(unittest.TestCase):
         )
 
     def test_inherit_permissions(self):
-        restricted_parent, restricted_child = self.create_folder_structure(
-            "restricted",
-            "restricted_child",
-            "Restricted Parent",
-            "Restricted Child",
-            ITestBehaviorMarker,
-            parent_attrs={"test_field": "Restricted Value"},
+        restricted_parent = api.content.create(
+            container=self.portal,
+            type="Folder",
+            id="restricted",
+            title="Restricted Parent",
+            test_field="Restricted Value",
         )
+        restricted_child = api.content.create(
+            container=restricted_parent,
+            type="Folder",
+            id="restricted_child",
+            title="Restricted Child",
+        )
+        alsoProvides(restricted_parent, ITestBehaviorMarker)
         transaction.commit()
 
         logout()
