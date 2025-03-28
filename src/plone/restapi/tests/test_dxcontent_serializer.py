@@ -37,6 +37,7 @@ from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import json
+import os
 import unittest
 
 
@@ -710,6 +711,8 @@ class TestDXContentSerializer(unittest.TestCase):
 class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
+    test_filename = "test.txt"
+
     def setUp(self):
         self.portal = self.layer["portal"]
         self.request = self.layer["request"]
@@ -718,7 +721,7 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
             "DXTestDocument",
             id="doc1",
             test_primary_namedfile_field=NamedFile(
-                data="Spam and eggs", contentType="text/plain", filename="test.txt"
+                data="Spam and eggs", contentType="text/plain", filename=self.test_filename
             ),
         )
 
@@ -794,3 +797,26 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
             (self.portal.link, self.request), IObjectPrimaryFieldTarget
         )
         self.assertEqual(adapter(), self.portal.linked.absolute_url())
+
+    def test_primary_field_target_expanded(self):
+        os.environ["enable_link_target_transform"] = "1"
+        logout()
+        serializer = getMultiAdapter((self.portal.doc1, self.request), ISerializeToJson)
+        data = serializer()
+        self.assertIn("targetUrl", data)
+        content_url = self.portal.doc1.absolute_url()
+        download_url = "/".join(
+            [
+                self.portal.doc1.absolute_url(),
+                "@@download/test_primary_namedfile_field",
+            ]
+        )
+
+        url_data = data["targetUrl"]
+
+        self.assertEqual(url_data["url"], content_url)
+        self.assertEqual(url_data["download"], download_url)
+        self.assertEqual(url_data["filename"], self.test_filename)
+        self.assertEqual(url_data["content-type"], "text/plain")
+        self.assertIn("size", url_data)
+
