@@ -4,12 +4,15 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from zope.component import getUtility
+from plone.registry.interfaces import IRegistry
+import transaction
+
 
 import unittest
 
 
 class TestControlpanelsEndpoint(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -135,3 +138,37 @@ class TestControlpanelsEndpoint(unittest.TestCase):
         # This control panel does not exist in Plone 5
         response = self.api_session.get("/@controlpanels/usergroup")
         self.assertEqual(200, response.status_code)
+
+    def test_get_schema_with_new_field(self):
+        # simulate startup with a change registry schema to ensure it doesn't break
+
+        registry = getUtility(IRegistry)
+        registry.records._values[
+            "plone.ext_editor"
+        ] = True  # ensure it's not the default
+        transaction.commit()
+
+        response = self.api_session.get("/@controlpanels/editing")
+        old_data = response.json()["data"]
+        self.assertEqual(old_data["ext_editor"], True)
+
+        # It's too hard to add another field so lets delete the registry data to
+        # simulate what it's like starting when the schema has a field and no
+        # data in the registry for it
+        # del registry.records['plone.available_editors']
+        del registry.records["plone.ext_editor"]
+        transaction.commit()
+
+        response = self.api_session.get("/@controlpanels/editing")
+        old_data = response.json()["data"]
+        self.assertEqual(old_data["ext_editor"], None)
+
+        # ensure there is no problem trying to set missing registry entries
+        new_values = {
+            "ext_editor": not old_data["ext_editor"],
+        }
+        response = self.api_session.patch("/@controlpanels/editing", json=new_values)
+
+        # check if the values changed
+        response = self.api_session.get("/@controlpanels/editing")
+        self.assertNotEqual(response.json(), old_data)
