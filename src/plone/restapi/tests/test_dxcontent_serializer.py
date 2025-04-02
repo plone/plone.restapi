@@ -721,7 +721,9 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
             "DXTestDocument",
             id="doc1",
             test_primary_namedfile_field=NamedFile(
-                data="Spam and eggs", contentType="text/plain", filename=self.test_filename
+                data="Spam and eggs",
+                contentType="text/plain",
+                filename=self.test_filename,
             ),
         )
 
@@ -819,4 +821,3 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
         self.assertEqual(url_data["filename"], self.test_filename)
         self.assertEqual(url_data["content-type"], "text/plain")
         self.assertIn("size", url_data)
-

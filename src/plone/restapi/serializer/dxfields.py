@@ -209,7 +209,9 @@ class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
         enable_transform = os.environ.get("enable_link_target_transform", False)
 
         if enable_transform:
-            download_url = "/".join((self.context.absolute_url(), "@@download", self.field.__name__))
+            download_url = "/".join(
+                (self.context.absolute_url(), "@@download", self.field.__name__)
+            )
             result = {
                 "url": self.context.absolute_url(),
                 "download": download_url,
