@@ -7,7 +7,8 @@ from Products.CMFCore.utils import getToolByName
 from zope.component import getAdapters
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-
+from zope.interface import alsoProvides
+from plone.restapi.controlpanels.interfaces import IControlPanelLayer
 
 @implementer(IPublishTraverse)
 class ControlpanelsGet(Service):
@@ -16,6 +17,7 @@ class ControlpanelsGet(Service):
         self.params = []
 
     def publishTraverse(self, request, name):
+        alsoProvides(request, IControlPanelLayer)
         self.params.append(name)
         return self
 

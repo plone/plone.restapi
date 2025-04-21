@@ -5,6 +5,8 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from plone.restapi.controlpanels.interfaces import IControlPanelLayer
 from zope.interface import Interface
+from plone.restapi.interfaces import IPloneRestapiLayer
+from plone.restapi.controlpanels.interfaces import IControlpanel
 
 
 try:
@@ -86,12 +88,10 @@ class SearchControlpanel(RegistryConfigletPanel):
 
 
 # Update all controlpanel adapter registrations like:
-#@implementer(IControlpanel)
-@adapter(Interface, IControlPanelLayer)  # Add the layer here
+@adapter(Interface, IControlPanelLayer)  
+@adapter(Interface, IPloneRestapiLayer)
 class SocialMediaControlpanel(RegistryConfigletPanel):
     schema = ISocialMediaSchema
-    schema_prefix = "plone.social"
-    controlpanel_id = "socialmedia"
     configlet_id = "socialmedia"
     configlet_category_id = "plone-general"
 

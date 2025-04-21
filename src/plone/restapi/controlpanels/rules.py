@@ -25,7 +25,6 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
     configlet_category_id = "plone-content"
 
     def publishTraverse(self, request, name):
-        alsoProvides(request, IControlPanelLayer)
         return self.context.restrictedTraverse("++rule++" + name)
 
     def add(self, names):
