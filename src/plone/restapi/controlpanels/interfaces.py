@@ -2,6 +2,10 @@ from zope.interface import Attribute
 from zope.interface import Interface
 
 
+# Add this to the existing interfaces
+class IControlPanelLayer(Interface):
+    """Browser layer that is only active during REST API controlpanel traversal"""
+
 class IControlpanel(Interface):
     __name__ = Attribute("Name of the controlpanel in the URL")
     title = Attribute("Title of this controlpanel")

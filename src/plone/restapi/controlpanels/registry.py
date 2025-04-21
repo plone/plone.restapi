@@ -3,6 +3,7 @@ from plone.restapi.controlpanels import RegistryConfigletPanel
 from zope.component import adapter
 from zope.globalrequest import getRequest
 from zope.i18n import translate
+from plone.restapi.controlpanels.interfaces import IControlPanelLayer
 from zope.interface import Interface
 
 
@@ -84,9 +85,13 @@ class SearchControlpanel(RegistryConfigletPanel):
     configlet_category_id = "plone-general"
 
 
-@adapter(Interface, Interface)
+# Update all controlpanel adapter registrations like:
+#@implementer(IControlpanel)
+@adapter(Interface, IControlPanelLayer)  # Add the layer here
 class SocialMediaControlpanel(RegistryConfigletPanel):
     schema = ISocialMediaSchema
+    schema_prefix = "plone.social"
+    controlpanel_id = "socialmedia"
     configlet_id = "socialmedia"
     configlet_category_id = "plone-general"
 

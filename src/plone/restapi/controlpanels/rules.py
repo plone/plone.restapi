@@ -12,6 +12,7 @@ from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserPublisher
+from plone.restapi.controlpanels.interfaces import IControlPanelLayer
 
 import plone.protect.interfaces
 
@@ -24,6 +25,7 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
     configlet_category_id = "plone-content"
 
     def publishTraverse(self, request, name):
+        alsoProvides(request, IControlPanelLayer)
         return self.context.restrictedTraverse("++rule++" + name)
 
     def add(self, names):
