@@ -1,7 +1,9 @@
 from plone.restapi.controlpanels import IControlpanel
+from plone.restapi.interfaces import IControlpanelLayer
 from plone.restapi.services import Service
-from zExceptions import BadRequest
 from zope.component import getAdapters
+from zope.component import queryMultiAdapter
+from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
@@ -11,6 +13,8 @@ class ControlpanelsDelete(Service):
     def __init__(self, context, request):
         super().__init__(context, request)
         self.params = []
+        # Apply the IControlpanelLayer to ensure controlpanel adapters are found
+        alsoProvides(request, IControlpanelLayer)
 
     def publishTraverse(self, request, name):
         self.params.append(name)
