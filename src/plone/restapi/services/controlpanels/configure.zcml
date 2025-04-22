@@ -52,8 +52,6 @@
   <adapter
       factory="plone.restapi.controlpanels.types.DexterityTypesControlpanel"
       provides="plone.restapi.controlpanels.interfaces.IDexterityTypesControlpanel"
-      for="*
-           plone.restapi.interfaces.IControlpanelLayer"
       name="dexterity-types"
       />
 
@@ -61,8 +59,6 @@
   <adapter
       factory="plone.restapi.controlpanels.rules.ContentRulesControlpanel"
       provides="plone.restapi.controlpanels.interfaces.IContentRulesControlpanel"
-      for="*
-           plone.restapi.interfaces.IControlpanelLayer"
       name="content-rules"
       zcml:condition="installed plone.app.contentrules"
       />
@@ -72,50 +68,36 @@
     <!-- General -->
     <adapter
         factory="plone.restapi.controlpanels.registry.DateTimeControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="date-and-time"
         />
 
     <adapter
         factory="plone.restapi.controlpanels.registry.LanguageControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="language"
         />
 
     <adapter
         factory="plone.restapi.controlpanels.registry.MailControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="mail"
         />
 
     <adapter
         factory="plone.restapi.controlpanels.registry.NavigationControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="navigation"
         />
 
     <adapter
         factory="plone.restapi.controlpanels.registry.SiteControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="site"
         />
 
     <adapter
         factory="plone.restapi.controlpanels.registry.SearchControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="search"
         />
 
     <adapter
         factory="plone.restapi.controlpanels.registry.SocialMediaControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="socialmedia"
         />
 
@@ -123,30 +105,22 @@
     <!-- Content -->
     <adapter
         factory="plone.restapi.controlpanels.registry.EditingControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="editing"
         />
 
     <adapter
         factory="plone.restapi.controlpanels.registry.ImagingControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="imaging"
         />
 
     <adapter
         factory="plone.restapi.controlpanels.registry.MarkupControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="markup"
         />
 
     <!-- Security -->
     <adapter
         factory="plone.restapi.controlpanels.registry.SecurityControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="security"
         />
 
@@ -154,8 +128,6 @@
     <!-- Users and Groups -->
     <adapter
         factory="plone.restapi.controlpanels.registry.UserGroupControlpanel"
-        for="*
-             plone.restapi.interfaces.IControlpanelLayer"
         name="usergroup"
         />
 

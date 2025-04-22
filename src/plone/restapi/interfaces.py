@@ -11,7 +11,7 @@ class IPloneRestapiLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
-class IControlpanelLayer(IDefaultBrowserLayer):
+class IControlpanelLayer(IPloneRestapiLayer):
     """Marker interface for REST API controlpanel requests.
     This is used to isolate controlpanel adapters from normal traversal.
     """
