@@ -2,8 +2,8 @@ from plone.i18n.normalizer import idnormalizer
 from plone.restapi.controlpanels import RegistryConfigletPanel
 from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
 from plone.restapi.deserializer import json_body
+from plone.restapi.interfaces import IControlpanelLayer
 from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.interfaces import ISerializeToJson
 from zExceptions import BadRequest
 from zope.component import adapter
@@ -16,7 +16,7 @@ from zope.interface import noLongerProvides
 import plone.protect.interfaces
 
 
-@adapter(Interface, IPloneRestapiLayer)
+@adapter(Interface, IControlpanelLayer)
 @implementer(IDexterityTypesControlpanel)
 class DexterityTypesControlpanel(RegistryConfigletPanel):
     schema = Interface
@@ -42,8 +42,8 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
-        if IPloneRestapiLayer.providedBy(self.request):
-            noLongerProvides(self.request, IPloneRestapiLayer)
+        if IControlpanelLayer.providedBy(self.request):
+            noLongerProvides(self.request, IControlpanelLayer)
 
         context = queryMultiAdapter(
             (self.context, self.request), name="dexterity-types"
@@ -56,8 +56,8 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
     def get(self, names):
         name = names[0]
 
-        if IPloneRestapiLayer.providedBy(self.request):
-            noLongerProvides(self.request, IPloneRestapiLayer)
+        if IControlpanelLayer.providedBy(self.request):
+            noLongerProvides(self.request, IControlpanelLayer)
 
         context = queryMultiAdapter(
             (self.context, self.request), name="dexterity-types"
@@ -69,8 +69,8 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
     def update(self, names):
         name = names[0]
 
-        if IPloneRestapiLayer.providedBy(self.request):
-            noLongerProvides(self.request, IPloneRestapiLayer)
+        if IControlpanelLayer.providedBy(self.request):
+            noLongerProvides(self.request, IControlpanelLayer)
 
         context = queryMultiAdapter(
             (self.context, self.request), name="dexterity-types"
@@ -82,8 +82,8 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
     def delete(self, names):
         name = names[0]
 
-        if IPloneRestapiLayer.providedBy(self.request):
-            noLongerProvides(self.request, IPloneRestapiLayer)
+        if IControlpanelLayer.providedBy(self.request):
+            noLongerProvides(self.request, IControlpanelLayer)
 
         context = queryMultiAdapter(
             (self.context, self.request), name="dexterity-types"

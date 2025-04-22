@@ -11,6 +11,12 @@ class IPloneRestapiLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
+class IControlpanelLayer(IPloneRestapiLayer):
+    """Marker interface for REST API controlpanel requests.
+    This is used to isolate controlpanel adapters from normal traversal.
+    """
+
+
 class ISerializeToJson(Interface):
     """Adapter to serialize a Dexterity object into a JSON object."""
 
