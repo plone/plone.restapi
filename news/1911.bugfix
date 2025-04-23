@@ -1,0 +1,1 @@
+In the teaser block serializer, don't include data from the target item if the current user doesn't have View permission on it. @davisagli
