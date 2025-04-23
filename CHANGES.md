@@ -9,6 +9,20 @@
 
 <!-- towncrier release notes start -->
 
+## 9.13.4 (2025-04-23)
+
+
+### Bug fixes:
+
+- Micro-optimization for validation in vocabulary serializer. @davisagli #1906
+- In the teaser block serializer, don't include data from the target item if the current user doesn't have View permission on it. @davisagli #1911
+- Avoid finding control panel adapters when looking up normal views. @rohnsha0, @davisagli #4156
+
+
+### Internal:
+
+- Add tests for inherit service. @ujsquared #1897
+
 ## 9.13.3 (2025-03-25)
 
 
