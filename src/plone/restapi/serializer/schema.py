@@ -29,7 +29,7 @@ class SerializeSchemaToJson:
 
         read_permissions = mergedTaggedValueDict(self.schema, READ_PERMISSIONS_KEY)
         for name, field in getFields(self.schema).items():
-            if not check_permission(read_permissions.get(name), self.context):
+            if not check_permission(read_permissions.get(name), self):
                 continue
             serializer = getMultiAdapter(
                 (field, self.context, self.request), IFieldSerializer
@@ -40,13 +40,13 @@ class SerializeSchemaToJson:
         return result
 
 
-def check_permission(permission_name, context) -> bool:
+def check_permission(permission_name, instance) -> bool:
     if permission_name is None:
         return True
 
-    permission_cache = getattr(context, "_v_permission_cache", {})
+    permission_cache = getattr(instance, "_v_permission_cache", {})
     if not permission_cache:
-        context._v_permission_cache = permission_cache
+        instance._v_permission_cache = permission_cache
 
     if permission_name not in permission_cache:
         permission = queryUtility(IPermission, name=permission_name)
@@ -55,6 +55,6 @@ def check_permission(permission_name, context) -> bool:
         else:
             sm = getSecurityManager()
             permission_cache[permission_name] = bool(
-                sm.checkPermission(permission.title, context)
+                sm.checkPermission(permission.title, instance.context)
             )
     return permission_cache[permission_name]
