@@ -126,7 +126,7 @@ class ReferenceFieldSerializer(DefaultFieldSerializer):
         accessor = self.field.getAccessor(self.context)
         refs = accessor()
         if self.field.multiValued:
-            return [json_compatible(r.absolute_url()) for r in refs]
+            return [json_compatible(r.absolute_url()) for r in refs if r is not None]
         else:
             if refs is None:
                 return None
