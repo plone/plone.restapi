@@ -60,11 +60,6 @@ FIELD_PROPERTIES_MAPPING = {
 }
 
 
-@implementer(IDexterityContent)
-class FakeDXContext:
-    """Fake DX content class, so we can reuse the DX field deserializers"""
-
-
 def create_form(context, request, base_schema, additional_schemata=None):
     """Create a minimal, standalone z3c form and run the field processing
     logic of plone.autoform on it.
@@ -528,8 +523,11 @@ def update_field(context, request, data):
     edit.form_instance.applyChanges(properties)
 
     if default is not _marker:
-        fake_context = FakeDXContext()
+        base_context = context
+        if not IDexterityContent.providedBy(context):
+            # fallback to site root
+            base_context = getSite()
         deserializer = queryMultiAdapter(
-            (field.field, fake_context, request), IFieldDeserializer
+            (field.field, base_context, request), IFieldDeserializer
         )
         setattr(field.field, "default", deserializer(default))
