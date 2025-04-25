@@ -425,6 +425,46 @@ class TestServicesTypes(unittest.TestCase):
             "contact_info", [f["id"] for f in response.json().get("fieldsets")]
         )  # noqa
 
+    def test_types_document_blocks_patch(self):
+        json = {
+            "properties": {
+                "blocks": {
+                    "default": {
+                        "0ff5c86f-dfea-4199-a855-d0e507b9a44c": {"@type": "title"},
+                        "d6a0a308-0757-4713-bfe0-359817b364cd": {
+                            "@type": "slate",
+                            "value": [
+                                {
+                                    "type": "p",
+                                    "children": [
+                                        {"text": ""},
+                                        {
+                                            "type": "link",
+                                            "data": {"url": "/doc1"},
+                                            "children": [{"text": "Plone"}],
+                                        },
+                                        {"text": ""},
+                                    ],
+                                }
+                            ],
+                            "plaintext": " Plone ",
+                        },
+                    }
+                },
+                "blocks_layout": {
+                    "default": {
+                        "items": [
+                            "0ff5c86f-dfea-4199-a855-d0e507b9a44c",
+                            "d6a0a308-0757-4713-bfe0-359817b364cd",
+                        ]
+                    }
+                },
+            }
+        }
+
+        response = self.api_session.patch("/@types/Document", json=json)
+        self.assertEqual(response.status_code, 204)
+
     def test_types_document_remove_field(self):
         response = self.api_session.delete(
             "/@types/Document/author_email",
