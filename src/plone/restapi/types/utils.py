@@ -41,7 +41,6 @@ from zope.component import queryUtility
 from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
-from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
 
 
