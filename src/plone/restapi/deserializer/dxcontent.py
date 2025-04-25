@@ -80,7 +80,7 @@ class DeserializeFromJson(OrderingMixin):
 
         return self.context
 
-    def get_schema_data(self, data, validate_all, create=False):
+    def get_schema_data(self, data, validate_all, create=False):  # noqa: ignore=C901
         schema_data = {}
         errors = []
 
@@ -162,6 +162,43 @@ class DeserializeFromJson(OrderingMixin):
                     if name == "changeNote":
                         continue
                     dm = queryMultiAdapter((self.context, field), IDataManager)
+
+                    # Covering here default/missing_value edge cases
+                    if (
+                        create
+                        and name not in data
+                        and (
+                            dm.field.defaultFactory is not None
+                            or field.default is not None
+                        )
+                        and not field.required
+                    ):
+                        # precondition:
+                        # - On creation
+                        # - name was not handled before
+                        # - not required, otherwise there has to be a value
+                        # - one of defaultFactory or default are defined, so at least one of them can be set
+                        if dm.field.defaultFactory:
+                            dm.set(dm.field.defaultFactory(self.context))
+                            self.mark_field_as_changed(schema, name)
+                        elif field.default:
+                            dm.set(field.default)
+                            self.mark_field_as_changed(schema, name)
+                    elif (
+                        name not in data
+                        and field.missing_value is not None
+                        and not field.required
+                    ):
+                        # precondition:
+                        # - name was not handled before
+                        # - not required, otherwise there has to be a value
+                        # - missing_value is defined, so it can be set
+                        dm_value = dm.get()
+                        if dm_value is None:
+                            # if there's no value at all currently in the object
+                            # then it sets the missing value
+                            dm.set(field.missing_value)
+
                     bound = field.bind(self.context)
                     try:
                         bound.validate(dm.get())
