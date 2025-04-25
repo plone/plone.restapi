@@ -2,7 +2,7 @@ from plone.behavior.registration import BehaviorRegistrationNotFound
 from plone.behavior.registration import lookup_behavior_registration
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import ISchemaSerializer
-from plone.restapi.serializer.schema import check_permission
+from plone.restapi.serializer.schema import _check_permission
 from plone.restapi.services import Service
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -37,7 +37,7 @@ class InheritedBehaviorExpander:
                         obj
                         for obj in self.context.aq_chain
                         if registration.marker.providedBy(obj)
-                        and check_permission("View", obj)
+                        and _check_permission("View", self, obj)
                     ),
                     None,
                 )

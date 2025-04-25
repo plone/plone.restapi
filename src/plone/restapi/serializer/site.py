@@ -11,7 +11,7 @@ from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.dxcontent import get_allow_discussion_value
 from plone.restapi.serializer.dxcontent import update_with_working_copy_info
 from plone.restapi.serializer.expansion import expandable_elements
-from plone.restapi.serializer.schema import check_permission as _check_permission
+from plone.restapi.serializer.schema import _check_permission
 from plone.restapi.serializer.utils import get_portal_type_title
 from plone.restapi.services.locking import lock_info
 from Products.CMFCore.utils import getToolByName
@@ -115,7 +115,7 @@ class SerializeSiteRootToJson:
         return result
 
     def check_permission(self, permission_name, obj):
-        return _check_permission(permission_name, obj)
+        return _check_permission(permission_name, self, obj)
 
     def serialize_blocks(self):
         # This is only for below 6

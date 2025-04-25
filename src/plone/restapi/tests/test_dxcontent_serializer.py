@@ -174,6 +174,10 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertIn("test_read_permission_field", obj)
         self.assertEqual("Secret Stuff", obj["test_read_permission_field"])
 
+        # Re-test field with read permission - make sure its not cached
+        setRoles(self.portal, TEST_USER_ID, ["Member"])
+        self.assertNotIn("test_read_permission_field", self.serialize())
+
     def test_get_layout(self):
         current_layout = self.portal.doc1.getLayout()
         obj = self.serialize()
