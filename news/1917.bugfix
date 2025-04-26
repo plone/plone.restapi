@@ -1,1 +1,1 @@
-fix(types/utils): attribute error on fake_context when updating Content-type field through DX layout @nileshgulia
+Fix `AttributeError` when updating the default blocks layout for a content type. @nileshgulia, @davisagli

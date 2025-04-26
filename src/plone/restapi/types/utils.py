@@ -41,6 +41,7 @@ from zope.component import queryUtility
 from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
+from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
 
 
@@ -57,6 +58,11 @@ FIELD_PROPERTIES_MAPPING = {
     "minimum": "min",
     "maximum": "max",
 }
+
+
+@implementer(IDexterityContent)
+class FakeDXContext:
+    """Fake DX content class, so we can reuse the DX field deserializers"""
 
 
 def create_form(context, request, base_schema, additional_schemata=None):
@@ -522,11 +528,8 @@ def update_field(context, request, data):
     edit.form_instance.applyChanges(properties)
 
     if default is not _marker:
-        base_context = context
-        if not IDexterityContent.providedBy(context):
-            # fallback to site root
-            base_context = getSite()
+        fake_context = FakeDXContext()
         deserializer = queryMultiAdapter(
-            (field.field, base_context, request), IFieldDeserializer
+            (field.field, fake_context, request), IFieldDeserializer
         )
         setattr(field.field, "default", deserializer(default))
