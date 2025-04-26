@@ -1,0 +1,1 @@
+Fix `AttributeError` when updating the default blocks layout for a content type. @nileshgulia, @davisagli
