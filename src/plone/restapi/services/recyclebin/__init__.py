@@ -1,1 +1,1 @@
-"""Plone REST API services for recyclebin management"""
+# Empty init file to make the directory a Python package
