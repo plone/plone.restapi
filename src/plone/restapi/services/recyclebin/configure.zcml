@@ -1,0 +1,53 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <adapter name="recyclebin" factory=".get.RecycleBin" />
+
+  <!-- GET recyclebin content listing -->
+  <plone:service
+    method="GET"
+    name="@recyclebin"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".get.RecycleBinGet"
+    permission="cmf.ManagePortal"
+    />
+
+  <!-- GET specific recyclebin item -->
+  <plone:service
+    method="GET"
+    name="@recyclebin"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".get.RecycleBinItemGet"
+    permission="cmf.ManagePortal"
+    />
+
+  <!-- POST to restore specific recyclebin item -->
+  <plone:service
+    method="POST"
+    name="@recyclebin"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".post.RecycleBinItemRestore"
+    permission="cmf.ManagePortal"
+    />
+
+  <!-- DELETE to purge a specific item from recyclebin -->
+  <plone:service
+    method="DELETE"
+    name="@recyclebin"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".delete.RecycleBinItemDelete"
+    permission="cmf.ManagePortal"
+    />
+
+  <!-- DELETE to empty entire recyclebin -->
+  <plone:service
+    method="DELETE"
+    name="@recyclebin-empty"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".delete.RecycleBinEmpty"
+    permission="cmf.ManagePortal"
+    />
+
+</configure>
