@@ -1,40 +1,41 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:plone="http://namespaces.plone.org/plone"
-    xmlns:zcml="http://namespaces.zope.org/zcml">
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
-    <include package="plone.restapi" />
+  <include package="plone.restapi" />
 
-    <plone:service
-        method="GET"
-        name="@recyclebin"
-        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-        factory=".get.RecycleBinGet"
-        permission="cmf.ManagePortal"
-        />
+  <plone:service
+      method="GET"
+      factory=".get.RecycleBinGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@recyclebin"
+      />
 
-    <plone:service
-        method="GET"
-        name="@recyclebin"
-        for="Products.CMFCore.interfaces.IFolderish"
-        factory=".get.RecycleBinGet"
-        permission="cmf.ManagePortal"
-        />
+  <plone:service
+      method="GET"
+      factory=".get.RecycleBinGet"
+      for="Products.CMFCore.interfaces.IFolderish"
+      permission="cmf.ManagePortal"
+      name="@recyclebin"
+      />
 
-    <plone:service
-        method="POST"
-        name="@recyclebin-restore"
-        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-        factory=".restore.RecycleBinRestore"
-        permission="cmf.ManagePortal"
-        />
+  <plone:service
+      method="POST"
+      factory=".restore.RecycleBinRestore"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@recyclebin-restore"
+      />
 
-    <plone:service
-        method="POST"
-        name="@recyclebin-purge"
-        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-        factory=".purge.RecycleBinPurge"
-        permission="cmf.ManagePortal"
-        />
+  <plone:service
+      method="POST"
+      factory=".purge.RecycleBinPurge"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@recyclebin-purge"
+      />
 
 </configure>

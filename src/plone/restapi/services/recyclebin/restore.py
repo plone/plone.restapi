@@ -3,25 +3,24 @@ from plone.restapi.services import Service
 from Products.CMFPlone.interfaces.recyclebin import IRecycleBin
 from zope.component import getUtility
 from zope.interface import alsoProvides
-from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect.interfaces
 
 
 class RecycleBinRestore(Service):
     """POST /@recyclebin-restore - Restore an item from the recycle bin"""
-    
+
     def __init__(self, context, request):
-        super(RecycleBinRestore, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = {}
-    
+
     def reply(self):
         # Disable CSRF protection for this request
         alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
-        
+
         data = json_body(self.request)
         item_id = data.get("item_id", None)
-        
+
         if not item_id:
             self.request.response.setStatus(400)
             return {
@@ -30,9 +29,9 @@ class RecycleBinRestore(Service):
                     "message": "Missing required parameter: item_id",
                 }
             }
-        
+
         recycle_bin = getUtility(IRecycleBin)
-        
+
         # Check if recycle bin is enabled
         if not recycle_bin.is_enabled():
             self.request.response.setStatus(404)
@@ -42,7 +41,7 @@ class RecycleBinRestore(Service):
                     "message": "Recycle Bin is disabled",
                 }
             }
-        
+
         # Get the item to restore
         item_data = recycle_bin.get_item(item_id)
         if not item_data:
@@ -53,11 +52,11 @@ class RecycleBinRestore(Service):
                     "message": f"Item with ID {item_id} not found in recycle bin",
                 }
             }
-        
+
         # Get optional target container path
         target_path = data.get("target_path", None)
         target_container = None
-        
+
         if target_path:
             try:
                 portal = self.context.portal_url.getPortalObject()
@@ -70,10 +69,10 @@ class RecycleBinRestore(Service):
                         "message": f"Target path {target_path} not found",
                     }
                 }
-        
+
         # Restore the item
         restored_obj = recycle_bin.restore_item(item_id, target_container)
-        
+
         if not restored_obj:
             self.request.response.setStatus(500)
             return {
@@ -82,7 +81,7 @@ class RecycleBinRestore(Service):
                     "message": "Failed to restore item",
                 }
             }
-        
+
         self.request.response.setStatus(200)
         return {
             "status": "success",
@@ -91,6 +90,6 @@ class RecycleBinRestore(Service):
                 "@id": restored_obj.absolute_url(),
                 "id": restored_obj.getId(),
                 "title": restored_obj.Title(),
-                "type": restored_obj.portal_type
-            }
+                "type": restored_obj.portal_type,
+            },
         }
