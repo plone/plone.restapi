@@ -41,7 +41,7 @@ class TestRecycleBin(unittest.TestCase):
 
         self.assertEqual(404, response.status_code)
         self.assertEqual("NotFound", response.json()["error"]["type"])
-        self.assertEqual("Recycle Bin is disabled", response.json()["error"]["message"])
+        self.assertEqual("Recycle bin is disabled", response.json()["error"]["message"])
 
     def test_recyclebin_get_enabled_empty(self):
         """Test GET /@recyclebin when recycle bin is enabled but empty"""
@@ -149,7 +149,7 @@ class TestRecycleBin(unittest.TestCase):
 
         self.assertEqual(404, response.status_code)
         self.assertEqual("NotFound", response.json()["error"]["type"])
-        self.assertEqual("Recycle Bin is disabled", response.json()["error"]["message"])
+        self.assertEqual("Recycle bin is disabled", response.json()["error"]["message"])
 
     def test_restore_nonexistent_item(self):
         """Test restore for a non-existent item"""
@@ -273,7 +273,7 @@ class TestRecycleBin(unittest.TestCase):
         self.assertEqual(400, response.status_code)
         self.assertEqual("BadRequest", response.json()["error"]["type"])
         self.assertEqual(
-            "Missing required parameter: item_id or purge_all or purge_expired",
+            "Missing required parameter: item_id, purge_all, or purge_expired",
             response.json()["error"]["message"],
         )
 
@@ -292,7 +292,7 @@ class TestRecycleBin(unittest.TestCase):
 
         self.assertEqual(404, response.status_code)
         self.assertEqual("NotFound", response.json()["error"]["type"])
-        self.assertEqual("Recycle Bin is disabled", response.json()["error"]["message"])
+        self.assertEqual("Recycle bin is disabled", response.json()["error"]["message"])
 
     def test_purge_nonexistent_item(self):
         """Test purge for a non-existent item"""

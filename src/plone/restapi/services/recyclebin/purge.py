@@ -27,7 +27,7 @@ class RecycleBinPurge(Service):
             return {
                 "error": {
                     "type": "NotFound",
-                    "message": "Recycle Bin is disabled",
+                    "message": "Recycle bin is disabled",
                 }
             }
 
@@ -60,7 +60,7 @@ class RecycleBinPurge(Service):
             return {
                 "error": {
                     "type": "BadRequest",
-                    "message": "Missing required parameter: item_id or purge_all or purge_expired",
+                    "message": "Missing required parameter: item_id, purge_all, or purge_expired",
                 }
             }
 

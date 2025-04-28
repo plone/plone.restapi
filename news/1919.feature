@@ -1,1 +1,1 @@
-Implement RESTAPI endpoint for managing recycle bin @rohnsha0
+Add endpoint for managing recycle bin. @rohnsha0

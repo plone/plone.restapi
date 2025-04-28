@@ -38,7 +38,7 @@ class RecycleBinRestore(Service):
             return {
                 "error": {
                     "type": "NotFound",
-                    "message": "Recycle Bin is disabled",
+                    "message": "Recycle bin is disabled",
                 }
             }
 
