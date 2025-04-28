@@ -1,4 +1,4 @@
-# Recycle Bin REST API
+# Recycle Bin
 
 The Recycle Bin REST API provides endpoints to interact with the Plone Recycle Bin functionality.
 
@@ -6,7 +6,7 @@ The Recycle Bin REST API provides endpoints to interact with the Plone Recycle B
 
 To list all items in the recycle bin, send a GET request to the `@recyclebin` endpoint:
 
-```http
+```http-example
 GET /@recyclebin HTTP/1.1
 Accept: application/json
 ```
@@ -41,7 +41,7 @@ Response:
 
 To restore an item from the recycle bin, send a POST request to the `@recyclebin-restore` endpoint:
 
-```http
+```http-example
 POST /@recyclebin-restore HTTP/1.1
 Accept: application/json
 Content-Type: application/json
@@ -79,7 +79,7 @@ Response:
 
 To permanently delete an item from the recycle bin, send a POST request to the `@recyclebin-purge` endpoint:
 
-```http
+```http-example
 POST /@recyclebin-purge HTTP/1.1
 Accept: application/json
 Content-Type: application/json
@@ -102,7 +102,7 @@ Response:
 
 To purge all items from the recycle bin:
 
-```http
+```http-example
 POST /@recyclebin-purge HTTP/1.1
 Accept: application/json
 Content-Type: application/json
@@ -126,7 +126,7 @@ Response:
 
 To purge only expired items (based on the retention period):
 
-```http
+```http-example
 POST /@recyclebin-purge HTTP/1.1
 Accept: application/json
 Content-Type: application/json
