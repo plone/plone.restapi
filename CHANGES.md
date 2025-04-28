@@ -9,6 +9,20 @@
 
 <!-- towncrier release notes start -->
 
+## 9.13.5 (2025-04-27)
+
+
+### Bug fixes:
+
+- Fix exposing protected fields in schema serializer.
+  [maethu] #1916
+- Fix `AttributeError` when updating the default blocks layout for a content type. @nileshgulia, @davisagli #1917
+
+
+### Documentation:
+
+- Pin plone-sphinx-theme to prepare for PLIP 4097. See https://github.com/plone/Products.CMFPlone/issues/4097. @stevepiercy #4097
+
 ## 9.13.4 (2025-04-23)
 
 
