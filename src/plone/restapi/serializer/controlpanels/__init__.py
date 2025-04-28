@@ -1,5 +1,7 @@
 from plone.dexterity.interfaces import IDexterityContent
 from plone.registry.interfaces import IRegistry
+from plone.registry.interfaces import IRecordsProxy
+from plone.registry.recordsproxy import RecordsProxy
 from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
@@ -12,11 +14,14 @@ from zope.component import queryMultiAdapter
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import noLongerProvides
+from zope.schema.interfaces import IField
 
 import zope.schema
 
 
 SERVICE_ID = "@controlpanels"
+
+_marker = object()
 
 
 @implementer(ISerializeToJsonSummary)
@@ -82,7 +87,14 @@ class ControlpanelSerializeToJson:
             self.controlpanel, self.controlpanel.context, self.controlpanel.request
         )
 
-        proxy = self.registry.forInterface(self.schema, prefix=self.schema_prefix)
+        # We use a special proxy and check=False just in case the schema has a new field before an upgrade happens
+        # Note this doesn't yet handle if a schema field changes type, or the options change
+        proxy = self.registry.forInterface(
+            self.schema,
+            prefix=self.schema_prefix,
+            check=False,
+            # factory=DefaultRecordsProxy,
+        )
 
         # Temporarily provide IDexterityContent, so we can use DX field
         # serializers
@@ -113,3 +125,34 @@ class ControlpanelSerializeToJson:
             "schema": json_schema,
             "data": json_data,
         }
+
+
+@implementer(IRecordsProxy)
+class DefaultRecordsProxy(RecordsProxy):
+    """Modified RecordsProxy which returns defaults if values missing"""
+
+    def __getattr__(self, name):
+        if not self.__dict__ or name in self.__dict__.keys():
+            return super(RecordsProxy, self).__getattr__(name)
+        if name not in self.__schema__:
+            raise AttributeError(name)
+        value = self.__registry__.get(self.__prefix__ + name, _marker)
+        if value is _marker:
+            # Instead of returning missing_value we return the default
+            # so if this is an upgrade the registry will eventually be
+            # set with the default on next save.
+            field = self.__schema__[name]
+            if IField.providedBy(field):
+                field = field.bind(self)
+                value = field.default
+            else:
+                value = self.__schema__[name].default
+
+        return value
+
+    def __setattr__(self, name, value):
+        if name in self.__schema__:
+            full_name = self.__prefix__ + name
+            self.__registry__[full_name] = value
+        else:
+            self.__dict__[name] = value
