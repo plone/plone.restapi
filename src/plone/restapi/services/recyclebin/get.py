@@ -1,5 +1,5 @@
+from plone.base.interfaces.recyclebin import IRecycleBin
 from plone.restapi.services import Service
-from Products.CMFPlone.interfaces.recyclebin import IRecycleBin
 from zope.component import getUtility
 
 

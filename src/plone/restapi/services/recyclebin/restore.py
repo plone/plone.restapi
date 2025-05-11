@@ -1,6 +1,6 @@
+from plone.base.interfaces.recyclebin import IRecycleBin
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
-from Products.CMFPlone.interfaces.recyclebin import IRecycleBin
 from zope.component import getUtility
 from zope.interface import alsoProvides
 
