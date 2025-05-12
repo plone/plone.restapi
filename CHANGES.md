@@ -9,6 +9,13 @@
 
 <!-- towncrier release notes start -->
 
+## 9.14.0 (2025-05-12)
+
+
+### New features:
+
+- `@site` service: Add a way for add-ons to add additional data using an `ISiteEndpointExpander` adapter. @davisagli #1921
+
 ## 9.13.5 (2025-04-27)
 
 
