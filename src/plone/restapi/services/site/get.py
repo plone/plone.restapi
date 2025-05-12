@@ -60,9 +60,9 @@ class Site:
             }
         )
 
-        adapters = getAdapters((self.context, self.request), provided=ISiteEndpointExpander)
-        for name, adapter in adapters:
-            adapter(result["site"])
+        expanders = getAdapters((self.context, self.request), provided=ISiteEndpointExpander)
+        for name, expander in expanders:
+            expander(result["site"])
 
         return result
 
