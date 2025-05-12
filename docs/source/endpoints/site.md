@@ -24,3 +24,37 @@ The response will contain the site information:
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/site_get.resp
 :language: http
 ```
+
+## Site endpoint expanders
+
+```{versionadded} plone.restapi 9.14.0
+
+```
+
+An add-on can add additional information to the `@site` endpoint by registering an `ISiteEndpointExpander` adapter.
+
+For example, this adapter adds a key with a custom setting:
+
+```python
+from plone.restapi.interfaces import ISiteEndpointExpander
+from zope.component import adapter
+from zope.interface import implementer
+from zope.interface import Interface
+from myaddon.interfaces import IBrowserLayer
+
+@adapter(Interface, IBrowserLayer)
+@implementer(ISiteEndpointExpander)
+class MyAddonExpander:
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, data):
+        data["myaddon.setting"] = True
+```
+
+```{tip}
+Use this for data that is needed to render any page, but that does not change depending on the context.
+If the data is context-dependent, use a custom API expander instead.
+```

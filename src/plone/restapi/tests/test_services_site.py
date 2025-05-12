@@ -1,11 +1,16 @@
 from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
+from plone.restapi.interfaces import ISiteEndpointExpander
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from zope.component import adapter
 from zope.component import getMultiAdapter
+from zope.component import provideAdapter
 from zope.interface import alsoProvides
+from zope.interface import implementer
+from zope.interface import Interface
 
 import unittest
 
@@ -41,6 +46,26 @@ class TestServicesSite(unittest.TestCase):
         self.assertIn("plone.default_language", response.json())
         self.assertEqual(response.json()["plone.portal_timezone"], "UTC")
         self.assertEqual(response.json()["features"]["multilingual"], False)
+
+    def test_get_site_expander(self):
+        @adapter(Interface, Interface)
+        @implementer(ISiteEndpointExpander)
+        class SiteEndpointExpander:
+            def __init__(self, context, request):
+                self.context = context
+                self.request = request
+
+            def __call__(self, data):
+                data["is_test"] = True
+
+        provideAdapter(SiteEndpointExpander)
+
+        response = self.api_session.get(
+            "/@site",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["is_test"], True)
 
 
 class TestServicesSiteMultilingual(unittest.TestCase):
