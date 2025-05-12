@@ -8,10 +8,12 @@ from plone.restapi import HAS_MULTILINGUAL
 from plone.restapi.bbb import IImagingSchema
 from plone.restapi.bbb import ISiteSchema
 from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.interfaces import ISiteEndpointExpander
 from plone.restapi.services import Service
 from Products.CMFPlone.controlpanel.browser.redirects import RedirectionSet
 from Products.CMFPlone.utils import getSiteLogo
 from zope.component import adapter
+from zope.component import getAdapters
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import implementer
@@ -57,6 +59,10 @@ class Site:
                 "features": self.features(),
             }
         )
+
+        adapters = getAdapters((self.context, self.request), provided=ISiteEndpointExpander)
+        for name, adapter in adapters:
+            adapter(result["site"])
 
         return result
 

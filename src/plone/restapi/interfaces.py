@@ -268,3 +268,10 @@ class ILoginProviders(Interface):
         """
         return a list of login providers, with its id, title, plugin and url
         """
+
+
+class ISiteEndpointExpander(Interface):
+    """An adapter which adds additional data to the @site endpoint."""
+
+    def __call__(data):
+        """Add additional key/values to data"""
