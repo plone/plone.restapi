@@ -46,7 +46,7 @@ class TestServicesSite(unittest.TestCase):
         self.assertIn("plone.default_language", response.json())
         self.assertEqual(response.json()["plone.portal_timezone"], "UTC")
         self.assertEqual(response.json()["features"]["multilingual"], False)
-    
+
     def test_get_site_expander(self):
         @adapter(Interface, Interface)
         @implementer(ISiteEndpointExpander)
@@ -54,7 +54,7 @@ class TestServicesSite(unittest.TestCase):
             def __init__(self, context, request):
                 self.context = context
                 self.request = request
-            
+
             def __call__(self, data):
                 data["is_test"] = True
 
