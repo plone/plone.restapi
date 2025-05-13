@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+7.9.1 (2025-05-13)
+------------------
+
+Bug fixes:
+
+
+- Fix error serializing empty reference from Archetypes content.
+  [maurits] (#1913)
+
+
 7.9.0 (2024-01-23)
 ------------------
 
