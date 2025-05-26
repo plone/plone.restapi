@@ -18,7 +18,7 @@ from zope.schema.interfaces import ValidationError
 
 @implementer(IDexterityContent)
 class FakeDXContext:
-    """Fake DX content class, so we can re-use the DX field deserializers"""
+    """Fake DX content class, so we can reuse the DX field deserializers"""
 
 
 @implementer(IDeserializeFromJson)

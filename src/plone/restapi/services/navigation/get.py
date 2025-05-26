@@ -1,11 +1,12 @@
 from Acquisition import aq_inner
 from collections import defaultdict
-from plone.app.layout.navigation.root import getNavigationRoot
 from plone.memoize.view import memoize
 from plone.memoize.view import memoize_contextless
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import get_navigation_root
 from plone.restapi.bbb import INavigationSchema
 from plone.restapi.bbb import safe_text
+from plone.restapi.deserializer import parse_int
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
@@ -28,10 +29,7 @@ class Navigation:
         self.portal = getSite()
 
     def __call__(self, expand=False):
-        if self.request.form.get("expand.navigation.depth", False):
-            self.depth = int(self.request.form["expand.navigation.depth"])
-        else:
-            self.depth = 1
+        self.depth = parse_int(self.request.form, "expand.navigation.depth", 1)
 
         result = {"navigation": {"@id": f"{self.context.absolute_url()}/@navigation"}}
         if not expand:
@@ -62,7 +60,7 @@ class Navigation:
 
     @property
     def navtree_path(self):
-        return getNavigationRoot(self.context)
+        return get_navigation_root(self.context)
 
     @property
     def current_language(self):
@@ -135,7 +133,9 @@ class Navigation:
             if brain_parent_path == navtree_path:
                 # This should be already provided by the portal_tabs_view
                 continue
-            if brain.exclude_from_nav and not context_path.startswith(brain_path):
+            if brain.exclude_from_nav and not f"{brain_path}/".startswith(
+                f"{context_path}/"
+            ):
                 # skip excluded items if they're not in our context path
                 continue
             url = brain.getURL()

@@ -1,20 +1,27 @@
-# -*- coding: utf-8 -*-
 from plone.app.event.base import FALLBACK_TIMEZONE
 from plone.app.event.base import replacement_zones
 from plone.event.utils import default_timezone as fallback_default_timezone
 from plone.event.utils import validated_timezone
 from plone.i18n.interfaces import ILanguageSchema
 from plone.registry.interfaces import IRegistry
+from plone.restapi import HAS_MULTILINGUAL
+from plone.restapi.bbb import IImagingSchema
+from plone.restapi.bbb import ISiteSchema
 from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.interfaces import ISiteEndpointExpander
 from plone.restapi.services import Service
-from Products.CMFPlone.interfaces import IImagingSchema
-from Products.CMFPlone.interfaces import ISiteSchema
+from Products.CMFPlone.controlpanel.browser.redirects import RedirectionSet
 from Products.CMFPlone.utils import getSiteLogo
 from zope.component import adapter
+from zope.component import getAdapters
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.interface import Interface
+
+
+if HAS_MULTILINGUAL:
+    from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
 
 
 @implementer(IExpandableElement)
@@ -49,8 +56,15 @@ class Site:
                 "plone.default_language": language_settings.default_language,
                 "plone.available_languages": language_settings.available_languages,
                 "plone.portal_timezone": self.plone_timezone(),
+                "features": self.features(),
             }
         )
+
+        expanders = getAdapters(
+            (self.context, self.request), provided=ISiteEndpointExpander
+        )
+        for name, expander in expanders:
+            expander(result["site"])
 
         return result
 
@@ -72,6 +86,20 @@ class Site:
         portal_timezone = validated_timezone(portal_timezone, FALLBACK_TIMEZONE)
 
         return portal_timezone
+
+    def features(self):
+        """Indicates which features are supported by this site.
+
+        This can be used by a client to check for version-dependent features.
+        """
+        result = {
+            "filter_aliases_by_date": hasattr(
+                RedirectionSet, "supports_date_range_filtering"
+            ),
+            "multilingual": HAS_MULTILINGUAL
+            and IPloneAppMultilingualInstalled.providedBy(self.request),
+        }
+        return result
 
 
 class SiteGet(Service):

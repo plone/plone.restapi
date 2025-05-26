@@ -103,7 +103,7 @@ class GroupsPatch(Service):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         portal_groups = getToolByName(self.context, "portal_groups")
-        properties = dict((k, data[k]) for k in ["title", "description"] if k in data)
+        properties = {k: data[k] for k in ["title", "description"] if k in data}
         portal_groups.editGroup(
             self._get_group_id,
             roles=roles,

@@ -20,13 +20,13 @@ from plone.autoform.interfaces import WIDGETS_KEY
 from plone.behavior.interfaces import IBehavior
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.interfaces import IDexterityFTI
-from plone.dexterity.utils import getAdditionalSchemata
 from plone.dexterity.schema import splitSchemaName
+from plone.dexterity.utils import getAdditionalSchemata
 from plone.i18n.normalizer import idnormalizer
+from plone.restapi import HAS_MULTILINGUAL
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.serializer.converters import IJsonCompatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.restapi import HAS_MULTILINGUAL
 from plone.supermodel import serializeModel
 from plone.supermodel.interfaces import FIELDSETS_KEY
 from plone.supermodel.utils import mergedTaggedValueDict
@@ -43,6 +43,7 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
+
 
 if HAS_MULTILINGUAL:
     from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
@@ -61,7 +62,7 @@ FIELD_PROPERTIES_MAPPING = {
 
 @implementer(IDexterityContent)
 class FakeDXContext:
-    """Fake DX content class, so we can re-use the DX field deserializers"""
+    """Fake DX content class, so we can reuse the DX field deserializers"""
 
 
 def create_form(context, request, base_schema, additional_schemata=None):

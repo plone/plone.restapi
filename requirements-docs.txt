@@ -1,20 +1,10 @@
-docutils<0.17,>=0.15  # sphinx-book-theme 0.2.0 has requirement docutils<0.17,>=0.15
-Sphinx<5,>=3  # sphinx-book-theme 0.3.3 has requirement sphinx<5,>=3
-sphinxcontrib-applehelp==1.0.4  # newer versions require sphinx 5
-sphinxcontrib-devhelp==1.0.2   # newer versions require sphinx 5
-sphinxcontrib-htmlhelp==2.0.1  # newer versions require sphinx 5
-sphinxcontrib-qthelp==1.0.3  # newer versions require sphinx 5
-sphinxcontrib-serializinghtml==1.1.5  # newer versions require sphinx 5
-jsx-lexer
-lesscpy
 linkify-it-py
 myst-parser
+plone-sphinx-theme<2
+setuptools  # required by sphinxcontrib.httpexample, remove when it migrates to importlib
 sphinx-autobuild
-sphinx-book-theme
 sphinx-copybutton
-sphinx-sitemap
-sphinx-togglebutton
 sphinxcontrib.httpdomain
 sphinxcontrib.httpexample
-sphinxcontrib-spelling
 sphinxext-opengraph
+vale

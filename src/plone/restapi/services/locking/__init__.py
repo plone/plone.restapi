@@ -1,5 +1,4 @@
-""" Locking
-"""
+"""Locking"""
 
 from datetime import datetime
 from datetime import timezone
@@ -7,14 +6,17 @@ from plone import api
 from plone.locking.interfaces import ILockable
 
 
-def creator_name(username):
-    user = api.user.get(username=username)
-    return user.getProperty("fullname") or username
+def creator_name(userid):
+    user = api.user.get(userid=userid)
+    if user:
+        return user.getProperty("fullname") or userid
+    else:
+        return userid
 
 
-def creator_url(username):
+def creator_url(userid):
     url = api.portal.get().absolute_url()
-    return f"{url}/author/{username}"
+    return f"{url}/author/{userid}"
 
 
 def creation_date(timestamp):

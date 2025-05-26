@@ -1,16 +1,15 @@
 from datetime import date
 from DateTime import DateTime
-from pkg_resources import get_distribution
-from pkg_resources import parse_version
+from importlib.metadata import distribution
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
-from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import INavigationRoot
 from plone.restapi.search.query import ZCatalogCompatibleQueryAdapter
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -22,13 +21,14 @@ from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.interface import noLongerProvides
 
+import packaging.version
 import transaction
 import unittest
 
 
-HAS_PLONE_6 = parse_version(
-    get_distribution("Products.CMFPlone").version
-) >= parse_version("6.0.0a1")
+HAS_PLONE_6 = packaging.version.parse(
+    distribution("Products.CMFPlone").version
+) >= packaging.version.parse("6.0.0a1")
 
 
 class TestSearchFunctional(unittest.TestCase):
@@ -149,6 +149,29 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertSetEqual(
             {"/plone/folder", "/plone/folder/doc", "/plone/folder/other-document"},
             set(result_paths(response.json())),
+        )
+
+    def test_search_with_parentheses(self):
+        query = {"SearchableText": "("}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), [], "Expected no items for query with only parentheses"
+        )
+
+        query = {"SearchableText": ")"}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), [], "Expected no items for query with only parentheses"
+        )
+
+        query = {"SearchableText": "lorem(ipsum)"}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        items = [item["title"] for item in response.json().get("items", [])]
+        self.assertIn(
+            "Lorem Ipsum", items, "Expected 'Lorem Ipsum' to be found in search results"
         )
 
     def test_search_in_vhm(self):

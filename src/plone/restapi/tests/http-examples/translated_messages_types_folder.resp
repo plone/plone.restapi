@@ -48,10 +48,10 @@ Content-Type: application/json+schema
             "behavior": "plone",
             "description": "",
             "fields": [
-                "allow_discussion",
                 "exclude_from_nav",
                 "id",
-                "nextPreviousEnabled"
+                "nextPreviousEnabled",
+                "allow_discussion"
             ],
             "id": "settings",
             "title": "Configuraci\u00f3n"
@@ -67,7 +67,7 @@ Content-Type: application/json+schema
     ],
     "properties": {
         "allow_discussion": {
-            "behavior": "plone.allowdiscussion",
+            "behavior": "plone.app.discussion.behavior.IAllowDiscussion",
             "choices": [
                 [
                     "True",

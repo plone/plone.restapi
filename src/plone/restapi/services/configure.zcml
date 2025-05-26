@@ -27,6 +27,7 @@
   <include package=".navigation" />
   <include package=".contextnavigation" />
   <include package=".history" />
+  <include package=".inherit" />
   <include package=".linkintegrity" />
   <include package=".locking" />
   <include package=".navroot" />

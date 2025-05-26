@@ -97,13 +97,7 @@ Content-Type: application/json
         "stealable": true
     },
     "modified": "1995-07-31T17:30:00+00:00",
-    "next_item": {
-        "@id": "http://localhost:55001/plone/doc1",
-        "@type": "Document",
-        "description": "",
-        "title": "Document 1",
-        "type_title": "Page"
-    },
+    "next_item": {},
     "parent": {
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
@@ -111,13 +105,7 @@ Content-Type: application/json
         "title": "Plone site",
         "type_title": "Plone Site"
     },
-    "previous_item": {
-        "@id": "http://localhost:55001/plone/front-page",
-        "@type": "Document",
-        "description": "Congratulations! You have successfully installed Plone.",
-        "title": "Welcome to Plone",
-        "type_title": "Page"
-    },
+    "previous_item": {},
     "query": [
         {
             "i": "portal_type",

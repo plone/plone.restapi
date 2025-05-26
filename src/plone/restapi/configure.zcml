@@ -22,6 +22,7 @@
   <include package="plone.behavior" />
   <include package="plone.rest" />
   <include package="plone.schema" />
+  <include package="Products.CMFPlone" />
 
   <include
       package="plone.app.caching"
@@ -51,7 +52,7 @@
       title="plone.restapi testing"
       description="Adds sample content types for testing"
       provides="Products.GenericSetup.interfaces.EXTENSION"
-      for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
+      for="plone.restapi.bbb.ITestCasePloneSiteRoot"
       directory="profiles/testing"
       />
 
@@ -60,7 +61,7 @@
       title="plone.restapi testing-workflows"
       description="Adds sample workflows for testing"
       provides="Products.GenericSetup.interfaces.EXTENSION"
-      for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
+      for="plone.restapi.bbb.ITestCasePloneSiteRoot"
       directory="profiles/testing-workflows"
       />
 
@@ -126,7 +127,7 @@
 
   <utility
       factory=".setuphandlers.HiddenProfiles"
-      provides="Products.CMFPlone.interfaces.INonInstallable"
+      provides="plone.restapi.bbb.INonInstallable"
       name="plone.restapi"
       />
 

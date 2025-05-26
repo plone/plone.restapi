@@ -28,7 +28,10 @@ import pytz
 
 def datetimelike_to_iso(value):
     if isinstance(value, DateTime):
-        value = value.asdatetime()
+        if value.timezoneNaive():
+            value = value.asdatetime()
+        else:
+            value = pytz.timezone("UTC").localize(value.utcdatetime())
 
     if getattr(value, "tzinfo", None):
         # timezone aware date/time objects are converted to UTC first.

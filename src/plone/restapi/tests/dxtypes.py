@@ -9,6 +9,7 @@ from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
 from plone.restapi.tests.helpers import ascii_token
+from plone.schema import JSONField
 from plone.supermodel import model
 from plone.supermodel.directives import primary
 from Products.CMFCore.utils import getToolByName
@@ -186,6 +187,7 @@ class IDXTestDocumentSchema(model.Schema):
     test_float_field = schema.Float(required=False)
     test_frozenset_field = schema.FrozenSet(required=False)
     test_int_field = schema.Int(required=False)
+    test_json_field = JSONField(required=False)
     test_list_field = schema.List(required=False)
     test_list_field_with_choice_with_vocabulary = schema.List(
         value_type=schema.Choice(
@@ -312,6 +314,9 @@ class ITestBehavior(model.Schema):
     test_behavior_field = schema.TextLine(required=False)
     # Add nav_title to test if it gets substituted in Navigation service
     nav_title = schema.TextLine(required=False)
+    # Add a field with read permission set
+    test_secure_field = schema.TextLine(required=False)
+    read_permission(test_secure_field="cmf.ManagePortal")
 
 
 @provider(IFormFieldProvider)

@@ -1,8 +1,8 @@
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
-from Products.PluggableAuthService.interfaces.plugins import (
+from Products.PluggableAuthService.interfaces.plugins import (  # noqa
     IAuthenticationPlugin,
-)  # noqa
+)
 from zope.interface import alsoProvides
 
 import plone.protect.interfaces

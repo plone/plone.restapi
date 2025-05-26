@@ -1,0 +1,6 @@
+HTTP/1.1 200 OK
+Content-Type: text/csv; charset=utf-8
+
+old path,new path,datetime,manual
+/fizzbuzz,/front-page,2022/05/05 00:00:00 GMT+0,True
+/old-page,/front-page,2022/05/05 00:00:00 GMT+0,True

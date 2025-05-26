@@ -283,14 +283,14 @@ Content-Type: application/json
             "name": "plone.app.discussion.interfaces.IDiscussionSettings.globally_enabled",
             "schema": {
                 "properties": {
-                    "default": false,
+                    "default": true,
                     "description": "If selected, users are able to post comments on the site. However, you will still need to enable comments for specific content types, folders or content objects before users will be able to post comments.",
                     "factory": "Yes/No",
                     "title": "Globally enable comments",
                     "type": "boolean"
                 }
             },
-            "value": false
+            "value": true
         },
         {
             "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderation_enabled",
@@ -423,5 +423,5 @@ Content-Type: application/json
             "value": "The person that created an item"
         }
     ],
-    "items_total": 2973
+    "items_total": 2970
 }

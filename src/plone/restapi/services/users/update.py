@@ -104,6 +104,24 @@ class UsersPatch(Service):
                         self.set_member_portrait(user, value)
                     user.setMemberProperties(mapping={key: value}, force_empty=True)
 
+            if security.use_email_as_login and "email" in user_settings_to_update:
+                value = user_settings_to_update["email"]
+                pas = getToolByName(self.context, "acl_users")
+
+                try:
+                    pas.updateLoginName(user.getId(), value)
+                except ValueError:
+                    return self._error(
+                        400,
+                        "Bad request",
+                        _(
+                            "Cannot update login name of user to '${new_email}'.",
+                            mapping={
+                                "new_email": value,
+                            },
+                        ),
+                    )
+
             roles = user_settings_to_update.get("roles", {})
             if roles:
                 to_add = [key for key, enabled in roles.items() if enabled]
@@ -141,6 +159,20 @@ class UsersPatch(Service):
                     if key == "portrait" and isinstance(value, dict):
                         self.set_member_portrait(user, value)
                     user.setMemberProperties(mapping={key: value}, force_empty=True)
+
+            if security.use_email_as_login and "email" in user_settings_to_update:
+                value = user_settings_to_update["email"]
+                try:
+                    set_own_login_name(user, value)
+                except ValueError:
+                    return self._error(
+                        400,
+                        "Bad request",
+                        _(
+                            "Cannot update login name of user to '${new_email}'.",
+                            mapping={"new_email": value},
+                        ),
+                    )
 
         else:
             if self._is_anonymous:

@@ -5,7 +5,9 @@ from datetime import timedelta
 from decimal import Decimal
 from plone import namedfile
 from plone.app.textfield.value import RichTextValue
+from plone.dexterity.schema import SCHEMA_CACHE
 from plone.dexterity.utils import iterSchemata
+from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import IDXTestDocumentSchema
@@ -120,6 +122,11 @@ class TestDXFieldDeserializer(unittest.TestCase):
     def test_datetime_deserialization_handles_timezone(self):
         value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361+01")
         self.assertEqual(datetime(2015, 12, 20, 9, 39, 54, 361000), value)
+
+    def test_datetime_deserialization_with_tznaive_stored(self):
+        self.portal.doc1.test_datetime_field = datetime.now()
+        value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361")
+        self.assertEqual(datetime(2015, 12, 20, 10, 39, 54, 361000), value)
 
     def test_datetime_with_tz_deserialization_keeps_timezone(self):
         value = self.deserialize("test_datetime_tz_field", "2015-12-20T10:39:54.361+01")
@@ -645,3 +652,19 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertEqual("http://www.plone.com", value)
         value = self.deserialize("test_textline_field", "http://nohost/plone/doc1")
         self.assertEqual(self.portal.doc1.absolute_url(), value)
+
+    def test_json_field_deserializer_converts_internal_links_to_uid(self):
+        value = self.deserialize(
+            "test_json_field", {"@id": self.portal.doc1.absolute_url()}
+        )
+        self.assertEqual(value["@id"], f"../resolveuid/{self.portal.doc1.UID()}")
+
+    def test_json_field_deserializer_with_blocks(self):
+        fti = self.portal.portal_types.DXTestDocument
+        fti.behaviors = ("volto.blocks",)
+        SCHEMA_CACHE.invalidate("DXTestDocument")
+        assert IBlocks.providedBy(self.portal.doc1)
+        value = self.deserialize(
+            "test_json_field", {"@id": self.portal.doc1.absolute_url()}
+        )
+        self.assertEqual(value["@id"], f"../resolveuid/{self.portal.doc1.UID()}")

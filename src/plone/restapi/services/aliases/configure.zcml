@@ -7,8 +7,17 @@
       method="GET"
       accept="application/json,application/schema+json"
       factory=".get.AliasesGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      permission="zope2.View"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="Products.CMFPlone.ManagePortalAliases"
+      name="@aliases"
+      />
+
+  <plone:service
+      method="GET"
+      accept="text/csv"
+      factory=".get.AliasesGet"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="Products.CMFPlone.ManagePortalAliases"
       name="@aliases"
       />
 
@@ -17,7 +26,7 @@
       accept="application/json,application/schema+json"
       factory=".get.AliasesGet"
       for="Products.CMFCore.interfaces.IContentish"
-      permission="zope2.View"
+      permission="Products.CMFPlone.ManageContextAliases"
       name="@aliases"
       />
 
@@ -25,15 +34,15 @@
       method="POST"
       factory=".add.AliasesPost"
       for="*"
-      permission="cmf.ModifyPortalContent"
+      permission="Products.CMFPlone.ManageContextAliases"
       name="@aliases"
       />
 
   <plone:service
       method="POST"
       factory=".add.AliasesRootPost"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      permission="cmf.ModifyPortalContent"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="Products.CMFPlone.ManagePortalAliases"
       name="@aliases"
       />
 
@@ -41,15 +50,15 @@
       method="DELETE"
       factory=".delete.AliasesDelete"
       for="*"
-      permission="cmf.ModifyPortalContent"
+      permission="Products.CMFPlone.ManageContextAliases"
       name="@aliases"
       />
 
   <plone:service
       method="DELETE"
       factory=".delete.AliasesDelete"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      permission="cmf.ModifyPortalContent"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="Products.CMFPlone.ManagePortalAliases"
       name="@aliases"
       />
 

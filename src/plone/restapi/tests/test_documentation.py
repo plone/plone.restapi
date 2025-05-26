@@ -1,7 +1,6 @@
 from base64 import b64encode
 from datetime import datetime
 from datetime import timezone
-from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import ICommentAddedEvent
 from plone.app.discussion.interfaces import IConversation
@@ -9,6 +8,8 @@ from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import applyProfile
+from plone.app.testing import popGlobalRegistry
+from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -20,9 +21,12 @@ from plone.locking.interfaces import ITTWLockable
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import IPloneSiteRoot
+from plone.restapi.interfaces import ILoginProviders
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
+from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import patch_addon_versions
 from plone.restapi.tests.helpers import patch_scale_uuid
@@ -33,18 +37,18 @@ from z3c.relationfield import RelationValue
 from zope.component import createObject
 from zope.component import getMultiAdapter
 from zope.component import getUtility
+from zope.component import provideAdapter
 from zope.component.hooks import getSite
 from zope.event import notify
 from zope.interface import alsoProvides
 from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent import ObjectModifiedEvent
-from plone.app.testing import popGlobalRegistry
-from plone.app.testing import pushGlobalRegistry
-from plone.restapi.testing import register_static_uuid_utility
 
 import collections
+import io
 import json
 import os
+import pathlib
 import re
 import transaction
 import unittest
@@ -70,8 +74,7 @@ REQUEST_HEADER_KEYS = [
 
 RESPONSE_HEADER_KEYS = ["content-type", "allow", "location"] + TUS_HEADERS
 
-
-base_path = resource_filename("plone.restapi.tests", "http-examples")
+base_path = str(pathlib.Path(__file__).parent / "http-examples")
 
 UPLOAD_DATA = b"abcdefgh"
 UPLOAD_MIMETYPE = b"text/plain"
@@ -83,6 +86,27 @@ UPLOAD_PDF_FILENAME = "file.pdf"
 
 # How do we open files?
 open_kw = {"newline": "\n"}
+
+
+class MyExternalLinks:
+    def __init__(self, context):
+        self.context = context
+
+    def get_providers(self):
+        return [
+            {
+                "id": "myprovider",
+                "title": "Provider",
+                "plugin": "myprovider",
+                "url": "https://some.example.com/login-url",
+            },
+            {
+                "id": "github",
+                "title": "GitHub",
+                "plugin": "github",
+                "url": "https://some.example.com/login-authomatic/github",
+            },
+        ]
 
 
 def normalize_test_port(value):
@@ -226,6 +250,13 @@ class TestDocumentation(TestDocumentationBase):
         super().setUp()
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
+        provideAdapter(
+            MyExternalLinks,
+            adapts=(IPloneSiteRoot,),
+            provides=ILoginProviders,
+            name="test-external-links",
+        )
+
         transaction.commit()
 
     def tearDown(self):
@@ -516,6 +547,10 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@registry")
         save_request_and_response_for_docs("registry_get_list", response)
 
+    def test_documentation_registry_get_list_filtered(self):
+        response = self.api_session.get("/@registry?q=Products.CMFPlone")
+        save_request_and_response_for_docs("registry_get_list_filtered", response)
+
     def test_documentation_types(self):
         response = self.api_session.get("/@types")
         save_request_and_response_for_docs("types", response)
@@ -785,6 +820,12 @@ class TestDocumentation(TestDocumentationBase):
             headers={"Authorization": f"Bearer {token}"},
         )
         save_request_and_response_for_docs("jwt_logout", response)
+
+    def test_documentation_external_doc_links(self):
+        response = self.api_session.get(
+            f"{self.portal.absolute_url()}/@login",
+        )
+        save_request_and_response_for_docs("external_authentication_links", response)
 
     def test_documentation_batching(self):
         folder = self.portal[
@@ -1797,6 +1838,26 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@site")
         save_request_and_response_for_docs("site_get", response)
 
+    def test_inherit_get(self):
+        self.doc = self.portal.invokeFactory(
+            "Document", id="document", title="Test document"
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            "/document/@inherit?expand.inherit.behaviors=plone.navigationroot"
+        )
+        save_request_and_response_for_docs("inherit_get", response)
+
+    def test_inherit_expansion(self):
+        self.doc = self.portal.invokeFactory(
+            "Document", id="document", title="Test document"
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            "/document/?expand=inherit&expand.inherit.behaviors=plone.navigationroot"
+        )
+        save_request_and_response_for_docs("inherit_expansion", response)
+
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -2096,6 +2157,58 @@ class TestCommenting(TestDocumentationBase):
 
         response = self.api_session.get(url + query)
         save_request_and_response_for_docs("aliases_root_get", response)
+
+    def test_aliases_root_get_csv_format(self):
+        url = f"{self.portal.absolute_url()}/@aliases"
+        query = ""
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+        self.api_session.headers.update({"Content-Type": "application/json"})
+        self.api_session.headers.update({"Accept": "text/csv"})
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_get_csv_format", response)
+
+    def test_aliases_root_add_csv_format(self):
+        url = f"{self.portal.absolute_url()}/@aliases"
+
+        content = b"old path,new path,datetime,manual\n/old-page,/front-page,2022/01/01 00:00:00 GMT+0,True\n"
+        csv_file = io.BytesIO(content)
+        csv_file.name = "test_file.csv"
+
+        # Setting a fixed boundary intentionally to make the producing .req and .resp files deterministic
+        boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+
+        # Manually construct the multipart body
+        body = (
+            f"--{boundary}\r\n"
+            f'Content-Disposition: form-data; name="file"; filename="{csv_file.name}"\r\n'
+            "Content-Type: text/csv\r\n\r\n"
+            f"{content.decode()}\r\n"
+            f"--{boundary}--\r\n"
+        )
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": "Basic YWRtaW46c2VjcmV0",
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
+        }
+
+        response = self.api_session.post(url, headers=headers, data=body)
+        save_request_and_response_for_docs("aliases_root_add_csv_format", response)
 
     def test_aliases_root_filter(self):
         # Get aliases
@@ -2421,6 +2534,11 @@ class TestIterateDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@userschema")
 
         save_request_and_response_for_docs("userschema", response)
+
+    def test_documentation_schema_user_registration(self):
+        response = self.api_session.get("/@userschema/registration")
+
+        save_request_and_response_for_docs("userschema_registration", response)
 
 
 class TestRules(TestDocumentationBase):

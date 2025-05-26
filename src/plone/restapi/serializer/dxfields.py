@@ -1,6 +1,7 @@
 from AccessControl import getSecurityManager
 from plone.app.contenttypes.interfaces import ILink
 from plone.app.contenttypes.utils import replace_link_variables_by_paths
+from plone.app.dexterity.behaviors.metadata import IPublication
 from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedFileField
@@ -18,6 +19,7 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
+from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import IVocabularyTokenized
@@ -206,3 +208,17 @@ class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
         return "/".join(
             (self.context.absolute_url(), "@@download", self.field.__name__)
         )
+
+
+@adapter(IDatetime, IDexterityContent, Interface)
+@implementer(IFieldSerializer)
+class DateTimeFieldSerializer(DefaultFieldSerializer):
+    def get_value(self, default=None):
+        value = super().get_value(default=default)
+        if value and self.field.interface == IPublication:
+            # We want the dates with full tz infos
+            # default value is taken from
+            # plone.app.dexterity.behaviors.metadata.Publication that escape
+            # timezone
+            return getattr(self.context, self.field.__name__)()
+        return value

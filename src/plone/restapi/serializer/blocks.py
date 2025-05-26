@@ -1,8 +1,8 @@
 from plone import api
-from plone.app.uuid.utils import uuidToCatalogBrain
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.blocks import visit_blocks, iter_block_transform_handlers
+from plone.restapi.blocks import iter_block_transform_handlers
+from plone.restapi.blocks import visit_blocks
 from plone.restapi.deserializer.blocks import iterate_children
 from plone.restapi.deserializer.blocks import SlateBlockTransformer
 from plone.restapi.deserializer.blocks import transform_links
@@ -11,7 +11,8 @@ from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
-from plone.restapi.serializer.utils import resolve_uid, uid_to_url
+from plone.restapi.serializer.utils import resolve_uid
+from plone.restapi.serializer.utils import uid_to_url
 from plone.schema import IJSONField
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -24,7 +25,7 @@ import os
 import re
 
 
-@adapter(IJSONField, IBlocks, Interface)
+@adapter(IJSONField, Interface, Interface)
 @implementer(IFieldSerializer)
 class BlocksJSONFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
@@ -39,6 +40,14 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                     new_block = handler(new_block)
                 block.clear()
                 block.update(new_block)
+        else:
+            fake_block = {"@type": "jsonfield", "value": value}
+            for handler in iter_block_transform_handlers(
+                self.context, fake_block, IBlockFieldSerializationTransformer
+            ):
+                fake_block = handler(fake_block)
+            value = fake_block["value"]
+
         return json_compatible(value)
 
 
@@ -110,9 +119,9 @@ class TextBlockSerializerBase:
 
 
 @implementer(IBlockFieldSerializationTransformer)
-@adapter(IBlocks, IBrowserRequest)
+@adapter(Interface, IBrowserRequest)
 class ResolveUIDSerializer(ResolveUIDSerializerBase):
-    """Serializer for content-types with IBlocks behavior"""
+    """UID-to-URL transformer for all content types"""
 
 
 @implementer(IBlockFieldSerializationTransformer)
@@ -262,17 +271,20 @@ class TeaserBlockSerializerRoot(TeaserBlockSerializerBase):
 
 
 def url_to_brain(url):
+    """Find the catalog brain for a URL.
+
+    Returns None if no item was found that is visible to the current user.
+    """
     if not url:
         return
-    brain = None
     if match := RESOLVE_UID_REGEXP.search(url):
         uid = match.group(1)
-        brain = uuidToCatalogBrain(uid)
+        query = {"UID": uid}
     else:
         # fallback in case the url wasn't converted to a UID
-        catalog = api.portal.get_tool("portal_catalog")
         path = "/".join(api.portal.get().getPhysicalPath()) + url
-        results = catalog.searchResults(path={"query": path, "depth": 0})
-        if results:
-            brain = results[0]
-    return brain
+        query = {"path": {"query": path, "depth": 0}}
+    catalog = api.portal.get_tool("portal_catalog")
+    results = catalog.searchResults(**query)
+    if results:
+        return results[0]

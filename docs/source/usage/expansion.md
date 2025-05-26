@@ -23,6 +23,7 @@ The following is a list of components that support expansion.
 -   {doc}`aliases <../endpoints/aliases>`
 -   {doc}`breadcrumbs <../endpoints/breadcrumbs>`
 -   {doc}`contextnavigation <../endpoints/contextnavigation>`
+-   {doc}`inherit <../endpoints/inherit>`
 -   {doc}`navigation <../endpoints/navigation>`
 -   {doc}`navroot <../endpoints/navroot>`
 -   {doc}`translations <../endpoints/translations>`

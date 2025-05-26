@@ -5,11 +5,13 @@ from datetime import timedelta
 from decimal import Decimal
 from importlib import import_module
 from plone.app.textfield.value import RichTextValue
+from plone.dexterity.schema import SCHEMA_CACHE
 from plone.dexterity.utils import iterSchemata
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.namedfile.file import NamedImage
+from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -325,6 +327,19 @@ class TestDexterityFieldSerializing(TestCase):
             value,
         )
 
+    def test_relation_field_serialization_do_not_change_request(self):
+        self.request.form["metadata_fields"] = ["foo", "bar"]
+        doc2 = self.portal[
+            self.portal.invokeFactory(
+                "DXTestDocument",
+                id="doc2",
+                title="Referenceable Document",
+                description="Description 2",
+            )
+        ]
+        self.serialize("test_relationchoice_field", doc2)
+        self.assertEqual(self.request.form["metadata_fields"], ["foo", "bar"])
+
     def test_remoteurl_field_in_links_get_converted(self):
         link = self.portal[
             self.portal.invokeFactory(
@@ -358,6 +373,22 @@ class TestDexterityFieldSerializing(TestCase):
 
         dm.set("/doc2")
         self.assertEqual(serializer(), "/doc2")
+
+    def test_json_field_serializer_converts_uids_to_urls(self):
+        value = self.serialize(
+            "test_json_field", {"@id": f"../resolveuid/{self.portal.doc1.UID()}"}
+        )
+        self.assertEqual(value["@id"], self.portal.doc1.absolute_url())
+
+    def test_json_field_serializer_with_blocks(self):
+        fti = self.portal.portal_types.DXTestDocument
+        fti.behaviors = ("volto.blocks",)
+        SCHEMA_CACHE.invalidate("DXTestDocument")
+        assert IBlocks.providedBy(self.portal.doc1)
+        value = self.serialize(
+            "test_json_field", {"@id": f"../resolveuid/{self.portal.doc1.UID()}"}
+        )
+        self.assertEqual(value["@id"], self.portal.doc1.absolute_url())
 
 
 class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):

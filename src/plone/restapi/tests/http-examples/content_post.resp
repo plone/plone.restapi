@@ -61,13 +61,7 @@ Location: http://localhost:55001/plone/folder/my-document
         "title": "My Folder",
         "type_title": "Folder"
     },
-    "previous_item": {
-        "@id": "http://localhost:55001/plone/folder/doc2",
-        "@type": "Document",
-        "description": "",
-        "title": "A document within a folder",
-        "type_title": "Page"
-    },
+    "previous_item": {},
     "relatedItems": [],
     "review_state": "private",
     "rights": "",

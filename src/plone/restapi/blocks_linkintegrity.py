@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 from plone.app.linkintegrity.interfaces import IRetriever
 from plone.app.linkintegrity.retriever import DXGeneral
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.blocks import iter_block_transform_handlers, visit_blocks
+from plone.restapi.blocks import iter_block_transform_handlers
+from plone.restapi.blocks import visit_blocks
 from plone.restapi.deserializer.blocks import iterate_children
 from plone.restapi.interfaces import IBlockFieldLinkIntegrityRetriever
 from zope.component import adapter
@@ -31,7 +31,7 @@ class BlocksRetriever(DXGeneral):
 
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldLinkIntegrityRetriever)
-class TextBlockLinksRetriever(object):
+class TextBlockLinksRetriever:
     order = 100
     block_type = "text"
 
@@ -69,9 +69,8 @@ class SlateBlockLinksRetriever:
     def __call__(self, block):
         value = (block or {}).get(self.field, [])
         children = iterate_children(value or [])
-
         for child in children:
-            node_type = child.get("type")
+            node_type = child.get("type", "")
             if node_type:
                 handler = getattr(self, f"handle_{node_type}", None)
                 if handler:
@@ -95,7 +94,7 @@ class SlateBlockLinksRetriever:
 
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldLinkIntegrityRetriever)
-class GenericBlockLinksRetriever(object):
+class GenericBlockLinksRetriever:
     """Retrieves links from the url and href fields of any block"""
 
     order = 1

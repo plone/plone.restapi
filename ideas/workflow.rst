@@ -7,7 +7,7 @@ Workflow
 
 In Plone, content almost always has a workflow attached.
 
-The API offers the ability to change the workflow statuses of content: we already saw a hint previosuly where a content representation exposed the ``@actions`` information::
+The API offers the ability to change the workflow statuses of content: we already saw a hint previously where a content representation exposed the ``@actions`` information::
 
   ...
       "@actions": {

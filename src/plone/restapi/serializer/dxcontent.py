@@ -1,35 +1,36 @@
-from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from plone.app.contenttypes.interfaces import ILink
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
+from plone.restapi.bbb import base_hasattr
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.interfaces import IPrimaryFieldTarget
+from plone.restapi.interfaces import ISchemaSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
-from plone.restapi.services.locking import lock_info
+from plone.restapi.serializer.schema import _check_permission
 from plone.restapi.serializer.utils import get_portal_type_title
+from plone.restapi.services.locking import lock_info
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
-from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import base_hasattr
 from Products.CMFCore.interfaces import IContentish
+from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
+from zope.component import ComponentLookupError
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
-from zope.component import queryUtility
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
-from zope.security.interfaces import IPermission
 
 
 try:
@@ -40,16 +41,30 @@ except ImportError:
     WorkingCopyInfo = None
 
 
+def update_with_working_copy_info(context, result):
+    if WorkingCopyInfo is None:
+        return
+
+    working_copy_info = WorkingCopyInfo(context)
+    try:
+        baseline, working_copy = working_copy_info.get_working_copy_info()
+    except TypeError:
+        # not supported for this content type
+        return
+    result.update({"working_copy": working_copy, "working_copy_of": baseline})
+
+
 def get_allow_discussion_value(context, request, result):
-    # This test is to handle the plone.app.discussion not being installed situation
-    if "allow_discussion" in result:
-        # Check if the content item implements the IContentish interface
-        if IContentish.providedBy(context):
-            result["allow_discussion"] = getMultiAdapter(
-                (context, request), name="conversation_view"
-            ).enabled()
-    else:
-        result["allow_discussion"] = False
+    # This test is to handle the situation of plone.app.discussion not being installed
+    # or not being activated.
+    if "allow_discussion" in result and IContentish.providedBy(context):
+        try:
+            view = getMultiAdapter((context, request), name="conversation_view")
+            result["allow_discussion"] = view.enabled()
+            return
+        except ComponentLookupError:
+            pass
+    result["allow_discussion"] = False
 
 
 @implementer(ISerializeToJson)
@@ -58,8 +73,6 @@ class SerializeToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request
-
-        self.permission_cache = {}
 
     def getVersion(self, version):
         if version == "current":
@@ -105,11 +118,7 @@ class SerializeToJson:
             result.update({"previous_item": {}, "next_item": {}})
 
         # Insert working copy information
-        if WorkingCopyInfo is not None:
-            baseline, working_copy = WorkingCopyInfo(
-                self.context
-            ).get_working_copy_info()
-            result.update({"working_copy": working_copy, "working_copy_of": baseline})
+        update_with_working_copy_info(self.context, result)
 
         # Insert locking information
         result.update({"lock": lock_info(obj)})
@@ -119,18 +128,10 @@ class SerializeToJson:
 
         # Insert field values
         for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
-
-            for name, field in getFields(schema).items():
-                if not self.check_permission(read_permissions.get(name), obj):
-                    continue
-
-                # serialize the field
-                serializer = queryMultiAdapter(
-                    (field, obj, self.request), IFieldSerializer
-                )
-                value = serializer()
-                result[json_compatible(name)] = value
+            schema_serializer = getMultiAdapter(
+                (schema, obj, self.request), ISchemaSerializer
+            )
+            result.update(schema_serializer())
 
         target_url = getMultiAdapter(
             (self.context, self.request), IObjectPrimaryFieldTarget
@@ -148,19 +149,8 @@ class SerializeToJson:
         return review_state
 
     def check_permission(self, permission_name, obj):
-        if permission_name is None:
-            return True
-
-        if permission_name not in self.permission_cache:
-            permission = queryUtility(IPermission, name=permission_name)
-            if permission is None:
-                self.permission_cache[permission_name] = True
-            else:
-                sm = getSecurityManager()
-                self.permission_cache[permission_name] = bool(
-                    sm.checkPermission(permission.title, obj)
-                )
-        return self.permission_cache[permission_name]
+        # Here for backwards-compatibility
+        return _check_permission(permission_name, self, obj)
 
 
 @implementer(ISerializeToJson)
@@ -213,27 +203,28 @@ class DexterityObjectPrimaryFieldTarget:
         self.context = context
         self.request = request
 
-        self.permission_cache = {}
-
     def __call__(self):
         primary_field_name = self.get_primary_field_name()
+        if not primary_field_name:
+            return
         for schema in iterSchemata(self.context):
             read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
-            for name, field in getFields(schema).items():
-                if not self.check_permission(read_permissions.get(name), self.context):
-                    continue
+            field = getFields(schema).get(primary_field_name)
+            if field is None:
+                continue
+            if not self.check_permission(
+                read_permissions.get(primary_field_name),
+                self.context,
+            ):
+                return
 
-                if name != primary_field_name:
-                    continue
-
-                target_adapter = queryMultiAdapter(
-                    (field, self.context, self.request), IPrimaryFieldTarget
-                )
-                if target_adapter:
-                    target = target_adapter()
-                    if target:
-                        return target
+            target_adapter = queryMultiAdapter(
+                (field, self.context, self.request), IPrimaryFieldTarget
+            )
+            if not target_adapter:
+                return
+            return target_adapter()
 
     def get_primary_field_name(self):
         fieldname = None
@@ -251,16 +242,27 @@ class DexterityObjectPrimaryFieldTarget:
         return fieldname
 
     def check_permission(self, permission_name, obj):
-        if permission_name is None:
-            return True
+        # for backwards-compatibility
+        return _check_permission(permission_name, self, obj)
 
-        if permission_name not in self.permission_cache:
-            permission = queryUtility(IPermission, name=permission_name)
-            if permission is None:
-                self.permission_cache[permission_name] = True
-            else:
-                sm = getSecurityManager()
-                self.permission_cache[permission_name] = bool(
-                    sm.checkPermission(permission.title, obj)
-                )
-        return self.permission_cache[permission_name]
+
+@adapter(ILink, Interface)
+@implementer(IObjectPrimaryFieldTarget)
+class LinkObjectPrimaryFieldTarget:
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self):
+        """
+        If user can edit Link object, do not return remoteUrl
+        """
+        pm = getToolByName(self.context, "portal_membership")
+        if bool(pm.isAnonymousUser()):
+            for schema in iterSchemata(self.context):
+                for name, field in getFields(schema).items():
+                    if name == "remoteUrl":
+                        serializer = queryMultiAdapter(
+                            (field, self.context, self.request), IFieldSerializer
+                        )
+                        return serializer()
