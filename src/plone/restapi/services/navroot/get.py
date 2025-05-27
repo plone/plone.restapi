@@ -28,7 +28,7 @@ class Navroot:
         result["navroot"]["navroot"] = getMultiAdapter(
             (portal_state.navigation_root(), self.request),
             ISerializeToJson,
-        )()
+        )(include_items=False, include_expansion=False)
 
         return result
 
