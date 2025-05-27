@@ -103,6 +103,9 @@ $(BIN_FOLDER)/runwsgi $(BIN_FOLDER)/zope-testrunner $(BIN_FOLDER)/update_restapi
 	$(BIN_FOLDER)/mxdev -c mx.ini
 	$(BIN_FOLDER)/pip install -r requirements-mxdev.txt
 
+.PHONY: install
+install: $(BIN_FOLDER)/runwsgi  # Install instance
+
 .PHONY: start
 start: $(BIN_FOLDER)/runwsgi instance/etc/zope.ini  ## Start a Zope instance on localhost:8080
 	$(BIN_FOLDER)/runwsgi instance/etc/zope.ini
