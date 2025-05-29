@@ -1,1 +1,1 @@
-Optimize `@navroot` endpoint: fields `items` and `components` are no longer computed/returned. @pgrunewald
+Optimize `@navroot` endpoint: fields `items` and `@components` are no longer computed/returned. @pgrunewald

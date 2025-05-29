@@ -25,10 +25,17 @@ class Navroot:
         # We need to unset expansion here, otherwise we get infinite recursion
         self.request.form["expand"] = ""
 
-        result["navroot"]["navroot"] = getMultiAdapter(
-            (portal_state.navigation_root(), self.request),
-            ISerializeToJson,
-        )(include_items=False, include_expansion=False)
+        try:
+            result["navroot"]["navroot"] = getMultiAdapter(
+                (portal_state.navigation_root(), self.request),
+                ISerializeToJson,
+            )(include_items=False, include_expansion=False)
+        except TypeError:
+            # Handle adapters that do not support keyword args gracefully.
+            result["navroot"]["navroot"] = getMultiAdapter(
+                (portal_state.navigation_root(), self.request),
+                ISerializeToJson,
+            )()
 
         return result
 
