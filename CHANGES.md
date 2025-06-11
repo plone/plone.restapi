@@ -9,6 +9,23 @@
 
 <!-- towncrier release notes start -->
 
+## 9.15.0 (2025-06-10)
+
+
+### New features:
+
+- Include all summary fields when serializing `next_item` and `previous_item`. @davisagli 
+
+
+### Bug fixes:
+
+- In the `RelationListFieldSerializer`, fix `list` used a default argument. @ale-rt #1922
+
+
+### Documentation:
+
+- Fix contributor documentation. @davisagli 
+
 ## 9.14.0 (2025-05-12)
 
 
