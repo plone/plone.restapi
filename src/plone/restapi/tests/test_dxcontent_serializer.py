@@ -105,11 +105,18 @@ class TestDXContentSerializer(unittest.TestCase):
         self.portal.doc1.modification_date = DateTime("2015-04-27T10:24:11+00:00")
         IMutableUUID(self.portal.doc1).set("30314724b77a4ec0abbad03d262837aa")
 
-    def serialize(self, obj=None):
-        if obj is None:
+    def serialize(self, obj=None, **kwargs):
+        """Serialize an object.
+
+        Optionally pass parameters to the serializer.
+
+        :return: serialized JSON from the object
+        :rtype: str
+        """
+        if not obj:
             obj = self.portal.doc1
         serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
-        return serializer()
+        return serializer(**kwargs)
 
     def test_serializer_returns_json_serializeable_object(self):
         obj = self.serialize()
@@ -201,6 +208,85 @@ class TestDXContentSerializer(unittest.TestCase):
             IExpandableElement,
             "foo",
         )
+
+    def test_serializer_can_exclude_expansion(self):
+        provideAdapter(
+            ExpandableElementFoo,
+            adapts=(Interface, IBrowserRequest),
+            provides=IExpandableElement,
+            name="foo",
+        )
+        obj = self.serialize(include_expansion=False)
+        self.assertNotIn("@components", obj)
+        gsm = getGlobalSiteManager()
+        gsm.unregisterAdapter(
+            ExpandableElementFoo,
+            (Interface, IBrowserRequest),
+            IExpandableElement,
+            "foo",
+        )
+
+    def test_serializer_includes_items(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+            nextPreviousEnabled=False,
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Previous item",
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Current item",
+        )
+
+        data = self.serialize(folder)
+
+        self.assertIn("items_total", data)
+        self.assertIn("items", data)
+        self.assertEqual(data["items_total"], 2)
+        self.assertEqual(len(data["items"]), 2)
+
+    def test_serializer_can_exclude_items(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+            nextPreviousEnabled=False,
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Previous item",
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Current item",
+        )
+
+        data = self.serialize(folder, include_items=False)
+
+        self.assertNotIn("items_total", data)
+        self.assertNotIn("items", data)
+
+        # However it is possible to "override" via query parameter
+        # see also test_content_get.py -> test_get_content_include_items()
+        self.request.form["include_items"] = "True"
+        data_with_items = self.serialize(folder, include_items=False)
+
+        self.assertIn("items_total", data_with_items)
+        self.assertIn("items", data_with_items)
 
     def test_serializer_excludes_deleted_relations(self):
 
@@ -736,9 +822,18 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
         self.portal.doc1.modification_date = DateTime("2015-04-27T10:24:11+00:00")
         IMutableUUID(self.portal.doc1).set("30314724b77a4ec0abbad03d262837aa")
 
-    def serialize(self):
-        serializer = getMultiAdapter((self.portal.doc1, self.request), ISerializeToJson)
-        return serializer()
+    def serialize(self, obj=None, **kwargs):
+        """Serialize an object.
+
+        Optionally pass parameters to the serializer.
+
+        :return: serialized JSON from the object
+        :rtype: str
+        """
+        if not obj:
+            obj = self.portal.doc1
+        serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
+        return serializer(**kwargs)
 
     def test_primary_field_target(self):
         logout()

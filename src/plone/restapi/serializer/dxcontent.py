@@ -81,7 +81,7 @@ class SerializeToJson:
             repo_tool = getToolByName(self.context, "portal_repository")
             return repo_tool.retrieve(self.context, int(version)).object
 
-    def __call__(self, version=None, include_items=True):
+    def __call__(self, version=None, include_items=True, include_expansion=True):
         version = "current" if version is None else version
 
         obj = self.getVersion(version)
@@ -124,7 +124,8 @@ class SerializeToJson:
         result.update({"lock": lock_info(obj)})
 
         # Insert expandable elements
-        result.update(expandable_elements(self.context, self.request))
+        if include_expansion:
+            result.update(expandable_elements(self.context, self.request))
 
         # Insert field values
         for schema in iterSchemata(self.context):
@@ -164,8 +165,10 @@ class SerializeFolderToJson(SerializeToJson):
         }
         return query
 
-    def __call__(self, version=None, include_items=True):
-        folder_metadata = super().__call__(version=version)
+    def __call__(self, version=None, include_items=True, include_expansion=True):
+        folder_metadata = super().__call__(
+            version=version, include_expansion=include_expansion
+        )
 
         folder_metadata.update({"is_folderish": True})
         result = folder_metadata
