@@ -5,6 +5,11 @@ name: Tests
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -28,7 +33,6 @@ jobs:
         - ["3.8", "5.2 on py3.8", "py38-plone52"]
 
     runs-on: ${{ matrix.os[1] }}
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: ${{ matrix.config[1] }}
     steps:
     - uses: actions/checkout@v4

@@ -1,4 +1,5 @@
 from importlib import import_module
+from plone.app.testing import logout
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.dexterity.utils import iterSchemata
@@ -8,6 +9,7 @@ from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
+from Products.CMFCore.utils import getToolByName
 from z3c.form.interfaces import IDataManager
 from zope.component import adapter
 from zope.component import getGlobalSiteManager
@@ -42,6 +44,8 @@ class TestBlocksSerializer(unittest.TestCase):
         fti.behaviors = tuple(behavior_list)
 
         self.portal.invokeFactory("Document", id="doc1")
+        wftool = getToolByName(self.portal, "portal_workflow")
+        wftool.doActionFor(self.portal.doc1, "publish")
         self.image = self.portal[
             self.portal.invokeFactory("Image", id="image-1", title="Target image")
         ]
@@ -538,6 +542,29 @@ class TestBlocksSerializer(unittest.TestCase):
         self.assertEqual(block["description"], doc.description)
         href = block["href"][0]
         self.assertEqual(href["@id"], doc.absolute_url())
+
+    def test_teaser_block_serializer_dynamic_private(self):
+        # if user doesn't have permission to view the target,
+        # don't reveal its data
+        doc = self.portal.doc1
+        wftool = getToolByName(self.portal, "portal_workflow")
+        wftool.doActionFor(doc, "retract")
+        doc_uid = doc.UID()
+        resolve_uid_link = f"../resolveuid/{doc_uid}"
+        logout()
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={
+                "1": {
+                    "@type": "teaser",
+                    "href": resolve_uid_link,
+                    "overwrite": False,
+                }
+            },
+        )
+
+        block = value["1"]
+        self.assertEqual(block, {"@type": "teaser", "href": [], "overwrite": False})
 
     def test_teaser_block_serializer_dynamic_nested(self):
         doc = self.portal["doc1"]

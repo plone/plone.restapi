@@ -33,7 +33,7 @@ class RelationChoiceFieldSerializer(DefaultFieldSerializer):
 @adapter(IRelationList, IDexterityContent, Interface)
 @implementer(IFieldSerializer)
 class RelationListFieldSerializer(DefaultFieldSerializer):
-    def get_value(self, default=[]):
+    def get_value(self, default=None):
         """Return field value reduced to list of non-broken Relationvalues.
 
         Args:
@@ -43,6 +43,8 @@ class RelationListFieldSerializer(DefaultFieldSerializer):
             list: List of RelationValues
         """
         value = super().get_value()
-        if not value:
+        if value:
+            return [el for el in value if el.to_id]
+        if default is None:
             return []
-        return [el for el in value if el.to_id]
+        return default

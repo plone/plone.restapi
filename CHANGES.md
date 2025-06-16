@@ -9,6 +9,65 @@
 
 <!-- towncrier release notes start -->
 
+## 9.15.0 (2025-06-10)
+
+
+### New features:
+
+- Include all summary fields when serializing `next_item` and `previous_item`. @davisagli 
+
+
+### Bug fixes:
+
+- In the `RelationListFieldSerializer`, fix `list` used a default argument. @ale-rt #1922
+
+
+### Documentation:
+
+- Fix contributor documentation. @davisagli 
+
+## 9.14.0 (2025-05-12)
+
+
+### New features:
+
+- `@site` service: Add a way for add-ons to add additional data using an `ISiteEndpointExpander` adapter. @davisagli #1921
+
+## 9.13.5 (2025-04-27)
+
+
+### Bug fixes:
+
+- Fix exposing protected fields in schema serializer.
+  [maethu] #1916
+- Fix `AttributeError` when updating the default blocks layout for a content type. @nileshgulia, @davisagli #1917
+
+
+### Documentation:
+
+- Pin plone-sphinx-theme to prepare for PLIP 4097. See https://github.com/plone/Products.CMFPlone/issues/4097. @stevepiercy #4097
+
+## 9.13.4 (2025-04-23)
+
+
+### Bug fixes:
+
+- Micro-optimization for validation in vocabulary serializer. @davisagli #1906
+- In the teaser block serializer, don't include data from the target item if the current user doesn't have View permission on it. @davisagli #1911
+- Avoid finding control panel adapters when looking up normal views. @rohnsha0, @davisagli #4156
+
+
+### Internal:
+
+- Add tests for inherit service. @ujsquared #1897
+
+## 9.13.3 (2025-03-25)
+
+
+### Bug fixes:
+
+- In the `@inherit` endpoint, don't nest results under `inherit` unless it is used as an expander. @davisagli #1899
+
 ## 9.13.2 (2025-03-17)
 
 

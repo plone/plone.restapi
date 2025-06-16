@@ -17,7 +17,7 @@ from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
-from plone.restapi.serializer.schema import check_permission as _check_permission
+from plone.restapi.serializer.schema import _check_permission
 from plone.restapi.serializer.utils import get_portal_type_title
 from plone.restapi.services.locking import lock_info
 from plone.rfc822.interfaces import IPrimaryFieldInfo
@@ -150,7 +150,7 @@ class SerializeToJson:
 
     def check_permission(self, permission_name, obj):
         # Here for backwards-compatibility
-        return _check_permission(permission_name, obj)
+        return _check_permission(permission_name, self, obj)
 
 
 @implementer(ISerializeToJson)
@@ -243,7 +243,7 @@ class DexterityObjectPrimaryFieldTarget:
 
     def check_permission(self, permission_name, obj):
         # for backwards-compatibility
-        return _check_permission(permission_name, obj)
+        return _check_permission(permission_name, self, obj)
 
 
 @adapter(ILink, Interface)
