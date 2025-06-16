@@ -78,31 +78,7 @@ class ControlpanelSerializeToJson:
         self.registry = getUtility(IRegistry)
 
     def __call__(self):
-        json_schema = get_jsonschema_for_controlpanel(
-            self.controlpanel, self.controlpanel.context, self.controlpanel.request
-        )
-
-        proxy = self.registry.forInterface(self.schema, prefix=self.schema_prefix)
-
-        # Temporarily provide IDexterityContent, so we can use DX field
-        # serializers
-        alsoProvides(proxy, IDexterityContent)
-
-        json_data = {}
-        for name, field in zope.schema.getFields(self.schema).items():
-            serializer = queryMultiAdapter(
-                (field, proxy, self.controlpanel.request), IFieldSerializer
-            )
-            if serializer:
-                value = serializer()
-            else:
-                value = getattr(proxy, name, None)
-            json_data[json_compatible(name)] = value
-
-        noLongerProvides(proxy, IDexterityContent)
-
-        # JSON schema
-        return {
+        result = {
             "@id": "{}/{}/{}".format(
                 self.controlpanel.context.absolute_url(),
                 SERVICE_ID,
@@ -110,6 +86,33 @@ class ControlpanelSerializeToJson:
             ),
             "title": self.controlpanel.title,
             "group": self.controlpanel.group,
-            "schema": json_schema,
-            "data": json_data,
         }
+
+        if self.schema is not None:
+            json_schema = get_jsonschema_for_controlpanel(
+                self.controlpanel, self.controlpanel.context, self.controlpanel.request
+            )
+            result["schema"] = json_schema
+
+            proxy = self.registry.forInterface(self.schema, prefix=self.schema_prefix)
+
+            # Temporarily provide IDexterityContent, so we can use DX field
+            # serializers
+            alsoProvides(proxy, IDexterityContent)
+
+            json_data = {}
+            for name, field in zope.schema.getFields(self.schema).items():
+                serializer = queryMultiAdapter(
+                    (field, proxy, self.controlpanel.request), IFieldSerializer
+                )
+                if serializer:
+                    value = serializer()
+                else:
+                    value = getattr(proxy, name, None)
+                json_data[json_compatible(name)] = value
+
+            noLongerProvides(proxy, IDexterityContent)
+
+            result["data"] = json_data
+
+        return result

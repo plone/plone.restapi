@@ -19,7 +19,6 @@ import plone.protect.interfaces
 @adapter(Interface, IControlpanelLayer)
 @implementer(IContentRulesControlpanel, IBrowserPublisher)
 class ContentRulesControlpanel(RegistryConfigletPanel):
-    schema = Interface
     configlet_id = "ContentRules"
     configlet_category_id = "plone-content"
 

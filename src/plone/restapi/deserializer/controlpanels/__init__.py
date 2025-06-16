@@ -35,6 +35,9 @@ class ControlpanelDeserializeFromJson:
         self.request = self.controlpanel.request
 
     def __call__(self, mask_validation_errors=True):
+        if self.schema is None:
+            return
+
         data = json_body(self.controlpanel.request)
 
         proxy = self.registry.forInterface(self.schema, prefix=self.schema_prefix)
