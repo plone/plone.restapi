@@ -24,9 +24,8 @@ class TestUnflattenDottedDict(unittest.TestCase):
         dct = {"foo": 1, "bar": 2}
         self.assertEqual(dct, unflatten_dotted_dict(dct))
 
-    def test_expand(self):
-        dct = {"expand": "navigation,actions", "expand.navigation.depth": 2}
+    def test_rejects_dotted_key_with_an_existing_str_value(self):
+        dct = {"path": "x", "path.depth": 2}
         self.assertEqual(
-            {"expand": {"actions": {}, "navigation": {"depth": 2}}},
-            unflatten_dotted_dict(dct),
+            {"path": {"query": "x", "depth": 2}}, unflatten_dotted_dict(dct)
         )
