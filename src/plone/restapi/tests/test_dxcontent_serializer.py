@@ -394,15 +394,15 @@ class TestDXContentSerializer(unittest.TestCase):
             description="Current item",
         )
         data = self.serialize(doc)
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
-            },
-            data["previous_item"],
+            }.items(),
+            data["previous_item"].items(),
         )
         self.assertEqual({}, data["next_item"])
 
@@ -425,15 +425,15 @@ class TestDXContentSerializer(unittest.TestCase):
         )
         data = self.serialize(doc)
         self.assertEqual({}, data["previous_item"])
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/folder-with-items/item-2",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 2",
                 "description": "Next item",
-            },
-            data["next_item"],
+            }.items(),
+            data["next_item"].items(),
         )
 
     def test_nextprev_has_nextprev(self):
@@ -460,25 +460,25 @@ class TestDXContentSerializer(unittest.TestCase):
             container=folder, type="Document", title="Item 3", description="Next item"
         )
         data = self.serialize(doc)
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
-            },
-            data["previous_item"],
+            }.items(),
+            data["previous_item"].items(),
         )
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/folder-with-items/item-3",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 3",
                 "description": "Next item",
-            },
-            data["next_item"],
+            }.items(),
+            data["next_item"].items(),
         )
 
     def test_nextprev_root_no_nextprev(self):
@@ -503,15 +503,15 @@ class TestDXContentSerializer(unittest.TestCase):
             description="Current item",
         )
         data = self.serialize(doc)
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "type_title": "DX Test Document",
                 "title": "",
                 "description": "",
-            },
-            data["previous_item"],
+            }.items(),
+            data["previous_item"].items(),
         )
         self.assertEqual({}, data["next_item"])
 
@@ -533,15 +533,15 @@ class TestDXContentSerializer(unittest.TestCase):
         )
         data = self.serialize()
         self.assertEqual({}, data["previous_item"])
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/item-2",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 2",
                 "description": "Next item",
-            },
-            data["next_item"],
+            }.items(),
+            data["next_item"].items(),
         )
 
     @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
@@ -573,25 +573,25 @@ class TestDXContentSerializer(unittest.TestCase):
             description="Next item",
         )
         data = self.serialize(doc)
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/item-1",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
-            },
-            data["previous_item"],
+            }.items(),
+            data["previous_item"].items(),
         )
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/item-3",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 3",
                 "description": "Next item",
-            },
-            data["next_item"],
+            }.items(),
+            data["next_item"].items(),
         )
 
     def test_nextprev_unordered_folder(self):

@@ -26,7 +26,7 @@ Content-Type: application/json
             "widget": "email"
         },
         "fullname": {
-            "description": "Enter full name, e.g. John Smith.",
+            "description": "Enter full name, for example, John Smith.",
             "factory": "Text line (String)",
             "title": "Full Name",
             "type": "string"
