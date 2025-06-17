@@ -19,7 +19,6 @@ import plone.protect.interfaces
 @adapter(Interface, IControlpanelLayer)
 @implementer(IDexterityTypesControlpanel)
 class DexterityTypesControlpanel(RegistryConfigletPanel):
-    schema = Interface
     configlet_id = "dexterity-types"
     configlet_category_id = "plone-content"
 
