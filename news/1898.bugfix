@@ -1,1 +1,0 @@
-In the `@search` service, fix an `AttributeError` that could occur with bad input. @davisagli

@@ -1,1 +1,0 @@
-In the `@controlpanels` service, removed empty `data` and `schema` from special control panels that do not use a schema (`dexterity-types` and `rules`). @davisagli

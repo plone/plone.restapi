@@ -9,6 +9,15 @@
 
 <!-- towncrier release notes start -->
 
+## 9.15.1 (2025-06-16)
+
+
+### Bug fixes:
+
+- Optimize `@navroot` endpoint: fields `items` and `@components` are no longer computed/returned. @pgrunewald #1841
+- In the `@search` service, fix an `AttributeError` that could occur with bad input. @davisagli #1898
+- In the `@controlpanels` service, removed empty `data` and `schema` from special control panels that do not use a schema (`dexterity-types` and `rules`). @davisagli #1927
+
 ## 9.15.0 (2025-06-10)
 
 
