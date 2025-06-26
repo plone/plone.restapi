@@ -11,6 +11,12 @@ class IPloneRestapiLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
+class IControlpanelLayer(IPloneRestapiLayer):
+    """Marker interface for REST API controlpanel requests.
+    This is used to isolate controlpanel adapters from normal traversal.
+    """
+
+
 class ISerializeToJson(Interface):
     """Adapter to serialize a Dexterity object into a JSON object."""
 
@@ -262,3 +268,10 @@ class ILoginProviders(Interface):
         """
         return a list of login providers, with its id, title, plugin and url
         """
+
+
+class ISiteEndpointExpander(Interface):
+    """An adapter which adds additional data to the @site endpoint."""
+
+    def __call__(data):
+        """Add additional key/values to data"""

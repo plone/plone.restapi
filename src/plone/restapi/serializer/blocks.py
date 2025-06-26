@@ -1,5 +1,4 @@
 from plone import api
-from plone.app.uuid.utils import uuidToCatalogBrain
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.blocks import iter_block_transform_handlers
@@ -272,17 +271,20 @@ class TeaserBlockSerializerRoot(TeaserBlockSerializerBase):
 
 
 def url_to_brain(url):
+    """Find the catalog brain for a URL.
+
+    Returns None if no item was found that is visible to the current user.
+    """
     if not url:
         return
-    brain = None
     if match := RESOLVE_UID_REGEXP.search(url):
         uid = match.group(1)
-        brain = uuidToCatalogBrain(uid)
+        query = {"UID": uid}
     else:
         # fallback in case the url wasn't converted to a UID
-        catalog = api.portal.get_tool("portal_catalog")
         path = "/".join(api.portal.get().getPhysicalPath()) + url
-        results = catalog.searchResults(path={"query": path, "depth": 0})
-        if results:
-            brain = results[0]
-    return brain
+        query = {"path": {"query": path, "depth": 0}}
+    catalog = api.portal.get_tool("portal_catalog")
+    results = catalog.searchResults(**query)
+    if results:
+        return results[0]

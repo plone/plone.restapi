@@ -11,7 +11,7 @@ from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.dxcontent import get_allow_discussion_value
 from plone.restapi.serializer.dxcontent import update_with_working_copy_info
 from plone.restapi.serializer.expansion import expandable_elements
-from plone.restapi.serializer.schema import check_permission as _check_permission
+from plone.restapi.serializer.schema import _check_permission
 from plone.restapi.serializer.utils import get_portal_type_title
 from plone.restapi.services.locking import lock_info
 from Products.CMFCore.utils import getToolByName
@@ -43,17 +43,10 @@ class SerializeSiteRootToJson:
         }
         return query
 
-    def __call__(self, version=None):
+    def __call__(self, version=None, include_items=True, include_expansion=True):
         version = "current" if version is None else version
         if version != "current":
             return {}
-
-        query = self._build_query()
-
-        catalog = getToolByName(self.context, "portal_catalog")
-        brains = catalog(query)
-
-        batch = HypermediaBatch(self.request, brains)
 
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
@@ -99,23 +92,32 @@ class SerializeSiteRootToJson:
             )
 
         # Insert expandable elements
-        result.update(expandable_elements(self.context, self.request))
+        if include_expansion:
+            result.update(expandable_elements(self.context, self.request))
 
-        result["items_total"] = batch.items_total
-        if batch.links:
-            result["batching"] = batch.links
+        if include_items:
+            query = self._build_query()
 
-        result["items"] = [
-            getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
-            for brain in batch
-        ]
+            catalog = getToolByName(self.context, "portal_catalog")
+            brains = catalog(query)
+
+            batch = HypermediaBatch(self.request, brains)
+
+            result["items_total"] = batch.items_total
+            if batch.links:
+                result["batching"] = batch.links
+
+            result["items"] = [
+                getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
+                for brain in batch
+            ]
 
         get_allow_discussion_value(self.context, self.request, result)
 
         return result
 
     def check_permission(self, permission_name, obj):
-        return _check_permission(permission_name, obj)
+        return _check_permission(permission_name, self, obj)
 
     def serialize_blocks(self):
         # This is only for below 6

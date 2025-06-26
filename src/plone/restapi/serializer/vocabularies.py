@@ -30,17 +30,17 @@ class SerializeVocabLikeToJson:
         tokens = self.request.form.get("tokens", [])
         b_size = self.request.form.get("b_size", "")
 
+        if title and token:
+            self.request.response.setStatus(400)
+            return dict(
+                error=dict(
+                    type="Invalid parameters",
+                    message="You can not filter by title and token at the same time.",
+                )  # noqa
+            )
+
         terms = []
         for term in vocabulary:
-            if title and token:
-                self.request.response.setStatus(400)
-                return dict(
-                    error=dict(
-                        type="Invalid parameters",
-                        message="You can not filter by title and token at the same time.",
-                    )  # noqa
-                )
-
             if token:
                 # the token parameter was deprecated in plone.restapi 8
                 # undeprecated in plone.restapi 9

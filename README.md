@@ -2,7 +2,7 @@
 
 [![image](https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=main)](https://coveralls.io/github/plone/plone.restapi?branch=main)
 
-[![image](https://readthedocs.org/projects/pip/badge)](https://plonerestapi.readthedocs.io/en/latest/)
+[![image](https://app.readthedocs.org/projects/pip/badge)](https://plonerestapi.readthedocs.io/en/latest/)
 
 [![image](https://img.shields.io/pypi/v/plone.restapi.svg)](https://pypi.org/project/plone.restapi/)
 
