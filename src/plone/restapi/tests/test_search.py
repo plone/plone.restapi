@@ -660,27 +660,6 @@ class TestSearchFunctional(unittest.TestCase):
         ).json()
         self.assertEqual(response["items_total"], 1)
 
-        # not admin users can't see expired items
-        self.api_session.auth = ("editoruser", TEST_USER_PASSWORD)
-
-        response = self.api_session.get("/@search", params={}).json()
-        if HAS_PLONE_6:
-            # Since Plone 6 the Plone site is indexed ...
-            self.assertEqual(response["items_total"], 4)
-        else:
-            # ... before it was not
-            self.assertEqual(response["items_total"], 3)
-        response = self.api_session.get(
-            "/@search", params={"Title": "Lorem Ipsum"}
-        ).json()
-        self.assertEqual(response["items_total"], 0)
-
-        # now grant permission to Editor to access inactive content
-        self.portal.manage_permission(
-            "Access inactive portal content", roles=["Manager", "Editor"]
-        )
-        transaction.commit()
-
         #  portal-enabled Editor can see expired contents
         response = self.api_session.get("/@search", params={}).json()
         if HAS_PLONE_6:
@@ -717,6 +696,16 @@ class TestSearchFunctional(unittest.TestCase):
             params={"Title": "Lorem Ipsum", "path": "/plone/folder"},
         ).json()
         self.assertEqual(response["items_total"], 1)
+
+        # unauthorized users can not access expired content
+        self.api_session.auth = None
+        response = self.api_session.get("/@search", params={}).json()
+        if HAS_PLONE_6:
+            # Since Plone 6 the Plone site is indexed ...
+            self.assertEqual(response["items_total"], 1)
+        else:
+            # ... before it was not
+            self.assertEqual(response["items_total"], 0)
 
     def test_search_use_site_search_settings_for_types(self):
         response = self.api_session.get(
