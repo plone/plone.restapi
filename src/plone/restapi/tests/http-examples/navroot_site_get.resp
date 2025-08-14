@@ -22,6 +22,7 @@ Content-Type: application/json
             "title": "English",
             "token": "en"
         },
+        "layout": "language-switcher",
         "lock": {
             "locked": false,
             "stealable": true
