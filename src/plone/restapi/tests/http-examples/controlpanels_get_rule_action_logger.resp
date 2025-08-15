@@ -46,7 +46,7 @@ Content-Type: application/json
         ],
         "type": "object"
     },
-    "loggingLevel": "",
+    "loggingLevel": 20,
     "message": "text_contentrules_logger_message",
     "targetLogger": "Plone"
 }
