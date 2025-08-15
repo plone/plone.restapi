@@ -2755,7 +2755,7 @@ class TestRules(TestDocumentationBase):
         url = "/@controlpanels/content-rules/rule-3/action"
         payload = {
             "targetLogger": "Plone",
-            "Level": "20",
+            "loggingLevel": 20,
             "message": "text_contentrules_logger_message",
             "type": "plone.actions.Logger",
         }
@@ -2938,7 +2938,7 @@ class TestRules(TestDocumentationBase):
         url = "/@controlpanels/content-rules/rule-3/action/0"
         payload = {
             "targetLogger": "Plone6",
-            "Level": "20",
+            "loggingLevel": 20,
             "message": "text_contentrules_logger_message",
         }
         response = self.api_session.patch(url, json=payload)
