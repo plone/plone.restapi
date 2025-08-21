@@ -259,7 +259,9 @@ class IDXTestDocumentSchema(model.Schema):
     test_constraint_field = schema.TextLine(
         required=False, constraint=lambda x: "00" in x
     )
-    test_datetime_min_field = schema.Datetime(required=False, min=datetime(2000, 1, 1))
+    test_datetime_min_field = schema.Datetime(
+        required=False, min=timezone("UTC").localize(datetime(2000, 1, 1))
+    )
     test_time_min_field = schema.Time(required=False, min=time(1))
     test_timedelta_min_field = schema.Timedelta(required=False, min=timedelta(100))
     test_list_value_type_field = schema.List(required=False, value_type=schema.Int())
