@@ -9,6 +9,14 @@
 
 <!-- towncrier release notes start -->
 
+## 9.15.2 (2025-08-22)
+
+
+### Bug fixes:
+
+- Serialize the `layout` of a Plone Site if it is a Plone 6 site. @erral #1939
+- When deserializing datetimes into an empty field, store them as timezone-aware datetimes. @davisagli 
+
 ## 9.15.1 (2025-06-16)
 
 
