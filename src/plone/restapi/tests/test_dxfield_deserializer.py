@@ -114,21 +114,27 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertTrue(isinstance(value, date))
         self.assertEqual(date(2015, 12, 20), value)
 
-    def test_datetime_deserialization_returns_datetime(self):
-        value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361Z")
-        self.assertTrue(isinstance(value, datetime), "Not a <datetime>")
-        self.assertEqual(datetime(2015, 12, 20, 10, 39, 54, 361000), value)
-
-    def test_datetime_deserialization_handles_timezone(self):
+    def test_datetime_deserialization_defaults_to_timezone_from_request(self):
+        self.portal.doc1.test_datetime_field = None
         value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361+01")
-        self.assertEqual(datetime(2015, 12, 20, 9, 39, 54, 361000), value)
+        self.assertEqual(
+            timezone("Europe/Zurich").localize(
+                datetime(2015, 12, 20, 10, 39, 54, 361000)
+            ),
+            value,
+        )
 
-    def test_datetime_deserialization_with_tznaive_stored(self):
-        self.portal.doc1.test_datetime_field = datetime.now()
+    def test_datetime_deserialization_defaults_to_utc(self):
+        self.portal.doc1.test_datetime_field = None
         value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361")
-        self.assertEqual(datetime(2015, 12, 20, 10, 39, 54, 361000), value)
+        self.assertEqual(
+            datetime(2015, 12, 20, 10, 39, 54, 361000, timezone("UTC")), value
+        )
 
-    def test_datetime_with_tz_deserialization_keeps_timezone(self):
+    def test_datetime_deserialization_converts_to_existing_timezone(self):
+        self.portal.doc1.test_datetime_field = timezone("Europe/Zurich").localize(
+            datetime.now()
+        )
         value = self.deserialize("test_datetime_tz_field", "2015-12-20T10:39:54.361+01")
         self.assertEqual(
             timezone("Europe/Zurich").localize(
@@ -137,25 +143,25 @@ class TestDXFieldDeserializer(unittest.TestCase):
             value,
         )
 
-    def test_datetime_with_tz_deserialization_converts_timezone(self):
-        value = self.deserialize("test_datetime_tz_field", "2015-12-20T10:39:54.361-04")
+    def test_datetime_deserialization_adds_existing_timezone(self):
+        self.portal.doc1.test_datetime_field = timezone("Europe/Zurich").localize(
+            datetime.now()
+        )
+        value = self.deserialize("test_datetime_tz_field", "2015-12-20T9:39:54.361")
         self.assertEqual(
             timezone("Europe/Zurich").localize(
-                datetime(2015, 12, 20, 15, 39, 54, 361000)
+                datetime(2015, 12, 20, 10, 39, 54, 361000)
             ),
             value,
         )
 
-    def test_datetime_with_tz_deserialization_adds_timezone(self):
-        value = self.deserialize("test_datetime_tz_field", "2015-12-20T10:39:54.361")
-        self.assertEqual(
-            timezone("Europe/Zurich").localize(
-                datetime(2015, 12, 20, 11, 39, 54, 361000)
-            ),
-            value,
-        )
+    def test_datetime_deserialization_converts_to_stored_tznaive(self):
+        self.portal.doc1.test_datetime_field = datetime.now()
+        value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361Z")
+        self.assertEqual(datetime(2015, 12, 20, 10, 39, 54, 361000), value)
 
     def test_datetime_with_tz_deserialization_handles_dst(self):
+        self.portal.doc1.test_datetime_field = None
         value = self.deserialize("test_datetime_tz_field", "2015-05-20T10:39:54.361+02")
         self.assertEqual(
             timezone("Europe/Zurich").localize(
