@@ -39,7 +39,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.config[0] }}
         allow-prereleases: true
