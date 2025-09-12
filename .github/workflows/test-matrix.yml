@@ -5,11 +5,6 @@ name: Tests
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build:
@@ -33,6 +28,7 @@ jobs:
         - ["3.8", "5.2 on py3.8", "py38-plone52"]
 
     runs-on: ${{ matrix.os[1] }}
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: ${{ matrix.config[1] }}
     steps:
     - uses: actions/checkout@v5
@@ -55,5 +51,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install tox
+    - name: Initialize tox
+      # the bash one-liner below does not work on Windows
+      if: contains(matrix.os, 'ubuntu')
+      run: |
+        if [ `tox list --no-desc -f init|wc -l` = 1 ]; then tox -e init;else true; fi
     - name: Test
       run: tox -e ${{ matrix.config[2] }}
