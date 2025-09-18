@@ -41,7 +41,10 @@ Content-Type: application/json
                     "token": "en"
                 },
                 "layout": "folder_listing",
-                "lock": {},
+                "lock": {
+                    "locked": false,
+                    "stealable": true
+                },
                 "modified": "1995-07-31T17:30:00+00:00",
                 "next_item": {},
                 "parent": {
@@ -111,7 +114,10 @@ Content-Type: application/json
         "token": "en"
     },
     "layout": "folder_listing",
-    "lock": {},
+    "lock": {
+        "locked": false,
+        "stealable": true
+    },
     "modified": "1995-07-31T17:30:00+00:00",
     "next_item": {},
     "parent": {
