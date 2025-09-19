@@ -48,6 +48,7 @@ local.cfg
 /venv/
 .installed.txt
 
+/docs/styles/Microsoft/
 
 ##
 # Add extra configuration options in .meta.toml:
@@ -56,4 +57,3 @@ local.cfg
 #  _your own configuration lines_
 #  """
 ##
-/docs/styles/Microsoft
