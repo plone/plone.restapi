@@ -504,6 +504,48 @@ class TestExpansionFunctional(unittest.TestCase):
             response.json().get("@components").get("types"),
         )
 
+    def test_site_is_expandable(self):
+        response = self.api_session.get("/folder")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("site", list(response.json().get("@components")))
+
+    def test_site_expanded(self):
+        response = self.api_session.get("/folder", params={"expand": "site"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json().get("@components").get("site").get("plone.site_title"),
+            "Plone site",
+        )
+        self.assertIn("plone.site_logo", response.json().get("@components").get("site"))
+        self.assertIn(
+            "plone.robots_txt", response.json().get("@components").get("site")
+        )
+        self.assertIn(
+            "plone.allowed_sizes", response.json().get("@components").get("site")
+        )
+        self.assertIn(
+            "plone.available_languages",
+            response.json().get("@components").get("site"),
+        )
+        self.assertIn(
+            "plone.default_language",
+            response.json().get("@components").get("site"),
+        )
+        self.assertEqual(
+            response.json().get("@components").get("site").get("plone.portal_timezone"),
+            "UTC",
+        )
+        self.assertEqual(
+            response.json()
+            .get("@components")
+            .get("site")
+            .get("features")
+            .get("multilingual"),
+            False,
+        )
+
 
 class TestTranslationExpansionFunctional(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
