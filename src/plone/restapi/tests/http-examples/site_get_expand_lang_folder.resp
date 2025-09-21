@@ -65,6 +65,9 @@ Content-Type: application/json
                 "working_copy_of": null
             }
         },
+        "site": {
+            "@id": "http://localhost:55001/plone/en/@site"
+        },
         "translations": {
             "@id": "http://localhost:55001/plone/en/@translations"
         },
