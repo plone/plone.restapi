@@ -1,0 +1,69 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "fieldsets": [
+        {
+            "behavior": "plone",
+            "fields": [
+                "fullname",
+                "email",
+                "username",
+                "password",
+                "password_ctl",
+                "mail_me"
+            ],
+            "id": "default",
+            "title": "Default"
+        }
+    ],
+    "properties": {
+        "email": {
+            "description": "We will use this address if you need to recover your password",
+            "factory": "Email",
+            "title": "Email",
+            "type": "string",
+            "widget": "email"
+        },
+        "fullname": {
+            "description": "Enter full name, for example, John Smith.",
+            "factory": "Text line (String)",
+            "title": "Full Name",
+            "type": "string"
+        },
+        "mail_me": {
+            "default": false,
+            "description": "",
+            "factory": "Yes/No",
+            "title": "Send a confirmation mail with a link to set the password",
+            "type": "boolean"
+        },
+        "password": {
+            "description": "Enter your new password.",
+            "factory": "Password",
+            "title": "Password",
+            "type": "string",
+            "widget": "password"
+        },
+        "password_ctl": {
+            "description": "Re-enter the password. Make sure the passwords are identical.",
+            "factory": "Password",
+            "title": "Confirm password",
+            "type": "string",
+            "widget": "password"
+        },
+        "username": {
+            "description": "Enter a user name, usually something like 'jsmith'. No spaces or special characters. Usernames and passwords are case sensitive, make sure the caps lock key is not enabled. This is the name used to log in.",
+            "factory": "Text line (String)",
+            "title": "User Name",
+            "type": "string"
+        }
+    },
+    "required": [
+        "email",
+        "username",
+        "password",
+        "password_ctl"
+    ],
+    "type": "object"
+}

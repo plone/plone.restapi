@@ -1,6 +1,6 @@
 from plone.registry.interfaces import IRegistry
-from plone.restapi.bbb import ISearchSchema
 from plone.restapi.bbb import get_navigation_root
+from plone.restapi.bbb import ISearchSchema
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
@@ -119,9 +119,6 @@ class SearchHandler:
         if "query" in types:
             types = types["query"]
         query["portal_type"] = self.filter_types(types)
-
-        # respect effective/expiration date
-        query["show_inactive"] = False
 
         # respect navigation root
         if "path" not in query:

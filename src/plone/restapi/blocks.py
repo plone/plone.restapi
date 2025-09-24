@@ -1,10 +1,10 @@
+from plone.restapi.interfaces import IBlockVisitor
 from zope.component import adapter
 from zope.component import subscribers
+from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.interface import Interface
-from zope.globalrequest import getRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
-from plone.restapi.interfaces import IBlockVisitor
 
 
 def visit_blocks(context, blocks):
@@ -35,8 +35,7 @@ def visit_subblocks(context, block):
     request = getRequest()
     visitors = subscribers((context, request), IBlockVisitor)
     for visitor in visitors:
-        for subblock in visitor(block):
-            yield subblock
+        yield from visitor(block)
 
 
 def iter_block_transform_handlers(context, block_value, interface):

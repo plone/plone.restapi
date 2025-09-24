@@ -298,6 +298,24 @@ class TestServicesTypes(unittest.TestCase):
                             },
                             "5060e030-727b-47bc-8023-b80b7cccd96f": {"@type": "image"},
                             "e3d8f8e4-8fee-47e7-9451-28724bf74a90": {"@type": "text"},
+                            "d6a0a308-0757-4713-bfe0-359817b364cd": {
+                                "@type": "slate",
+                                "value": [
+                                    {
+                                        "type": "p",
+                                        "children": [
+                                            {"text": ""},
+                                            {
+                                                "type": "link",
+                                                "data": {"url": "/doc1"},
+                                                "children": [{"text": "Plone"}],
+                                            },
+                                            {"text": ""},
+                                        ],
+                                    }
+                                ],
+                                "plaintext": " Plone ",
+                            },
                         },
                     },
                     "blocks_layout": {
@@ -311,6 +329,7 @@ class TestServicesTypes(unittest.TestCase):
                                 "338013ce-acca-454f-a6f4-14113c187dca",
                                 "5060e030-727b-47bc-8023-b80b7cccd96f",
                                 "e3d8f8e4-8fee-47e7-9451-28724bf74a90",
+                                "d6a0a308-0757-4713-bfe0-359817b364cd",
                             ]
                         },
                     },

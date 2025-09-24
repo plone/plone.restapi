@@ -10,6 +10,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+from importlib.metadata import version
+
 import datetime
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -34,10 +36,7 @@ copyright = "2014-%s, Plone Foundation" % thisyear
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-# TODO: There must be a way to import this from `setup.py` so we don't have to
-# update it manually for each release.
-version = "9.7.2.dev0"
-release = version
+version = release = version("plone.restapi")
 
 # -- General configuration ----------------------------------------------------
 
@@ -66,7 +65,7 @@ def patch_pygments_to_highlight_jsonschema():
         mod, lexer_name, aliases, filenames, mimetypes = LEXERS["JsonLexer"]
         mimetypes = mimetypes + ("application/json+schema",)
         LEXERS["JsonLexer"] = (mod, lexer_name, aliases, filenames, mimetypes)
-    except:
+    except Exception:
         # Be defensive (don't fail a docs build if this doesn't work)
         pass
 
@@ -177,7 +176,7 @@ todo_include_todos = True
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "%(project)s v%(release)s" % {"project": project, "release": release}
+html_title = f"{project} v{release}"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -195,8 +194,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
         {
             "name": "Mastodon",
@@ -206,8 +205,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
         {
             "name": "Twitter",
@@ -217,8 +216,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
     ],
     "logo": {

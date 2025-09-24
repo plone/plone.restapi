@@ -4,6 +4,7 @@ from datetime import time
 from datetime import timedelta
 from DateTime import DateTime
 from decimal import Decimal
+from importlib import import_module
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import logout
@@ -18,26 +19,26 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.serializer.utils import get_portal_type_title
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.test_expansion import ExpandableElementFoo
-from plone.restapi.serializer.utils import get_portal_type_title
 from plone.uuid.interfaces import IMutableUUID
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
+from z3c.relationfield import RelationValue
+from z3c.relationfield.event import _setRelation
 from zope.component import getGlobalSiteManager
 from zope.component import getMultiAdapter
+from zope.component import getUtility
 from zope.component import provideAdapter
 from zope.component import queryUtility
 from zope.interface import Interface
-from z3c.relationfield import RelationValue
-from z3c.relationfield.event import _setRelation
-from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
-from importlib import import_module
 
 import json
 import unittest
+
 
 HAS_PLONE_6 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
@@ -104,11 +105,18 @@ class TestDXContentSerializer(unittest.TestCase):
         self.portal.doc1.modification_date = DateTime("2015-04-27T10:24:11+00:00")
         IMutableUUID(self.portal.doc1).set("30314724b77a4ec0abbad03d262837aa")
 
-    def serialize(self, obj=None):
-        if obj is None:
+    def serialize(self, obj=None, **kwargs):
+        """Serialize an object.
+
+        Optionally pass parameters to the serializer.
+
+        :return: serialized JSON from the object
+        :rtype: str
+        """
+        if not obj:
             obj = self.portal.doc1
         serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
-        return serializer()
+        return serializer(**kwargs)
 
     def test_serializer_returns_json_serializeable_object(self):
         obj = self.serialize()
@@ -173,6 +181,10 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertIn("test_read_permission_field", obj)
         self.assertEqual("Secret Stuff", obj["test_read_permission_field"])
 
+        # Re-test field with read permission - make sure its not cached
+        setRoles(self.portal, TEST_USER_ID, ["Member"])
+        self.assertNotIn("test_read_permission_field", self.serialize())
+
     def test_get_layout(self):
         current_layout = self.portal.doc1.getLayout()
         obj = self.serialize()
@@ -196,6 +208,85 @@ class TestDXContentSerializer(unittest.TestCase):
             IExpandableElement,
             "foo",
         )
+
+    def test_serializer_can_exclude_expansion(self):
+        provideAdapter(
+            ExpandableElementFoo,
+            adapts=(Interface, IBrowserRequest),
+            provides=IExpandableElement,
+            name="foo",
+        )
+        obj = self.serialize(include_expansion=False)
+        self.assertNotIn("@components", obj)
+        gsm = getGlobalSiteManager()
+        gsm.unregisterAdapter(
+            ExpandableElementFoo,
+            (Interface, IBrowserRequest),
+            IExpandableElement,
+            "foo",
+        )
+
+    def test_serializer_includes_items(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+            nextPreviousEnabled=False,
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Previous item",
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Current item",
+        )
+
+        data = self.serialize(folder)
+
+        self.assertIn("items_total", data)
+        self.assertIn("items", data)
+        self.assertEqual(data["items_total"], 2)
+        self.assertEqual(len(data["items"]), 2)
+
+    def test_serializer_can_exclude_items(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+            nextPreviousEnabled=False,
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Previous item",
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Current item",
+        )
+
+        data = self.serialize(folder, include_items=False)
+
+        self.assertNotIn("items_total", data)
+        self.assertNotIn("items", data)
+
+        # However it is possible to "override" via query parameter
+        # see also test_content_get.py -> test_get_content_include_items()
+        self.request.form["include_items"] = "True"
+        data_with_items = self.serialize(folder, include_items=False)
+
+        self.assertIn("items_total", data_with_items)
+        self.assertIn("items", data_with_items)
 
     def test_serializer_excludes_deleted_relations(self):
 
@@ -303,15 +394,15 @@ class TestDXContentSerializer(unittest.TestCase):
             description="Current item",
         )
         data = self.serialize(doc)
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
-            },
-            data["previous_item"],
+            }.items(),
+            data["previous_item"].items(),
         )
         self.assertEqual({}, data["next_item"])
 
@@ -334,15 +425,15 @@ class TestDXContentSerializer(unittest.TestCase):
         )
         data = self.serialize(doc)
         self.assertEqual({}, data["previous_item"])
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/folder-with-items/item-2",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 2",
                 "description": "Next item",
-            },
-            data["next_item"],
+            }.items(),
+            data["next_item"].items(),
         )
 
     def test_nextprev_has_nextprev(self):
@@ -369,25 +460,25 @@ class TestDXContentSerializer(unittest.TestCase):
             container=folder, type="Document", title="Item 3", description="Next item"
         )
         data = self.serialize(doc)
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
-            },
-            data["previous_item"],
+            }.items(),
+            data["previous_item"].items(),
         )
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/folder-with-items/item-3",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 3",
                 "description": "Next item",
-            },
-            data["next_item"],
+            }.items(),
+            data["next_item"].items(),
         )
 
     def test_nextprev_root_no_nextprev(self):
@@ -412,15 +503,15 @@ class TestDXContentSerializer(unittest.TestCase):
             description="Current item",
         )
         data = self.serialize(doc)
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "type_title": "DX Test Document",
                 "title": "",
                 "description": "",
-            },
-            data["previous_item"],
+            }.items(),
+            data["previous_item"].items(),
         )
         self.assertEqual({}, data["next_item"])
 
@@ -442,15 +533,15 @@ class TestDXContentSerializer(unittest.TestCase):
         )
         data = self.serialize()
         self.assertEqual({}, data["previous_item"])
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/item-2",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 2",
                 "description": "Next item",
-            },
-            data["next_item"],
+            }.items(),
+            data["next_item"].items(),
         )
 
     @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
@@ -482,25 +573,25 @@ class TestDXContentSerializer(unittest.TestCase):
             description="Next item",
         )
         data = self.serialize(doc)
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/item-1",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
-            },
-            data["previous_item"],
+            }.items(),
+            data["previous_item"].items(),
         )
-        self.assertEqual(
+        self.assertLessEqual(
             {
                 "@id": "http://nohost/plone/item-3",
                 "@type": "Document",
                 "type_title": "Page",
                 "title": "Item 3",
                 "description": "Next item",
-            },
-            data["next_item"],
+            }.items(),
+            data["next_item"].items(),
         )
 
     def test_nextprev_unordered_folder(self):
@@ -526,7 +617,7 @@ class TestDXContentSerializer(unittest.TestCase):
         """This checks if the context is passed in correctly.
 
         We define a ITransformer, which returns the contexts portal_type.
-        This is then verfied.
+        This is then verified.
         """
 
         class RichtextTransform:
@@ -705,6 +796,13 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertIn("allow_discussion", obj)
         self.assertEqual(False, obj["allow_discussion"])
 
+    @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
+    def test_get_layout_for_siteroot(self):
+        current_layout = self.portal.getLayout()
+        obj = self.serialize(self.portal)
+        self.assertIn("layout", obj)
+        self.assertEqual(current_layout, obj["layout"])
+
 
 class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -731,9 +829,18 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
         self.portal.doc1.modification_date = DateTime("2015-04-27T10:24:11+00:00")
         IMutableUUID(self.portal.doc1).set("30314724b77a4ec0abbad03d262837aa")
 
-    def serialize(self):
-        serializer = getMultiAdapter((self.portal.doc1, self.request), ISerializeToJson)
-        return serializer()
+    def serialize(self, obj=None, **kwargs):
+        """Serialize an object.
+
+        Optionally pass parameters to the serializer.
+
+        :return: serialized JSON from the object
+        :rtype: str
+        """
+        if not obj:
+            obj = self.portal.doc1
+        serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
+        return serializer(**kwargs)
 
     def test_primary_field_target(self):
         logout()

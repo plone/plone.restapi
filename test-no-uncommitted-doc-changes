@@ -13,12 +13,12 @@ function red {
     echo "$RED $1 $RESET"
 }
 
-if [ "$PLONE_VERSION" == "6.0" ] && [ "$PYTHON_VERSION" == '3.12' ]; then
-    echo "Running check for undocumented changes for Plone 6.0.x on Python 3.12"
+if [ "$PLONE_VERSION" == "6.2" ] && [ "$PYTHON_VERSION" == '3.13' ]; then
+    echo "Running check for undocumented changes for Plone 6.2.x on Python 3.13"
 else
     # request/response dumps have known differences for different Python/Plone combinations
     # => skip, we can't have the Plone 5 build fail because of those
-    echo "Skipping checks for undocumented changes for everything except Plone 6.0.x on Python 3.12"
+    echo "Skipping checks for undocumented changes for everything except Plone 6.2.x on Python 3.13"
     echo "PLONE_VERSION=$PLONE_VERSION"
     echo "PYTHON_VERSION=$PYTHON_VERSION"
     exit 0

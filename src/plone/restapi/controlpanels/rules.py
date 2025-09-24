@@ -1,7 +1,7 @@
 from plone.restapi.controlpanels import RegistryConfigletPanel
 from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
 from plone.restapi.deserializer import json_body
-from plone.restapi.interfaces import IPloneRestapiLayer
+from plone.restapi.interfaces import IControlpanelLayer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.controlpanels.rules import rule_schema_as_json
 from z3c.form import interfaces
@@ -16,10 +16,9 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 import plone.protect.interfaces
 
 
-@adapter(Interface, IPloneRestapiLayer)
+@adapter(Interface, IControlpanelLayer)
 @implementer(IContentRulesControlpanel, IBrowserPublisher)
 class ContentRulesControlpanel(RegistryConfigletPanel):
-    schema = Interface
     configlet_id = "ContentRules"
     configlet_category_id = "plone-content"
 

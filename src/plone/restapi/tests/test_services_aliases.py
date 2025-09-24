@@ -1,7 +1,7 @@
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import TEST_USER_ID
 from plone.app.testing import setRoles
+from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 
@@ -44,7 +44,7 @@ class TestAliases(unittest.TestCase):
 
         # Verify alias exists
         response = self.api_session.get("/front-page/@aliases")
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["items"]), 1)
 
     def test_alias_add_invalid_datetime(self):
@@ -66,7 +66,7 @@ class TestAliases(unittest.TestCase):
         response = self.api_session.post("/@aliases", json=data)
         self.assertEqual(response.status_code, 204)
         response = self.api_session.get("/@aliases")
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["items"]), 2)
 
     def test_alias_add_invalid_path(self):
@@ -76,7 +76,7 @@ class TestAliases(unittest.TestCase):
         response = self.api_session.post("/@aliases", json=data)
         self.assertEqual(response.status_code, 400)
         response = self.api_session.get("/@aliases")
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["items"]), 0)
 
     def test_duplicate_alias(self):
@@ -108,7 +108,7 @@ class TestAliases(unittest.TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(response.content, b"")
         response = self.api_session.get("/@aliases")
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json().get("items"),
             [
@@ -136,7 +136,7 @@ class TestAliases(unittest.TestCase):
         self.api_session.post("/@aliases", json=data)
         headers = {"Accept": "text/csv"}
         response = self.api_session.get("/@aliases", headers=headers)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         self.assertIn("Content-Disposition", response.headers)
         self.assertEqual(response.headers["Content-Type"], "text/csv; charset=utf-8")
         content = b"old path,new path,datetime,manual\r\n/alias-page,/front-page,2022/01/01 00:00:00 GMT+0,True\r\n"
@@ -158,5 +158,5 @@ class TestAliases(unittest.TestCase):
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@aliases")
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["items"]), 0)

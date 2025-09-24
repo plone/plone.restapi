@@ -18,7 +18,7 @@ def plone_api_content_get(path=None, UID=None):
     if path:
         site = getSite()
         site_absolute_path = "/".join(site.getPhysicalPath())
-        if not path.startswith("{path}".format(path=site_absolute_path)):
+        if not path.startswith(f"{site_absolute_path}"):
             path = "{site_path}{relative_path}".format(
                 site_path=site_absolute_path,
                 relative_path=path,

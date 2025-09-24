@@ -8,6 +8,7 @@ from plone.restapi.serializer.working_copy import WorkingCopyInfo
 from Products.CMFCore.WorkflowTool import _marker
 from Products.CMFCore.WorkflowTool import WorkflowTool
 
+
 try:
     from plone.app.discussion.comment import Comment
 except ImportError:
@@ -87,7 +88,7 @@ class StaticTime:
         static getters.
 
         Ensuring the appropriate type (Python datetime vs. Zope DateTime
-        vs. float) is the responsiblity of the patched getter method. The user
+        vs. float) is the responsibility of the patched getter method. The user
         of the StaticTime class shouldn't need to care about it, and be able
         to pass Python datetimes that then will be casted appropriately if
         necessary.

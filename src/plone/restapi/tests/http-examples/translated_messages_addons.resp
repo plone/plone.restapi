@@ -34,6 +34,36 @@ Content-Type: application/json
             "version": "1.2.3"
         },
         {
+            "@id": "http://localhost:55001/plone/@addons/plone.app.caching",
+            "description": "Instalar plone.app.caching",
+            "id": "plone.app.caching",
+            "install_profile_id": "plone.app.caching:default",
+            "is_installed": false,
+            "profile_type": "default",
+            "title": "Soporte a Cach\u00e9 HTTP",
+            "uninstall_profile_id": "plone.app.caching:uninstall",
+            "upgrade_info": {},
+            "version": "1.2.3"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@addons/plone.app.discussion",
+            "description": "Infraestructura de comentarios de Plone",
+            "id": "plone.app.discussion",
+            "install_profile_id": "plone.app.discussion:default",
+            "is_installed": true,
+            "profile_type": "default",
+            "title": "Soporte para discusiones",
+            "uninstall_profile_id": "plone.app.discussion:uninstall",
+            "upgrade_info": {
+                "available": false,
+                "hasProfile": true,
+                "installedVersion": "3000",
+                "newVersion": "3000",
+                "required": false
+            },
+            "version": "1.2.3"
+        },
+        {
             "@id": "http://localhost:55001/plone/@addons/plone.app.iterate",
             "description": "A\u00f1ade soporte de copia de trabajo (modificaciones in situ) a Plone.",
             "id": "plone.app.iterate",
@@ -42,6 +72,18 @@ Content-Type: application/json
             "profile_type": "default",
             "title": "Soporte de Copia de Trabajo (Repetir)",
             "uninstall_profile_id": "plone.app.iterate:uninstall",
+            "upgrade_info": {},
+            "version": "1.2.3"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@addons/plone.app.layout",
+            "description": "Installs the plone.app.layout add-on.",
+            "id": "plone.app.layout",
+            "install_profile_id": "plone.app.layout:default",
+            "is_installed": false,
+            "profile_type": "default",
+            "title": "plone.app.layout",
+            "uninstall_profile_id": "plone.app.layout:uninstall",
             "upgrade_info": {},
             "version": "1.2.3"
         },

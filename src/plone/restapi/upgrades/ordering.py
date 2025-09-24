@@ -23,7 +23,7 @@ def ensure_child_ordering_object_ids_are_native_strings(container):
     This function can be used to fix ordering object ids stored on a parent
     object in a `DefaultOrdering` ordering adapter. When changing object
     ordering via PATCH request we used to incorrectly store ids of reordered
-    resouces as unicode instead of a bytestring (on python 2). This
+    resources as unicode instead of a bytestring (on python 2). This
     lead to mixed types being stored in the ordering annotations and
     subsequently mixed types being returned when calling `objectIds` of a
     container.

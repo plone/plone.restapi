@@ -11,6 +11,12 @@ class IPloneRestapiLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
+class IControlpanelLayer(IPloneRestapiLayer):
+    """Marker interface for REST API controlpanel requests.
+    This is used to isolate controlpanel adapters from normal traversal.
+    """
+
+
 class ISerializeToJson(Interface):
     """Adapter to serialize a Dexterity object into a JSON object."""
 
@@ -32,6 +38,17 @@ class IContextawareJsonCompatible(IJsonCompatible):
         """Adapts value and a context"""
 
 
+class ISchemaSerializer(Interface):
+    """The schema serializer serializes all field values from a schema
+    into JSON-compatible Python data."""
+
+    def __init__(schema, context, request):
+        """Adapts schema, context, and request."""
+
+    def __call__():
+        """Returns JSON-compatible Python data."""
+
+
 class IFieldSerializer(Interface):
     """The field serializer multi adapter serializes the field value into
     JSON compatible python data.
@@ -41,7 +58,7 @@ class IFieldSerializer(Interface):
         """Adapts field, context and request."""
 
     def __call__():
-        """Returns JSON compatible python data."""
+        """Returns JSON-compatible Python data."""
 
 
 class IPrimaryFieldTarget(Interface):
@@ -251,3 +268,10 @@ class ILoginProviders(Interface):
         """
         return a list of login providers, with its id, title, plugin and url
         """
+
+
+class ISiteEndpointExpander(Interface):
+    """An adapter which adds additional data to the @site endpoint."""
+
+    def __call__(data):
+        """Add additional key/values to data"""

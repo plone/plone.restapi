@@ -21,7 +21,7 @@ from Acquisition import ImplicitAcquisitionWrapper
 
 @implementer(IDexterityContent, IBlocks)
 class FakeDXContext:
-    """Fake DX content class, so we can re-use the DX field deserializers"""
+    """Fake DX content class, so we can reuse the DX field deserializers"""
 
 
 @implementer(IDeserializeFromJson)
@@ -38,6 +38,9 @@ class ControlpanelDeserializeFromJson:
         self.request = self.controlpanel.request
 
     def __call__(self, mask_validation_errors=True):
+        if self.schema is None:
+            return
+
         data = json_body(self.controlpanel.request)
 
         proxy = self.registry.forInterface(self.schema, prefix=self.schema_prefix)

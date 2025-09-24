@@ -1,1 +1,2 @@
--r requirements-6.0.txt
+-c constraints.txt
+plone.restapi[test]

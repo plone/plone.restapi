@@ -3,7 +3,8 @@ from copy import deepcopy
 from plone import api
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.blocks import iter_block_transform_handlers, visit_blocks
+from plone.restapi.blocks import iter_block_transform_handlers
+from plone.restapi.blocks import visit_blocks
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
 from plone.restapi.deserializer.utils import path2uid
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
@@ -11,6 +12,7 @@ from plone.restapi.interfaces import IFieldDeserializer
 from plone.schema import IJSONField
 from zope.component import adapter
 from zope.interface import implementer
+from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import os
@@ -31,10 +33,11 @@ def iterate_children(value):
 
 
 @implementer(IFieldDeserializer)
-@adapter(IJSONField, IBlocks, IBrowserRequest)
+@adapter(IJSONField, Interface, IBrowserRequest)
 class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
         value = super().__call__(value)
+
         if self.field.getName() == "blocks":
             for block in visit_blocks(self.context, value):
                 new_block = block.copy()
@@ -44,6 +47,14 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
                     new_block = handler(new_block)
                 block.clear()
                 block.update(new_block)
+        else:
+            fake_block = {"@type": "jsonfield", "value": value}
+            for handler in iter_block_transform_handlers(
+                self.context, fake_block, IBlockFieldDeserializationTransformer
+            ):
+                fake_block = handler(fake_block)
+            value = fake_block["value"]
+
         return value
 
 
@@ -144,10 +155,10 @@ class ImageBlockDeserializerBase:
         return block
 
 
-@adapter(IBlocks, IBrowserRequest)
+@adapter(Interface, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class ResolveUIDDeserializer(ResolveUIDDeserializerBase):
-    """Deserializer for content-types that implements IBlocks behavior"""
+    """URL-to-UID transformer for all content types"""
 
 
 @adapter(IPloneSiteRoot, IBrowserRequest)

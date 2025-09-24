@@ -1,2 +1,1 @@
-black == 24.4.2
-flake8 == 4.0.1
+-c https://dist.plone.org/release/6.2-dev/constraints.txt

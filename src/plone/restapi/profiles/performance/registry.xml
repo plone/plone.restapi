@@ -1,6 +1,12 @@
-<registry xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="plone">  
+<?xml version="1.0" encoding="utf-8"?>
+<registry xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+          i18n:domain="plone"
+>
   <!-- Allowed sizes -->
-  <record name="plone.allowed_sizes" interface="plone.restapi.bbb.IImagingSchema" field="allowed_sizes">
+  <record field="allowed_sizes"
+          interface="plone.restapi.bbb.IImagingSchema"
+          name="plone.allowed_sizes"
+  >
     <value>
       <element>icon 32:32</element>
       <element>tile 64:64</element>
@@ -10,7 +16,7 @@
       <element>large 800:65536</element>
       <element>larger 1000:65536</element>
       <element>great 1200:65536</element>
-      <element>huge 1600:65536</element>      
+      <element>huge 1600:65536</element>
     </value>
   </record>
 </registry>

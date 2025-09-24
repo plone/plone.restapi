@@ -7,9 +7,9 @@ from plone.restapi.permissions import UseRESTAPI
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest import TestCase
 from zExceptions import Unauthorized
+from zope.component import provideAdapter
 from zope.event import notify
 from ZPublisher.pubevents import PubStart
-from zope.component import provideAdapter
 
 
 class TestLogin(TestCase):

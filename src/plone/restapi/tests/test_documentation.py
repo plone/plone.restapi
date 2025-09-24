@@ -1,8 +1,6 @@
 from base64 import b64encode
 from datetime import datetime
 from datetime import timezone
-import io
-from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import ICommentAddedEvent
 from plone.app.discussion.interfaces import IConversation
@@ -10,6 +8,8 @@ from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import applyProfile
+from plone.app.testing import popGlobalRegistry
+from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -26,6 +26,7 @@ from plone.restapi.interfaces import ILoginProviders
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
+from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import patch_addon_versions
 from plone.restapi.tests.helpers import patch_scale_uuid
@@ -36,19 +37,18 @@ from z3c.relationfield import RelationValue
 from zope.component import createObject
 from zope.component import getMultiAdapter
 from zope.component import getUtility
+from zope.component import provideAdapter
 from zope.component.hooks import getSite
 from zope.event import notify
 from zope.interface import alsoProvides
 from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent import ObjectModifiedEvent
-from plone.app.testing import popGlobalRegistry
-from plone.app.testing import pushGlobalRegistry
-from plone.restapi.testing import register_static_uuid_utility
-from zope.component import provideAdapter
 
 import collections
+import io
 import json
 import os
+import pathlib
 import re
 import transaction
 import unittest
@@ -74,8 +74,7 @@ REQUEST_HEADER_KEYS = [
 
 RESPONSE_HEADER_KEYS = ["content-type", "allow", "location"] + TUS_HEADERS
 
-
-base_path = resource_filename("plone.restapi.tests", "http-examples")
+base_path = str(pathlib.Path(__file__).parent / "http-examples")
 
 UPLOAD_DATA = b"abcdefgh"
 UPLOAD_MIMETYPE = b"text/plain"
@@ -1839,6 +1838,26 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@site")
         save_request_and_response_for_docs("site_get", response)
 
+    def test_inherit_get(self):
+        self.doc = self.portal.invokeFactory(
+            "Document", id="document", title="Test document"
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            "/document/@inherit?expand.inherit.behaviors=plone.navigationroot"
+        )
+        save_request_and_response_for_docs("inherit_get", response)
+
+    def test_inherit_expansion(self):
+        self.doc = self.portal.invokeFactory(
+            "Document", id="document", title="Test document"
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            "/document/?expand=inherit&expand.inherit.behaviors=plone.navigationroot"
+        )
+        save_request_and_response_for_docs("inherit_expansion", response)
+
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -2516,6 +2535,11 @@ class TestIterateDocumentation(TestDocumentationBase):
 
         save_request_and_response_for_docs("userschema", response)
 
+    def test_documentation_schema_user_registration(self):
+        response = self.api_session.get("/@userschema/registration")
+
+        save_request_and_response_for_docs("userschema_registration", response)
+
 
 class TestRules(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -2731,7 +2755,7 @@ class TestRules(TestDocumentationBase):
         url = "/@controlpanels/content-rules/rule-3/action"
         payload = {
             "targetLogger": "Plone",
-            "Level": "20",
+            "loggingLevel": 20,
             "message": "text_contentrules_logger_message",
             "type": "plone.actions.Logger",
         }
@@ -2914,7 +2938,7 @@ class TestRules(TestDocumentationBase):
         url = "/@controlpanels/content-rules/rule-3/action/0"
         payload = {
             "targetLogger": "Plone6",
-            "Level": "20",
+            "loggingLevel": 20,
             "message": "text_contentrules_logger_message",
         }
         response = self.api_session.patch(url, json=payload)

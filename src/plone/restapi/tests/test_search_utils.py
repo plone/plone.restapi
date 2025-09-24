@@ -23,3 +23,9 @@ class TestUnflattenDottedDict(unittest.TestCase):
     def test_leaves_regular_keys_untouched(self):
         dct = {"foo": 1, "bar": 2}
         self.assertEqual(dct, unflatten_dotted_dict(dct))
+
+    def test_rejects_dotted_key_with_an_existing_str_value(self):
+        dct = {"path": "x", "path.depth": 2}
+        self.assertEqual(
+            {"path": {"query": "x", "depth": 2}}, unflatten_dotted_dict(dct)
+        )

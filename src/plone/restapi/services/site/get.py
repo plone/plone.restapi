@@ -1,21 +1,27 @@
-# -*- coding: utf-8 -*-
 from plone.app.event.base import FALLBACK_TIMEZONE
 from plone.app.event.base import replacement_zones
 from plone.event.utils import default_timezone as fallback_default_timezone
 from plone.event.utils import validated_timezone
 from plone.i18n.interfaces import ILanguageSchema
 from plone.registry.interfaces import IRegistry
+from plone.restapi import HAS_MULTILINGUAL
 from plone.restapi.bbb import IImagingSchema
 from plone.restapi.bbb import ISiteSchema
 from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.interfaces import ISiteEndpointExpander
 from plone.restapi.services import Service
-from Products.CMFPlone.utils import getSiteLogo
 from Products.CMFPlone.controlpanel.browser.redirects import RedirectionSet
+from Products.CMFPlone.utils import getSiteLogo
 from zope.component import adapter
+from zope.component import getAdapters
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.interface import Interface
+
+
+if HAS_MULTILINGUAL:
+    from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
 
 
 @implementer(IExpandableElement)
@@ -54,6 +60,12 @@ class Site:
             }
         )
 
+        expanders = getAdapters(
+            (self.context, self.request), provided=ISiteEndpointExpander
+        )
+        for name, expander in expanders:
+            expander(result["site"])
+
         return result
 
     def plone_timezone(self):
@@ -84,6 +96,8 @@ class Site:
             "filter_aliases_by_date": hasattr(
                 RedirectionSet, "supports_date_range_filtering"
             ),
+            "multilingual": HAS_MULTILINGUAL
+            and IPloneAppMultilingualInstalled.providedBy(self.request),
         }
         return result
 

@@ -1,10 +1,10 @@
 linkify-it-py
 myst-parser
-plone-sphinx-theme
+plone-sphinx-theme<2
 setuptools  # required by sphinxcontrib.httpexample, remove when it migrates to importlib
 sphinx-autobuild
 sphinx-copybutton
 sphinxcontrib.httpdomain
 sphinxcontrib.httpexample
 sphinxext-opengraph
-vale==2.30.0
+vale

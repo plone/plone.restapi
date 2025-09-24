@@ -1,27 +1,37 @@
 from Acquisition import aq_parent
+from plone.app.redirector.interfaces import IRedirectionStorage
 from plone.uuid.interfaces import IUUID
 from plone.uuid.interfaces import IUUIDAware
-from zope.component import getMultiAdapter
-from plone.app.redirector.interfaces import IRedirectionStorage
+from Products.CMFCore.interfaces import ISiteRoot
 from zope.component import getUtility
+from zope.component.hooks import getSite
 
 import re
+
 
 PATH_RE = re.compile(r"^(.*?)((?=/@@|#).*)?$")
 
 
+def get_portal():
+    closest_site = getSite()
+    if closest_site is not None:
+        for potential_portal in closest_site.aq_chain:
+            if ISiteRoot.providedBy(potential_portal):
+                return potential_portal
+    raise Exception("Plone site root not found")
+
+
 def path2uid(context, link):
-    # unrestrictedTraverse requires a string on py3. see:
-    # https://github.com/zopefoundation/Zope/issues/674
     if not link:
         return ""
-    portal = getMultiAdapter(
-        (context, context.REQUEST), name="plone_portal_state"
-    ).portal()
+    portal = get_portal()
     portal_url = portal.portal_url()
     portal_path = "/".join(portal.getPhysicalPath())
     path = link
-    context_url = context.absolute_url()
+    try:
+        context_url = context.absolute_url()
+    except AttributeError:
+        context_url = portal_url
     relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
     if path.startswith(portal_url):
         path = path[len(portal_url) + 1 :]

@@ -1,6 +1,5 @@
 from DateTime import DateTime
-from pkg_resources import get_distribution
-from pkg_resources import parse_version
+from importlib.metadata import distribution
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -9,12 +8,13 @@ from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 
+import packaging.version
 import unittest
 
 
-HAS_PLONE_6 = parse_version(
-    get_distribution("Products.CMFPlone").version
-) >= parse_version("6.0.0a1")
+HAS_PLONE_6 = packaging.version.parse(
+    distribution("Products.CMFPlone").version
+) >= packaging.version.parse("6.0.0a1")
 
 
 class TestCatalogSerializers(unittest.TestCase):

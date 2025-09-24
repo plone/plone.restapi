@@ -49,7 +49,7 @@ def append_testcases(prefix, testsuite):
     test_count = 0
     failure_count = 0
 
-    with open(prefix + "_requests.csv", mode="r") as csv_file:
+    with open(prefix + "_requests.csv") as csv_file:
         csv_reader = csv.DictReader(csv_file)
 
         line_count = 0

@@ -7,13 +7,13 @@ from plone.restapi import _
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import IFieldDeserializer
+from plone.restapi.serializer.schema import _check_permission
 from plone.supermodel.utils import mergedTaggedValueDict
 from z3c.form.interfaces import IDataManager
 from z3c.form.interfaces import IManagerValidator
 from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import queryMultiAdapter
-from zope.component import queryUtility
 from zope.event import notify
 from zope.i18n import translate
 from zope.interface import implementer
@@ -22,7 +22,6 @@ from zope.lifecycleevent import Attributes
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFields
 from zope.schema.interfaces import ValidationError
-from zope.security.interfaces import IPermission
 
 
 @implementer(IDeserializeFromJson)
@@ -179,15 +178,5 @@ class DeserializeFromJson(OrderingMixin):
         self.modified.setdefault(schema, []).append(prefixed_name)
 
     def check_permission(self, permission_name):
-        if permission_name is None:
-            return True
-
-        if permission_name not in self.permission_cache:
-            permission = queryUtility(IPermission, name=permission_name)
-            if permission is None:
-                self.permission_cache[permission_name] = True
-            else:
-                self.permission_cache[permission_name] = bool(
-                    self.sm.checkPermission(permission.title, self.context)
-                )
-        return self.permission_cache[permission_name]
+        # Here for backwards-compatibility
+        return _check_permission(permission_name, self)

@@ -13,7 +13,6 @@ The `@history` endpoint exposes history and versioning information on previous v
 Each change or workflow change on a content object or file is listed.
 It also allows to revert to a previous version of the file.
 
-
 ## Listing the History of a Content Object
 
 Listing versions and history of a resource:
@@ -34,11 +33,10 @@ The following fields are returned:
 - `comments`: a changenote
 - `@id`: link to the content endpoint of this specific version.
 - `may_revert`: true if the user has permission to revert.
-- `time`: when this action occured in ISO format.
+- `time`: when this action occurred in ISO format.
 - `transition_title`: the workflow transition's title, `Edited` for versioning, or `Create` for initial state.
 - `type`: `workflow` for workflow changes, `versioning` for editing, or `null` for content creation.
 - `version`: identifier for this specific version of the resource.
-
 
 ## Get a Historical Version
 
@@ -48,7 +46,6 @@ Older versions of a resource can be retrieved by appending `version` to the `@hi
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/history_get_versioned.req
 ```
-
 
 ## Revert to a Historical Version
 

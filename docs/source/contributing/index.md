@@ -24,13 +24,20 @@ We use GNU `make` when developing `plone.restapi`.
 To install this package, its dependencies, and its documentation, code formatting, and testing tools, run the following command in the root of the project.
 
 ```shell
-make
+make install
 ```
 
 To see all the Makefile targets and help, use the following command.
 
 ```shell
 make help
+```
+
+
+## Start Plone
+
+```shell
+make start
 ```
 
 
@@ -60,10 +67,25 @@ Include them in the documentation using MyST syntax.
 Build the documentation locally to test the rendering.
 
 ```shell
-make docs-html
+make docs-livehtml
 ```
 
 Add and commit the generated files in `src/plone/restapi/tests/http-examples/`.
+
+
+## Documentation checks
+
+Run a link checker on documentation.
+
+```shell
+make docs-linkcheckbroken
+```
+
+Run a spelling, grammar, and style checker on documentation.
+
+```shell
+make docs-vale
+```
 
 
 ## Conventions

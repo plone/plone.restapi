@@ -3,7 +3,6 @@ Content-Type: application/json
 
 {
     "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types",
-    "data": {},
     "group": "Content",
     "items": [
         {
@@ -97,11 +96,5 @@ Content-Type: application/json
             "title": "DX Test Document"
         }
     ],
-    "schema": {
-        "fieldsets": [],
-        "properties": {},
-        "required": [],
-        "type": "object"
-    },
     "title": "Content Types"
 }
