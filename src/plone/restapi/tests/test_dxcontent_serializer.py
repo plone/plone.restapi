@@ -797,6 +797,13 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertIn("allow_discussion", obj)
         self.assertEqual(False, obj["allow_discussion"])
 
+    @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
+    def test_get_layout_for_siteroot(self):
+        current_layout = self.portal.getLayout()
+        obj = self.serialize(self.portal)
+        self.assertIn("layout", obj)
+        self.assertEqual(current_layout, obj["layout"])
+
 
 class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
