@@ -213,7 +213,8 @@ class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
                 (self.context.absolute_url(), "@@download", self.field.__name__)
             )
             result = {
-                "url": self.context.absolute_url(),
+                "@id": self.context.absolute_url(),
+                "@type": self.context.portal_type,
                 "download": download_url,
                 "filename": namedfile.filename,
                 "content-type": namedfile.contentType,
