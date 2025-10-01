@@ -206,7 +206,9 @@ class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
         if namedfile is None:
             return
 
-        enable_transform = os.environ.get("enable_link_target_transform", '').lower() in ('true', '1', 'TRUE')
+        enable_transform = os.environ.get(
+            "enable_link_target_transform", ""
+        ).lower() in ("true", "1", "TRUE")
 
         if enable_transform:
             download_url = "/".join(

@@ -43,8 +43,8 @@ def resolve_uid(path):
 
 
 def uid_to_url(path):
-    if isinstance(path, dict) and path.get('@id'):
-        path = path['@id']
+    if isinstance(path, dict) and path.get("@id"):
+        path = path["@id"]
     path, _brain = resolve_uid(path)
     return path
 
