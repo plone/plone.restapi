@@ -922,8 +922,16 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
 
         url_data = data["targetUrl"]
 
-        self.assertEqual(url_data["url"], content_url)
+        self.assertEqual(url_data["@id"], content_url)
+        self.assertEqual(url_data["@type"], "DXTestDocument")
         self.assertEqual(url_data["download"], download_url)
         self.assertEqual(url_data["filename"], self.test_filename)
         self.assertEqual(url_data["content-type"], "text/plain")
         self.assertIn("size", url_data)
+
+        # Check disabling the env variable still gives us the `@@download` string representation
+        os.environ["enable_link_target_transform"] = "0"
+        data = serializer()
+        url_data = data["targetUrl"]
+
+        self.assertEqual(url_data, download_url)
