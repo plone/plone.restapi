@@ -4,6 +4,7 @@ from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.dexterity.utils import iterSchemata
 from plone.namedfile.file import NamedBlobImage
+from plone.namedfile.file import NamedFile
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
@@ -19,6 +20,7 @@ from zope.component import queryUtility
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
+import os
 import pathlib
 import unittest
 
@@ -638,3 +640,45 @@ class TestBlocksSerializer(unittest.TestCase):
         self.assertEqual(block["description"], "Custom description")
         href = block["href"][0]
         self.assertEqual(href["@id"], doc.absolute_url())
+
+    def test_primary_field_target_link_expanded(self):
+        self.portal.invokeFactory(
+            "DXTestDocument",
+            id="docWithFile",
+            test_primary_namedfile_field=NamedFile(
+                data="Spam and eggs",
+                contentType="text/plain",
+                filename="test.txt",
+            ),
+        )
+        os.environ["enable_link_target_transform"] = "1"
+        logout()
+
+        resolve_uid_link = f"../resolveuid/{self.portal.docWithFile.UID()}"
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={
+                "1": {
+                    "@type": "custom",
+                    "url": resolve_uid_link
+                },
+                "2": {
+                    "@id": "custom",
+                    "url": [{"@id": resolve_uid_link}],
+                }
+            },
+        )
+
+        content_url = self.portal.docWithFile.absolute_url()
+        download_url = f"{content_url}/@@download/test_primary_namedfile_field"
+
+        # Links to it that aren't IDs should be expanded
+        self.assertEqual(value['1']["url"]["@id"], self.portal.docWithFile.absolute_url())
+        self.assertEqual(value['1']["url"]["@type"], "DXTestDocument")
+        self.assertEqual(value['1']["url"]["download"], download_url)
+        self.assertEqual(value['1']["url"]["filename"], "test.txt")
+        self.assertEqual(value['1']["url"]["content-type"], "text/plain")
+        self.assertIn("size", value['1']["url"])
+
+        # @id field should still just be a string
+        self.assertEqual(value["2"]["url"][0]["@id"], self.portal.docWithFile.absolute_url())
