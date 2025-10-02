@@ -165,7 +165,7 @@ msgstr "Sie erhalten diese E-Mail, weil Ihnen ${sender_fullname} diese Nachricht
 
 #: plone/restapi/services/users/add.py:115
 msgid "You can't send both password and sendPasswordReset."
-msgstr "Es kann nicht gleichzeitig ein Passwort gesendet und die Option 'Eine Bestätigungsmail mit dem Link zum Passwort setzen schicken' ausgewählt werden."
+msgstr "Es können nicht gleichzeitig ein Passwort und die Option 'Eine Bestätigungsmail mit dem Link zum Passwort setzen schicken' gesendet werden."
 
 #: plone/restapi/services/users/add.py:330
 msgid "You can't set a password without a password reset token."
@@ -189,7 +189,7 @@ msgstr ""
 
 #: plone/restapi/services/users/add.py:110
 msgid "You have to either send a password or sendPasswordReset."
-msgstr "Es muss entweder ein Passwort angegeben oder die Option 'Eine Bestätigungsmail mit dem Link zum Passwort setzen schicken' ausgewählt werden."
+msgstr "Es muss entweder ein Passwort oder die Option 'Eine Bestätigungsmail mit dem Link zum Passwort setzen schicken' gesendet werden."
 
 #: plone/restapi/services/users/add.py:155
 msgid "You need AddPortalMember permission."
