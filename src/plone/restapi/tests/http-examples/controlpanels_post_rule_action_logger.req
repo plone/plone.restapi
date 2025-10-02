@@ -4,7 +4,7 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "Level": "20",
+    "loggingLevel": 20,
     "message": "text_contentrules_logger_message",
     "targetLogger": "Plone",
     "type": "plone.actions.Logger"

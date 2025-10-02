@@ -22,11 +22,11 @@ jobs:
             plone-version: "6.2"
     steps:
       # git checkout
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Python setup
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"

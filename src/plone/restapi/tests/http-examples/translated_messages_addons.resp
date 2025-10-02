@@ -76,6 +76,18 @@ Content-Type: application/json
             "version": "1.2.3"
         },
         {
+            "@id": "http://localhost:55001/plone/@addons/plone.app.layout",
+            "description": "Installs the plone.app.layout add-on.",
+            "id": "plone.app.layout",
+            "install_profile_id": "plone.app.layout:default",
+            "is_installed": false,
+            "profile_type": "default",
+            "title": "plone.app.layout",
+            "uninstall_profile_id": "plone.app.layout:uninstall",
+            "upgrade_info": {},
+            "version": "1.2.3"
+        },
+        {
             "@id": "http://localhost:55001/plone/@addons/plone.app.multilingual",
             "description": "Instalar para activar el soporte de contenido multiling\u00fce con plone.app.multilingual",
             "id": "plone.app.multilingual",
