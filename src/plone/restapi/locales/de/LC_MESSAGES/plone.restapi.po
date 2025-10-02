@@ -109,11 +109,11 @@ msgstr ""
 
 #: plone/restapi/services/users/add.py:98
 msgid "Property '${fieldname}' is not allowed."
-msgstr "Die Eigenschaft '${fieldname}' ist nicht erlaubt."
+msgstr "Das Attribut '${fieldname}' ist nicht erlaubt."
 
 #: plone/restapi/services/users/add.py:88
 msgid "Property '${fieldname}' is required."
-msgstr "Die Eigenschaft '${fieldname}' ist erforderlich."
+msgstr "Das Attribut '${fieldname}' ist erforderlich."
 
 #: plone/restapi/configure.zcml:90
 msgid "RESTful hypermedia API for Plone - Uninstall"
