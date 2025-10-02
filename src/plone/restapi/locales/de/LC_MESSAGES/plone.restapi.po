@@ -72,7 +72,7 @@ msgstr ""
 
 #: plone/restapi/services/users/add.py:164
 msgid "Error in fields. ${errors_to_string}"
-msgstr ""
+msgstr "Fehler in Feldern. ${errors_to_string}"
 
 #. Default: "The reset_token is expired."
 #: plone/restapi/services/users/add.py:320
@@ -109,11 +109,11 @@ msgstr ""
 
 #: plone/restapi/services/users/add.py:98
 msgid "Property '${fieldname}' is not allowed."
-msgstr ""
+msgstr "Das Attribut '${fieldname}' ist nicht erlaubt."
 
 #: plone/restapi/services/users/add.py:88
 msgid "Property '${fieldname}' is required."
-msgstr ""
+msgstr "Das Attribut '${fieldname}' ist erforderlich."
 
 #: plone/restapi/configure.zcml:90
 msgid "RESTful hypermedia API for Plone - Uninstall"
@@ -165,7 +165,7 @@ msgstr "Sie erhalten diese E-Mail, weil Ihnen ${sender_fullname} diese Nachricht
 
 #: plone/restapi/services/users/add.py:115
 msgid "You can't send both password and sendPasswordReset."
-msgstr ""
+msgstr "Es können nicht gleichzeitig ein Passwort und die Option 'Eine Bestätigungsmail mit dem Link zum Passwort setzen schicken' gesendet werden."
 
 #: plone/restapi/services/users/add.py:330
 msgid "You can't set a password without a password reset token."
@@ -189,7 +189,7 @@ msgstr ""
 
 #: plone/restapi/services/users/add.py:110
 msgid "You have to either send a password or sendPasswordReset."
-msgstr ""
+msgstr "Es muss entweder ein Passwort oder die Option 'Eine Bestätigungsmail mit dem Link zum Passwort setzen schicken' gesendet werden."
 
 #: plone/restapi/services/users/add.py:155
 msgid "You need AddPortalMember permission."
