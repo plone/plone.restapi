@@ -1,142 +1,131 @@
+---
+myst:
+  html_meta:
+    "description": "The Recycle Bin REST API provides endpoints to interact with the Plone Recycle Bin functionality."
+    "property=og:description": "The Recycle Bin REST API provides endpoints to interact with the Plone Recycle Bin functionality."
+    "property=og:title": "Recycle Bin"
+    "keywords": "Plone, plone.restapi, REST, API, Recycle Bin"
+---
+
 # Recycle Bin
 
 The Recycle Bin REST API provides endpoints to interact with the Plone Recycle Bin functionality.
 
+Reading or writing recycle bin data requires the `cmf.ManagePortal` permission.
+
 ## List recycle bin contents
 
-To list all items in the recycle bin, send a GET request to the `@recyclebin` endpoint:
+A list of all items in the recycle bin can be retrieved by sending a `GET` request to the `@recyclebin` endpoint:
 
-```http-example
-GET /@recyclebin HTTP/1.1
-Accept: application/json
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/recyclebin_get.req
 ```
 
-Response:
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/recyclebin_get.resp
+:language: http
+```
 
-```json
-{
-  "@id": "http://localhost:8080/Plone/@recyclebin",
-  "items": [
-    {
-      "@id": "http://localhost:8080/Plone/@recyclebin/6d6d626f-8c85-4f22-8747-adb979bbe3b1",
-      "id": "document-1",
-      "title": "My Document",
-      "type": "Document",
-      "path": "/Plone/folder/document-1",
-      "parent_path": "/Plone/folder",
-      "deletion_date": "2025-04-27T10:30:45.123456",
-      "size": 1024,
-      "recycle_id": "6d6d626f-8c85-4f22-8747-adb979bbe3b1",
-      "actions": {
-        "restore": "http://localhost:8080/Plone/@recyclebin/6d6d626f-8c85-4f22-8747-adb979bbe3b1/restore",
-        "purge": "http://localhost:8080/Plone/@recyclebin/6d6d626f-8c85-4f22-8747-adb979bbe3b1"
-      }
-    }
-  ],
-  "items_total": 1
-}
+### Filtering and Sorting Parameters
+
+The listing supports various query parameters for filtering and sorting:
+
+- `search_query`: Search in title and path (case-insensitive)
+- `filter_type`: Filter by content type (e.g., "Document", "Folder")
+- `date_from`: Filter by deletion date from (YYYY-MM-DD format)
+- `date_to`: Filter by deletion date to (YYYY-MM-DD format)
+- `filter_deleted_by`: Filter by user who deleted the item
+- `filter_has_subitems`: Filter items with/without children (`with_subitems`, `without_subitems`)
+- `filter_language`: Filter by language code
+- `filter_workflow_state`: Filter by workflow state
+- `sort_by`: Sorting options:
+  - `date_desc` (default) - Most recent first
+  - `date_asc` - Oldest first
+  - `title_asc` / `title_desc` - Alphabetical by title
+  - `type_asc` / `type_desc` - By content type
+  - `path_asc` / `path_desc` - By path
+  - `size_asc` / `size_desc` - By size
+  - `workflow_asc` / `workflow_desc` - By workflow state
+
+### Batching
+
+The API supports standard Plone REST API batching parameters:
+
+- `b_start`: Starting position for batch
+- `b_size`: Number of items per batch
+
+#### Example with filtering and sorting
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/recyclebin_get_filtered.req
+```
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/recyclebin_get_filtered.resp
+:language: http
+```
+
+## Get individual item from recycle bin
+
+To retrieve detailed information about a specific item in the recycle bin, send a GET request to `@recyclebin/{item_id}`:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/recyclebin_get_item.req
+```
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/recyclebin_get_item.resp
+:language: http
 ```
 
 ## Restore an item from the recycle bin
 
-To restore an item from the recycle bin, send a POST request to the `@recyclebin/{item_id}/restore` endpoint:
+An item can be restored from the recycle bin by issuing a `POST` to the given URL:
 
-```http-example
-POST /@recyclebin/6d6d626f-8c85-4f22-8747-adb979bbe3b1/restore HTTP/1.1
-Accept: application/json
-Content-Type: application/json
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/recyclebin_restore.req
 ```
 
-You can optionally specify a target path to restore to by including it in the request body:
-
-```json
-{
-  "target_path": "/Plone/another-folder"
-}
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/recyclebin_restore.resp
+:language: http
 ```
 
-Response:
+### Restore to specific target location
 
-```json
-{
-  "status": "success",
-  "message": "Item document-1 restored successfully",
-  "restored_item": {
-    "@id": "http://localhost:8080/Plone/document-1",
-    "id": "document-1",
-    "title": "My Document",
-    "type": "Document"
-  }
-}
+You can specify a target path to restore the item to a different location than its original:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/recyclebin_restore_target.req
 ```
 
-## Purge an item from the recycle bin
-
-To permanently delete an item from the recycle bin, send a POST request to the `@recyclebin-purge` endpoint:
-
-```http-example
-POST /@recyclebin-purge HTTP/1.1
-Accept: application/json
-Content-Type: application/json
-
-{
-  "item_id": "6d6d626f-8c85-4f22-8747-adb979bbe3b1"
-}
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/recyclebin_restore_target.resp
+:language: http
 ```
 
-Response:
+## Purge a specific item from the recycle bin
 
-```json
-{
-  "status": "success",
-  "message": "Item document-1 purged successfully"
-}
+To permanently delete a specific item from the recycle bin, send a DELETE request to the `@recyclebin/{item_id}` endpoint:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/recyclebin_purge_item.req
 ```
 
-## Purge all items from the recycle bin
-
-To purge all items from the recycle bin:
-
-```http-example
-POST /@recyclebin-purge HTTP/1.1
-Accept: application/json
-Content-Type: application/json
-
-{
-  "purge_all": true
-}
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/recyclebin_purge_item.resp
+:language: http
 ```
 
-Response:
+## Empty the entire recycle bin
 
-```json
-{
-  "status": "success",
-  "purged_count": 5,
-  "message": "Purged 5 items from recycle bin"
-}
+To permanently delete all items from the recycle bin, send a DELETE request to the `@recyclebin` endpoint:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/recyclebin_purge_all.req
 ```
 
-## Purge expired items from the recycle bin
-
-To purge only expired items (based on the retention period):
-
-```http-example
-POST /@recyclebin-purge HTTP/1.1
-Accept: application/json
-Content-Type: application/json
-
-{
-  "purge_expired": true
-}
-```
-
-Response:
-
-```json
-{
-  "status": "success",
-  "purged_count": 2,
-  "message": "Purged 2 expired items from recycle bin"
-}
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/recyclebin_purge_all.resp
+:language: http
 ```

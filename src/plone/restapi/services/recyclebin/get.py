@@ -53,10 +53,10 @@ class RecycleBinGet(Service):
             }
 
         item_id = self.params[0]
-        
+
         # Get the specific item from recycle bin
         item = recycle_bin.get_item(item_id)
-        
+
         if item is None:
             self.request.response.setStatus(404)
             return {
@@ -82,16 +82,24 @@ class RecycleBinGet(Service):
             "workflow_state": item.get("workflow_state", ""),
             "description": item.get("description", ""),
             "creator": item.get("creator", ""),
-            "created": item.get("created", "").isoformat() if item.get("created") else "",
-            "modified": item.get("modified", "").isoformat() if item.get("modified") else "",
-            "effective": item.get("effective", "").isoformat() if item.get("effective") else "",
-            "expires": item.get("expires", "").isoformat() if item.get("expires") else "",
+            "created": (
+                item.get("created", "").isoformat() if item.get("created") else ""
+            ),
+            "modified": (
+                item.get("modified", "").isoformat() if item.get("modified") else ""
+            ),
+            "effective": (
+                item.get("effective", "").isoformat() if item.get("effective") else ""
+            ),
+            "expires": (
+                item.get("expires", "").isoformat() if item.get("expires") else ""
+            ),
             "has_children": "children" in item and len(item["children"]) > 0,
             "children_count": len(item.get("children", [])),
             "actions": {
                 "restore": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}/restore",
                 "purge": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}",
-            }
+            },
         }
 
         # Add children information if present

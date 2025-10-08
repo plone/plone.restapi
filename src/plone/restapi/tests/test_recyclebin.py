@@ -132,17 +132,16 @@ class TestRecycleBin(unittest.TestCase):
         self.assertEqual(400, response.status_code)
         self.assertEqual("BadRequest", response.json()["error"]["type"])
         self.assertEqual(
-            "Invalid URL pattern. Expected: /@recyclebin/{item_id}/restore", 
-            response.json()["error"]["message"]
+            "Invalid URL pattern. Expected: /@recyclebin/{item_id}/restore",
+            response.json()["error"]["message"],
         )
-        
+
         # Test with wrong action
         response = self.api_session.post("/@recyclebin/123456789/delete", json={})
         self.assertEqual(400, response.status_code)
         self.assertEqual("BadRequest", response.json()["error"]["type"])
         self.assertEqual(
-            "Invalid action. Expected: restore", 
-            response.json()["error"]["message"]
+            "Invalid action. Expected: restore", response.json()["error"]["message"]
         )
 
     def test_restore_disabled_recyclebin(self):
@@ -170,7 +169,9 @@ class TestRecycleBin(unittest.TestCase):
             "plone.restapi.services.recyclebin.restore.getUtility",
             return_value=recycle_bin,
         ):
-            response = self.api_session.post("/@recyclebin/nonexistent/restore", json={})
+            response = self.api_session.post(
+                "/@recyclebin/nonexistent/restore", json={}
+            )
 
         self.assertEqual(404, response.status_code)
         self.assertEqual("NotFound", response.json()["error"]["type"])
