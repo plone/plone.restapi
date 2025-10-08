@@ -418,3 +418,177 @@ class TestRecycleBin(unittest.TestCase):
         self.assertEqual("success", result["status"])
         self.assertEqual(2, result["purged_count"])
         self.assertEqual("Purged 2 expired items from recycle bin", result["message"])
+
+    def test_recyclebin_get_pagination(self):
+        """Test GET /@recyclebin with pagination parameters"""
+        sample_date = datetime(2023, 1, 1, 12, 0, 0)
+        # Create 30 mock items to test pagination
+        mock_items = []
+        for i in range(30):
+            mock_items.append(
+                {
+                    "id": f"document{i}",
+                    "title": f"Test Document {i}",
+                    "type": "Document",
+                    "path": f"/plone/document{i}",
+                    "parent_path": "/plone",
+                    "deletion_date": sample_date,
+                    "size": 1024 + i,
+                    "recycle_id": f"12345678{i:02d}",
+                }
+            )
+
+        recycle_bin = mock.Mock()
+        recycle_bin.is_enabled.return_value = True
+        recycle_bin.get_items.return_value = mock_items
+
+        with mock.patch(
+            "plone.restapi.services.recyclebin.get.getUtility", return_value=recycle_bin
+        ):
+            # Test first page with default batch size (25)
+            response = self.api_session.get("/@recyclebin")
+
+        self.assertEqual(200, response.status_code)
+        result = response.json()
+        self.assertEqual(30, result["items_total"])
+        self.assertEqual(25, len(result["items"]))  # Default batch size
+        self.assertIn("batching", result)
+
+        with mock.patch(
+            "plone.restapi.services.recyclebin.get.getUtility", return_value=recycle_bin
+        ):
+            # Test with custom batch size
+            response = self.api_session.get("/@recyclebin?b_size=10&b_start=0")
+
+        self.assertEqual(200, response.status_code)
+        result = response.json()
+        self.assertEqual(30, result["items_total"])
+        self.assertEqual(10, len(result["items"]))
+        self.assertIn("batching", result)
+
+    def test_recyclebin_get_filtering_by_type(self):
+        """Test GET /@recyclebin with content type filtering"""
+        sample_date = datetime(2023, 1, 1, 12, 0, 0)
+        mock_items = [
+            {
+                "id": "document1",
+                "title": "Test Document",
+                "type": "Document",
+                "path": "/plone/document1",
+                "parent_path": "/plone",
+                "deletion_date": sample_date,
+                "size": 1024,
+                "recycle_id": "123456789",
+            },
+            {
+                "id": "folder1",
+                "title": "Test Folder",
+                "type": "Folder",
+                "path": "/plone/folder1",
+                "parent_path": "/plone",
+                "deletion_date": sample_date,
+                "size": 512,
+                "recycle_id": "987654321",
+            },
+        ]
+
+        recycle_bin = mock.Mock()
+        recycle_bin.is_enabled.return_value = True
+        recycle_bin.get_items.return_value = mock_items
+
+        with mock.patch(
+            "plone.restapi.services.recyclebin.get.getUtility", return_value=recycle_bin
+        ):
+            # Filter by Document type
+            response = self.api_session.get("/@recyclebin?filter_type=Document")
+
+        self.assertEqual(200, response.status_code)
+        result = response.json()
+        self.assertEqual(1, result["items_total"])
+        self.assertEqual(1, len(result["items"]))
+        self.assertEqual("Document", result["items"][0]["type"])
+
+    def test_recyclebin_get_search_query(self):
+        """Test GET /@recyclebin with search query"""
+        sample_date = datetime(2023, 1, 1, 12, 0, 0)
+        mock_items = [
+            {
+                "id": "important-doc",
+                "title": "Important Document",
+                "type": "Document",
+                "path": "/plone/important-doc",
+                "parent_path": "/plone",
+                "deletion_date": sample_date,
+                "size": 1024,
+                "recycle_id": "123456789",
+            },
+            {
+                "id": "test-folder",
+                "title": "Test Folder",
+                "type": "Folder",
+                "path": "/plone/test-folder",
+                "parent_path": "/plone",
+                "deletion_date": sample_date,
+                "size": 512,
+                "recycle_id": "987654321",
+            },
+        ]
+
+        recycle_bin = mock.Mock()
+        recycle_bin.is_enabled.return_value = True
+        recycle_bin.get_items.return_value = mock_items
+
+        with mock.patch(
+            "plone.restapi.services.recyclebin.get.getUtility", return_value=recycle_bin
+        ):
+            # Search for "important"
+            response = self.api_session.get("/@recyclebin?search_query=important")
+
+        self.assertEqual(200, response.status_code)
+        result = response.json()
+        self.assertEqual(1, result["items_total"])
+        self.assertEqual(1, len(result["items"]))
+        self.assertEqual("Important Document", result["items"][0]["title"])
+
+    def test_recyclebin_get_sorting(self):
+        """Test GET /@recyclebin with sorting parameters"""
+        sample_date1 = datetime(2023, 1, 1, 12, 0, 0)
+        sample_date2 = datetime(2023, 1, 2, 12, 0, 0)
+        mock_items = [
+            {
+                "id": "document1",
+                "title": "B Document",
+                "type": "Document",
+                "path": "/plone/document1",
+                "parent_path": "/plone",
+                "deletion_date": sample_date1,
+                "size": 1024,
+                "recycle_id": "123456789",
+            },
+            {
+                "id": "document2",
+                "title": "A Document",
+                "type": "Document",
+                "path": "/plone/document2",
+                "parent_path": "/plone",
+                "deletion_date": sample_date2,
+                "size": 512,
+                "recycle_id": "987654321",
+            },
+        ]
+
+        recycle_bin = mock.Mock()
+        recycle_bin.is_enabled.return_value = True
+        recycle_bin.get_items.return_value = mock_items
+
+        with mock.patch(
+            "plone.restapi.services.recyclebin.get.getUtility", return_value=recycle_bin
+        ):
+            # Sort by title ascending
+            response = self.api_session.get("/@recyclebin?sort_by=title_asc")
+
+        self.assertEqual(200, response.status_code)
+        result = response.json()
+        self.assertEqual(2, result["items_total"])
+        self.assertEqual("A Document", result["items"][0]["title"])
+        self.assertEqual("B Document", result["items"][1]["title"])
