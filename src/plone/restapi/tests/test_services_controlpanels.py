@@ -93,7 +93,9 @@ class TestControlpanelsEndpoint(unittest.TestCase):
             response = self.api_session.get(item["@id"])
 
             # store the outputted data
-            response = self.api_session.patch(item["@id"], json=response.json()["data"])
+            response = self.api_session.patch(
+                item["@id"], json=response.json().get("data", {})
+            )
             self.assertEqual(
                 204,
                 response.status_code,

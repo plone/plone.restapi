@@ -57,6 +57,10 @@ class TestServicesNavroot(unittest.TestCase):
             portal_state.navigation_root_title(),
         )
         self.assertEqual(response.json()["@id"], self.portal_url + "/@navroot")
+        # Some fields should be absent for performance reasons
+        self.assertNotIn("@components", response.json()["navroot"])
+        self.assertNotIn("@items", response.json()["navroot"])
+        self.assertNotIn("@items_total", response.json()["navroot"])
 
     def test_get_navroot_non_multilingual_navigation_root(self):
         """test that the navroot is computed correctly when a section
@@ -259,3 +263,51 @@ class TestServicesNavrootMultilingual(unittest.TestCase):
             response.json()["navroot"]["@id"],
             portal_state.navigation_root_url(),
         )
+
+    def test_get_navroot_works_with_simple_serializers(self):
+        """This test ensures that even simple serializers (without any kwargs
+        in their call method) still work, even though @navroot tries to make
+        use of kwargs.
+        """
+
+        # region: boiler-plate code for installing a new adapter
+        from plone.restapi.bbb import IPloneSiteRoot
+        from plone.restapi.interfaces import ISerializeToJson
+        from plone.restapi.serializer.site import SerializeSiteRootToJson
+        from plone.restapi.tests.test_dxcontent_serializer import AdapterCM
+        from zope.interface import Interface
+
+        class MySerializer(SerializeSiteRootToJson):
+            CALLED = False
+
+            def __call__(self):
+                MySerializer.CALLED = True
+                return super().__call__()
+
+        # endregion
+
+        with AdapterCM(
+            MySerializer,
+            (
+                IPloneSiteRoot,
+                Interface,
+            ),
+            ISerializeToJson,
+        ):
+            response = self.api_session.get(
+                "/@navroot",
+            )
+
+        self.assertTrue(MySerializer.CALLED)
+
+        self.assertEqual(response.status_code, 200)
+        portal_state = getMultiAdapter(
+            (self.portal, self.layer["request"]), name="plone_portal_state"
+        )
+
+        self.assertIn("navroot", response.json())
+        self.assertEqual(
+            response.json()["navroot"]["title"],
+            portal_state.navigation_root_title(),
+        )
+        self.assertEqual(response.json()["@id"], self.portal_url + "/@navroot")

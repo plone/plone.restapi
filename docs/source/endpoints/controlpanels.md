@@ -127,8 +127,6 @@ The following fields are returned:
 - `@id`: hypermedia link to the control panel
 - `title`: title of the control panel
 - `group`: group name of the control panel
-- `schema`: JSON Schema of the control panel
-- `data`: current values of the control panel
 - `items`: list of configurable content types
 
 
