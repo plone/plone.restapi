@@ -3,10 +3,23 @@ from plone.base.interfaces.recyclebin import IRecycleBin
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.services import Service
 from zope.component import getUtility
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
 
 
+@implementer(IPublishTraverse)
 class RecycleBinGet(Service):
-    """GET /@recyclebin - List items in the recycle bin"""
+    """GET /@recyclebin - List items in the recycle bin
+    GET /@recyclebin/{item_id} - Get a specific item from the recycle bin"""
+
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
+
+    def publishTraverse(self, request, name):
+        # Consume any path segments after /@recyclebin as parameters
+        self.params.append(name)
+        return self
 
     def reply(self):
         recycle_bin = getUtility(IRecycleBin)
@@ -21,6 +34,85 @@ class RecycleBinGet(Service):
                 }
             }
 
+        # If we have a parameter, handle individual item request
+        if self.params:
+            return self._reply_individual_item(recycle_bin)
+
+        # Otherwise, handle listing request
+        return self._reply_listing(recycle_bin)
+
+    def _reply_individual_item(self, recycle_bin):
+        """Handle GET /@recyclebin/{item_id} - Get a specific item"""
+        if len(self.params) != 1:
+            self.request.response.setStatus(400)
+            return {
+                "error": {
+                    "type": "BadRequest",
+                    "message": "Invalid URL pattern. Expected: /@recyclebin/{item_id}",
+                }
+            }
+
+        item_id = self.params[0]
+        
+        # Get the specific item from recycle bin
+        item = recycle_bin.get_item(item_id)
+        
+        if item is None:
+            self.request.response.setStatus(404)
+            return {
+                "error": {
+                    "type": "NotFound",
+                    "message": f"Item with ID '{item_id}' not found in recycle bin",
+                }
+            }
+
+        # Convert to serializable format with detailed information
+        serialized_item = {
+            "@id": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}",
+            "id": item["id"],
+            "title": item["title"],
+            "type": item["type"],
+            "path": item["path"],
+            "parent_path": item["parent_path"],
+            "deletion_date": item["deletion_date"].isoformat(),
+            "size": item["size"],
+            "recycle_id": item["recycle_id"],
+            "deleted_by": item.get("deleted_by", ""),
+            "language": item.get("language", ""),
+            "workflow_state": item.get("workflow_state", ""),
+            "description": item.get("description", ""),
+            "creator": item.get("creator", ""),
+            "created": item.get("created", "").isoformat() if item.get("created") else "",
+            "modified": item.get("modified", "").isoformat() if item.get("modified") else "",
+            "effective": item.get("effective", "").isoformat() if item.get("effective") else "",
+            "expires": item.get("expires", "").isoformat() if item.get("expires") else "",
+            "has_children": "children" in item and len(item["children"]) > 0,
+            "children_count": len(item.get("children", [])),
+            "actions": {
+                "restore": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}/restore",
+                "purge": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}",
+            }
+        }
+
+        # Add children information if present
+        if "children" in item and item["children"]:
+            children = []
+            for child in item["children"]:
+                child_info = {
+                    "id": child["id"],
+                    "title": child["title"],
+                    "type": child["type"],
+                    "path": child["path"],
+                    "size": child["size"],
+                    "recycle_id": child["recycle_id"],
+                }
+                children.append(child_info)
+            serialized_item["children"] = children
+
+        return serialized_item
+
+    def _reply_listing(self, recycle_bin):
+        """Handle GET /@recyclebin - List items in the recycle bin"""
         # Get all items from recycle bin
         all_items = recycle_bin.get_items()
 
