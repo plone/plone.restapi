@@ -1,23 +1,30 @@
 from plone.base.interfaces.recyclebin import IRecycleBin
-from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from zope.component import getUtility
 from zope.interface import alsoProvides
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect.interfaces
 
 
+@implementer(IPublishTraverse)
 class RecycleBinPurge(Service):
-    """POST /@recyclebin-purge - Permanently delete an item from the recycle bin"""
+    """DELETE /@recyclebin/{item_id} - Permanently delete an item from the recycle bin
+    DELETE /@recyclebin - Empty the entire recycle bin"""
+
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
+
+    def publishTraverse(self, request, name):
+        # Consume any path segments after /@recyclebin as parameters
+        self.params.append(name)
+        return self
 
     def reply(self):
         # Disable CSRF protection for this request
         alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
-
-        data = json_body(self.request)
-        item_id = data.get("item_id", None)
-        purge_all = data.get("purge_all", False)
-        purge_expired = data.get("purge_expired", False)
 
         recycle_bin = getUtility(IRecycleBin)
 
@@ -31,39 +38,27 @@ class RecycleBinPurge(Service):
                 }
             }
 
-        # Handle purging all items
-        if purge_all:
-            purged_count = 0
-            for item in recycle_bin.get_items():
-                if recycle_bin.purge_item(item["recycle_id"]):
-                    purged_count += 1
+        # Handle different cases based on path parameters
+        if len(self.params) == 0:
+            # DELETE /@recyclebin - Empty the entire recycle bin
+            recycle_bin.clear()
 
-            return {
-                "status": "success",
-                "purged_count": purged_count,
-                "message": f"Purged {purged_count} items from recycle bin",
-            }
-
-        # Handle purging expired items
-        if purge_expired:
-            purged_count = recycle_bin.purge_expired_items()
-
-            return {
-                "status": "success",
-                "purged_count": purged_count,
-                "message": f"Purged {purged_count} expired items from recycle bin",
-            }
-
-        # Handle purging a specific item
-        if not item_id:
+            # Return 204 No Content for successful DELETE as per REST conventions
+            return self.reply_no_content()
+        elif len(self.params) == 1:
+            # DELETE /@recyclebin/{item_id} - Delete specific item
+            return self._purge_single_item(recycle_bin, self.params[0])
+        else:
             self.request.response.setStatus(400)
             return {
                 "error": {
                     "type": "BadRequest",
-                    "message": "Missing required parameter: item_id, purge_all, or purge_expired",
+                    "message": "Invalid path parameters",
                 }
             }
 
+    def _purge_single_item(self, recycle_bin, item_id):
+        """Purge a single item from the recycle bin"""
         # Get the item to purge
         item_data = recycle_bin.get_item(item_id)
         if not item_data:
@@ -87,7 +82,5 @@ class RecycleBinPurge(Service):
                 }
             }
 
-        return {
-            "status": "success",
-            "message": f"Item {item_data['id']} purged successfully",
-        }
+        # Return 204 No Content for successful DELETE as per REST conventions
+        return self.reply_no_content()

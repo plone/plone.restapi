@@ -50,7 +50,7 @@ class RecycleBinGet(Service):
                     "has_children": "children" in item and len(item["children"]) > 0,
                     "actions": {
                         "restore": f"{self.context.absolute_url()}/@recyclebin-restore",
-                        "purge": f"{self.context.absolute_url()}/@recyclebin-purge",
+                        "purge": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}",
                     },
                 }
             )

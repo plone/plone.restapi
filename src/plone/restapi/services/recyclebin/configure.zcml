@@ -31,11 +31,11 @@
       />
 
   <plone:service
-      method="POST"
+      method="DELETE"
       factory=".purge.RecycleBinPurge"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="cmf.ManagePortal"
-      name="@recyclebin-purge"
+      name="@recyclebin"
       />
 
 </configure>

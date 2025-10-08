@@ -120,7 +120,8 @@ class TestRecycleBin(unittest.TestCase):
             item1["actions"]["restore"],
         )
         self.assertEqual(
-            self.portal.absolute_url() + "/@recyclebin-purge", item1["actions"]["purge"]
+            self.portal.absolute_url() + "/@recyclebin/123456789",
+            item1["actions"]["purge"],
         )
 
     # RESTORE tests (from TestRecycleBinRestore)
@@ -268,12 +269,19 @@ class TestRecycleBin(unittest.TestCase):
     # PURGE tests (from TestRecycleBinPurge)
     def test_purge_missing_parameters(self):
         """Test purge with missing parameters"""
-        response = self.api_session.post("/@recyclebin-purge", json={})
+        recycle_bin = mock.Mock()
+        recycle_bin.is_enabled.return_value = True
+
+        with mock.patch(
+            "plone.restapi.services.recyclebin.purge_bulk.getUtility",
+            return_value=recycle_bin,
+        ):
+            response = self.api_session.post("/@recyclebin-purge", json={})
 
         self.assertEqual(400, response.status_code)
         self.assertEqual("BadRequest", response.json()["error"]["type"])
         self.assertEqual(
-            "Missing required parameter: item_id, purge_all, or purge_expired",
+            "Missing required parameter: purge_all or purge_expired",
             response.json()["error"]["message"],
         )
 
@@ -286,9 +294,7 @@ class TestRecycleBin(unittest.TestCase):
             "plone.restapi.services.recyclebin.purge.getUtility",
             return_value=recycle_bin,
         ):
-            response = self.api_session.post(
-                "/@recyclebin-purge", json={"item_id": "123456789"}
-            )
+            response = self.api_session.delete("/@recyclebin/123456789")
 
         self.assertEqual(404, response.status_code)
         self.assertEqual("NotFound", response.json()["error"]["type"])
@@ -304,9 +310,7 @@ class TestRecycleBin(unittest.TestCase):
             "plone.restapi.services.recyclebin.purge.getUtility",
             return_value=recycle_bin,
         ):
-            response = self.api_session.post(
-                "/@recyclebin-purge", json={"item_id": "nonexistent"}
-            )
+            response = self.api_session.delete("/@recyclebin/nonexistent")
 
         self.assertEqual(404, response.status_code)
         self.assertEqual("NotFound", response.json()["error"]["type"])
@@ -332,9 +336,7 @@ class TestRecycleBin(unittest.TestCase):
             "plone.restapi.services.recyclebin.purge.getUtility",
             return_value=recycle_bin,
         ):
-            response = self.api_session.post(
-                "/@recyclebin-purge", json={"item_id": "123456789"}
-            )
+            response = self.api_session.delete("/@recyclebin/123456789")
 
         self.assertEqual(500, response.status_code)
         self.assertEqual("InternalServerError", response.json()["error"]["type"])
@@ -357,14 +359,9 @@ class TestRecycleBin(unittest.TestCase):
             "plone.restapi.services.recyclebin.purge.getUtility",
             return_value=recycle_bin,
         ):
-            response = self.api_session.post(
-                "/@recyclebin-purge", json={"item_id": "123456789"}
-            )
+            response = self.api_session.delete("/@recyclebin/123456789")
 
-        self.assertEqual(200, response.status_code)
-        result = response.json()
-        self.assertEqual("success", result["status"])
-        self.assertEqual("Item document1 purged successfully", result["message"])
+        self.assertEqual(204, response.status_code)  # No Content for successful DELETE
 
     def test_purge_all(self):
         """Test purging all items"""
@@ -381,7 +378,7 @@ class TestRecycleBin(unittest.TestCase):
         recycle_bin.purge_item.return_value = True
 
         with mock.patch(
-            "plone.restapi.services.recyclebin.purge.getUtility",
+            "plone.restapi.services.recyclebin.purge_bulk.getUtility",
             return_value=recycle_bin,
         ):
             response = self.api_session.post(
@@ -402,11 +399,11 @@ class TestRecycleBin(unittest.TestCase):
         """Test purging expired items"""
         recycle_bin = mock.Mock()
         recycle_bin.is_enabled.return_value = True
-        # Configure purge_expired_items to return the number of purged items
-        recycle_bin.purge_expired_items.return_value = 2
+        # Configure _purge_expired_items to return the number of purged items
+        recycle_bin._purge_expired_items.return_value = 2
 
         with mock.patch(
-            "plone.restapi.services.recyclebin.purge.getUtility",
+            "plone.restapi.services.recyclebin.purge_bulk.getUtility",
             return_value=recycle_bin,
         ):
             response = self.api_session.post(
@@ -418,6 +415,36 @@ class TestRecycleBin(unittest.TestCase):
         self.assertEqual("success", result["status"])
         self.assertEqual(2, result["purged_count"])
         self.assertEqual("Purged 2 expired items from recycle bin", result["message"])
+
+    def test_empty_recyclebin_disabled(self):
+        """Test DELETE /@recyclebin when recycle bin is disabled"""
+        recycle_bin = mock.Mock()
+        recycle_bin.is_enabled.return_value = False
+
+        with mock.patch(
+            "plone.restapi.services.recyclebin.purge.getUtility",
+            return_value=recycle_bin,
+        ):
+            response = self.api_session.delete("/@recyclebin")
+
+        self.assertEqual(404, response.status_code)
+        self.assertEqual("NotFound", response.json()["error"]["type"])
+        self.assertEqual("Recycle bin is disabled", response.json()["error"]["message"])
+
+    def test_empty_recyclebin_success(self):
+        """Test DELETE /@recyclebin successfully empties the recycle bin using clear()"""
+        recycle_bin = mock.Mock()
+        recycle_bin.is_enabled.return_value = True
+
+        with mock.patch(
+            "plone.restapi.services.recyclebin.purge.getUtility",
+            return_value=recycle_bin,
+        ):
+            response = self.api_session.delete("/@recyclebin")
+
+        self.assertEqual(204, response.status_code)
+        # Verify that clear() was called instead of individual purge operations
+        recycle_bin.clear.assert_called_once()
 
     def test_recyclebin_get_pagination(self):
         """Test GET /@recyclebin with pagination parameters"""
