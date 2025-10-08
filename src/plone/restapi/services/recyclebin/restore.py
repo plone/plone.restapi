@@ -3,30 +3,48 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from zope.component import getUtility
 from zope.interface import alsoProvides
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect.interfaces
 
 
+@implementer(IPublishTraverse)
 class RecycleBinRestore(Service):
-    """POST /@recyclebin-restore - Restore an item from the recycle bin"""
+    """POST /@recyclebin/{item_id}/restore - Restore an item from the recycle bin"""
 
     def __init__(self, context, request):
         super().__init__(context, request)
-        self.params = {}
+        self.params = []
+
+    def publishTraverse(self, request, name):
+        # Consume any path segments after /@recyclebin as parameters
+        self.params.append(name)
+        return self
 
     def reply(self):
         # Disable CSRF protection for this request
         alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
-        data = json_body(self.request)
-        item_id = data.get("item_id", None)
-
-        if not item_id:
+        # Validate URL pattern: /@recyclebin/{item_id}/restore
+        if len(self.params) != 2:
             self.request.response.setStatus(400)
             return {
                 "error": {
                     "type": "BadRequest",
-                    "message": "Missing required parameter: item_id",
+                    "message": "Invalid URL pattern. Expected: /@recyclebin/{item_id}/restore",
+                }
+            }
+
+        item_id = self.params[0]
+        action = self.params[1]
+
+        if action != "restore":
+            self.request.response.setStatus(400)
+            return {
+                "error": {
+                    "type": "BadRequest",
+                    "message": "Invalid action. Expected: restore",
                 }
             }
 
@@ -53,8 +71,9 @@ class RecycleBinRestore(Service):
                 }
             }
 
-        # Get optional target container path
-        target_path = data.get("target_path", None)
+        # Get optional target container path from request body
+        data = json_body(self.request)
+        target_path = data.get("target_path", None) if data else None
         target_container = None
 
         if target_path:

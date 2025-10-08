@@ -27,7 +27,7 @@
       factory=".restore.RecycleBinRestore"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="cmf.ManagePortal"
-      name="@recyclebin-restore"
+      name="@recyclebin"
       />
 
   <plone:service

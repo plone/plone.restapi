@@ -116,7 +116,7 @@ class TestRecycleBin(unittest.TestCase):
 
         # Verify actions
         self.assertEqual(
-            self.portal.absolute_url() + "/@recyclebin-restore",
+            self.portal.absolute_url() + "/@recyclebin/123456789/restore",
             item1["actions"]["restore"],
         )
         self.assertEqual(
@@ -125,14 +125,24 @@ class TestRecycleBin(unittest.TestCase):
         )
 
     # RESTORE tests (from TestRecycleBinRestore)
-    def test_restore_missing_item_id(self):
-        """Test restore with missing item_id parameter"""
-        response = self.api_session.post("/@recyclebin-restore", json={})
-
+    def test_restore_invalid_url_pattern(self):
+        """Test restore with invalid URL pattern"""
+        # Test with no parameters
+        response = self.api_session.post("/@recyclebin", json={})
         self.assertEqual(400, response.status_code)
         self.assertEqual("BadRequest", response.json()["error"]["type"])
         self.assertEqual(
-            "Missing required parameter: item_id", response.json()["error"]["message"]
+            "Invalid URL pattern. Expected: /@recyclebin/{item_id}/restore", 
+            response.json()["error"]["message"]
+        )
+        
+        # Test with wrong action
+        response = self.api_session.post("/@recyclebin/123456789/delete", json={})
+        self.assertEqual(400, response.status_code)
+        self.assertEqual("BadRequest", response.json()["error"]["type"])
+        self.assertEqual(
+            "Invalid action. Expected: restore", 
+            response.json()["error"]["message"]
         )
 
     def test_restore_disabled_recyclebin(self):
@@ -144,9 +154,7 @@ class TestRecycleBin(unittest.TestCase):
             "plone.restapi.services.recyclebin.restore.getUtility",
             return_value=recycle_bin,
         ):
-            response = self.api_session.post(
-                "/@recyclebin-restore", json={"item_id": "123456789"}
-            )
+            response = self.api_session.post("/@recyclebin/123456789/restore", json={})
 
         self.assertEqual(404, response.status_code)
         self.assertEqual("NotFound", response.json()["error"]["type"])
@@ -162,9 +170,7 @@ class TestRecycleBin(unittest.TestCase):
             "plone.restapi.services.recyclebin.restore.getUtility",
             return_value=recycle_bin,
         ):
-            response = self.api_session.post(
-                "/@recyclebin-restore", json={"item_id": "nonexistent"}
-            )
+            response = self.api_session.post("/@recyclebin/nonexistent/restore", json={})
 
         self.assertEqual(404, response.status_code)
         self.assertEqual("NotFound", response.json()["error"]["type"])
@@ -190,8 +196,8 @@ class TestRecycleBin(unittest.TestCase):
             return_value=recycle_bin,
         ):
             response = self.api_session.post(
-                "/@recyclebin-restore",
-                json={"item_id": "123456789", "target_path": "/non/existent/path"},
+                "/@recyclebin/123456789/restore",
+                json={"target_path": "/non/existent/path"},
             )
 
         self.assertEqual(400, response.status_code)
@@ -218,9 +224,7 @@ class TestRecycleBin(unittest.TestCase):
             "plone.restapi.services.recyclebin.restore.getUtility",
             return_value=recycle_bin,
         ):
-            response = self.api_session.post(
-                "/@recyclebin-restore", json={"item_id": "123456789"}
-            )
+            response = self.api_session.post("/@recyclebin/123456789/restore", json={})
 
         self.assertEqual(500, response.status_code)
         self.assertEqual("InternalServerError", response.json()["error"]["type"])
@@ -250,9 +254,7 @@ class TestRecycleBin(unittest.TestCase):
             "plone.restapi.services.recyclebin.restore.getUtility",
             return_value=recycle_bin,
         ):
-            response = self.api_session.post(
-                "/@recyclebin-restore", json={"item_id": "123456789"}
-            )
+            response = self.api_session.post("/@recyclebin/123456789/restore", json={})
 
         self.assertEqual(200, response.status_code)
         result = response.json()

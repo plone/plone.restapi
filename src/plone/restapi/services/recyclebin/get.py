@@ -49,7 +49,7 @@ class RecycleBinGet(Service):
                     "workflow_state": item.get("workflow_state", ""),
                     "has_children": "children" in item and len(item["children"]) > 0,
                     "actions": {
-                        "restore": f"{self.context.absolute_url()}/@recyclebin-restore",
+                        "restore": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}/restore",
                         "purge": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}",
                     },
                 }

@@ -28,8 +28,8 @@ Response:
       "size": 1024,
       "recycle_id": "6d6d626f-8c85-4f22-8747-adb979bbe3b1",
       "actions": {
-        "restore": "http://localhost:8080/Plone/@recyclebin-restore",
-        "purge": "http://localhost:8080/Plone/@recyclebin-purge"
+        "restore": "http://localhost:8080/Plone/@recyclebin/6d6d626f-8c85-4f22-8747-adb979bbe3b1/restore",
+        "purge": "http://localhost:8080/Plone/@recyclebin/6d6d626f-8c85-4f22-8747-adb979bbe3b1"
       }
     }
   ],
@@ -39,23 +39,18 @@ Response:
 
 ## Restore an item from the recycle bin
 
-To restore an item from the recycle bin, send a POST request to the `@recyclebin-restore` endpoint:
+To restore an item from the recycle bin, send a POST request to the `@recyclebin/{item_id}/restore` endpoint:
 
 ```http-example
-POST /@recyclebin-restore HTTP/1.1
+POST /@recyclebin/6d6d626f-8c85-4f22-8747-adb979bbe3b1/restore HTTP/1.1
 Accept: application/json
 Content-Type: application/json
-
-{
-  "item_id": "6d6d626f-8c85-4f22-8747-adb979bbe3b1"
-}
 ```
 
-You can optionally specify a target path to restore to:
+You can optionally specify a target path to restore to by including it in the request body:
 
 ```json
 {
-  "item_id": "6d6d626f-8c85-4f22-8747-adb979bbe3b1",
   "target_path": "/Plone/another-folder"
 }
 ```
