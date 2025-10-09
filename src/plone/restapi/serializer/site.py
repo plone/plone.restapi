@@ -65,8 +65,6 @@ class SerializeSiteRootToJson:
 
         if HAS_PLONE_6:
             result["UID"] = self.context.UID()
-            result["layout"] = self.context.getLayout()
-
             # Insert review_state
             wf = getToolByName(self.context, "portal_workflow")
             result["review_state"] = wf.getInfoFor(
