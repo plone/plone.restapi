@@ -109,6 +109,45 @@ Image URLs are created using the UID-based URL that changes each time the image 
 }
 ```
 
+### Upload using multipart/form-data
+
+It’s possible to upload a file or image using multipart/form-data.
+In the form, the field data must be present and should contain the JSON data for the REST API request.
+Other binary files are referenced by an ID in the data attribute of the corresponding file or image field.
+
+Example:
+
+```
+POST /++api++/folder1 HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="data"
+Content-Type: application/json
+
+{
+  "@type": "File",
+  "title": "My file",
+  "file": {
+    "data": "attachment_002",
+  },
+  "leadimage": {
+    "data": "attachment_001",
+  }
+}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="attachment_001"; filename="profile.jpg"
+Content-Type: image/jpeg
+
+[Binary data of the JPEG file]
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="atttachment_02"; filename="docuument.docx"
+Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+
+[Binary data of the Word document]
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+```
+
 ### Upload (deserialization)
 
 For file or image fields, the client must provide the file's data as a mapping containing the file data and some additional metadata:

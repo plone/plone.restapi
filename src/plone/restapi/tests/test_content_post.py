@@ -14,9 +14,11 @@ from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
+import json
 import requests
 import transaction
 import unittest
+import uuid
 
 
 class TestFolderCreate(unittest.TestCase):
@@ -138,6 +140,33 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(201, response.status_code)
         transaction.begin()
         self.assertIn("test.txt", self.portal.folder1)
+
+    def test_post_with_multipart(self):
+        multipart_ref = uuid.uuid4().hex
+        response = requests.post(
+            f"{self.portal.absolute_url()}/++api++/folder1",
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            files={
+                "data": json.dumps(
+                    {
+                        "@type": "File",
+                        "title": "My File",
+                        "file": {
+                            "data": multipart_ref,
+                        },
+                    }
+                ),
+                multipart_ref: (
+                    "test.txt",
+                    "Spam and Eggs",
+                    "text/plain",
+                ),
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        self.assertIn("test.txt", self.portal.folder1)
+        self.assertEqual(self.portal.folder1["test.txt"].file.data, b"Spam and Eggs")
 
     def test_post_with_id_already_in_use_returns_400(self):
         self.portal.folder1.invokeFactory("Document", "mydocument")
