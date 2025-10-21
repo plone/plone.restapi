@@ -5,6 +5,11 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     >
 
+  <adapter
+      factory=".get.Site"
+      name="site"
+      />
+
   <plone:service
       method="GET"
       factory=".get.SiteGet"
