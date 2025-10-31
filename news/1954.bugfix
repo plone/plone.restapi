@@ -1,0 +1,1 @@
+Fix search handler remove/ignore sort_order if present. @mamico
