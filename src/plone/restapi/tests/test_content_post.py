@@ -141,10 +141,38 @@ class TestFolderCreate(unittest.TestCase):
         transaction.begin()
         self.assertIn("test.txt", self.portal.folder1)
 
-    def test_post_with_multipart(self):
+    def test_post_with_multipart_path_dispatcher(self):
         multipart_ref = uuid.uuid4().hex
         response = requests.post(
             f"{self.portal.absolute_url()}/++api++/folder1",
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            files={
+                "data": json.dumps(
+                    {
+                        "@type": "File",
+                        "title": "My File",
+                        "file": {
+                            "data": multipart_ref,
+                        },
+                    }
+                ),
+                multipart_ref: (
+                    "test.txt",
+                    "Spam and Eggs",
+                    "text/plain",
+                ),
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        self.assertIn("test.txt", self.portal.folder1)
+        self.assertEqual(self.portal.folder1["test.txt"].file.data, b"Spam and Eggs")
+
+    def test_post_with_multipart_accept_header_dispatcher(self):
+        multipart_ref = uuid.uuid4().hex
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
             files={
                 "data": json.dumps(
