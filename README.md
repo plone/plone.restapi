@@ -51,7 +51,9 @@ If it is not installed, add it using requirements.txt or as a dependency of anot
 
 # Python / Plone Compatibility
 
-plone.restapi 10 requires Python 3 and works with Plone 6.2 and Plone 5.2.
+plone.restapi 10 requires Python 3 and works with Plone 6.2.
+This version stopped using `pkg_resources` for the `plone` namespace.
+It might be possible to use plone.restapi 10 with an older version of Plone, but if you install it as an editable package you have to use [horse-with-no-namespace](https://pypi.org/project/horse-with-no-namespace/).
 
 plone.restapi 9 requires Python 3 and works with Plone 5.2, Plone 6.1, and Plone 6.0.
 
