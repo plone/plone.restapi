@@ -1,4 +1,3 @@
-from setuptools import find_packages
 from setuptools import setup
 
 import pathlib
@@ -48,15 +47,11 @@ setup(
         "Environment :: Web Environment",
         "Framework :: Plone",
         "Framework :: Plone :: 5.2",
-        "Framework :: Plone :: 6.0",
-        "Framework :: Plone :: 6.1",
         # "Framework :: Plone :: 6.2",
         "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
@@ -68,14 +63,10 @@ setup(
     author_email="tisto@plone.org",
     url="https://github.com/plone/plone.restapi/",
     license="gpl",
-    packages=find_packages("src"),
-    package_dir={"": "src"},
-    namespace_packages=["plone"],
-    python_requires=">=3.8",
+    python_requires=">=3.10",
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        "setuptools",
         "packaging",
         "python-dateutil",
         "plone.rest",  # json renderer moved to plone.restapi
