@@ -1,17 +1,9 @@
 from setuptools import setup
 
 import pathlib
-import sys
 
 
 version = "10.0.0.dev0"
-
-if sys.version_info.major == 2:
-    raise ValueError(
-        "plone.restapi 10 requires Python 3. "
-        "Please downgrade to plone.restapi 7 for Python 2 and Plone 4.3/5.1."
-    )
-
 
 long_description = "\n".join(
     [
@@ -47,11 +39,13 @@ setup(
         "Environment :: Web Environment",
         "Framework :: Plone",
         "Framework :: Plone :: 5.2",
-        # "Framework :: Plone :: 6.2",
+        "Framework :: Plone :: 6.2",
         "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
@@ -63,7 +57,7 @@ setup(
     author_email="tisto@plone.org",
     url="https://github.com/plone/plone.restapi/",
     license="gpl",
-    python_requires=">=3.10",
+    python_requires=">=3.8",
     include_package_data=True,
     zip_safe=False,
     install_requires=[
