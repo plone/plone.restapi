@@ -51,13 +51,12 @@ If it is not installed, add it using requirements.txt or as a dependency of anot
 
 # Python / Plone Compatibility
 
-plone.restapi 9 requires Python 3 and works with Plone 5.2 and Plone
-6.x.
+plone.restapi 10 requires Python 3 and works with Plone 6.2, 6.1, 6.0, and 5.2.
 
-plone.restapi 8 entered "maintenance" mode with the release of
-plone.restapi 9 (September 2023). It is not planned to backport any
+plone.restapi 9 entered "maintenance" mode with the release of
+plone.restapi 10 (end of 2025). It is not planned to backport any
 features to this version and we highly recommend to upgrade to
-plone.restapi 9.
+the latest version of plone.restapi.
 
 Python versions that reached their
 [end-of-life](https://devguide.python.org/versions/), including Python
