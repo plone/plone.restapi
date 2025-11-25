@@ -1,9 +1,16 @@
 from setuptools import setup
 
 import pathlib
+import sys
 
 
 version = "10.0.0.dev0"
+
+if getattr(sys.version_info, "major") == 2:
+    raise ValueError(
+        "plone.restapi 10 requires Python 3. "
+        "Please downgrade to plone.restapi 7 for Python 2 and Plone 4.3/5.1."
+    )
 
 long_description = "\n".join(
     [
@@ -39,6 +46,8 @@ setup(
         "Environment :: Web Environment",
         "Framework :: Plone",
         "Framework :: Plone :: 5.2",
+        "Framework :: Plone :: 6.0",
+        "Framework :: Plone :: 6.1",
         "Framework :: Plone :: 6.2",
         "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
