@@ -175,7 +175,7 @@ The `query` parameter is a list that contains an arbitrary number of `filters`:
 A `filter` always contains three values:
 
 - `ì`: The index of the filter (the name of the field to which this filter is applied).
-- `o`: The operator of the filter. A full list can be found at <https://github.com/plone/plone.app.querystring/blob/master/plone/app/querystring/profiles/default/registry.xml>.
+- `o`: The operator of the filter. A full list can be found at <https://github.com/plone/plone.app.querystring/blob/master/src/plone/app/querystring/profiles/default/registry.xml>.
 - `v`: The value of the filter. This depends highly on the index. For a text index, this is a string. For a date index, this might be a date range.
 
 The following types of filters are available:
