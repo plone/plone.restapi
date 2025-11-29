@@ -19,8 +19,6 @@ jobs:
         - ["ubuntu", "ubuntu-latest"]
         config:
         # [Python version, visual name, tox env]
-        - ["3.13", "6.2 on py3.13", "py313-plone62"]
-        - ["3.10", "6.2 on py3.10", "py310-plone62"]
         - ["3.13", "6.1 on py3.13", "py313-plone61"]
         - ["3.10", "6.1 on py3.10", "py310-plone61"]
         - ["3.9", "6.0 on py3.9", "py39-plone60"]
@@ -31,7 +29,7 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: ${{ matrix.config[1] }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         persist-credentials: false
     - name: Set up Python
@@ -39,6 +37,14 @@ jobs:
       with:
         python-version: ${{ matrix.config[0] }}
         allow-prereleases: true
+
+##
+# Add extra configuration options in .meta.toml:
+#  [github]
+#  extra_lines_after_os_dependencies = """
+#  _your own configuration lines_
+#  """
+##
     - name: Pip cache
       uses: actions/cache@v4
       with:
@@ -58,3 +64,12 @@ jobs:
         if [ `tox list --no-desc -f init|wc -l` = 1 ]; then tox -e init;else true; fi
     - name: Test
       run: tox -e ${{ matrix.config[2] }}
+
+
+##
+# Add extra configuration options in .meta.toml:
+#  [github]
+#  extra_lines = """
+#  _your own configuration lines_
+#  """
+##

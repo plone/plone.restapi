@@ -3,7 +3,7 @@
 # See the inline comments on how to expand/tweak this configuration file
 [meta]
 template = "default"
-commit-id = "2.1.0"
+commit-id = "2.2.3.dev0"
 
 [editorconfig]
 extra_lines = """
