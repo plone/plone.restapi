@@ -1,0 +1,11 @@
+Allow `/@email-send` consumers to disable or override the automatically
+prepended intro text so multipart or preformatted messages keep their
+structure.
+
+
+
+
+
+
+
+
