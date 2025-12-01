@@ -1,6 +1,7 @@
 from plone.registry.interfaces import IRegistry
 from plone.restapi.bbb import get_navigation_root
 from plone.restapi.bbb import ISearchSchema
+from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
@@ -76,7 +77,7 @@ class SearchHandler:
         if query is None:
             query = {}
         if "fullobjects" in query:
-            fullobjects = True
+            fullobjects = boolean_value(query["fullobjects"])
             del query["fullobjects"]
         else:
             fullobjects = False
@@ -84,7 +85,7 @@ class SearchHandler:
         use_site_search_settings = False
 
         if "use_site_search_settings" in query:
-            use_site_search_settings = True
+            use_site_search_settings = boolean_value(query["use_site_search_settings"])
             del query["use_site_search_settings"]
 
         if use_site_search_settings:

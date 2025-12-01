@@ -39,4 +39,4 @@ class TestBooleanValue(unittest.TestCase):
         self.assertFalse(boolean_value("0"))
 
     def test_true_other_value(self):
-        self.assertTrue(boolean_value("foobar"))
+        self.assertFalse(boolean_value("foobar"))

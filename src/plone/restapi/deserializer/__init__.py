@@ -28,7 +28,11 @@ def boolean_value(value):
     Returns: a boolean
 
     """
-    return value not in {False, "false", "False", "0", 0}
+    if isinstance(value, bool):
+        return value
+    if str(value).lower() in ("true", "1"):
+        return True
+    return False
 
 
 def parse_int(data, prop, default):
