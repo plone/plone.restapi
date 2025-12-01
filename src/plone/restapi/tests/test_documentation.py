@@ -1858,6 +1858,115 @@ class TestDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("inherit_expansion", response)
 
+    def setUp_recyclebin(self):
+        """Helper to set up recycle bin for tests"""
+        # Enable recycle bin
+        from plone.base.interfaces.recyclebin import IRecycleBinControlPanelSettings
+        from plone.registry.interfaces import IRegistry
+        from zope.component import getUtility
+
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(
+            IRecycleBinControlPanelSettings, prefix="recyclebin-controlpanel"
+        )
+        settings.recycling_enabled = True
+
+        # Create some content to delete
+        self.portal.invokeFactory("Document", id="document1", title="My Document")
+        self.portal.invokeFactory("Folder", id="folder1", title="My Folder")
+        self.portal["folder1"].invokeFactory(
+            "Document", id="subdoc", title="Sub Document"
+        )
+        transaction.commit()
+
+        # Delete the items to put them in recycle bin
+        self.portal.manage_delObjects(["document1", "folder1"])
+        transaction.commit()
+
+    def test_documentation_recyclebin_get(self):
+        self.setUp_recyclebin()
+
+        # Test getting recycle bin list
+        response = self.api_session.get("/@recyclebin")
+        save_request_and_response_for_docs("recyclebin_get", response)
+
+    def test_documentation_recyclebin_get_filtered(self):
+        self.setUp_recyclebin()
+
+        # This test documents filtering options
+        response = self.api_session.get(
+            "/@recyclebin?filter_type=Document&sort_by=title_asc"
+        )
+        save_request_and_response_for_docs("recyclebin_get_filtered", response)
+
+    def test_documentation_recyclebin_get_item(self):
+        self.setUp_recyclebin()
+
+        # Get the recycle bin to find an item ID
+        response = self.api_session.get("/@recyclebin")
+        data = response.json()
+        if "items" in data and data["items"]:
+            item_id = data["items"][0]["recycle_id"]
+            # Test getting specific item
+            response = self.api_session.get(f"/@recyclebin/{item_id}")
+            save_request_and_response_for_docs("recyclebin_get_item", response)
+
+    def test_documentation_recyclebin_restore(self):
+        self.setUp_recyclebin()
+
+        # Get an item to restore
+        response = self.api_session.get("/@recyclebin")
+        data = response.json()
+        if "items" in data and data["items"]:
+            item_id = data["items"][0]["recycle_id"]
+            # Test restoring item
+            response = self.api_session.post(f"/@recyclebin/{item_id}/restore")
+            save_request_and_response_for_docs("recyclebin_restore", response)
+
+    def test_documentation_recyclebin_restore_target(self):
+        self.setUp_recyclebin()
+
+        # Create a target folder first
+        self.portal.invokeFactory("Folder", id="target_folder", title="Target Folder")
+        transaction.commit()
+
+        # Create and delete another document for this test
+        self.portal.invokeFactory("Document", id="document2", title="Another Document")
+        transaction.commit()
+        self.portal.manage_delObjects(["document2"])
+        transaction.commit()
+
+        # Get an item to restore
+        response = self.api_session.get("/@recyclebin")
+        data = response.json()
+        if "items" in data and data["items"]:
+            item_id = data["items"][0]["recycle_id"]
+            # Test restoring to specific target
+            response = self.api_session.post(
+                f"/@recyclebin/{item_id}/restore",
+                json={"target_path": "/plone/target_folder"},
+            )
+            save_request_and_response_for_docs("recyclebin_restore_target", response)
+
+    def test_documentation_recyclebin_purge_item(self):
+        self.setUp_recyclebin()
+
+        # Get an item to purge
+        response = self.api_session.get("/@recyclebin")
+        data = response.json()
+        if "items" in data and data["items"]:
+            item_id = data["items"][0]["recycle_id"]
+            # Test purging specific item
+            response = self.api_session.delete(f"/@recyclebin/{item_id}")
+            save_request_and_response_for_docs("recyclebin_purge_item", response)
+
+    def test_documentation_recyclebin_purge_all(self):
+        self.setUp_recyclebin()
+
+        # Test purging all items
+        response = self.api_session.delete("/@recyclebin")
+        save_request_and_response_for_docs("recyclebin_purge_all", response)
+
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
