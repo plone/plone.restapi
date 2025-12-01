@@ -144,8 +144,6 @@ class SearchHandler:
             or query.get("sort_on", "") == "effective"  # compatibility with Volto
         ):
             query["sort_order"] = "reverse"
-        elif "sort_order" in query:
-            del query["sort_order"]
 
         if "sort_order" in query and not query["sort_order"]:
             del query["sort_order"]
