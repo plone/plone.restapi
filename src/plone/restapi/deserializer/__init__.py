@@ -30,9 +30,9 @@ def boolean_value(value):
     """
     if isinstance(value, bool):
         return value
-    if str(value).lower() in ("true", "1"):
-        return True
-    return False
+    if str(value).lower() in ("false", "0"):
+        return False
+    return True
 
 
 def parse_int(data, prop, default):
