@@ -28,13 +28,11 @@ class Aliases:
         portal_path = "/".join(self.context.getPhysicalPath()[:2])
         context_path = "/".join(self.context.getPhysicalPath())
 
-        breakpoint()
         if not IPloneSiteRoot.providedBy(self.context):
             result = [path for path in storage.items() if path[1][0] == context_path]
         else:
             result = storage
 
-        breakpoint()
         query = form.get("q")
         if query and query.startswith("/"):
             min_k = f"{portal_path}/{query.strip('/')}"
@@ -65,7 +63,6 @@ class Aliases:
             }
             aliases.append(redirect)
 
-        breakpoint()
         self.request.response.setStatus(200)
         self.request.response.setHeader("Content-Type", "application/json")
         return aliases, len(aliases)
