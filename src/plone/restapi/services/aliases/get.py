@@ -22,38 +22,53 @@ class Aliases:
         self.context = context
         self.request = request
 
-    def reply_item(self):
-        storage = getUtility(IRedirectionStorage)
+    def reply(self):
+        storage = getUtility(IRedirectionStorage)._paths
+        form = self.request.form
+        portal_path = "/".join(self.context.getPhysicalPath()[:2])
         context_path = "/".join(self.context.getPhysicalPath())
-        redirects = storage.redirects(context_path)
-        aliases = [deroot_path(alias) for alias in redirects]
-        self.request.response.setStatus(200)
-        self.request.response.setHeader("Content-Type", "application/json")
-        return [{"path": alias} for alias in aliases], len(aliases)
 
-    def reply_root(self):
-        """
-        redirect-to - target
-        path        - path
-        redirect    - full path with root
-        """
-        batch = RedirectsControlPanel(self.context, self.request).redirects()
-        redirects = [entry for entry in batch]
+        breakpoint()
+        if not IPloneSiteRoot.providedBy(self.context):
+            result = [path for path in storage.items() if path[1][0] == context_path]
+        else:
+            result = storage
 
+        breakpoint()
+        query = form.get("q")
+        if query and query.startswith("/"):
+            min_k = f"{portal_path}/{query.strip('/')}"
+            max_k = min_k[:-1] + chr(ord(min_k[-1]) + 1)
+            redirects = result.keys(min=min_k, max=max_k, excludemax=True)
+        elif query:
+            redirects = [path for path in result.keys() if query in path]
+        else:
+            redirects = result.keys()
+
+        aliases = []
         for redirect in redirects:
-            del redirect["redirect"]
-            redirect["datetime"] = datetimelike_to_iso(redirect["datetime"])
+            info = storage.get_full(redirect)
+            if form.get("manual") and info[2] != form["manual"]:
+                continue
+            if form.get("start") and info[1]:
+                if info[1] < form["start"]:
+                    continue
+            if form.get("end") and info[1]:
+                if info[1] >= form["end"]:
+                    continue
+
+            redirect = {
+                "path": redirect,
+                "redirect-to": info[0],
+                "datetime": datetimelike_to_iso(info[1]),
+                "manual": info[2],
+            }
+            aliases.append(redirect)
+
+        breakpoint()
         self.request.response.setStatus(200)
-
-        self.request.form["b_start"] = "0"
-        self.request.form["b_size"] = "1000000"
-        self.request.__annotations__.pop("plone.memoize")
-
-        newbatch = RedirectsControlPanel(self.context, self.request).redirects()
-        items_total = len([item for item in newbatch])
         self.request.response.setHeader("Content-Type", "application/json")
-
-        return redirects, items_total
+        return aliases, len(aliases)
 
     def reply_root_csv(self):
         batch = RedirectsControlPanel(self.context, self.request).redirects()
@@ -83,14 +98,11 @@ class Aliases:
         result = {"aliases": {"@id": f"{self.context.absolute_url()}/@aliases"}}
         if not expand:
             return result
-        if IPloneSiteRoot.providedBy(self.context):
-            if self.request.getHeader("Accept") == "text/csv":
-                result["aliases"]["items"] = self.reply_root_csv()
-                return result
-            else:
-                items, items_total = self.reply_root()
+        if self.request.getHeader("Accept") == "text/csv":
+            result["aliases"]["items"] = self.reply_root_csv()
+            return result
         else:
-            items, items_total = self.reply_item()
+            items, items_total = self.reply()
         result["aliases"]["items"] = items
         result["aliases"]["items_total"] = items_total
         return result
