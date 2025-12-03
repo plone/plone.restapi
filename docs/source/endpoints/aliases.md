@@ -136,16 +136,18 @@ Response:
 
 ### Parameters
 
-| Name                 | Type    | Description                                            |
-| -------------------- | ------- | ------------------------------------------------------ |
-| `query` (optional)   | string  | Full-text search. Can match paths or text fields.      |
-| `manual` (optional)  | boolean | Filter by manual or automatically created redirects.     |
-| `start` (optional)   | string  | Filter redirects created **after** this date.          |
-| `end` (optional)     | string  | Filter redirects created **before** this date.         |
-| `b_start` (optional) | integer | Batch start index (offset).                            |
-| `b_size` (optional)  | integer | Batch size (maximum items returned).                   |
+All of the following parameters are optional.
 
-To search for specific aliases, send a `GET` request to the `@aliases` endpoint with one or more of the above named parameters:
+| Name      | Type    | Description                                            |
+| --------- | ------- | ------------------------------------------------------ |
+| `query`   | string  | Full-text search. Can match paths or text fields.      |
+| `manual`  | boolean | Filter by manual or automatically created redirects.   |
+| `start`   | string  | Filter redirects created **after** this date.          |
+| `end`     | string  | Filter redirects created **before** this date.         |
+| `b_start` | integer | Batch start index (offset).                            |
+| `b_size`  | integer | Batch size (maximum items returned).                   |
+
+To search for specific aliases, send a `GET` request to the `@aliases` endpoint with one or more of the above named parameters as shown in the following example.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
