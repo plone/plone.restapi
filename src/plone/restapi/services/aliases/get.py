@@ -23,25 +23,25 @@ class Aliases:
         self.request = request
 
     def reply(self):
-        storage = getUtility(IRedirectionStorage)._paths
+        storage = getUtility(IRedirectionStorage)
         form = self.request.form
         portal_path = "/".join(self.context.getPhysicalPath()[:2])
         context_path = "/".join(self.context.getPhysicalPath())
 
         if not IPloneSiteRoot.providedBy(self.context):
-            result = [path for path in storage.items() if path[1][0] == context_path]
-        else:
-            result = storage
+            storage = [
+                path for path in storage._paths.items() if path[1][0] == context_path
+            ]
 
         query = form.get("q")
         if query and query.startswith("/"):
             min_k = f"{portal_path}/{query.strip('/')}"
             max_k = min_k[:-1] + chr(ord(min_k[-1]) + 1)
-            redirects = result.keys(min=min_k, max=max_k, excludemax=True)
+            redirects = storage._paths.keys(min=min_k, max=max_k, excludemax=True)
         elif query:
-            redirects = [path for path in result.keys() if query in path]
+            redirects = [path for path in storage._paths.keys() if query in path]
         else:
-            redirects = result.keys()
+            redirects = storage._paths.keys()
 
         aliases = []
         for redirect in redirects:
