@@ -1,4 +1,5 @@
 from plone.app.redirector.interfaces import IRedirectionStorage
+from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import datetimelike_to_iso
@@ -63,9 +64,12 @@ class Aliases:
             }
             aliases.append(redirect)
 
+        batch = HypermediaBatch(self.request, aliases)
+
+        breakpoint()
         self.request.response.setStatus(200)
         self.request.response.setHeader("Content-Type", "application/json")
-        return aliases, len(aliases)
+        return batch, batch.items_total, batch.links
 
     def reply_root_csv(self):
         batch = RedirectsControlPanel(self.context, self.request).redirects()
@@ -99,9 +103,10 @@ class Aliases:
             result["aliases"]["items"] = self.reply_root_csv()
             return result
         else:
-            items, items_total = self.reply()
+            items, items_total, batching = self.reply()
         result["aliases"]["items"] = items
         result["aliases"]["items_total"] = items_total
+        result["aliases"]["batching"] = batching
         return result
 
 
