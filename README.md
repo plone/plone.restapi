@@ -37,7 +37,7 @@ curl -i -X POST https://demo.plone.org/++api++ \
     --user admin:admin
 ```
 
-> [!NOTE]  
+> [!NOTE]
 > You will need some kind of API browser application to explore the API.
 > You will also need to first obtain a basic authorization token.
 > We recommend using [Postman](https://www.postman.com/) which makes it
@@ -92,7 +92,7 @@ If you require professional support, here is a list of Plone solution
 providers that contributed significantly to `plone.restapi` in the past.
 
 - [kitconcept GmbH](https://kitconcept.com) (Germany)
-- [4teamwork](https://www.4teamwork.ch/en) (Switzerland)
+- [Fabasoft (acquired 4teamwork)](https://www.fabasoft.com/de/fabasoft-schweiz) (Switzerland)
 - [CodeSyntax](https://www.codesyntax.com/en) (Spain)
 
 # License
