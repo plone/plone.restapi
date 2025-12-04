@@ -6,7 +6,7 @@ from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import datetimelike_to_iso
 from plone.restapi.services import Service
 from Products.CMFPlone.controlpanel.browser.redirects import RedirectsControlPanel
-from zExceptions import NotAcceptable
+from zExceptions import HTTPNotAcceptable as NotAcceptable
 from zope.component import adapter
 from zope.component import getUtility
 from zope.component.hooks import getSite
