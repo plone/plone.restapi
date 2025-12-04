@@ -6,6 +6,7 @@ from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import datetimelike_to_iso
 from plone.restapi.services import Service
 from Products.CMFPlone.controlpanel.browser.redirects import RedirectsControlPanel
+from zExceptions import NotAcceptable
 from zope.component import adapter
 from zope.component import getUtility
 from zope.component.hooks import getSite
@@ -74,6 +75,9 @@ class Aliases:
         return batch, batch.items_total, batch.links
 
     def reply_root_csv(self):
+        if not IPloneSiteRoot.providedBy(self.context):
+            raise NotAcceptable("CSV reply is only available from site root.")
+
         batch = RedirectsControlPanel(self.context, self.request).redirects()
         redirects = [entry for entry in batch]
 
