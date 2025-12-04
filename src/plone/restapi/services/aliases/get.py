@@ -25,7 +25,7 @@ class Aliases:
         self.request = request
 
     def reply(self):
-        storage = getUtility(IRedirectionStorage)
+        storage = getUtility(IRedirectionStorage)._paths
         form = self.request.form
         portal_path = "/".join(self.context.getPhysicalPath()[:2])
         context_path = "/".join(self.context.getPhysicalPath())
@@ -33,11 +33,9 @@ class Aliases:
         if not IPloneSiteRoot.providedBy(self.context):
             storage = OOBTree(
                 (key, value)
-                for key, value in storage._paths.items()
+                for key, value in storage.items()
                 if value[0] == context_path
             )
-        else:
-            storage = storage._paths
 
         query = form.get("q") or form.get("query")
         if query and query.startswith("/"):
@@ -51,7 +49,7 @@ class Aliases:
 
         aliases = []
         for redirect in redirects:
-            info = storage.get_full(redirect)
+            info = redirect[1]
             if form.get("manual") and info[2] != form["manual"]:
                 continue
             if form.get("start") and info[1]:
