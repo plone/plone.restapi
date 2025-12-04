@@ -69,7 +69,6 @@ class Aliases:
 
         batch = HypermediaBatch(self.request, aliases)
 
-        breakpoint()
         self.request.response.setStatus(200)
         self.request.response.setHeader("Content-Type", "application/json")
         return batch, batch.items_total, batch.links
