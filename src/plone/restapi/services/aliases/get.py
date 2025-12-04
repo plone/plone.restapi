@@ -1,3 +1,4 @@
+from BTrees.OOBTree import OOBTree
 from plone.app.redirector.interfaces import IRedirectionStorage
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import IPloneSiteRoot
@@ -30,19 +31,23 @@ class Aliases:
         context_path = "/".join(self.context.getPhysicalPath())
 
         if not IPloneSiteRoot.providedBy(self.context):
-            storage = [
-                path for path in storage._paths.items() if path[1][0] == context_path
-            ]
+            storage = OOBTree(
+                (key, value)
+                for key, value in storage._paths.items()
+                if value[0] == context_path
+            )
+        else:
+            storage = storage._paths
 
-        query = form.get("q")
+        query = form.get("q") or form.get("query")
         if query and query.startswith("/"):
             min_k = f"{portal_path}/{query.strip('/')}"
             max_k = min_k[:-1] + chr(ord(min_k[-1]) + 1)
-            redirects = storage._paths.keys(min=min_k, max=max_k, excludemax=True)
+            redirects = storage.items(min=min_k, max=max_k, excludemax=True)
         elif query:
-            redirects = [path for path in storage._paths.keys() if query in path]
+            redirects = [path for path in storage.items() if query in path]
         else:
-            redirects = storage._paths.keys()
+            redirects = storage.items()
 
         aliases = []
         for redirect in redirects:
