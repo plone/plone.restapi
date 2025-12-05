@@ -2,10 +2,13 @@ from BTrees.OOBTree import OOBTree
 from plone.app.redirector.interfaces import IRedirectionStorage
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import IPloneSiteRoot
+from plone.restapi.deserializer import json_body
+from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import datetimelike_to_iso
 from plone.restapi.services import Service
 from Products.CMFPlone.controlpanel.browser.redirects import RedirectsControlPanel
+from zExceptions import BadRequest
 from zExceptions import HTTPNotAcceptable as NotAcceptable
 from zope.component import adapter
 from zope.component import getUtility
@@ -25,9 +28,8 @@ class Aliases:
         self.context = context
         self.request = request
 
-    def reply(self):
+    def reply(self, query, manual, start, end):
         storage = getUtility(IRedirectionStorage)._paths
-        form = self.request.form
         portal_path = "/".join(self.context.getPhysicalPath()[:2])
         context_path = "/".join(self.context.getPhysicalPath())
 
@@ -38,7 +40,6 @@ class Aliases:
                 if value[0] == context_path
             )
 
-        query = form.get("q") or form.get("query")
         if query and query.startswith("/"):
             min_k = f"{portal_path}/{query.strip('/')}"
             max_k = min_k[:-1] + chr(ord(min_k[-1]) + 1)
@@ -51,17 +52,17 @@ class Aliases:
         aliases = []
         for redirect in redirects:
             info = redirect[1]
-            if form.get("manual") and info[2] != form["manual"]:
+            if manual and info[2] != manual:
                 continue
-            if form.get("start") and info[1]:
-                if info[1] < form["start"]:
+            if start and info[1]:
+                if info[1] < start:
                     continue
-            if form.get("end") and info[1]:
-                if info[1] >= form["end"]:
+            if end and info[1]:
+                if info[1] >= end:
                     continue
 
             redirect = {
-                "path": redirect,
+                "path": redirect[0],
                 "redirect-to": info[0],
                 "datetime": datetimelike_to_iso(info[1]),
                 "manual": info[2],
@@ -72,7 +73,7 @@ class Aliases:
 
         self.request.response.setStatus(200)
         self.request.response.setHeader("Content-Type", "application/json")
-        return batch, batch.items_total, batch.links
+        return [i for i in batch], batch.items_total, batch.links
 
     def reply_root_csv(self):
         if not IPloneSiteRoot.providedBy(self.context):
@@ -102,6 +103,16 @@ class Aliases:
         return content
 
     def __call__(self, expand=False):
+        try:
+            data = json_body(self.request)
+        except DeserializationError as e:
+            raise BadRequest(str(e))
+
+        query = data.get("query", data.get("q", None))
+        manual = data.get("manual", None)
+        start = data.get("start", None)
+        end = data.get("end", None)
+
         result = {"aliases": {"@id": f"{self.context.absolute_url()}/@aliases"}}
         if not expand:
             return result
@@ -109,10 +120,13 @@ class Aliases:
             result["aliases"]["items"] = self.reply_root_csv()
             return result
         else:
-            items, items_total, batching = self.reply()
+            items, items_total, batching = self.reply(query, manual, start, end)
+
         result["aliases"]["items"] = items
         result["aliases"]["items_total"] = items_total
-        result["aliases"]["batching"] = batching
+        if batching:
+            result["aliases"]["links"] = batching
+
         return result
 
 
