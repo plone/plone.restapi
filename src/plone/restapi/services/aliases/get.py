@@ -31,16 +31,19 @@ class Aliases:
         self.request = request
 
     def reply(self, query, manual, start, end):
-        storage = getUtility(IRedirectionStorage)._paths
+        storage = getUtility(IRedirectionStorage)
         portal_path = "/".join(self.context.getPhysicalPath()[:2])
         context_path = "/".join(self.context.getPhysicalPath())
 
         if not IPloneSiteRoot.providedBy(self.context):
-            storage = OOBTree(
-                (key, value)
-                for key, value in storage.items()
-                if value[0] == context_path
-            )
+            tree = OOBTree()
+            rds = storage.redirects(context_path)
+            for rd in rds:
+                rd_full = storage.get_full(rd)
+                tree[rd] = rd_full
+            storage = tree
+        else:
+            storage = storage._paths
 
         if query and query.startswith("/"):
             min_k = f"{portal_path}/{query.strip('/')}"
