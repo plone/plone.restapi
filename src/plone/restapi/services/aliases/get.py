@@ -1,4 +1,5 @@
 from BTrees.OOBTree import OOBTree
+from DateTime import DateTime
 from plone.app.redirector.interfaces import IRedirectionStorage
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import IPloneSiteRoot
@@ -7,12 +8,13 @@ from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import datetimelike_to_iso
 from plone.restapi.services import Service
+from plone.restapi.utils import is_falsy
+from plone.restapi.utils import is_truthy
 from Products.CMFPlone.controlpanel.browser.redirects import RedirectsControlPanel
 from zExceptions import BadRequest
 from zExceptions import HTTPNotAcceptable as NotAcceptable
 from zope.component import adapter
 from zope.component import getUtility
-from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.interface import Interface
 
@@ -113,6 +115,19 @@ class Aliases:
         start = data.get("start", None)
         end = data.get("end", None)
 
+        if not isinstance(query, str):
+            raise BadRequest('Parameter "query" must be a string.')
+
+        if not (is_truthy(manual) or is_falsy(manual)):
+            raise BadRequest('Parameter "manual" must be a boolean.')
+
+        for value in (start, end):
+            if value:
+                try:
+                    value = DateTime(value)
+                except Exception as e:
+                    raise BadRequest(str(e))
+
         result = {"aliases": {"@id": f"{self.context.absolute_url()}/@aliases"}}
         if not expand:
             return result
@@ -149,12 +164,3 @@ class AliasesGet(Service):
             return json.dumps(
                 content, indent=2, sort_keys=True, separators=(", ", ": ")
             )
-
-
-def deroot_path(path):
-    """Remove the portal root from alias"""
-    portal = getSite()
-    root_path = "/".join(portal.getPhysicalPath())
-    if not path.startswith("/"):
-        path = "/%s" % path
-    return path.replace(root_path, "", 1)
