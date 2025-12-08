@@ -115,10 +115,10 @@ class Aliases:
         start = data.get("start", None)
         end = data.get("end", None)
 
-        if not isinstance(query, str):
+        if query and not isinstance(query, str):
             raise BadRequest('Parameter "query" must be a string.')
 
-        if not (is_truthy(manual) or is_falsy(manual)):
+        if manual and not (is_truthy(manual) or is_falsy(manual)):
             raise BadRequest('Parameter "manual" must be a boolean.')
 
         for value in (start, end):
