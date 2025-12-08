@@ -8,6 +8,7 @@ from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import datetimelike_to_iso
 from plone.restapi.services import Service
+from plone.restapi.utils import deroot_path
 from plone.restapi.utils import is_falsy
 from plone.restapi.utils import is_truthy
 from Products.CMFPlone.controlpanel.browser.redirects import RedirectsControlPanel
@@ -67,8 +68,8 @@ class Aliases:
                     continue
 
             redirect = {
-                "path": redirect[0],
-                "redirect-to": info[0],
+                "path": deroot_path(redirect[0]),
+                "redirect-to": deroot_path(info[0]),
                 "datetime": datetimelike_to_iso(info[1]),
                 "manual": info[2],
             }
