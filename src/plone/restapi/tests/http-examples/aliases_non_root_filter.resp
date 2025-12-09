@@ -7,7 +7,7 @@ Content-Type: application/json
         {
             "datetime": "2025-12-09T10:47:01+00:00",
             "manual": true,
-            "path": "/simple-alias",
+            "path": "/fizzbuzz",
             "redirect-to": "/front-page"
         }
     ],

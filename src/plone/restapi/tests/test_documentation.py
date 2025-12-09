@@ -1690,8 +1690,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',
             response.content,
         )
         save_request_and_response_for_docs("lock", response)
@@ -1704,8 +1703,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',
             response.content,
         )
         save_request_and_response_for_docs("lock_nonstealable_timeout", response)
@@ -1731,8 +1729,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',
             response.content,
         )
         save_request_and_response_for_docs("refresh_lock", response)
@@ -2213,7 +2210,7 @@ class TestCommenting(TestDocumentationBase):
     def test_aliases_root_filter(self):
         # Get aliases
         url = f"{self.portal.absolute_url()}/@aliases"
-        query = "?q=/fizzbuzz"
+        query = "?query=/fizzbuzz"
 
         payload = {
             "items": [
@@ -2233,6 +2230,30 @@ class TestCommenting(TestDocumentationBase):
 
         response = self.api_session.get(url + query)
         save_request_and_response_for_docs("aliases_root_filter", response)
+
+    def test_aliases_non_root_filter(self):
+        # Get aliases
+        url = f"{self.portal.absolute_url()}/front-page/@aliases"
+        query = "?query=/fizzbuzz"
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_non_root_filter", response)
 
 
 class TestControlPanelDocumentation(TestDocumentationBase):
@@ -2984,7 +3005,6 @@ class TestRules(TestDocumentationBase):
 
 
 class TestLinkintegrity(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
