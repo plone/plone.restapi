@@ -119,12 +119,17 @@ class Aliases:
         if manual and not (is_truthy(manual) or is_falsy(manual)):
             raise BadRequest('Parameter "manual" must be a boolean.')
 
-        for value in (start, end):
-            if value:
-                try:
-                    value = DateTime(value)
-                except Exception as e:
-                    raise BadRequest(str(e))
+        if start:
+            try:
+                start = DateTime(start)
+            except Exception as e:
+                raise BadRequest(str(e))
+
+        if end:
+            try:
+                end = DateTime(end)
+            except Exception as e:
+                raise BadRequest(str(e))
 
         result = {"aliases": {"@id": f"{self.context.absolute_url()}/@aliases"}}
         if not expand:
