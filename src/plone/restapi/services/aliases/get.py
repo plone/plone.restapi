@@ -3,8 +3,6 @@ from DateTime import DateTime
 from plone.app.redirector.interfaces import IRedirectionStorage
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import IPloneSiteRoot
-from plone.restapi.deserializer import json_body
-from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import datetimelike_to_iso
 from plone.restapi.services import Service
@@ -108,10 +106,7 @@ class Aliases:
         return content
 
     def __call__(self, expand=False):
-        try:
-            data = json_body(self.request)
-        except DeserializationError as e:
-            raise BadRequest(str(e))
+        data = self.request.form
 
         query = data.get("query", data.get("q", None))
         manual = data.get("manual", None)
