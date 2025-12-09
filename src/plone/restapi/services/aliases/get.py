@@ -56,8 +56,7 @@ class Aliases:
             redirects = storage.items()
 
         aliases = []
-        for redirect in redirects:
-            info = redirect[1]
+        for path, info in redirects:
             if manual and info[2] != manual:
                 continue
             if start and info[1]:
@@ -68,7 +67,7 @@ class Aliases:
                     continue
 
             redirect = {
-                "path": deroot_path(redirect[0]),
+                "path": deroot_path(path),
                 "redirect-to": deroot_path(info[0]),
                 "datetime": datetimelike_to_iso(info[1]),
                 "manual": info[2],
