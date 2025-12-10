@@ -1,5 +1,6 @@
 from BTrees.OOBTree import OOBTree
 from DateTime import DateTime
+from DateTime.interfaces import DateTimeError
 from plone.app.redirector.interfaces import IRedirectionStorage
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import IPloneSiteRoot
@@ -128,13 +129,13 @@ class Aliases:
         if start:
             try:
                 start = DateTime(start)
-            except Exception as e:
+            except DateTimeError as e:
                 raise BadRequest(str(e))
 
         if end:
             try:
                 end = DateTime(end)
-            except Exception as e:
+            except DateTimeError as e:
                 raise BadRequest(str(e))
 
         result = {"aliases": {"@id": f"{self.context.absolute_url()}/@aliases"}}
