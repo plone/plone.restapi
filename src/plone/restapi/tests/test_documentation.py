@@ -2082,7 +2082,7 @@ class TestCommenting(TestDocumentationBase):
         # Get aliases
         url = f"{self.document.absolute_url()}/@aliases"
 
-        payload = {"items": "/simple-alias"}
+        payload = {"items": [{"path": "/simple-alias", "datetime": "2022-05-05"}]}
         response = self.api_session.post(url, json=payload)
 
         response = self.api_session.get(url)

@@ -42,7 +42,15 @@ class AliasesPost(Service):
 
         failed_aliases = []
         for alias in aliases:
+            date = None
             if isinstance(alias, dict):
+                date = alias.get("datetime")
+                if date:
+                    try:
+                        date = DateTime(date)
+                    except DateTimeError:
+                        logger.warning("Failed to parse as DateTime: %s", date)
+
                 alias = alias.get("path")
 
             if alias.startswith("/"):
@@ -61,6 +69,7 @@ class AliasesPost(Service):
             storage.add(
                 alias,
                 "/".join(self.context.getPhysicalPath()),
+                now=date,
                 manual=True,
             )
 

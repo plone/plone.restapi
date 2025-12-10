@@ -5,7 +5,7 @@ Content-Type: application/json
     "@id": "http://localhost:55001/plone/front-page/@aliases",
     "items": [
         {
-            "datetime": "2025-12-09T10:47:01+00:00",
+            "datetime": "2022-05-05T00:00:00",
             "manual": true,
             "path": "/simple-alias",
             "redirect-to": "/front-page"
