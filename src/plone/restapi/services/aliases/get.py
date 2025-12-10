@@ -55,8 +55,9 @@ class Aliases:
 
         aliases = []
         for path, info in redirects:
-            if manual and info[2] != manual:
-                continue
+            if manual != "":
+                if info[2] != manual:
+                    continue
             if start and info[1]:
                 if info[1] < start:
                     continue
@@ -109,15 +110,20 @@ class Aliases:
         data = self.request.form
 
         query = data.get("query", data.get("q", None))
-        manual = data.get("manual", None)
+        manual = data.get("manual", "")
         start = data.get("start", None)
         end = data.get("end", None)
 
         if query and not isinstance(query, str):
             raise BadRequest('Parameter "query" must be a string.')
 
-        if manual and not (is_truthy(manual) or is_falsy(manual)):
-            raise BadRequest('Parameter "manual" must be a boolean.')
+        if manual:
+            if is_truthy(manual):
+                manual = True
+            elif is_falsy(manual):
+                manual = False
+            else:
+                raise BadRequest('Parameter "manual" must be a boolean.')
 
         if start:
             try:
