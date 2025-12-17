@@ -10,7 +10,6 @@ import unittest
 
 
 class TestAliases(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -44,6 +43,80 @@ class TestAliases(unittest.TestCase):
 
         # Verify alias exists
         response = self.api_session.get("/front-page/@aliases")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["items"]), 1)
+
+    def test_alias_non_root_filter_manual(self):
+        data = {
+            "items": [
+                {
+                    "path": "/alias-with-date",
+                    "redirect-to": "/front-page",
+                    "datetime": "2024-09-17T12:00:00",
+                },
+                {
+                    "path": "/just-another-alias",
+                    "redirect-to": "/front-page",
+                    "datetime": "2025-07-21T12:00:00",
+                },
+            ]
+        }
+        response = self.api_session.post("/front-page/@aliases", json=data)
+        self.assertEqual(response.status_code, 204)
+
+        query = "?manual=false"
+        response = self.api_session.get("/front-page/@aliases" + query)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["items"]), 0)
+
+        query = "?manual=true"
+        response = self.api_session.get("/front-page/@aliases" + query)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["items"]), 2)
+
+    def test_alias_non_root_filter_start(self):
+        data = {
+            "items": [
+                {
+                    "path": "/alias-with-date",
+                    "redirect-to": "/front-page",
+                    "datetime": "2024-09-17T12:00:00",
+                },
+                {
+                    "path": "/just-another-alias",
+                    "redirect-to": "/front-page",
+                    "datetime": "2025-07-21T12:00:00",
+                },
+            ]
+        }
+        response = self.api_session.post("/front-page/@aliases", json=data)
+        self.assertEqual(response.status_code, 204)
+
+        query = "?start=2025-01-01T00:00:00"
+        response = self.api_session.get("/front-page/@aliases" + query)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["items"]), 1)
+
+    def test_alias_non_root_filter_end(self):
+        data = {
+            "items": [
+                {
+                    "path": "/alias-with-date",
+                    "redirect-to": "/front-page",
+                    "datetime": "2024-09-17T12:00:00",
+                },
+                {
+                    "path": "/just-another-alias",
+                    "redirect-to": "/front-page",
+                    "datetime": "2025-07-21T12:00:00",
+                },
+            ]
+        }
+        response = self.api_session.post("/front-page/@aliases", json=data)
+        self.assertEqual(response.status_code, 204)
+
+        query = "?end=2025-01-01T00:00:00"
+        response = self.api_session.get("/front-page/@aliases" + query)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["items"]), 1)
 
