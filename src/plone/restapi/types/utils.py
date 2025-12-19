@@ -428,6 +428,14 @@ def add_fieldset(context, request, data):
 
 
 def add_field(context, request, data):
+    # Mapping for unknown/legacy field types to valid ones
+    FIELD_TYPE_MAPPING = {
+        "label_full_name": "label_textline_field",  # Map to Text line (String)
+        # Add other legacy mappings as needed
+        "Full Name": "Text line (String)",
+        "full_name": "label_textline_field",
+    }
+
     factory = data.get("factory", None)
     title = data.get("title", None)
     description = data.get("description", None)
@@ -436,14 +444,20 @@ def add_field(context, request, data):
     if not name:
         name = idnormalizer.normalize(title).replace("-", "_")
 
+    # Handle factory as either string or dict
+    factory_value = factory
+    if isinstance(factory, dict):
+        factory_value = factory.get("value", factory.get("label", factory))
+
+    # Apply mapping for unknown field types
+    factory_value = FIELD_TYPE_MAPPING.get(factory_value, factory_value)
+
     klass = None
     vocabulary = queryUtility(IVocabularyFactory, name="Fields")
     for term in vocabulary(context):
-        if factory not in (term.title, term.token):
-            continue
-
-        klass = term.value
-        break
+        if factory_value in (term.title, term.token):
+            klass = term.value
+            break
 
     if not klass:
         raise BadRequest("Missing/Invalid parameter factory: %s" % factory)
