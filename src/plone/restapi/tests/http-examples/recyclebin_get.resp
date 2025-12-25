@@ -1,0 +1,66 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@recyclebin",
+    "items": [
+        {
+            "@id": "http://localhost:55001/plone/@recyclebin/6c952845-d878-4301-892b-2c7e8a24323a",
+            "actions": {
+                "purge": "http://localhost:55001/plone/@recyclebin/6c952845-d878-4301-892b-2c7e8a24323a",
+                "restore": "http://localhost:55001/plone/@recyclebin/6c952845-d878-4301-892b-2c7e8a24323a/restore"
+            },
+            "deleted_by": "test_user_1_",
+            "deletion_date": "2025-10-08T04:23:14.793653",
+            "has_children": false,
+            "id": "document1",
+            "language": "",
+            "parent_path": "/plone",
+            "path": "/plone/document1",
+            "recycle_id": "6c952845-d878-4301-892b-2c7e8a24323a",
+            "size": 0,
+            "title": "My Document",
+            "type": "Document",
+            "workflow_state": "private"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@recyclebin/74202eb6-403b-4c5c-910f-55b399f75ee7",
+            "actions": {
+                "purge": "http://localhost:55001/plone/@recyclebin/74202eb6-403b-4c5c-910f-55b399f75ee7",
+                "restore": "http://localhost:55001/plone/@recyclebin/74202eb6-403b-4c5c-910f-55b399f75ee7/restore"
+            },
+            "deleted_by": "test_user_1_",
+            "deletion_date": "2025-10-08T04:23:14.788751",
+            "has_children": true,
+            "id": "folder1",
+            "language": "",
+            "parent_path": "/plone",
+            "path": "/plone/folder1",
+            "recycle_id": "74202eb6-403b-4c5c-910f-55b399f75ee7",
+            "size": 0,
+            "title": "My Folder",
+            "type": "Folder",
+            "workflow_state": "private"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@recyclebin/1d55485a-c26d-457d-a89c-f125ea041da6",
+            "actions": {
+                "purge": "http://localhost:55001/plone/@recyclebin/1d55485a-c26d-457d-a89c-f125ea041da6",
+                "restore": "http://localhost:55001/plone/@recyclebin/1d55485a-c26d-457d-a89c-f125ea041da6/restore"
+            },
+            "deleted_by": "test_user_1_",
+            "deletion_date": "2025-10-08T04:23:14.785316",
+            "has_children": false,
+            "id": "subdoc",
+            "language": "",
+            "parent_path": "/plone",
+            "path": "/plone/folder1/subdoc",
+            "recycle_id": "1d55485a-c26d-457d-a89c-f125ea041da6",
+            "size": 0,
+            "title": "Sub Document",
+            "type": "Document",
+            "workflow_state": "private"
+        }
+    ],
+    "items_total": 3
+}
