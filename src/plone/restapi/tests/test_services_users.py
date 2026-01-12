@@ -7,7 +7,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.bbb import ISecuritySchema
-from plone.restapi.services.users.get import UsersGet
+from plone.restapi.services.users.get import Users
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
@@ -35,7 +35,6 @@ class TestUnit(unittest.TestCase):
 
 
 class TestUsersEndpoint(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -129,12 +128,12 @@ class TestUsersEndpoint(unittest.TestCase):
         response = self.api_session.get("/@users")
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(4, len(response.json()))
-        user_ids = [user["id"] for user in response.json()]
+        self.assertEqual(4, len(response.json()["items"]))
+        user_ids = [user["id"] for user in response.json()["items"]]
         self.assertIn("admin", user_ids)
         self.assertIn("test_user_1_", user_ids)
         self.assertIn("noam", user_ids)
-        noam = [x for x in response.json() if x.get("username") == "noam"][0]
+        noam = [x for x in response.json()["items"] if x.get("username") == "noam"][0]
         self.assertEqual("noam", noam.get("id"))
         self.assertEqual(self.portal.absolute_url() + "/@users/noam", noam.get("@id"))
         self.assertEqual("noam.chomsky@example.com", noam.get("email"))
@@ -153,7 +152,6 @@ class TestUsersEndpoint(unittest.TestCase):
         noam_api_session.close()
 
     def test_list_users_as_anonymous(self):
-
         response = self.anon_api_session.get("/@users")
         self.assertEqual(response.status_code, 401)
 
@@ -162,13 +160,13 @@ class TestUsersEndpoint(unittest.TestCase):
             "/@users?groups-filter:list=Reviewers&groups-filter:list=Administrators"
         )
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.json()))
-        user_ids = [user["id"] for user in response.json()]
+        self.assertEqual(1, len(response.json()["items"]))
+        user_ids = [user["id"] for user in response.json()["items"]]
         self.assertIn("otheruser", user_ids)
 
         response = self.api_session.get("/@users?groups-filter:list=Administrators")
         self.assertEqual(200, response.status_code)
-        user_ids = [user["id"] for user in response.json()]
+        user_ids = [user["id"] for user in response.json()["items"]]
         self.assertNotIn("otheruser", user_ids)
 
     def test_add_user(self):
@@ -426,21 +424,23 @@ class TestUsersEndpoint(unittest.TestCase):
         response = self.api_session.get("/@users", params={"query": "noa"})
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 1)
-        self.assertEqual("noam", response.json()[0].get("id"))
+        self.assertEqual(len(response.json()["items"]), 1)
+        self.assertEqual("noam", response.json()["items"][0].get("id"))
         self.assertEqual(
             self.portal.absolute_url() + "/@users/noam",
-            response.json()[0].get("@id"),
+            response.json()["items"][0].get("@id"),
         )
-        self.assertEqual("noam.chomsky@example.com", response.json()[0].get("email"))
         self.assertEqual(
-            "Noam Avram Chomsky", response.json()[0].get("fullname")
+            "noam.chomsky@example.com", response.json()["items"][0].get("email")
+        )
+        self.assertEqual(
+            "Noam Avram Chomsky", response.json()["items"][0].get("fullname")
         )  # noqa
 
         response = self.api_session.get("/@users", params={"query": "howa"})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 1)
-        self.assertEqual("howard", response.json()[0].get("id"))
+        self.assertEqual(len(response.json()["items"]), 1)
+        self.assertEqual("howard", response.json()["items"][0].get("id"))
 
     def test_get_search_user_with_filter_as_anonymous(self):
         response = self.api_session.post(
@@ -1323,41 +1323,42 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertIn("registration_datetime", response.json())
 
     # Not testable via the service, hence unittest
+
     def test_get_users_filtering(self):
-        class MockUsersGet(UsersGet):
-            def __init__(self):
-                class MockUser:
-                    def __init__(self, userid):
-                        self.userid = userid
+        class MockUser:
+            def __init__(self, userid):
+                self.userid = userid
 
-                    def getProperty(self, key, default):
-                        return "Full Name " + self.userid
+            def getProperty(self, key, default=None):
+                return "Full Name " + self.userid
 
-                class MockAclUsers:
-                    def searchUsers(self, **kw):
-                        return [
-                            {"userid": "user2"},
-                            {"userid": "user1"},
-                            {"userid": "NONEUSER"},
-                        ]
+        class MockAclUsers:
+            def searchUsers(self, **kw):
+                return [
+                    {"userid": "user2"},
+                    {"userid": "user1"},
+                    {"userid": "NONEUSER"},
+                ]
 
-                self.acl_users = MockAclUsers()
+        class MockPortalMembership:
+            def getMemberById(self, userid):
+                if userid == "NONEUSER":
+                    return None
+                return MockUser(userid)
 
-                class MockPortalMembership:
-                    def getMemberById(self, userid):
-                        if userid == "NONEUSER":
-                            return None
-                        else:
-                            return MockUser(userid)
+        # Create Users instance *without* calling its __init__
+        users = Users.__new__(Users)
 
-                self.portal_membership = MockPortalMembership()
+        # Inject only what _get_users actually needs
+        users.acl_users = MockAclUsers()
+        users.portal_membership = MockPortalMembership()
 
-        mockService = MockUsersGet()
-        users = mockService._get_users(foo="bar")
-        # Sorted by full name. None does not break and is filtered.
-        self.assertEqual(len(users), 2)
-        self.assertEqual(users[0].userid, "user1")
-        self.assertEqual(users[1].userid, "user2")
+        result = users._get_users(foo="bar")
+
+        # Sorted by normalized fullname; None users filtered out
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0].userid, "user1")
+        self.assertEqual(result[1].userid, "user2")
 
     def test_siteadm_not_update_manager(self):
         self.set_siteadm()

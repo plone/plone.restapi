@@ -13,6 +13,15 @@
       />
 
   <plone:service
+      method="GET"
+      accept="text/csv"
+      factory=".get.UsersGet"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="plone.app.controlpanel.UsersAndGroups"
+      name="@users"
+      />
+
+  <plone:service
       method="PATCH"
       factory=".update.UsersPatch"
       for="Products.CMFCore.interfaces.ISiteRoot"
@@ -42,6 +51,11 @@
       for="Products.CMFCore.interfaces.ISiteRoot"
       permission="zope2.View"
       name="@portrait"
+      />
+
+  <adapter
+      factory=".get.Users"
+      name="users"
       />
 
 </configure>
