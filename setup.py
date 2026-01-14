@@ -5,7 +5,7 @@ import pathlib
 import sys
 
 
-version = "9.15.4.dev0"
+version = "9.15.4"
 
 if sys.version_info.major == 2:
     raise ValueError(

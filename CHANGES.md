@@ -9,6 +9,18 @@
 
 <!-- towncrier release notes start -->
 
+## 9.15.4 (2026-01-13)
+
+
+### Bug fixes:
+
+- Add some German translations. @valipod #1950
+
+
+### Internal:
+
+- Update configuration files @plone 
+
 ## 9.15.3 (2025-10-01)
 
 
