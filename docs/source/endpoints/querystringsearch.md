@@ -154,7 +154,7 @@ Use the `limit` parameter to set a maximum number of results that will be return
 ```
 
 The `limit` parameter is optional.
-The default value is no limit (but a single page of results will still have a size determined by the Batch Size).
+The default value is `None`, but a single page of results will still have a size determined by the batch size parameter `b_size`.
 
 ### Query
 
