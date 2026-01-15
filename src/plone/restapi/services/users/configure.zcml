@@ -38,6 +38,15 @@
       />
 
   <plone:service
+      method="POST"
+      accept="text/csv"
+      factory=".add.UsersPost"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="plone.app.controlpanel.UsersAndGroups"
+      name="@users"
+      />
+
+  <plone:service
       method="DELETE"
       factory=".delete.UsersDelete"
       for="Products.CMFCore.interfaces.ISiteRoot"
