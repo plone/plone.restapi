@@ -1043,6 +1043,25 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("@users", params={"search": "avram"})
         save_request_and_response_for_docs("users_searched", response)
 
+    def test_documentation_users_csv_format_get(self):
+        url = f"{self.portal.absolute_url()}/@users"
+        response = self.api_session.post(
+            url,
+            json={
+                "email": "noam.chomsky@example.com",
+                "username": "noamchomsky",
+                "fullname": "Noam Avram Chomsky",
+                "home_page": "web.mit.edu/chomsky",
+                "description": "Professor of Linguistics",
+                "location": "Cambridge, MA",
+                "roles": ["Contributor"],
+            },
+        )
+        self.api_session.headers.update({"Content-Type": "text/csv"})
+        self.api_session.headers.update({"Accept": "text/csv"})
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("users_get_csv_format", response)
+
     def test_documentation_users_created(self):
         response = self.api_session.post(
             "/@users",
