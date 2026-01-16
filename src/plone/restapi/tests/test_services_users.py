@@ -169,6 +169,15 @@ class TestUsersEndpoint(unittest.TestCase):
         user_ids = [user["id"] for user in response.json()["items"]]
         self.assertNotIn("otheruser", user_ids)
 
+    def test_list_users_via_csv(self):
+        resp = self.api_session.get("/@users", headers={"Accept": "text/csv"})
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("Content-Disposition", resp.headers)
+        self.assertEqual(resp.headers["Content-Type"], "text/csv; charset=utf-8")
+        content = b'id,username,fullname,email,roles,groups\r\nadmin,admin,,,Manager,AuthenticatedUsers\r\ntest_user_1_,test-user,,,Manager,AuthenticatedUsers\r\nnoam,noam,Noam Avram Chomsky,noam.chomsky@example.com,Member,AuthenticatedUsers\r\notheruser,otheruser,Other user,otheruser@example.com,"Member, Reviewer","AuthenticatedUsers, Reviewers"\r\n'
+        self.assertEqual(resp.content, content)
+
     def test_add_user(self):
         response = self.api_session.post(
             "/@users",
