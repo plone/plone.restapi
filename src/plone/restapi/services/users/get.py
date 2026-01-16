@@ -212,7 +212,9 @@ class Users:
                         result.append(serializer())
                     return result, len(result)
                 else:
-                    raise Unauthorized()
+                    raise Unauthorized(
+                        "You are not authorized to access this resource."
+                    )
             else:
                 raise BadRequest("Parameters supplied are not valid")
 
@@ -227,7 +229,7 @@ class Users:
                     result.append(serializer())
                 return result, len(result)
             else:
-                raise Unauthorized()
+                raise Unauthorized("You are not authorized to access this resource.")
 
         # Some is asking one user, check if the logged in user is asking
         # their own information or if they are a Manager
@@ -239,11 +241,11 @@ class Users:
             # we retrieve the user on the user id not the username
             user = self._get_user(self._get_user_id)
             if not user:
-                raise NotFound()
+                raise NotFound(f"User ${self._get_user_id} does not exist.")
             serializer = queryMultiAdapter((user, self.request), ISerializeToJson)
             return serializer()
         else:
-            raise Unauthorized()
+            raise Unauthorized("You are not authorized to access this resource.")
 
     def reply_root_csv(self):
         if len(self.params) > 0:
@@ -277,7 +279,7 @@ class Users:
             with open(file_path, "rb") as stream:
                 content = stream.read()
         else:
-            raise Unauthorized()
+            raise Unauthorized("You are not authorized to access this resource.")
 
         response = self.request.response
         response.setHeader("Content-Type", "text/csv")
