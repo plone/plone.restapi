@@ -195,6 +195,8 @@ class Users:
         )
 
     def reply(self):
+        self.request.response.setStatus(200)
+        self.request.response.setHeader("Content-Type", "application/json")
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
             groups_filter = self.query.get("groups-filter:list", [])
