@@ -62,9 +62,4 @@
       name="@portrait"
       />
 
-  <adapter
-      factory=".get.Users"
-      name="users"
-      />
-
 </configure>
