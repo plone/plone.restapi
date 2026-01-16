@@ -1,0 +1,7 @@
+POST /plone/@users HTTP/1.1
+Accept: text/csv
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: text/csv
+
+id,username,fullname,email,roles,location,password
+noam,noamchomsky,Noam Avran Chomsky,noam.chomsky@example.com,Contributor,"Cambridge, MA",password1234
