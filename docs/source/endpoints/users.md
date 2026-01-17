@@ -56,9 +56,9 @@ The server will return a {term}`401 Unauthorized` status code.
 :language: http
 ```
 
-### List all Users via CSV
+### List all users via CSV
 
-To download all users of a Plone site as a CSV file, send a `GET` request to the `/@users` endpoint from site root.
+To download all users of a Plone site as a CSV file, send a `GET` request to the `/@users` endpoint from the site root.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
