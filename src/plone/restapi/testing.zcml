@@ -12,6 +12,13 @@
       component=".tests.dxtypes.vocabularyRequireingContextFactory"
       />
 
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      name="plone.restapi.testing.protected_vocabulary"
+      component=".tests.test_services_vocabularies.test_vocabulary_factory"
+      permission="cmf.ManagePortal"
+      />
+
   <include
       package="plone.behavior"
       file="meta.zcml"
