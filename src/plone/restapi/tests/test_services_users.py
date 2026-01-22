@@ -175,7 +175,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertIn("Content-Disposition", resp.headers)
         self.assertEqual(resp.headers["Content-Type"], "text/csv; charset=utf-8")
-        content = b'id,username,fullname,email,roles,groups\r\nadmin,admin,,,Manager,AuthenticatedUsers\r\ntest_user_1_,test-user,,,Manager,AuthenticatedUsers\r\nnoam,noam,Noam Avram Chomsky,noam.chomsky@example.com,Member,AuthenticatedUsers\r\notheruser,otheruser,Other user,otheruser@example.com,"Member, Reviewer","AuthenticatedUsers, Reviewers"\r\n'
+        content = b'id,username,fullname,email,roles,groups\r\nadmin,admin,,,Manager,AuthenticatedUsers\r\nnoam,noam,Noam Avram Chomsky,noam.chomsky@example.com,Member,AuthenticatedUsers\r\notheruser,otheruser,Other user,otheruser@example.com,"Member, Reviewer","AuthenticatedUsers, Reviewers"\r\ntest_user_1_,test-user,,,Manager,AuthenticatedUsers\r\n'
         self.assertEqual(resp.content, content)
 
     def test_add_user(self):
@@ -1353,6 +1353,9 @@ class TestUsersEndpoint(unittest.TestCase):
 
             def getProperty(self, key, default=None):
                 return "Full Name " + self.userid
+
+            def getUserName(self):
+                return self.userid
 
         class MockAclUsers:
             def searchUsers(self, **kw):

@@ -106,7 +106,8 @@ class Users:
     def _sort_users(users: Iterable[MemberData]) -> Sequence[MemberData]:
         """users is an iterable of MemberData objects, None is not accepted"""
         return sorted(
-            users, key=lambda x: normalizeString(x.getProperty("fullname", ""))
+            users,
+            key=lambda x: normalizeString(x.getProperty("fullname") or x.getUserName()),
         )
 
     def _principal_search_results(
