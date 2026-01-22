@@ -192,6 +192,7 @@ class UsersPost(Service):
                 )
             )
 
+        self.request.response.setStatus(201)
         if isinstance(data, list):
             result = []
             for i in data:
