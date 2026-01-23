@@ -9,6 +9,9 @@ from zope.component import getAdapters
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
+from zope.security import checkPermission
+from zExceptions import Unauthorized
+
 
 
 @implementer(IPublishTraverse)
@@ -65,6 +68,9 @@ class ControlpanelsGet(Service):
             self.request.response.setStatus(404)
             return
 
+        # 🔐 Permission check (FIX for #1949)
+        if not checkPermission("cmf.ManagePortal", panel):
+            raise Unauthorized()
         # Panel child request
         if len(self.params) > 1:
             return IJsonCompatible(panel.get(self.params[1:]))
