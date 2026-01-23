@@ -386,7 +386,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(resp.status_code, 201)
-        dprince = api.user.get("dprince")
+        dprince = api.user.get(username="dprince")
         self.assertEqual(dprince.getProperty("email"), "dprince@example.com")
         self.assertTrue(api.user.get_roles("dprince"), "Member")
 
