@@ -388,7 +388,6 @@ class TestUsersEndpoint(unittest.TestCase):
         )
         transaction.commit()
 
-        breakpoint()
         self.assertEqual(resp.status_code, 201)
         jdoe = api.user.get(username="jdoe")
         self.assertEqual(jdoe.getProperty("email"), "jdoe@example.com")
@@ -405,8 +404,12 @@ class TestUsersEndpoint(unittest.TestCase):
         )
         self.assertEqual("noam.chomsky@example.com", response.json().get("email"))
         self.assertEqual("Noam Avram Chomsky", response.json().get("fullname"))
-        self.assertEqual("web.mit.edu/chomsky", response.json().get("home_page"))  # noqa
-        self.assertEqual("Professor of Linguistics", response.json().get("description"))  # noqa
+        self.assertEqual(
+            "web.mit.edu/chomsky", response.json().get("home_page")
+        )  # noqa
+        self.assertEqual(
+            "Professor of Linguistics", response.json().get("description")
+        )  # noqa
         self.assertEqual("Cambridge, MA", response.json().get("location"))
 
     def test_get_user_as_anonymous(self):
