@@ -378,17 +378,21 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual("howard.zinn@example.com", user.getProperty("email"))
 
     def test_add_users_via_csv(self):
+        """Test POST /@users for CSV upload"""
+
+        content = b"username,email,fullname,description,home_page,password\njdoe,jdoe@example.com,John Doe,Software developer from Berlin,https://jdoe.dev,pass1234\nasmith,asmith@example.com,Alice Smith,Frontend engineer and designer,https://alice.design,alicePwd!\nbwayne,bwayne@example.com,Bruce Wayne,Tech entrepreneur,https://wayneenterprises.com,batman42\n"
+
         resp = self.api_session.post(
             "/@users",
-            data=b"username,email,fullname,description,home_page,password\njdoe,jdoe@example.com,John Doe,Software developer from Berlin,https://jdoe.dev,pass1234\nasmith,asmith@example.com,Alice Smith,Frontend engineer and designer,https://alice.design,alicePwd!\nbwayne,bwayne@example.com,Bruce Wayne,Tech entrepreneur,https://wayneenterprises.com,batman42\nckent,ckent@example.com,Clark Kent,Journalist and blogger,https://dailyplanet.blog,superman\ndprince,dprince@example.com,Diana Prince,Product manager,https://diana.pm,amazon123\npparker,pparker@example.com,Peter Parker,Photography enthusiast,https://pphotos.net,sp1der\ntstark,tstark@example.com,Tony Stark,Inventor and engineer,https://stark.io,ironman\nsrogers,srogers@example.com,Steve Rogers,Team lead,https://leadership.dev,shield\nnromanoff,nromanoff@example.com,Natasha Romanoff,Security consultant,https://securelife.org,blackwidow\nbwilson,bwilson@example.com,Bob Wilson,DevOps specialist,https://devops.bob,ops2024\nemiller,emiller@example.com,Emma Miller,QA engineer,https://qualityemma.com,test123\nrjohnson,rjohnson@example.com,Robert Johnson,Backend developer,https://rob.codes,backend!\nlwhite,lwhite@example.com,Linda White,UX researcher,https://uxlinda.com,research\nknguyen,knguyen@example.com,Kevin Nguyen,Mobile app developer,https://kevinapps.dev,android\nmgarcia,mgarcia@example.com,Maria Garcia,Data analyst,https://datamaria.io,stats99\nhlee,hlee@example.com,Hannah Lee,AI student,https://hannah.ai,mlfuture\njmartin,jmartin@example.com,James Martin,System administrator,https://sysadmin.blog,rootaccess\nslopez,slopez@example.com,Sofia Lopez,Content strategist,https://sofialopez.media,content1\ntanderson,tanderson@example.com,Tom Anderson,Network engineer,https://networks.tom,packet\nvpatel,vpatel@example.com,Vihaan Patel,Cloud architect,https://cloudvihaan.com,awsrocks\nowright,owright@example.com,Oliver Wright,Game developer,https://playoliver.dev,gamedev\nfmueller,fmueller@example.com,Felix M\xc3\xbcller,Java developer,https://felixjava.de,maven21\nakhan,akhan@example.com,Aisha Khan,IT consultant,https://aishakhan.tech,consult!\nychen,ychen@example.com,Yi Chen,Full-stack developer,https://yichen.dev,fullstack\nrpetrov,rpetrov@example.com,Roman Petrov,Security researcher,https://romansec.io,zeroTrust\n",
-            headers={"Accept": "text/csv", "Content-Type": "text/csv"},
+            files={"file": ("users.csv", content, "text/csv")},
         )
         transaction.commit()
 
+        breakpoint()
         self.assertEqual(resp.status_code, 201)
-        dprince = api.user.get(username="dprince")
-        self.assertEqual(dprince.getProperty("email"), "dprince@example.com")
-        self.assertTrue(api.user.get_roles("dprince"), "Member")
+        jdoe = api.user.get(username="jdoe")
+        self.assertEqual(jdoe.getProperty("email"), "jdoe@example.com")
+        self.assertTrue(api.user.get_roles("jdoe"), "Member")
 
     def test_get_user(self):
         response = self.api_session.get("/@users/noam")
@@ -401,12 +405,8 @@ class TestUsersEndpoint(unittest.TestCase):
         )
         self.assertEqual("noam.chomsky@example.com", response.json().get("email"))
         self.assertEqual("Noam Avram Chomsky", response.json().get("fullname"))
-        self.assertEqual(
-            "web.mit.edu/chomsky", response.json().get("home_page")
-        )  # noqa
-        self.assertEqual(
-            "Professor of Linguistics", response.json().get("description")
-        )  # noqa
+        self.assertEqual("web.mit.edu/chomsky", response.json().get("home_page"))  # noqa
+        self.assertEqual("Professor of Linguistics", response.json().get("description"))  # noqa
         self.assertEqual("Cambridge, MA", response.json().get("location"))
 
     def test_get_user_as_anonymous(self):
