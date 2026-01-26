@@ -2,5 +2,5 @@ HTTP/1.1 200 OK
 Content-Type: text/csv; charset=utf-8
 
 id,username,fullname,email,roles,groups
-test_user_1_,test-user,,,Manager,AuthenticatedUsers
 admin,admin,,,Manager,AuthenticatedUsers
+test_user_1_,test-user,,,Manager,AuthenticatedUsers
