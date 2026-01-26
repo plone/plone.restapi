@@ -12,6 +12,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.PasswordResetTool import ExpiredRequestError
 from Products.CMFPlone.PasswordResetTool import InvalidRequestError
 from Products.CMFPlone.RegistrationTool import get_member_by_login_name
+from zExceptions import BadRequest
 from zExceptions import Forbidden
 from zExceptions import HTTPNotAcceptable as NotAcceptable
 from zope.component import getAdapter
@@ -136,12 +137,19 @@ class UsersPost(Service):
 
         portal = getSite()
 
-        if self.request.getHeader("Content-Type") == "text/csv":
+        if form := self.request.form:
+            if not form.get("file"):
+                raise BadRequest("No file uploaded")
+
+            file = form["file"]
+            if file.headers.get("Content-Type") not in ("text/csv", "application/csv"):
+                raise BadRequest("Uploaded file is not a valid CSV file")
             if len(self.params) > 0:
                 raise NotAcceptable(_(""))
+
             data = []
             stream = io.TextIOWrapper(
-                self.request.stdin,
+                file,
                 encoding="utf-8",
                 newline="",
             )
