@@ -1098,13 +1098,9 @@ class TestDocumentation(TestDocumentationBase):
 
         content = b'id,username,fullname,email,roles,location,password\r\nnoam,noamchomsky,Noam Avran Chomsky,noam.chomsky@example.com,Contributor,"Cambridge, MA",password1234\r\n'
 
-        headers = {
-            "Accept": "text/csv",
-            "Authorization": "Basic YWRtaW46c2VjcmV0",
-            "Content-Type": "text/csv",
-        }
-
-        response = self.api_session.post(url, headers=headers, data=content)
+        response = self.api_session.post(
+            url, files={"file": ("users.csv", content, "text/csv")}
+        )
         save_request_and_response_for_docs("users_add_csv_format", response)
 
     def test_documentation_users_update(self):

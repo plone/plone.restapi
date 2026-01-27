@@ -1,43 +1,28 @@
-HTTP/1.1 500 Internal Server Error
+HTTP/1.1 201 Created
 Content-Type: application/json
+Location: http://localhost:55001/plone/@users/noamchomsky
 
-{
-    "context": "http://localhost:55001/plone",
-    "message": "'No JSON object could be decoded'",
-    "traceback": [
-        "File \"/Users/jonaspiterek/workspace/plone.restapi/.venv/lib/python3.12/site-packages/ZPublisher/WSGIPublisher.py\", line 181, in transaction_pubevents",
-        "    yield",
-        "",
-        "  File \"/Users/jonaspiterek/workspace/plone.restapi/.venv/lib/python3.12/site-packages/ZPublisher/WSGIPublisher.py\", line 390, in publish_module",
-        "    response = _publish(request, new_mod_info)",
-        "               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
-        "",
-        "  File \"/Users/jonaspiterek/workspace/plone.restapi/.venv/lib/python3.12/site-packages/ZPublisher/WSGIPublisher.py\", line 284, in publish",
-        "    result = mapply(obj,",
-        "             ^^^^^^^^^^^",
-        "",
-        "  File \"/Users/jonaspiterek/workspace/plone.restapi/.venv/lib/python3.12/site-packages/ZPublisher/mapply.py\", line 98, in mapply",
-        "    return debug(object, args, context)",
-        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
-        "",
-        "  File \"/Users/jonaspiterek/workspace/plone.restapi/.venv/lib/python3.12/site-packages/ZPublisher/WSGIPublisher.py\", line 68, in call_object",
-        "    return obj(*args)",
-        "           ^^^^^^^^^^",
-        "",
-        "  File \"/Users/jonaspiterek/workspace/plone.restapi/.venv/lib/python3.12/site-packages/plone/rest/service.py\", line 21, in __call__",
-        "    return self.render()",
-        "           ^^^^^^^^^^^^^",
-        "",
-        "  File \"/Users/jonaspiterek/workspace/plone.restapi/src/plone/restapi/services/__init__.py\", line 19, in render",
-        "    content = self.reply()",
-        "              ^^^^^^^^^^^^",
-        "",
-        "  File \"/Users/jonaspiterek/workspace/plone.restapi/src/plone/restapi/services/users/add.py\", line 169, in reply",
-        "    data = json_body(self.request)",
-        "           ^^^^^^^^^^^^^^^^^^^^^^^",
-        "",
-        "  File \"/Users/jonaspiterek/workspace/plone.restapi/src/plone/restapi/deserializer/__init__.py\", line 14, in json_body",
-        "    raise DeserializationError(\"No JSON object could be decoded\")"
-    ],
-    "type": "DeserializationError"
-}
+[
+    {
+        "@id": "http://localhost:55001/plone/@users/noamchomsky",
+        "description": null,
+        "email": "noam.chomsky@example.com",
+        "fullname": "Noam Avran Chomsky",
+        "groups": {
+            "@id": "http://localhost:55001/plone/@users",
+            "items": [
+                {
+                    "id": "AuthenticatedUsers",
+                    "title": "AuthenticatedUsers"
+                }
+            ],
+            "items_total": 1
+        },
+        "home_page": null,
+        "id": "noamchomsky",
+        "location": "Cambridge, MA",
+        "portrait": null,
+        "roles": [],
+        "username": "noamchomsky"
+    }
+]
