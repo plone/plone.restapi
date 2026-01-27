@@ -1097,10 +1097,28 @@ class TestDocumentation(TestDocumentationBase):
         url = f"{self.portal.absolute_url()}/@users"
 
         content = b'id,username,fullname,email,roles,location,password\r\nnoam,noamchomsky,Noam Avran Chomsky,noam.chomsky@example.com,Contributor,"Cambridge, MA",password1234\r\n'
+        csv_file = io.BytesIO(content)
+        csv_file.name = "users.csv"
 
-        response = self.api_session.post(
-            url, files={"file": ("users.csv", content, "text/csv")}
+        # Setting a fixed boundary intentionally to make the producing .req and .resp files deterministic
+        boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+
+        # Manually construct the multipart body
+        body = (
+            f"--{boundary}\r\n"
+            f'Content-Disposition: form-data; name="file"; filename="{csv_file.name}"\r\n'
+            "Content-Type: text/csv\r\n\r\n"
+            f"{content.decode()}\r\n"
+            f"--{boundary}--\r\n"
         )
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": "Basic YWRtaW46c2VjcmV0",
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
+        }
+
+        response = self.api_session.post(url, headers=headers, data=body)
         save_request_and_response_for_docs("users_add_csv_format", response)
 
     def test_documentation_users_update(self):

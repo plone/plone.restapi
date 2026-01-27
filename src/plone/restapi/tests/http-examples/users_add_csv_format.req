@@ -1,13 +1,13 @@
 POST /plone/@users HTTP/1.1
 Accept: application/json
 Authorization: Basic YWRtaW46c2VjcmV0
-Content-Type: multipart/form-data; boundary=3ee316e66d1d8c0c2d25b3e464ae4fba
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
---3ee316e66d1d8c0c2d25b3e464ae4fba
+------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="file"; filename="users.csv"
 Content-Type: text/csv
 
 id,username,fullname,email,roles,location,password
 noam,noamchomsky,Noam Avran Chomsky,noam.chomsky@example.com,Contributor,"Cambridge, MA",password1234
 
---3ee316e66d1d8c0c2d25b3e464ae4fba--
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
