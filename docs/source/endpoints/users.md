@@ -147,6 +147,47 @@ The `Location` header contains the URL of the newly created user, and the resour
 
 If no roles have been specified, then a `Member` role is added as a sensible default.
 
+### Create users via CSV
+
+To create a new user from a CSV file, send a `POST` request to the `/@users` endpoint with a `multipart/form-data` body containing a CSV file with the user details.
+The endpoint expects the CSV file to be under a "file" part of the `Content-Disposition: multipart/form-data`:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/users_add_csv_format.req
+```
+
+The CSV file's first line is reserved for the header. Possible columns include:
+
+| Column          | Type   | Example                         |
+|-----------------|--------|---------------------------------|
+| `id` (required) | string | jdoe                            |
+| `username`      | string | jdoe                            |
+| `fullname`      | string | John Doe                        |
+| `description`   | string | Software Developer from Berlin. |
+| `email`         | string | jdoe@example.com                |
+| `roles`         | list   | "Member, Contributor"           |
+| `groups`        | list   | AuthenticatedUsers              |
+| `location`      | string | Berlin, DE                      |
+| `home_page`     | string | jdoe.dev                        |
+| `password`      | string | pwd1234                         |
+
+```{note}
+If you want a user to have more that one role, note that you have to put the roles in quotes (see table above).
+```
+
+Example of a minimal CSV file:
+
+```
+id,fullname,description,email
+jdoe,John Doe,Software Developer from Berlin,jdoe@example.com
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_add_csv_format.resp
+:language: http
+```
 
 ## Read User
 
