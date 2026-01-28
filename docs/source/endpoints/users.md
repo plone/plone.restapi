@@ -157,6 +157,12 @@ The endpoint expects the CSV file to be under a "file" part of the `Content-Disp
     :request: ../../../src/plone/restapi/tests/http-examples/users_add_csv_format.req
 ```
 
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_add_csv_format.resp
+:language: http
+```
+
 The CSV file's first line is reserved for the header. Possible columns include:
 
 | Column          | Type   | Example                         |
@@ -177,17 +183,11 @@ When a user has more than one role, put the roles in quotes, as shown in the tab
 Additionally, values that contain commas should be placed in quotes.
 ```
 
-Example of a minimal CSV file:
+Example of a CSV file with quoted values:
 
 ```
-id,fullname,description,email
-jdoe,John Doe,Software Developer from Berlin,jdoe@example.com
-```
-
-Response:
-
-```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_add_csv_format.resp
-:language: http
+id,fullname,description,email,roles
+jdoe,John Doe,Software Developer from Berlin,jdoe@example.com,"Member, Contributor"
 ```
 
 ## Read User
