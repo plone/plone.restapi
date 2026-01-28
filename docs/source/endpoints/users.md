@@ -168,12 +168,13 @@ The CSV file's first line is reserved for the header. Possible columns include:
 | `email`         | string | jdoe@example.com                |
 | `roles`         | list   | "Member, Contributor"           |
 | `groups`        | list   | AuthenticatedUsers              |
-| `location`      | string | Berlin, DE                      |
+| `location`      | string | "Berlin, DE"                    |
 | `home_page`     | string | jdoe.dev                        |
 | `password`      | string | pwd1234                         |
 
 ```{note}
-If you want a user to have more that one role, note that you have to put the roles in quotes (see table above).
+When a user has more than one role, put the roles in quotes, as shown in the table above.
+Additionally, values that contain commas should be placed in quotes.
 ```
 
 Example of a minimal CSV file:
