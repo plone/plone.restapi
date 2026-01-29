@@ -156,6 +156,14 @@ class UsersPost(Service):
             try:
                 reader = csv.DictReader(stream)
                 for row in reader:
+                    # convert to lists
+                    for key in ("roles", "groups"):
+                        if row.get(key):
+                            row[key] = [r.strip() for r in row[key].split(",")]
+                    # remove empty values
+                    for key in list(row.keys()):
+                        if not row[key]:
+                            del row[key]
                     # validate important data
                     self.validate_input_data(portal, row)
                     data.append(row)

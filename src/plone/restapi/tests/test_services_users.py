@@ -380,7 +380,7 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_add_users_via_csv(self):
         """Test POST /@users for CSV upload"""
 
-        content = b"username,email,fullname,description,home_page,password\njdoe,jdoe@example.com,John Doe,Software developer from Berlin,https://jdoe.dev,pass1234\nasmith,asmith@example.com,Alice Smith,Frontend engineer and designer,https://alice.design,alicePwd!\nbwayne,bwayne@example.com,Bruce Wayne,Tech entrepreneur,https://wayneenterprises.com,batman42\n"
+        content = b'username,email,fullname,description,roles,home_page,password\njdoe,jdoe@example.com,John Doe,Software developer from Berlin,"Member, Contributor",https://jdoe.dev,pass1234\nasmith,asmith@example.com,Alice Smith,Frontend engineer and designer,,https://alice.design,alicePwd!\nbwayne,bwayne@example.com,Bruce Wayne,Tech entrepreneur,,https://wayneenterprises.com,batman42\n'
 
         resp = self.api_session.post(
             "/@users",

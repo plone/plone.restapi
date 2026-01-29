@@ -1096,7 +1096,7 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_users_csv_format_add(self):
         url = f"{self.portal.absolute_url()}/@users"
 
-        content = b'id,username,fullname,email,roles,location,password\r\nnoam,noamchomsky,Noam Avran Chomsky,noam.chomsky@example.com,Contributor,"Cambridge, MA",password1234\r\n'
+        content = b'username,email,fullname,description,roles,home_page,password\r\njdoe,jdoe@example.com,John Doe,Software developer from Berlin,"Member, Contributor",https://jdoe.dev,pass1234\nasmith,asmith@example.com,Alice Smith,Frontend engineer and designer,Member,https://alice.design,alicePwd!\r\nbwayne,bwayne@example.com,Bruce Wayne,Tech entrepreneur,,https://wayneenterprises.com,batman42\r\n'
         csv_file = io.BytesIO(content)
         csv_file.name = "users.csv"
 

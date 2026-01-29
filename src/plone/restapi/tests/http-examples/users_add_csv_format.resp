@@ -1,13 +1,13 @@
 HTTP/1.1 201 Created
 Content-Type: application/json
-Location: http://localhost:55001/plone/@users/noamchomsky
+Location: http://localhost:55001/plone/@users/bwayne
 
 [
     {
-        "@id": "http://localhost:55001/plone/@users/noamchomsky",
-        "description": null,
-        "email": "noam.chomsky@example.com",
-        "fullname": "Noam Avran Chomsky",
+        "@id": "http://localhost:55001/plone/@users/jdoe",
+        "description": "Software developer from Berlin",
+        "email": "jdoe@example.com",
+        "fullname": "John Doe",
         "groups": {
             "@id": "http://localhost:55001/plone/@users",
             "items": [
@@ -18,11 +18,62 @@ Location: http://localhost:55001/plone/@users/noamchomsky
             ],
             "items_total": 1
         },
-        "home_page": null,
-        "id": "noamchomsky",
-        "location": "Cambridge, MA",
+        "home_page": "https://jdoe.dev",
+        "id": "jdoe",
+        "location": null,
         "portrait": null,
-        "roles": [],
-        "username": "noamchomsky"
+        "roles": [
+            "Contributor",
+            "Member"
+        ],
+        "username": "jdoe"
+    },
+    {
+        "@id": "http://localhost:55001/plone/@users/asmith",
+        "description": "Frontend engineer and designer",
+        "email": "asmith@example.com",
+        "fullname": "Alice Smith",
+        "groups": {
+            "@id": "http://localhost:55001/plone/@users",
+            "items": [
+                {
+                    "id": "AuthenticatedUsers",
+                    "title": "AuthenticatedUsers"
+                }
+            ],
+            "items_total": 1
+        },
+        "home_page": "https://alice.design",
+        "id": "asmith",
+        "location": null,
+        "portrait": null,
+        "roles": [
+            "Member"
+        ],
+        "username": "asmith"
+    },
+    {
+        "@id": "http://localhost:55001/plone/@users/bwayne",
+        "description": "Tech entrepreneur",
+        "email": "bwayne@example.com",
+        "fullname": "Bruce Wayne",
+        "groups": {
+            "@id": "http://localhost:55001/plone/@users",
+            "items": [
+                {
+                    "id": "AuthenticatedUsers",
+                    "title": "AuthenticatedUsers"
+                }
+            ],
+            "items_total": 1
+        },
+        "home_page": "https://wayneenterprises.com",
+        "id": "bwayne",
+        "location": null,
+        "portrait": null,
+        "roles": [
+            "Member"
+        ],
+        "username": "bwayne"
     }
 ]
