@@ -765,6 +765,19 @@ class TestSearchFunctional(unittest.TestCase):
             "Other Document",
         )
 
+        response = self.api_session.get(
+            "/@search",
+            params={
+                "use_site_search_settings": 1,
+                "sort_on": "effective",
+                "sort_order": "reverse",
+            },
+        ).json()
+        self.assertEqual(
+            [item["title"] for item in response["items"]][0],
+            "Other Document",
+        )
+
     def test_search_use_site_search_settings_with_navigation_root(self):
 
         alsoProvides(self.folder, INavigationRoot)
