@@ -9,6 +9,35 @@
 
 <!-- towncrier release notes start -->
 
+## 10.0.0a1 (2026-01-13)
+
+
+### Breaking changes:
+
+- Replace ``pkg_resources`` namespace with PEP 420 native namespace.
+  Support only Plone 6.2 and Python 3.10+. #3928
+
+
+### New features:
+
+- `@aliases` service: Add support for filtering aliases for a non-root item. @jnptk #1791
+
+
+### Bug fixes:
+
+- Add some German translations. @valipod #1950
+- Remove default limit of 1000 from service @querystring-search. @wesleybl #1955
+
+
+### Documentation:
+
+- Fix link to querystring operators in docs. @jnptk 
+
+
+### Tests:
+
+- Fix tests to expect an extra registry record.  @mauritsvanrees 
+
 ## 9.15.3 (2025-10-01)
 
 

@@ -138,7 +138,7 @@ The sort_order can be either `ascending` or `descending`.
 
 ### Limit
 
-Querystring `query` with a `limit` parameter:
+Use the `limit` parameter to set a maximum number of results that will be returned:
 
 ```
 {
@@ -154,7 +154,7 @@ Querystring `query` with a `limit` parameter:
 ```
 
 The `limit` parameter is optional.
-The default value is `1000`.
+The default value is `None`, but a single page of results will still have a size determined by the batch size parameter `b_size`.
 
 ### Query
 
