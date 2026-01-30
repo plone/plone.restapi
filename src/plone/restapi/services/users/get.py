@@ -1,5 +1,6 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
+from csv import writer
 from itertools import chain
 from plone.app.workflow.browser.sharing import merge_search_results
 from plone.namedfile.browser import ALLOWED_INLINE_MIMETYPES
@@ -8,6 +9,7 @@ from plone.namedfile.browser import USE_DENYLIST
 from plone.namedfile.utils import stream_data
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.permissions import PloneManageUsers
+from plone.restapi.services import _no_content_marker
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
@@ -19,11 +21,16 @@ from typing import Sequence
 from urllib.parse import parse_qs
 from urllib.parse import quote
 from zExceptions import BadRequest
+from zExceptions import NotFound
+from zExceptions import Unauthorized
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
+
+import json
+import tempfile
 
 
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
@@ -75,21 +82,16 @@ def isDefaultPortrait(value):
     )
 
 
-@implementer(IPublishTraverse)
-class UsersGet(Service):
-    def __init__(self, context, request):
-        super().__init__(context, request)
-        self.params = []
+class Users:
+    def __init__(self, context, request, params):
+        self.context = context
+        self.request = request
+        self.params = params
         portal = getSite()
         self.portal_membership = getToolByName(portal, "portal_membership")
         self.acl_users = getToolByName(portal, "acl_users")
         self.query = parse_qs(self.request["QUERY_STRING"])
         self.search_term = self.query.get("search", [""])[0]
-
-    def publishTraverse(self, request, name):
-        # Consume any path segments after /@users as parameters
-        self.params.append(name)
-        return self
 
     @property
     def _get_user_id(self):
@@ -104,7 +106,8 @@ class UsersGet(Service):
     def _sort_users(users: Iterable[MemberData]) -> Sequence[MemberData]:
         """users is an iterable of MemberData objects, None is not accepted"""
         return sorted(
-            users, key=lambda x: normalizeString(x.getProperty("fullname", ""))
+            users,
+            key=lambda x: normalizeString(x.getProperty("fullname") or x.getUserName()),
         )
 
     def _principal_search_results(
@@ -193,6 +196,8 @@ class UsersGet(Service):
         )
 
     def reply(self):
+        self.request.response.setStatus(200)
+        self.request.response.setHeader("Content-Type", "application/json")
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
             groups_filter = self.query.get("groups-filter:list", [])
@@ -208,10 +213,11 @@ class UsersGet(Service):
                             (user, self.request), ISerializeToJson
                         )
                         result.append(serializer())
-                    return result
+                    return result, len(result)
                 else:
-                    self.request.response.setStatus(401)
-                    return
+                    raise Unauthorized(
+                        "You are not authorized to access this resource."
+                    )
             else:
                 raise BadRequest("Parameters supplied are not valid")
 
@@ -224,10 +230,9 @@ class UsersGet(Service):
                         (user, self.request), ISerializeToJson
                     )
                     result.append(serializer())
-                return result
+                return result, len(result)
             else:
-                self.request.response.setStatus(401)
-                return
+                raise Unauthorized("You are not authorized to access this resource.")
 
         # Some is asking one user, check if the logged in user is asking
         # their own information or if they are a Manager
@@ -239,13 +244,96 @@ class UsersGet(Service):
             # we retrieve the user on the user id not the username
             user = self._get_user(self._get_user_id)
             if not user:
-                self.request.response.setStatus(404)
-                return
+                raise NotFound(f"User ${self._get_user_id} does not exist.")
             serializer = queryMultiAdapter((user, self.request), ISerializeToJson)
             return serializer()
         else:
-            self.request.response.setStatus(401)
-            return
+            raise Unauthorized("You are not authorized to access this resource.")
+
+    def reply_root_csv(self):
+        if len(self.params) > 0:
+            raise BadRequest("You may not request a CSV reply for a specific user.")
+
+        if self.has_permission_to_enumerate():
+            file_descriptor, file_path = tempfile.mkstemp(
+                suffix=".csv", prefix="users_"
+            )
+            with open(file_path, "w") as stream:
+                csv_writer = writer(stream)
+                csv_writer.writerow(
+                    ["id", "username", "fullname", "email", "roles", "groups"]
+                )
+
+                for user in self._get_users():
+                    serializer = queryMultiAdapter(
+                        (user, self.request), ISerializeToJson
+                    )
+                    user = serializer()
+                    csv_writer.writerow(
+                        [
+                            user["id"],
+                            user["username"],
+                            user["fullname"],
+                            user["email"],
+                            ", ".join(user["roles"]),
+                            ", ".join(g["id"] for g in user["groups"]["items"]),
+                        ]
+                    )
+            with open(file_path, "rb") as stream:
+                content = stream.read()
+        else:
+            raise Unauthorized("You are not authorized to access this resource.")
+
+        response = self.request.response
+        response.setHeader("Content-Type", "text/csv")
+        response.setHeader("Content-Length", len(content))
+        response.setHeader("Content-Disposition", "attachment; filename=users.csv")
+        return content
+
+    def __call__(self, expand=False):
+        result = {"users": {"@id": f"{self.context.absolute_url()}/@users"}}
+        if not expand:
+            return result
+        if self.request.getHeader("Accept") == "text/csv":
+            result["users"]["items"] = self.reply_root_csv()
+            return result
+        else:
+            if len(self.params) > 0:
+                result["users"] = self.reply()
+                return result
+            items, items_total = self.reply()
+
+        result["users"]["items"] = items
+        result["users"]["items_total"] = items_total
+        return result
+
+
+@implementer(IPublishTraverse)
+class UsersGet(Service):
+    """Get users."""
+
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
+
+    def publishTraverse(self, request, name):
+        # Consume any path segments after /@users as parameters
+        self.params.append(name)
+        return self
+
+    def reply(self):
+        users = Users(self.context, self.request, self.params)
+        return users(expand=True)["users"]
+
+    def render(self):
+        self.check_permission()
+        content = self.reply()
+        if self.request.getHeader("Accept") == "text/csv":
+            return content["items"]
+        if content is not _no_content_marker:
+            return json.dumps(
+                content, indent=2, sort_keys=True, separators=(", ", ": ")
+            )
 
 
 @implementer(IPublishTraverse)
@@ -297,7 +385,7 @@ class PortraitGet(Service):
             portrait = self.portal_membership.getPersonalPortrait(current_user_id)
         else:
             raise Exception(
-                "Must supply exactly zero (own portrait) or one parameter " "(user id)"
+                "Must supply exactly zero (own portrait) or one parameter (user id)"
             )
         # User uploaded portraits have a meta_type of "Image"
         if not portrait or isDefaultPortrait(portrait):

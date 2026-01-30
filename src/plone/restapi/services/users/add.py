@@ -12,6 +12,9 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.PasswordResetTool import ExpiredRequestError
 from Products.CMFPlone.PasswordResetTool import InvalidRequestError
 from Products.CMFPlone.RegistrationTool import get_member_by_login_name
+from zExceptions import BadRequest
+from zExceptions import Forbidden
+from zExceptions import HTTPNotAcceptable as NotAcceptable
 from zope.component import getAdapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
@@ -21,6 +24,8 @@ from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
+import csv
+import io
 import plone.protect.interfaces
 
 
@@ -31,6 +36,7 @@ class UsersPost(Service):
     def __init__(self, context, request):
         super().__init__(context, request)
         self.params = []
+        self.errors = []
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
@@ -131,12 +137,45 @@ class UsersPost(Service):
 
         portal = getSite()
 
-        # validate important data
-        data = json_body(self.request)
-        self.errors = []
-        self.validate_input_data(portal, data)
-        security = getAdapter(self.context, ISecuritySchema)
-        registration = getToolByName(self.context, "portal_registration")
+        if form := self.request.form:
+            if not form.get("file"):
+                raise BadRequest("No file uploaded")
+
+            file = form["file"]
+            if file.headers.get("Content-Type") not in ("text/csv", "application/csv"):
+                raise BadRequest("Uploaded file is not a valid CSV file")
+            if len(self.params) > 0:
+                raise NotAcceptable(_(""))
+
+            data = []
+            stream = io.TextIOWrapper(
+                file,
+                encoding="utf-8",
+                newline="",
+            )
+            try:
+                reader = csv.DictReader(stream)
+                for row in reader:
+                    # convert to lists
+                    for key in ("roles", "groups"):
+                        if row.get(key):
+                            row[key] = [r.strip() for r in row[key].split(",")]
+                    # remove empty values
+                    for key in list(row.keys()):
+                        if not row[key]:
+                            del row[key]
+                    # validate important data
+                    self.validate_input_data(portal, row)
+                    data.append(row)
+            finally:
+                # Flush the text wrapper & disconnect it from the underlying buffer.
+                # Prevents the buffer from being closed too early.
+                # The TextIOWrapper (`stream`) is unusable after being detached.
+                stream.detach()
+        else:
+            # validate important data
+            data = json_body(self.request)
+            self.validate_input_data(portal, data)
 
         general_usage_error = (
             "Either post to @users to create a user or use "
@@ -152,11 +191,7 @@ class UsersPost(Service):
 
         # Add a portal member
         if not self.can_add_member:
-            return self._error(
-                403,
-                "Forbidden",
-                _("You need AddPortalMember permission."),
-            )
+            raise Forbidden(_("You need AddPortalMember permission."))
 
         if self.errors:
             self.request.response.setStatus(400)
@@ -172,6 +207,20 @@ class UsersPost(Service):
                     errors=self.errors,
                 )
             )
+
+        self.request.response.setStatus(201)
+        if isinstance(data, list):
+            result = []
+            for i in data:
+                user = self._add_user(i)
+                result.append(user)
+            return result
+        return self._add_user(data)
+
+    def _add_user(self, data):
+        portal = getSite()
+        security = getAdapter(self.context, ISecuritySchema)
+        registration = getToolByName(portal, "portal_registration")
 
         username = data.pop("username", None)
         email = data.pop("email", None)
@@ -205,7 +254,6 @@ class UsersPost(Service):
             password = registration.generatePassword()
         # Create user
         try:
-            registration = getToolByName(portal, "portal_registration")
             user = registration.addMember(
                 username, password, roles, properties=properties
             )
@@ -219,8 +267,7 @@ class UsersPost(Service):
             )
 
         if user_id != login_name:
-            # The user id differs from the login name.  Set the login
-            # name correctly.
+            # The user id differs from the login name. Set the login name correctly.
             pas = getToolByName(self.context, "acl_users")
             pas.updateLoginName(user_id, login_name)
 
@@ -320,7 +367,8 @@ class UsersPost(Service):
             except ExpiredRequestError:
                 return self._error(
                     403,
-                    _("Expired Token", "The reset_token is expired."),
+                    "Expired Token",
+                    _("The reset_token is expired."),
                 )
             return
 
