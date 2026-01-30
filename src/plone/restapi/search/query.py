@@ -171,13 +171,16 @@ class BaseIndexQueryParser:
         idx_query = idx_query.copy()
         parsed_query = {}
 
-        try:
+        if "query" not in idx_query and "not" not in idx_query:
+            raise QueryParsingError(
+                "Query for index %r is missing a 'query' or 'not' key!" % self.index
+            )
+        if "query" in idx_query:
             qv = idx_query.pop("query")
             parsed_query["query"] = self.parse_simple_query(qv)
-        except KeyError:
-            raise QueryParsingError(
-                "Query for index %r is missing a 'query' key!" % self.index
-            )
+        if "not" in idx_query:
+            nt = idx_query.pop("not")
+            parsed_query["not"] = self.parse_simple_query(nt)
 
         for opt_key, opt_value in idx_query.items():
             if opt_key in self.query_options:
