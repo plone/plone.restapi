@@ -1,0 +1,1 @@
+In the `@search` service, fix a case where the `sort_order` parameter was ignored. @mamico, @davisagli
