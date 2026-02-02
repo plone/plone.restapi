@@ -62,3 +62,92 @@ It is recommended to pass all values through `json_compatible` in order to valid
 
 For customizing a specific field instance, a named `IFieldSerializer` adapter can be registered.
 The name may either be the full dotted name of the field, such as `plone.app.dexterity.behaviors.exclfromnav.IExcludeFromNavigation.exclude_from_nav`, or the shortname of the field, such as `exclude_from_nav`.
+
+
+### Dexterity content types
+
+The API automatically provides a default serialization for all Dexterity content types.
+
+If you look to customize the serialization of a given content type, please do the following.
+
+Define a custom adapter:
+
+```xml
+<adapter
+    factory=".adapters.MySerializer"
+    provides="plone.restapi.interfaces.ISerializeToJson"
+    for="my.package.interfaces.IMyContentType
+        zope.interface.Interface"
+    />
+```
+
+```python
+from plone import api
+from plone.restapi.serializer.dxcontent import SerializeToJson
+
+
+class MySerializer(SerializeToJson):
+
+    def __call__(self, version=None, include_items=True, include_expansion=True):
+        # default provided by Plone
+        result = super().__call__(
+            version=version,
+            include_items=include_items,
+            include_expansion=include_expansion,
+        )
+        #
+        # here goes your custom logic
+        #
+        return result
+```
+
+With these changes you will have a custom serializer for your content type.
+
+
+```{warning}
+If you modify, as shown above, the serialization of a content type,
+you might also have to customize the deserialization. See below.
+```
+
+#### Deserialization
+
+The reverse of the serialization also happens for the deserialization.
+
+A default deserializer is provided by the API, but in case you want to customize it, you can as follows.
+
+Define a custom adapter:
+
+```xml
+<adapter
+    factory=".adapters.MyDeserializer"
+    provides="plone.restapi.interfaces.IDeserializeFromJson"
+    for="my.package.interfaces.IMyContentType
+        zope.interface.Interface"
+    />
+```
+
+```python
+from plone import api
+from plone.restapi.deserializer.dxcontent import DeserializeFromJson
+
+
+class MyDeserializer(DeserializeFromJson):
+
+    def __call__(
+        self, validate_all=False, data=None, create=False, mask_validation_errors=True
+    ):
+        #
+        # your custom logic goes here, you might want to manipulate the `data` value
+        #
+
+        # after your custom logic, you might rely on the default provided by Plone
+        result = super().__call__(
+            validate_all=validate_all,
+            data=data,
+            create=create,
+            mask_validation_errors=mask_validation_errors,
+        )
+        return result
+```
+
+With this, you will be able to manipulate the data that gets on a specific content type.
