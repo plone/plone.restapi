@@ -150,7 +150,7 @@ If no roles have been specified, then a `Member` role is added as a sensible def
 ### Create users via CSV
 
 To create a new user from a CSV file, send a `POST` request to the `/@users` endpoint with a `multipart/form-data` body containing a CSV file with the user details.
-The endpoint expects the CSV file to be under a "file" part of the `Content-Disposition: multipart/form-data`:
+The endpoint expects a request body with `Content-Type: multipart/form-data` including a file upload named `file`.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
