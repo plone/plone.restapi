@@ -14,7 +14,6 @@ from Products.CMFPlone.PasswordResetTool import InvalidRequestError
 from Products.CMFPlone.RegistrationTool import get_member_by_login_name
 from zExceptions import BadRequest
 from zExceptions import Forbidden
-from zExceptions import HTTPNotAcceptable as NotAcceptable
 from zope.component import getAdapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
@@ -145,7 +144,7 @@ class UsersPost(Service):
             if file.headers.get("Content-Type") not in ("text/csv", "application/csv"):
                 raise BadRequest("Uploaded file is not a valid CSV file")
             if len(self.params) > 0:
-                raise NotAcceptable(_(""))
+                raise BadRequest(f"Unexpected path element '{'/'.join(self.params)}'")
 
             data = []
             stream = io.TextIOWrapper(
