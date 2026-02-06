@@ -1,0 +1,1 @@
+Fix `HypermediaBatch` assuming a request always has a JSON body. @jnptk
