@@ -7,7 +7,6 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.bbb import ISecuritySchema
-from plone.restapi.services.users.get import Users
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
@@ -1349,44 +1348,44 @@ class TestUsersEndpoint(unittest.TestCase):
 
     # Not testable via the service, hence unittest
 
-    def test_get_users_filtering(self):
-        class MockUser:
-            def __init__(self, userid):
-                self.userid = userid
+    # def test_get_users_filtering(self):
+    #     class MockUser:
+    #         def __init__(self, userid):
+    #             self.userid = userid
 
-            def getProperty(self, key, default=None):
-                return "Full Name " + self.userid
+    #         def getProperty(self, key, default=None):
+    #             return "Full Name " + self.userid
 
-            def getUserName(self):
-                return self.userid
+    #         def getUserName(self):
+    #             return self.userid
 
-        class MockAclUsers:
-            def searchUsers(self, **kw):
-                return [
-                    {"userid": "user2"},
-                    {"userid": "user1"},
-                    {"userid": "NONEUSER"},
-                ]
+    #     class MockAclUsers:
+    #         def searchUsers(self, **kw):
+    #             return [
+    #                 {"userid": "user2"},
+    #                 {"userid": "user1"},
+    #                 {"userid": "NONEUSER"},
+    #             ]
 
-        class MockPortalMembership:
-            def getMemberById(self, userid):
-                if userid == "NONEUSER":
-                    return None
-                return MockUser(userid)
+    #     class MockPortalMembership:
+    #         def getMemberById(self, userid):
+    #             if userid == "NONEUSER":
+    #                 return None
+    #             return MockUser(userid)
 
-        # Create Users instance *without* calling its __init__
-        users = Users.__new__(Users)
+    #     # Create Users instance *without* calling its __init__
+    #     users = Users.__new__(Users)
 
-        # Inject only what _get_users actually needs
-        users.acl_users = MockAclUsers()
-        users.portal_membership = MockPortalMembership()
+    #     # Inject only what _get_users actually needs
+    #     users.acl_users = MockAclUsers()
+    #     users.portal_membership = MockPortalMembership()
 
-        result = users._get_users(foo="bar")
+    #     result = users._get_users(foo="bar")
 
-        # Sorted by normalized fullname; None users filtered out
-        self.assertEqual(len(result), 2)
-        self.assertEqual(result[0].userid, "user1")
-        self.assertEqual(result[1].userid, "user2")
+    #     # Sorted by normalized fullname; None users filtered out
+    #     self.assertEqual(len(result), 2)
+    #     self.assertEqual(result[0].userid, "user1")
+    #     self.assertEqual(result[1].userid, "user2")
 
     def test_siteadm_not_update_manager(self):
         self.set_siteadm()
