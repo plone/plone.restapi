@@ -1,0 +1,1 @@
+Return empty list for relatedItems when related content was deleted instead of [null]. Filter broken relations in RelationListFieldSerializer.get_value() by to_object so only resolvable relations are serialized. @aryan7081
