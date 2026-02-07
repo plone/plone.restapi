@@ -22,7 +22,7 @@ jobs:
             plone-version: "6.2"
     steps:
       # git checkout
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # Python setup
       - name: Set up Python ${{ matrix.python-version }}

@@ -1,18 +1,16 @@
-from setuptools import find_packages
 from setuptools import setup
 
 import pathlib
 import sys
 
 
-version = "9.15.4.dev0"
+version = "10.0.0a2.dev0"
 
-if sys.version_info.major == 2:
+if getattr(sys.version_info, "major") == 2:
     raise ValueError(
         "plone.restapi 10 requires Python 3. "
         "Please downgrade to plone.restapi 7 for Python 2 and Plone 4.3/5.1."
     )
-
 
 long_description = "\n".join(
     [
@@ -50,7 +48,7 @@ setup(
         "Framework :: Plone :: 5.2",
         "Framework :: Plone :: 6.0",
         "Framework :: Plone :: 6.1",
-        # "Framework :: Plone :: 6.2",
+        "Framework :: Plone :: 6.2",
         "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
@@ -68,14 +66,10 @@ setup(
     author_email="tisto@plone.org",
     url="https://github.com/plone/plone.restapi/",
     license="gpl",
-    packages=find_packages("src"),
-    package_dir={"": "src"},
-    namespace_packages=["plone"],
     python_requires=">=3.8",
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        "setuptools",
         "packaging",
         "python-dateutil",
         "plone.rest",  # json renderer moved to plone.restapi

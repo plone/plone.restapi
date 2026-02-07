@@ -47,6 +47,7 @@ local.cfg
 /sources/
 /venv/
 .installed.txt
+/.mxdev_cache/
 
 /docs/styles/Microsoft/
 
