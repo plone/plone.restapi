@@ -1,7 +1,14 @@
+from plone.dexterity.interfaces import IDexterityFTI
+from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
 from plone.restapi.controlpanels.interfaces import IControlpanel
+from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
 from Products.CMFCore.utils import getToolByName
+from zope.component import getAllUtilitiesRegisteredFor
+from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces import NotFound
+
+import zope
 
 
 @implementer(IControlpanel)
@@ -37,6 +44,42 @@ class RegistryConfigletPanel:
         if self.configlet:
             self.title = self.configlet["title"]
             self.group = self._get_group_title()
+
+    def get_searchable_text(self):
+
+        text_parts = []
+
+        if self.title:
+            text_parts.append(self.title)
+
+        if self.schema is not None:
+            for name, field in zope.schema.getFields(self.schema).items():
+                if field.title:
+                    text_parts.append(field.title)
+        else:
+            types_list = []
+
+            if IDexterityTypesControlpanel.providedBy(self):
+                ftis = getAllUtilitiesRegisteredFor(IDexterityFTI)
+                for fti in ftis:
+                    if fti.Title():
+                        text_parts.append(fti.Title())
+
+            elif IContentRulesControlpanel.providedBy(self):
+                cpanel = queryMultiAdapter(
+                    (self.context, self.request), name="rules-controlpanel"
+                )
+                if cpanel:
+                    registered_rules = cpanel.registeredRules()
+                    for rule in registered_rules:
+                        if isinstance(rule, dict):
+                            if rule.get("title"):
+                                text_parts.append(rule["title"])
+
+            if types_list:
+                text_parts.extend(types_list)
+
+        return [text for text in text_parts if text]
 
     def add(self, names):
         raise NotFound(self.context, names, self.request)

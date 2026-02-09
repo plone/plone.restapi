@@ -34,6 +34,7 @@ class ControlpanelSummarySerializeToJson:
             ),
             "title": self.controlpanel.title,
             "group": self.controlpanel.group,
+            "searchable_text": self.controlpanel.get_searchable_text(),
         }
 
 
