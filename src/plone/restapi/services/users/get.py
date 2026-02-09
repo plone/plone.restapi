@@ -29,8 +29,8 @@ from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
+import io
 import json
-import tempfile
 
 
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
@@ -205,6 +205,8 @@ class UsersGet(Service):
         )
 
     def reply(self):
+        result = {"@id": f"{self.context.absolute_url()}/@users"}
+
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
             groups_filter = self.query.get("groups-filter:list", [])
@@ -214,13 +216,16 @@ class UsersGet(Service):
                     users = self._get_filtered_users(
                         query, groups_filter, self.search_term, limit
                     )
-                    result = []
+                    items = []
                     for user in users:
                         serializer = queryMultiAdapter(
                             (user, self.request), ISerializeToJson
                         )
-                        result.append(serializer())
-                    return result, len(result)
+                        items.append(serializer())
+
+                    result["items"] = items
+                    result["items_total"] = len(items)
+                    return result
                 else:
                     raise Unauthorized(
                         "You are not authorized to access this resource."
@@ -230,27 +235,23 @@ class UsersGet(Service):
 
         if len(self.params) == 0:
             # Someone is asking for all users, check if they are authorized
-            result = []
             if self.has_permission_to_enumerate():
+                items = []
                 for user in self._get_users():
                     serializer = queryMultiAdapter(
                         (user, self.request), ISerializeToJson
                     )
-                    result.append(serializer())
-            else:
-                raise Unauthorized("You are not authorized to access this resource.")
+                    items.append(serializer())
 
-            if self.request.getHeader("Accept") == "text/csv":
-                file_descriptor, file_path = tempfile.mkstemp(
-                    suffix=".csv", prefix="users_"
-                )
-                with open(file_path, "w") as stream:
+                if self.request.getHeader("Accept") == "text/csv":
+                    buffer = io.BytesIO()
+                    stream = io.TextIOWrapper(buffer, encoding="utf-8", newline="")
                     csv_writer = writer(stream)
                     csv_writer.writerow(
                         ["id", "username", "fullname", "email", "roles", "groups"]
                     )
 
-                    for user in result:
+                    for user in items:
                         csv_writer.writerow(
                             [
                                 user["id"],
@@ -261,18 +262,23 @@ class UsersGet(Service):
                                 ", ".join(g["id"] for g in user["groups"]["items"]),
                             ]
                         )
-                with open(file_path, "rb") as stream:
-                    content = stream.read()
+                    stream.flush()
+                    stream.detach()
+                    content = buffer.getvalue()
 
-                response = self.request.response
-                response.setHeader("Content-Type", "text/csv")
-                response.setHeader("Content-Length", len(content))
-                response.setHeader(
-                    "Content-Disposition", "attachment; filename=users.csv"
-                )
-                return content
+                    response = self.request.response
+                    response.setHeader("Content-Type", "text/csv")
+                    response.setHeader("Content-Length", len(content))
+                    response.setHeader(
+                        "Content-Disposition", "attachment; filename=users.csv"
+                    )
+                    return content
+                else:
+                    result["items"] = items
+                    result["items_total"] = len(items)
+                    return result
             else:
-                return result, len(result)
+                raise Unauthorized("You are not authorized to access this resource.")
 
         # Some is asking one user, check if the logged in user is asking
         # their own information or if they are a Manager
