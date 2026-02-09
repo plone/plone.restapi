@@ -1,0 +1,1 @@
+Added a single Control Panel API endpoint exposing searchable text for global settings search. Fixes #1981.
