@@ -206,6 +206,8 @@ class UsersGet(Service):
 
     def reply(self):
         result = {"@id": f"{self.context.absolute_url()}/@users"}
+        self.request.response.setStatus(200)
+        self.request.response.setHeader("Content-Type", "application/json")
 
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
