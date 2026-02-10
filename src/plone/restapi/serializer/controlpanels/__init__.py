@@ -26,7 +26,7 @@ class ControlpanelSummarySerializeToJson:
         self.controlpanel = controlpanel
 
     def __call__(self):
-        return {
+        result = {
             "@id": "{}/{}/{}".format(
                 self.controlpanel.context.absolute_url(),
                 SERVICE_ID,
@@ -34,8 +34,18 @@ class ControlpanelSummarySerializeToJson:
             ),
             "title": self.controlpanel.title,
             "group": self.controlpanel.group,
-            "searchable_text": self.controlpanel.get_searchable_text(),
         }
+
+        if hasattr(self.controlpanel, "get_searchable_text"):
+            result["searchable_text"] = self.controlpanel.get_searchable_text()
+        else:
+            if self.controlpanel.title:
+                result["searchable_text"] = [
+                    self.controlpanel.title,
+                    self.controlpanel.description,
+                ]
+
+        return result
 
 
 def get_jsonschema_for_controlpanel(controlpanel, context, request, form=None):
