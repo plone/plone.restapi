@@ -211,12 +211,12 @@ class UsersPost(Service):
         if isinstance(data, list):
             result = []
             for i in data:
-                user = self._add_user(i)
+                user = self._add_user(i, location=False)
                 result.append(user)
             return result
         return self._add_user(data)
 
-    def _add_user(self, data):
+    def _add_user(self, data, location=True):
         portal = getSite()
         security = getAdapter(self.context, ISecuritySchema)
         registration = getToolByName(portal, "portal_registration")
@@ -273,9 +273,10 @@ class UsersPost(Service):
         if send_password_reset:
             registration.registeredNotify(username)
         self.request.response.setStatus(201)
-        self.request.response.setHeader(
-            "Location", portal.absolute_url() + "/@users/" + username
-        )
+        if location:
+            self.request.response.setHeader(
+                "Location", portal.absolute_url() + "/@users/" + username
+            )
         serializer = queryMultiAdapter((user, self.request), ISerializeToJson)
         return serializer()
 
