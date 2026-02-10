@@ -1346,46 +1346,51 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertIn("birthdate", response.json())
         self.assertIn("registration_datetime", response.json())
 
-    # Not testable via the service, hence unittest
+    def test_get_users_filtering(self):
+        self.api_session.post(
+            "/@users",
+            json={
+                "username": "user2",
+                "password": "secret123",
+                "email": "user2@example.com",
+            },
+        )
 
-    # def test_get_users_filtering(self):
-    #     class MockUser:
-    #         def __init__(self, userid):
-    #             self.userid = userid
+        self.api_session.post(
+            "/@users",
+            json={
+                "username": "user1",
+                "password": "secret123",
+                "email": "user1@example.com",
+            },
+        )
 
-    #         def getProperty(self, key, default=None):
-    #             return "Full Name " + self.userid
+        self.api_session.post(
+            "/@users",
+            json={
+                "username": "foobar",
+                "password": "secret123",
+                "email": "foobar@example.com",
+            },
+        )
+        transaction.commit()
 
-    #         def getUserName(self):
-    #             return self.userid
+        # Test with query parameter (passes id="user" as kwarg to searchUsers)
+        response = self.api_session.get("/@users?query=user")
 
-    #     class MockAclUsers:
-    #         def searchUsers(self, **kw):
-    #             return [
-    #                 {"userid": "user2"},
-    #                 {"userid": "user1"},
-    #                 {"userid": "NONEUSER"},
-    #             ]
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
 
-    #     class MockPortalMembership:
-    #         def getMemberById(self, userid):
-    #             if userid == "NONEUSER":
-    #                 return None
-    #             return MockUser(userid)
+        # Verify only users with "user" in username are returned
+        usernames = [item["username"] for item in data["items"]]
+        self.assertIn("user1", usernames)
+        self.assertIn("user2", usernames)
+        self.assertNotIn("foobar", usernames)
 
-    #     # Create Users instance *without* calling its __init__
-    #     users = Users.__new__(Users)
-
-    #     # Inject only what _get_users actually needs
-    #     users.acl_users = MockAclUsers()
-    #     users.portal_membership = MockPortalMembership()
-
-    #     result = users._get_users(foo="bar")
-
-    #     # Sorted by normalized fullname; None users filtered out
-    #     self.assertEqual(len(result), 2)
-    #     self.assertEqual(result[0].userid, "user1")
-    #     self.assertEqual(result[1].userid, "user2")
+        # Verify user1 comes before user2 (sorted by username since no fullname)
+        user1_index = usernames.index("user1")
+        user2_index = usernames.index("user2")
+        self.assertLess(user1_index, user2_index)
 
     def test_siteadm_not_update_manager(self):
         self.set_siteadm()
