@@ -213,7 +213,7 @@ class UsersPost(Service):
             for i in data:
                 user = self._add_user(i, location=False)
                 result.append(user)
-            return result
+            return {"items": result, "items_total": len(result)}
         return self._add_user(data)
 
     def _add_user(self, data, location=True):
