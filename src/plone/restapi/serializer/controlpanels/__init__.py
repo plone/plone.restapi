@@ -1,5 +1,7 @@
+from Acquisition import ImplicitAcquisitionWrapper
 from plone.dexterity.interfaces import IDexterityContent
 from plone.registry.interfaces import IRegistry
+from plone.restapi.behaviors import IBlocks
 from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
@@ -17,6 +19,11 @@ import zope.schema
 
 
 SERVICE_ID = "@controlpanels"
+
+# Same class is in deserializer. Should centralise it.
+@implementer(IDexterityContent, IBlocks)
+class FakeDXContext:
+    """Fake DX content class, so we can re-use the DX field deserializers"""
 
 
 @implementer(ISerializeToJsonSummary)
@@ -96,14 +103,22 @@ class ControlpanelSerializeToJson:
 
             proxy = self.registry.forInterface(self.schema, prefix=self.schema_prefix)
 
-            # Temporarily provide IDexterityContent, so we can use DX field
-            # serializers
-            alsoProvides(proxy, IDexterityContent)
+            # Make a fake context and copy registry values onto it
+            fake_context = FakeDXContext()
+
+                    
+            # Copy all field values from the proxy to the fake context
+            #   so that field serializers can properly adapt the context
+            for name in zope.schema.getFields(self.schema).keys():
+                setattr(fake_context, name, getattr(proxy, name, None))
+            alsoProvides(fake_context, self.schema)
+
+            wrapped_context = ImplicitAcquisitionWrapper(fake_context, self.controlpanel.context)
 
             json_data = {}
             for name, field in zope.schema.getFields(self.schema).items():
                 serializer = queryMultiAdapter(
-                    (field, proxy, self.controlpanel.request), IFieldSerializer
+                    (field, wrapped_context, self.controlpanel.request), IFieldSerializer
                 )
                 if serializer:
                     value = serializer()
