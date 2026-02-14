@@ -1,0 +1,1 @@
+Consolidate test layers so PAM, Iterate, Blocks, and Workflows all share `PLONE_RESTAPI_DX_FIXTURE` as base, reducing redundant layer setup time. @jensens
