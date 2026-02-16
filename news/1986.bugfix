@@ -1,0 +1,1 @@
+Fix content with "Exclude from navigation" still appearing in search (API and classic UI) and in context navigation; both now honor the "Show excluded items" navigation setting. @aryan7081

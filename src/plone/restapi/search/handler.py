@@ -1,5 +1,6 @@
 from plone.registry.interfaces import IRegistry
 from plone.restapi.bbb import get_navigation_root
+from plone.restapi.bbb import INavigationSchema
 from plone.restapi.bbb import ISearchSchema
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
@@ -90,6 +91,17 @@ class SearchHandler:
         if use_site_search_settings:
             query = self.filter_query(query)
 
+        # Exclude items excluded from navigation (fixes plone/volto#1340)
+        # Apply this filter unconditionally unless explicitly overridden
+        if "exclude_from_nav" not in query:
+            registry = getUtility(IRegistry)
+            navigation_settings = registry.forInterface(
+                INavigationSchema, prefix="plone"
+            )
+            if not navigation_settings.show_excluded_items:
+                # Ensure boolean value - catalog expects False to exclude items with exclude_from_nav=True
+                query["exclude_from_nav"] = False
+
         if "SearchableText" in query:
             # Sanitize SearchableText by removing parentheses
             query["SearchableText"] = self.quote_chars(query["SearchableText"])
@@ -145,5 +157,10 @@ class SearchHandler:
         # Default to reverse sort_order if sort_on is a date
         elif sort_on in ("Date", "effective") and not query.get("sort_order"):
             query["sort_order"] = "reverse"
+
+        # Exclude items excluded from navigation (fixes plone/volto#1340)
+        navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
+        if not navigation_settings.show_excluded_items:
+            query["exclude_from_nav"] = False
 
         return query

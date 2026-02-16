@@ -671,6 +671,10 @@ class QueryBuilder:
         if navigation_settings.filter_on_workflow:
             query["review_state"] = navigation_settings.workflow_states_to_show
 
+        # Exclude items excluded from navigation (fixes plone/volto#1340)
+        if not navigation_settings.show_excluded_items:
+            query["exclude_from_nav"] = False
+
         self.query = query
 
     def __call__(self):
@@ -708,6 +712,7 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
             new_node["nav_title"] = new_node["item"].nav_title
         return new_node
 
-    # def nodeFilter(self, node):
-    #     exclude = getattr(node["item"], "exclude_from_nav", False)
-    #     return not exclude
+    def nodeFilter(self, node):
+        """Exclude items that are excluded from navigation (fixes plone/volto#1340)."""
+        exclude = getattr(node["item"], "exclude_from_nav", False)
+        return not exclude
