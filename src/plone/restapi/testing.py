@@ -16,6 +16,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.i18n.interfaces import ILanguageSchema
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import INavigationSchema
 from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
 from plone.restapi.tests.helpers import add_catalog_indexes
 from plone.testing import zope
@@ -73,6 +74,15 @@ def enable_request_language_negotiation(portal):
     registry = getUtility(IRegistry)
     settings = registry.forInterface(ILanguageSchema, prefix="plone")
     settings.use_request_negotiation = True
+
+
+def set_show_excluded_items_for_tests(portal):
+    """Set navigation 'show_excluded_items' to True so @search and batching tests
+    see all content by default (exclude_from_nav filtering is tested separately).
+    """
+    registry = getUtility(IRegistry)
+    nav_settings = registry.forInterface(INavigationSchema, prefix="plone")
+    nav_settings.show_excluded_items = True
 
 
 class DateTimeFixture(Layer):
@@ -142,6 +152,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
         set_available_languages()
         enable_request_language_negotiation(portal)
+        set_show_excluded_items_for_tests(portal)
         quickInstallProduct(portal, "collective.MockMailHost")
         applyProfile(portal, "collective.MockMailHost:default")
         states = portal.portal_workflow["simple_publication_workflow"].states
