@@ -105,9 +105,6 @@ class EmailSendPost(Service):
             )
         )
 
-        if not isinstance(message, str):
-            message = str(message)
-
         message = message_from_string(message)
         if not message.is_multipart():
             payload = message.get_payload()

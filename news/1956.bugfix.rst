@@ -1,1 +1,0 @@
-Ensure @email-send adds message intro ONLY for non-multipart messages. Fixes #1956.
