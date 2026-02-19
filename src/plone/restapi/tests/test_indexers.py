@@ -1,5 +1,5 @@
 from plone.dexterity.interfaces import IDexterityFTI
-from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
 from uuid import uuid4
 from zope.component import queryUtility
@@ -89,7 +89,7 @@ TABLE_BLOCK = {
 
 class TestSearchableTextIndexer(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer["portal"]

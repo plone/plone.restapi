@@ -3,7 +3,6 @@
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
 from plone.app.i18n.locales.interfaces import IMetadataLanguages
-from plone.app.iterate.testing import PLONEAPPITERATEDEX_FIXTURE
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
@@ -174,33 +173,11 @@ PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING = IntegrationTesting(
 
 
 class PloneRestApiDXPAMLayer(PloneSandboxLayer):
-    defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE)
-
-    def setUpZope(self, app, configurationContext):
-        import plone.restapi
-
-        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
-        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
-
-        zope.installProduct(app, "plone.restapi")
+    defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
 
     def setUpPloneSite(self, portal):
-        portal.acl_users.userFolderAddUser(
-            SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ["Manager"], []
-        )
-        login(portal, SITE_OWNER_NAME)
-        setRoles(portal, TEST_USER_ID, ["Manager"])
-
-        set_supported_languages(portal)
         if portal.portal_setup.profileExists("plone.app.multilingual:default"):
             applyProfile(portal, "plone.app.multilingual:default")
-        applyProfile(portal, "plone.restapi:default")
-        applyProfile(portal, "plone.restapi:testing")
-        add_catalog_indexes(portal, DX_TYPES_INDEXES)
-        set_available_languages()
-        enable_request_language_negotiation(portal)
-        states = portal.portal_workflow["simple_publication_workflow"].states
-        states["published"].title = "Published with accent é"  # noqa: E501
 
 
 PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
@@ -238,15 +215,34 @@ else:
 
 
 class PloneRestApiDXIterateLayer(PloneSandboxLayer):
-    defaultBases = (PLONEAPPITERATEDEX_FIXTURE,)
+    defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
-        import plone.restapi
+        import plone.app.iterate
 
-        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
-        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
+        self.loadZCML(package=plone.app.iterate)
+        # Newer plone.app.iterate has tests ZCML
+        try:
+            import plone.app.iterate.tests
 
-        zope.installProduct(app, "plone.restapi")
+            self.loadZCML(package=plone.app.iterate.tests)
+        except (ImportError, FileNotFoundError):
+            pass
+
+    def setUpPloneSite(self, portal):
+        applyProfile(portal, "plone.app.iterate:default")
+        # Profile name changed in newer plone.app.iterate
+        if portal.portal_setup.profileExists("plone.app.iterate.tests:testingdx"):
+            applyProfile(portal, "plone.app.iterate.tests:testingdx")
+        elif portal.portal_setup.profileExists("plone.app.iterate:testingdx"):
+            applyProfile(portal, "plone.app.iterate:testingdx")
+        # Disable automatic versioning of Documents.
+        versioning_behavior = {
+            "plone.app.versioningbehavior.behaviors.IVersionable",
+            "plone.versioning",
+        }
+        fti = portal.portal_types["Document"]
+        fti.behaviors = tuple(set(fti.behaviors).difference(versioning_behavior))
 
 
 PLONE_RESTAPI_ITERATE_FIXTURE = PloneRestApiDXIterateLayer()
