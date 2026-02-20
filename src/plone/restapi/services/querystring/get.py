@@ -14,17 +14,14 @@ class QuerystringGet(Service):
 
     def reply(self):
         registry = getUtility(IRegistry)
-        reader = getMultiAdapter(
-            (registry, self.request), IQuerystringRegistryReader
-        )
+        reader = getMultiAdapter((registry, self.request), IQuerystringRegistryReader)
         reader.vocab_context = self.context
         result = reader()
 
         # Convert dict indexes to ordered list to guarantee order in JSON
         if isinstance(result.get("indexes"), dict):
             result["indexes"] = [
-                {"id": key, **value}
-                for key, value in result["indexes"].items()
+                {"id": key, **value} for key, value in result["indexes"].items()
             ]
 
         # Convert sortable_indexes to ordered list
