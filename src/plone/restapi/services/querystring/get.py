@@ -11,12 +11,28 @@ class QuerystringGet(Service):
     This basically does the same thing as the '@@querybuilderjsonconfig'
     view from p.a.querystring, but exposes the config via the REST API.
     """
-    sort_keys = False
 
     def reply(self):
         registry = getUtility(IRegistry)
-        reader = getMultiAdapter((registry, self.request), IQuerystringRegistryReader)
+        reader = getMultiAdapter(
+            (registry, self.request), IQuerystringRegistryReader
+        )
         reader.vocab_context = self.context
         result = reader()
-        result["@id"] = "%s/@querystring" % self.context.absolute_url()
+
+        # Convert dict indexes to ordered list to guarantee order in JSON
+        if isinstance(result.get("indexes"), dict):
+            result["indexes"] = [
+                {"id": key, **value}
+                for key, value in result["indexes"].items()
+            ]
+
+        # Convert sortable_indexes to ordered list
+        if isinstance(result.get("sortable_indexes"), dict):
+            result["sortable_indexes"] = [
+                {"id": key, **value}
+                for key, value in result["sortable_indexes"].items()
+            ]
+
+        result["@id"] = f"{self.context.absolute_url()}/@querystring"
         return result
