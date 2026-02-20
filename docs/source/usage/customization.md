@@ -71,7 +71,7 @@ The API automatically provides a default serialization for all Dexterity content
 To customize the serialization of a given content type, define a custom adapter as shown.
 
 ```{code-block} xml
-:caption: configure.zcml
+:caption: `configure.zcml`
 <adapter
     factory=".serializers.MySerializer"
     provides="plone.restapi.interfaces.ISerializeToJson"
@@ -81,7 +81,7 @@ To customize the serialization of a given content type, define a custom adapter 
 ```
 
 ```{code-block} python
-:caption: serializers.py
+:caption: `serializers.py`
 from plone import api
 from plone.restapi.serializer.dxcontent import SerializeToJson
 
@@ -114,7 +114,7 @@ The API provides a default deserializer.
 You can customize it with an adapter as shown.
 
 ```{code-block} xml
-:caption: configure.zcml
+:caption: `configure.zcml`
 <adapter
     factory=".deserialiers.MyDeserializer"
     provides="plone.restapi.interfaces.IDeserializeFromJson"
@@ -124,7 +124,7 @@ You can customize it with an adapter as shown.
 ```
 
 ```{code-block} python
-:caption: deserializers.py
+:caption: `deserializers.py`
 from plone import api
 from plone.restapi.deserializer.dxcontent import DeserializeFromJson
 
