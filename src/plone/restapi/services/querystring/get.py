@@ -11,6 +11,7 @@ class QuerystringGet(Service):
     This basically does the same thing as the '@@querybuilderjsonconfig'
     view from p.a.querystring, but exposes the config via the REST API.
     """
+    sort_keys = False
 
     def reply(self):
         registry = getUtility(IRegistry)
