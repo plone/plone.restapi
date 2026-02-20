@@ -68,20 +68,20 @@ The name may either be the full dotted name of the field, such as `plone.app.dex
 
 The API automatically provides a default serialization for all Dexterity content types.
 
-If you look to customize the serialization of a given content type, please do the following.
+To customize the serialization of a given content type, define a custom adapter as shown.
 
-Define a custom adapter:
-
-```xml
+```{code-block} xml
+:caption: configure.zcml
 <adapter
-    factory=".adapters.MySerializer"
+    factory=".serializers.MySerializer"
     provides="plone.restapi.interfaces.ISerializeToJson"
     for="my.package.interfaces.IMyContentType
         zope.interface.Interface"
     />
 ```
 
-```python
+```{code-block} python
+:caption: serializers.py
 from plone import api
 from plone.restapi.serializer.dxcontent import SerializeToJson
 
@@ -101,32 +101,30 @@ class MySerializer(SerializeToJson):
         return result
 ```
 
-With these changes you will have a custom serializer for your content type.
-
 
 ```{warning}
-If you modify, as shown above, the serialization of a content type,
-you might also have to customize the deserialization. See below.
+If you modify the serialization of a content type, you might need to customize its deserialization as described in the next section.
 ```
 
 #### Deserialization
 
-The reverse of the serialization also happens for the deserialization.
+The reverse of serialization is deserialization.
 
-A default deserializer is provided by the API, but in case you want to customize it, you can as follows.
+The API provides a default deserializer.
+You can customize it with an adapter as shown.
 
-Define a custom adapter:
-
-```xml
+```{code-block} xml
+:caption: configure.zcml
 <adapter
-    factory=".adapters.MyDeserializer"
+    factory=".deserialiers.MyDeserializer"
     provides="plone.restapi.interfaces.IDeserializeFromJson"
     for="my.package.interfaces.IMyContentType
         zope.interface.Interface"
     />
 ```
 
-```python
+```{code-block} python
+:caption: deserializers.py
 from plone import api
 from plone.restapi.deserializer.dxcontent import DeserializeFromJson
 
@@ -150,4 +148,3 @@ class MyDeserializer(DeserializeFromJson):
         return result
 ```
 
-With this, you will be able to manipulate the data that gets on a specific content type.
