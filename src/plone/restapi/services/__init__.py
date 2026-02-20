@@ -19,9 +19,10 @@ class Service(RestService):
         content = self.reply()
         if content is not _no_content_marker:
             self.request.response.setHeader("Content-Type", self.content_type)
-            sort_keys = getattr(self, "sort_keys", True)
+
+            # Reverted to sort_keys=True as requested by the maintainers
             return json.dumps(
-                content, indent=2, sort_keys=sort_keys, separators=(", ", ": ")
+                content, indent=2, sort_keys=True, separators=(", ", ": ")
             )
 
     def check_permission(self):

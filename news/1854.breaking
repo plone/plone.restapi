@@ -1,0 +1,1 @@
+The `@querystring` service now returns index as a list rather than an object, to preserve the order. @hasansyed107
