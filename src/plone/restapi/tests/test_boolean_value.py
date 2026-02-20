@@ -1,12 +1,12 @@
 from plone.restapi.deserializer import boolean_value
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
 import unittest
 
 
 class TestBooleanValue(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def test_true_bool(self):
         self.assertTrue(boolean_value(True))
