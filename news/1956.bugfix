@@ -1,0 +1,1 @@
+In the `@email-send` service, the `message_intro` string is no longer added to multipart messages, but continues to be prepended to the message payload for non-multipart messages. @Manik-Khajuria-5
