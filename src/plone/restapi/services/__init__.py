@@ -10,7 +10,7 @@ _no_content_marker = object()
 
 
 class Service(RestService):
-    """Base class for Plone REST API services"""  # 1. ADDED BACK DOCSTRING
+    """Base class for Plone REST API services"""
 
     content_type = "application/json"
 
@@ -19,9 +19,9 @@ class Service(RestService):
         content = self.reply()
         if content is not _no_content_marker:
             self.request.response.setHeader("Content-Type", self.content_type)
-            # 2. REMOVED sort_keys logic; REVERTED to original sort_keys=True
+            sort_keys = getattr(self, "sort_keys", True)
             return json.dumps(
-                content, indent=2, sort_keys=True, separators=(", ", ": ")
+                content, indent=2, sort_keys=sort_keys, separators=(", ", ": ")
             )
 
     def check_permission(self):
@@ -32,7 +32,7 @@ class Service(RestService):
     def reply(self):
         """Process the request and return a JSON serializable data structure or
         the no content marker if the response body should be empty.
-        """  # 3. ENSURE THIS DOCSTRING IS EXACTLY LIKE THIS
+        """
         return _no_content_marker
 
     def reply_no_content(self, status=204):
