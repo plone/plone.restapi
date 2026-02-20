@@ -25,28 +25,35 @@ class TestQuerystringEndpoint(unittest.TestCase):
     def tearDown(self):
         self.api_session.close()
 
+    def get_idx(self, items, item_id):
+        """Helper to find an index by id in a list"""
+        return next((i for i in items if i.get("id") == item_id), None)
+
     def test_endpoint_lists_indexes(self):
         response = self.api_session.get("/@querystring")
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("indexes", response.json())
-        self.assertIn("isFolderish", response.json()["indexes"])
+        indexes = response.json().get("indexes", [])
+        self.assertIsInstance(indexes, list)
+        self.assertIn("isFolderish", [i["id"] for i in indexes])
 
     def test_endpoint_lists_sortable_indexes(self):
         response = self.api_session.get("/@querystring")
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("sortable_indexes", response.json())
-        self.assertIn("sortable_title", response.json()["sortable_indexes"])
+        sortable = response.json().get("sortable_indexes", [])
+        self.assertIsInstance(sortable, list)
+        self.assertIn("sortable_title", [i["id"] for i in sortable])
 
     def test_endpoint_shows_field_config(self):
         response = self.api_session.get("/@querystring")
 
         self.assertEqual(response.status_code, 200)
         indexes = response.json()["indexes"]
-        idx = indexes["Title"]
+        idx = self.get_idx(indexes, "Title")
 
         expected_field_config = {
+            "id": "Title",
             "description": "Text search of an item's title",
             "enabled": True,
             "group": "Text",
@@ -64,10 +71,7 @@ class TestQuerystringEndpoint(unittest.TestCase):
             "values": {},
             "vocabulary": None,
         }
-        # Be permissive with the check and only check the existing
-        # attributes. (This gives plone.app.querystring to extend its schema
-        # when that becomes necessary, while making sure that all code depending
-        # on any existing attributes continues to work.)
+
         filtered_idx = {}
         for key in expected_field_config:
             filtered_idx[key] = idx.get(key, "NOT-FOUND")
@@ -78,7 +82,7 @@ class TestQuerystringEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         indexes = response.json()["indexes"]
-        idx = indexes["review_state"]
+        idx = self.get_idx(indexes, "review_state")
 
         self.assertEqual(idx["title"], "Review state")
         self.assertEqual(idx["vocabulary"], "plone.app.vocabularies.WorkflowStates")
@@ -103,7 +107,7 @@ class TestQuerystringEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         indexes = response.json()["indexes"]
-        idx = indexes["isDefaultPage"]
+        idx = self.get_idx(indexes, "isDefaultPage")
 
         self.assertEqual(idx["title"], "Default Page")
         self.assertEqual(
@@ -135,7 +139,7 @@ class TestQuerystringEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         indexes = response.json()["indexes"]
-        idx = indexes["getObjPositionInParent"]
+        idx = self.get_idx(indexes, "getObjPositionInParent")
 
         self.assertEqual(idx["title"], "Order in folder")
         self.assertEqual(
