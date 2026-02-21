@@ -159,6 +159,14 @@ Use the `tokens` parameter to filter vocabulary terms by a list of tokens:
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token_list.resp
 :language: http
 ```
+## Sorting
+
+```{eval-rst}
+.. http:get:: (context)/@vocabularies/(vocab_name)?sort_on=title
+```
+
+Vocabulary terms can be sorted by title using the ``sort_on=title`` parameter.
+Sorting is applied server-side before results are batched.
 
 ## Get a source
 

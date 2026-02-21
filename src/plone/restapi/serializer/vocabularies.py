@@ -63,6 +63,19 @@ class SerializeVocabLikeToJson:
                     continue
                 terms.append(term)
 
+        # <--- The loop ends here. Sorting starts here.
+        # Optional sorting by title (before batching)
+        sort_on = self.request.form.get("sort_on")
+        if sort_on == "title":
+            terms.sort(
+                key=lambda term: (
+                    translate(
+                        safe_text(getattr(term, "title", None) or ""),
+                        context=self.request,
+                    )
+                    or ""
+                ).lower()
+            )
         serialized_terms = []
 
         # Do not batch parameter is set
