@@ -1,1 +1,1 @@
-Add optional ``sort_on=title`` parameter to ``@vocabularies`` endpoint.
+Added support for sorting vocabularies by title before batching for the `@vocabularies` endpoint. @hasansyed107
