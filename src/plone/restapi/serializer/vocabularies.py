@@ -66,16 +66,17 @@ class SerializeVocabLikeToJson:
         # <--- The loop ends here. Sorting starts here.
         # Optional sorting by title (before batching)
         sort_on = self.request.form.get("sort_on")
-        if sort_on == "title":
-            terms.sort(
-                key=lambda term: (
-                    translate(
-                        safe_text(getattr(term, "title", None) or ""),
-                        context=self.request,
-                    )
-                    or ""
-                ).lower()
-            )
+        if vocabulary_id and sort_on == "title":
+
+            def sort_key(term):
+                title = (
+                    term.title if ITitledTokenizedTerm.providedBy(term) else term.token
+                )
+                if isinstance(title, bytes):
+                    title = title.decode("UTF-8")
+                return translate(safe_text(title), context=self.request).lower()
+
+            terms.sort(key=sort_key)
         serialized_terms = []
 
         # Do not batch parameter is set
