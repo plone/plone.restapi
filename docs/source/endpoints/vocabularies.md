@@ -165,8 +165,18 @@ Use the `tokens` parameter to filter vocabulary terms by a list of tokens:
 Sort vocabulary terms by title using the `sort_on=title` parameter.
 Sorting is applied server-side before results are batched.
 
-INSERT_MYST_MARKUP_FOLLOWING_OTHER_EXAMPLES_HERE
+```{eval-rst}
+.. http:get:: (context)/@vocabularies/(vocab_name)?sort_on=title
+```
 
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get_sorted_by_title.req
+```
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/vocabularies_get_sorted_by_title.resp
+:language: http
+```
 ## Get a source
 
 ```{eval-rst}
