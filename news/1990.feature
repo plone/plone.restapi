@@ -1,0 +1,1 @@
+Add optional ``sort_on=title`` parameter to ``@vocabularies`` endpoint.
