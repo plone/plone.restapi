@@ -63,7 +63,6 @@ class SerializeVocabLikeToJson:
                     continue
                 terms.append(term)
 
-        # <--- The loop ends here. Sorting starts here.
         # Optional sorting by title (before batching)
         sort_on = self.request.form.get("sort_on")
         if vocabulary_id and sort_on == "title":
