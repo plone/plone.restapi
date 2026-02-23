@@ -69,9 +69,7 @@ class SerializeVocabLikeToJson:
 
             def sort_key(term):
                 title = getattr(term, "title", term.token)
-                if isinstance(title, bytes):
-                    title = title.decode("UTF-8")
-                return translate(safe_text(title), context=self.request).lower()
+                return translate(title, context=self.request).lower()
 
             terms.sort(key=sort_key)
         serialized_terms = []
