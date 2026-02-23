@@ -68,9 +68,7 @@ class SerializeVocabLikeToJson:
         if vocabulary_id and sort_on == "title":
 
             def sort_key(term):
-                title = (
-                    term.title if ITitledTokenizedTerm.providedBy(term) else term.token
-                )
+                title = getattr(term, "title", term.token)
                 if isinstance(title, bytes):
                     title = title.decode("UTF-8")
                 return translate(safe_text(title), context=self.request).lower()
