@@ -1911,6 +1911,12 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
             response = self.api_session.get("/@addons")
             save_request_and_response_for_docs("translated_messages_addons", response)
 
+    def test_documentation_vocabularies_get_sorted_by_title(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?sort_on=title"
+        )
+        save_request_and_response_for_docs("vocabularies_get_sorted_by_title", response)
+
 
 class TestCommenting(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING

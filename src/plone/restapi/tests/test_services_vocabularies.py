@@ -468,6 +468,27 @@ class TestVocabularyEndpoint(unittest.TestCase):
         response = response.json()
         self.assertEqual(len(response["items"]), 100)
 
+    def test_get_vocabulary_sorted_by_title(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?sort_on=title&b_size=-1"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+
+        self.assertEqual(
+            [item["title"] for item in response["items"]],
+            [
+                "This is a title for the seventh term",
+                "Title 1",
+                "Title 2",
+                "token3",
+                "token4",
+                "Tötle 5",
+                "Tötle 6",
+            ],
+        )
+
     def tearDown(self):
         self.api_session.close()
         gsm = getGlobalSiteManager()
