@@ -63,6 +63,15 @@ class SerializeVocabLikeToJson:
                     continue
                 terms.append(term)
 
+        # Optional sorting by title (before batching)
+        sort_on = self.request.form.get("sort_on")
+        if vocabulary_id and sort_on == "title":
+
+            def sort_key(term):
+                title = getattr(term, "title", None) or term.token
+                return translate(title, context=self.request).lower()
+
+            terms.sort(key=sort_key)
         serialized_terms = []
 
         # Do not batch parameter is set
