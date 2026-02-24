@@ -56,6 +56,20 @@ The server will return a {term}`401 Unauthorized` status code.
 :language: http
 ```
 
+### List all users via CSV
+
+To download all users of a Plone site as a CSV file, send a `GET` request to the `/@users` endpoint from the site root.
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/users_get_csv_format.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_get_csv_format.resp
+:language: http
+```
 
 ### Filtering the list of users
 
@@ -133,6 +147,48 @@ The `Location` header contains the URL of the newly created user, and the resour
 
 If no roles have been specified, then a `Member` role is added as a sensible default.
 
+### Create users via CSV
+
+To create new users from a CSV file, send a `POST` request to the `/@users` endpoint.
+The endpoint expects a request body with `Content-Type: multipart/form-data` including a file upload named `file`.
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/users_add_csv_format.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_add_csv_format.resp
+:language: http
+```
+
+The CSV file's first line is reserved for the header. Possible columns include:
+
+| Column          | Type   | Example                         |
+|-----------------|--------|---------------------------------|
+| `id` (required) | string | jdoe                            |
+| `username`      | string | jdoe                            |
+| `fullname`      | string | John Doe                        |
+| `description`   | string | Software Developer from Berlin. |
+| `email`         | string | jdoe@example.com                |
+| `roles`         | list   | "Member, Contributor"           |
+| `groups`        | list   | AuthenticatedUsers              |
+| `location`      | string | "Berlin, DE"                    |
+| `home_page`     | string | jdoe.dev                        |
+| `password`      | string | pwd1234                         |
+
+```{note}
+When a user has more than one role, put the roles in quotes, as shown in the table above.
+Additionally, values that contain commas should be placed in quotes.
+```
+
+Example of a CSV file with quoted values:
+
+```
+id,fullname,description,email,roles
+jdoe,John Doe,Software Developer from Berlin,jdoe@example.com,"Member, Contributor"
+```
 
 ## Read User
 

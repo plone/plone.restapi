@@ -4,7 +4,6 @@ from plone.restapi.deserializer import parse_int
 from plone.restapi.exceptions import DeserializationError
 from urllib.parse import parse_qsl
 from urllib.parse import urlencode
-from zExceptions import BadRequest
 
 
 DEFAULT_BATCH_SIZE = 25
@@ -16,8 +15,8 @@ class HypermediaBatch:
 
         try:
             data = json_body(request)
-        except DeserializationError as e:
-            raise BadRequest(e)
+        except DeserializationError:
+            data = {}
         self.b_start = parse_int(data, "b_start", False) or parse_int(
             self.request.form, "b_start", 0
         )
