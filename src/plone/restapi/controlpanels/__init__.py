@@ -3,7 +3,7 @@ from Products.CMFCore.utils import getToolByName
 from zope.interface import implementer
 from zope.publisher.interfaces import NotFound
 
-import zope
+import zope.schema
 
 
 @implementer(IControlpanel)
