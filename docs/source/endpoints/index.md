@@ -42,6 +42,7 @@ portrait
 principals
 querystring
 querystringsearch
+recycle-bin
 registry
 relations
 roles

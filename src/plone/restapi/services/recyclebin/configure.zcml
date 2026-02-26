@@ -1,0 +1,41 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <include package="plone.restapi" />
+
+  <plone:service
+      method="GET"
+      factory=".get.RecycleBinGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@recyclebin"
+      />
+
+  <plone:service
+      method="GET"
+      factory=".get.RecycleBinGet"
+      for="Products.CMFCore.interfaces.IFolderish"
+      permission="cmf.ManagePortal"
+      name="@recyclebin"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".restore.RecycleBinRestore"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@recyclebin"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".purge.RecycleBinPurge"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@recyclebin"
+      />
+
+</configure>
