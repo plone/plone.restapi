@@ -26,7 +26,7 @@ class IControlpanel(Interface):
         """Remove controlpanel children by names"""
 
     def get_searchable_text():
-        """Return searchable text for this control pannel.
+        """Return searchable text for this control panel.
 
         Schema-based control panels return text from field titles and descriptions.
         Other control panels can return custom text.
