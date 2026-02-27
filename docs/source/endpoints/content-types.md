@@ -91,6 +91,11 @@ Here we show `uuid1` as an example uid for all image scales because this documen
 When running in a real application, these `uuid1` values will be exchanged by proper uuid4 values.
 ```
 
+```{note}
+The list of scales depends on the allowed image sizes configured in the Image Handling control panel.
+Also, scales with a width larger than the original are not included.
+```
+
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/image.req
