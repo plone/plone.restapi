@@ -476,16 +476,6 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             if HAS_PLONE_6:
                 # PLIP #3279 amended the image scales
                 # https://github.com/plone/Products.CMFPlone/pull/3450
-                scales["great"] = {
-                    "download": scale_download_url,
-                    "height": 768,
-                    "width": 1024,
-                }
-                scales["huge"] = {
-                    "download": scale_download_url,
-                    "height": 768,
-                    "width": 1024,
-                }
                 scales["larger"] = {
                     "download": scale_download_url,
                     "height": 750,
@@ -603,16 +593,6 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             if HAS_PLONE_6:
                 # PLIP #3279 amended the image scales
                 # https://github.com/plone/Products.CMFPlone/pull/3450
-                scales["great"] = {
-                    "download": scale_download_url,
-                    "height": 768,
-                    "width": 1024,
-                }
-                scales["huge"] = {
-                    "download": scale_download_url,
-                    "height": 768,
-                    "width": 1024,
-                }
                 scales["larger"] = {
                     "download": scale_download_url,
                     "height": 750,

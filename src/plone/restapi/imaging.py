@@ -21,6 +21,11 @@ def get_scales(context, field, width, height):
     images_view = getMultiAdapter((context, request), name="images")
 
     for name, actual_width, actual_height in get_scale_infos():
+        # Don't offer scales larger than the original.
+        # They add bloat to the database.
+        if actual_width > width:
+            continue
+
         # Recent versions of plone.namedfile support getting scale
         # metadata without actually generating the image scale.
         # This was added in the same version as the `picture` method,
