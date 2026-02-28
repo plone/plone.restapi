@@ -25,6 +25,7 @@ from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import IVocabularyTokenized
 
 import logging
+import os
 
 
 log = logging.getLogger(__name__)
@@ -204,6 +205,24 @@ class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
         namedfile = self.field.get(self.context)
         if namedfile is None:
             return
+
+        enable_transform = os.environ.get(
+            "enable_link_target_transform", ""
+        ).lower() in ("true", "1", "TRUE")
+
+        if enable_transform:
+            download_url = "/".join(
+                (self.context.absolute_url(), "@@download", self.field.__name__)
+            )
+            result = {
+                "@id": self.context.absolute_url(),
+                "@type": self.context.portal_type,
+                "download": download_url,
+                "filename": namedfile.filename,
+                "content-type": namedfile.contentType,
+                "size": namedfile.getSize(),
+            }
+            return json_compatible(result)
 
         return "/".join(
             (self.context.absolute_url(), "@@download", self.field.__name__)
