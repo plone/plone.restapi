@@ -6,7 +6,10 @@ from plone.app.vocabularies.catalog import CatalogSource
 from plone.autoform.directives import read_permission
 from plone.autoform.directives import write_permission
 from plone.autoform.interfaces import IFormFieldProvider
+from plone.behavior.interfaces import IBehavior
+from plone.dexterity.behavior import DexterityBehaviorAssignable
 from plone.dexterity.content import Item
+from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile import field as namedfile
 from plone.restapi.tests.helpers import ascii_token
 from plone.schema import JSONField
@@ -18,6 +21,8 @@ from z3c.formwidget.query.interfaces import IQuerySource
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList
 from zope import schema
+from zope.component import adapter
+from zope.component import queryUtility
 from zope.interface import directlyProvides
 from zope.interface import implementer
 from zope.interface import Invalid
@@ -324,3 +329,21 @@ class ITestBehavior(model.Schema):
 @provider(IFormFieldProvider)
 class ITestAnnotationsBehavior(model.Schema):
     test_annotations_behavior_field = schema.TextLine(required=False)
+
+
+class IInstanceBehaviorAssignableContent(IDexterityContent):
+    """Marks dexterity content to be extensible by instance behaviors."""
+
+
+@adapter(IInstanceBehaviorAssignableContent)
+class DexterityInstanceBehaviorAssignable(DexterityBehaviorAssignable):
+    """Per instance specification of plone.behavior behaviors.
+    - add tests.restapi.test_behavior
+    - remove plone.dublincore
+    """
+
+    def enumerateBehaviors(self):
+        for behavior in super().enumerateBehaviors():
+            if behavior.name not in ["plone.dublincore"]:
+                yield behavior
+        yield queryUtility(IBehavior, name="tests.restapi.test_behavior")
