@@ -1,0 +1,1 @@
+Fix `IObjectCreatedEvent` firing with a temporary object ID when content is created via the REST API. The event now fires after `INameChooser` assigns the final ID, so subscribers can rely on `event.object.id` to set sequential shortnames or perform ID-dependent logic. @bhardwajparth51
