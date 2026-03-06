@@ -17,9 +17,7 @@ from Products.CMFCore.utils import getToolByName
 from uuid import uuid4
 from zExceptions import Unauthorized
 from zope.component import queryMultiAdapter
-from zope.event import notify
 from zope.interface import implementer
-from zope.lifecycleevent import ObjectCreatedEvent
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
 
@@ -281,8 +279,9 @@ class UploadPatch(UploadFileBase):
 
         if mode == "create":
             if not getattr(deserializer, "notifies_create", False):
-                notify(ObjectCreatedEvent(obj))
-            obj = add(self.context, obj)
+                obj = add(self.context, obj, notify_created=True)
+            else:
+                obj = add(self.context, obj)
 
         tus_upload.close()
         tus_upload.cleanup()

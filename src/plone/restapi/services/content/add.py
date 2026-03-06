@@ -16,9 +16,7 @@ from zExceptions import BadRequest
 from zExceptions import Unauthorized
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
-from zope.event import notify
 from zope.interface import alsoProvides
-from zope.lifecycleevent import ObjectCreatedEvent
 
 import plone.protect.interfaces
 
@@ -92,9 +90,9 @@ class FolderPost(Service):
             setattr(obj, "_plone.uuid", uid)
 
         if not getattr(deserializer, "notifies_create", False):
-            notify(ObjectCreatedEvent(obj))
-
-        obj = add(self.context, obj, rename=not bool(id_))
+            obj = add(self.context, obj, rename=not bool(id_), notify_created=True)
+        else:
+            obj = add(self.context, obj, rename=not bool(id_))
 
         # Link translation given the translation_of property
         if (
