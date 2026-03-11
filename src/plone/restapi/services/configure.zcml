@@ -41,6 +41,10 @@
   <include package=".site" />
   <include package=".system" />
   <include package=".sources" />
+  <include
+      package=".themes"
+      zcml:condition="installed plone.app.theming"
+      />
   <include package=".transactions" />
   <include package=".types" />
   <include package=".upgrade" />

@@ -1,0 +1,1 @@
+Added `@themes` endpoint to list, upload, and activate themes via the REST API. Supports zip upload via `POST /@themes` (multipart/form-data), theme activation/deactivation via `PATCH /@themes/{name}`, and listing via `GET /@themes`. @bsuttor
