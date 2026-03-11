@@ -1,33 +1,13 @@
-import io
-import os
-import unittest
-
 from plone.app.testing import setRoles
+from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 
-
-THEMING_ZIPFILES = os.path.join(
-    os.path.dirname(__file__),
-    "..",
-    "..",
-    "..",
-    "..",
-    "..",
-    ".venv",
-    "lib",
-    "python3.12",
-    "site-packages",
-    "plone",
-    "app",
-    "theming",
-    "tests",
-    "zipfiles",
-)
-
-# Use a zip with a manifest so extractThemeInfo works
-MANIFEST_ZIP = os.path.join(THEMING_ZIPFILES, "manifest_rules.zip")
+import io
+import os
+import unittest
 
 
 def get_theming_zipfile(name):
@@ -49,6 +29,7 @@ class TestServicesThemes(unittest.TestCase):
 
         self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
     def tearDown(self):
         self.api_session.close()
