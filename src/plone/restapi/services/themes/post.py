@@ -1,5 +1,3 @@
-import zipfile
-
 from plone.app.theming.interfaces import IThemeSettings
 from plone.app.theming.plugins.utils import getPlugins
 from plone.app.theming.utils import applyTheme
@@ -10,6 +8,8 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.services import Service
 from zope.component import getUtility
 from zope.interface import alsoProvides
+
+import zipfile
 
 
 class ThemesPost(Service):
