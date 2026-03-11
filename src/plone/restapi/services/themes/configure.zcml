@@ -1,30 +1,35 @@
-<configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:plone="http://namespaces.plone.org/plone">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
 
-  <include package="plone.restapi" file="meta.zcml" />
-
-  <plone:service
-    method="GET"
-    factory=".get.ThemesGet"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    permission="cmf.ManagePortal"
-    name="@themes"
-    />
+  <include
+      package="plone.restapi"
+      file="meta.zcml"
+      />
 
   <plone:service
-    method="POST"
-    factory=".post.ThemesPost"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    permission="cmf.ManagePortal"
-    name="@themes"
-    />
+      method="GET"
+      factory=".get.ThemesGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@themes"
+      />
 
   <plone:service
-    method="PATCH"
-    factory=".patch.ThemesPatch"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    permission="cmf.ManagePortal"
-    name="@themes"
-    />
+      method="POST"
+      factory=".post.ThemesPost"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@themes"
+      />
+
+  <plone:service
+      method="PATCH"
+      factory=".patch.ThemesPatch"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@themes"
+      />
 
 </configure>
