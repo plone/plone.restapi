@@ -49,6 +49,7 @@ searching
 sharing
 site
 system
+themes
 transactions
 translations
 tusupload

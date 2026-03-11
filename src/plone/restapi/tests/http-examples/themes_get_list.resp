@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {
+    "@id": "http://localhost:55001/plone/@themes/plonetheme.barceloneta",
+    "id": "plonetheme.barceloneta",
+    "title": "Barceloneta Theme",
+    "description": "The default Plone 5 theme",
+    "active": true,
+    "preview": "++theme++plonetheme.barceloneta/preview.png",
+    "rules": "++theme++plonetheme.barceloneta/rules.xml"
+  }
+]
