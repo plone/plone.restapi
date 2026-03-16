@@ -31,6 +31,7 @@ conditionally in order to avoid breaking compatibility with vanilla Plone 4.3.
 
 from DateTime import DateTime
 from DateTime.interfaces import SyntaxError as DTSyntaxError
+from plone.restapi.deserializer import boolean_value
 from plone.restapi.exceptions import QueryParsingError
 from plone.restapi.interfaces import IIndexQueryParser
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
@@ -223,11 +224,10 @@ class BooleanIndexQueryParser(BaseIndexQueryParser):
     query_options = {}
 
     def parse_query_value(self, query_value):
-        if not str(query_value).lower() in ("true", "false", "1", "0"):
-            raise QueryParsingError(
-                "Could not parse query value %r as boolean" % query_value
-            )
-        return str(query_value).lower() in ("true", "1")
+        try:
+            return boolean_value(query_value, strict=True)
+        except ValueError as e:
+            raise QueryParsingError(str(e))
 
 
 @implementer(IIndexQueryParser)

@@ -17,18 +17,50 @@ def json_body(request):
     return data
 
 
-def boolean_value(value):
+def boolean_value(value, strict=False):
     """
 
     Args:
         value: a value representing a boolean which can be
                a string, a boolean or an integer
                    (usually a string from a GET parameter).
+        strict: if True, raise ValueError for invalid boolean values.
+                if False, return False for unknown values.
 
     Returns: a boolean
 
     """
-    return value not in {False, "false", "False", "0", 0}
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, int):
+        return value != 0
+    if not value:
+        return False
+    str_value = str(value).lower().strip()
+    if str_value in {
+        "1",
+        "y",
+        "yes",
+        "true",
+        "on",
+        "enabled",
+        "active",
+    }:
+        return True
+    elif str_value in {
+        "0",
+        "n",
+        "no",
+        "false",
+        "off",
+        "disabled",
+        "inactive",
+    }:
+        return False
+    else:
+        if strict:
+            raise ValueError(f"Could not parse value {value!r} as boolean")
+        return False
 
 
 def parse_int(data, prop, default):

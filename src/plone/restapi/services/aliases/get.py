@@ -4,12 +4,11 @@ from DateTime.interfaces import DateTimeError
 from plone.app.redirector.interfaces import IRedirectionStorage
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import IPloneSiteRoot
+from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import datetimelike_to_iso
 from plone.restapi.services import Service
 from plone.restapi.utils import deroot_path
-from plone.restapi.utils import is_falsy
-from plone.restapi.utils import is_truthy
 from Products.CMFPlone.controlpanel.browser.redirects import RedirectsControlPanel
 from zExceptions import BadRequest
 from zExceptions import HTTPNotAcceptable as NotAcceptable
@@ -119,11 +118,9 @@ class Aliases:
             raise BadRequest('Parameter "query" must be a string.')
 
         if manual:
-            if is_truthy(manual):
-                manual = True
-            elif is_falsy(manual):
-                manual = False
-            else:
+            try:
+                manual = boolean_value(manual, strict=True)
+            except ValueError:
                 raise BadRequest('Parameter "manual" must be a boolean.')
 
         if start:
