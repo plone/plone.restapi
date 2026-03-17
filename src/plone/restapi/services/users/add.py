@@ -1,5 +1,14 @@
 from AccessControl import getSecurityManager
 from plone.app.users.schema import ICombinedRegisterSchema
+
+try:
+    from plone.app.users.utils import generate_login_name
+    from plone.app.users.utils import generate_user_id
+
+    HAS_STANDALONE_GENERATORS = True
+except ImportError:
+    # BBB: plone.app.users without standalone generators (Plone < 6.2)
+    HAS_STANDALONE_GENERATORS = False
 from plone.restapi import _
 from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.deserializer import json_body
@@ -234,10 +243,16 @@ class UsersPost(Service):
             "fullname": data.get("fullname", ""),
         }
 
-        register_view = getMultiAdapter((self.context, self.request), name="register")
-
-        register_view.generate_user_id(user_id_login_name_data)
-        register_view.generate_login_name(user_id_login_name_data)
+        if HAS_STANDALONE_GENERATORS:
+            generate_user_id(self.context, user_id_login_name_data)
+            generate_login_name(self.context, user_id_login_name_data)
+        else:
+            # BBB: plone.app.users without standalone generators (Plone < 6.2)
+            register_view = getMultiAdapter(
+                (self.context, self.request), name="register"
+            )
+            register_view.generate_user_id(user_id_login_name_data)
+            register_view.generate_login_name(user_id_login_name_data)
 
         user_id = user_id_login_name_data.get("user_id", data.get("username"))
         login_name = user_id_login_name_data.get("login_name", data.get("username"))
