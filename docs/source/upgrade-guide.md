@@ -52,7 +52,7 @@ Send a `DELETE` request to the `@lock` endpoint to release a lock (replaces the 
 
 Send a `PATCH` request to the `@lock` endpoint to refresh a lock (replaces the `@refresh-unlock` endpoint).
 
-See the documentation of the `@lock`endpoint for more information: https://plonerestapi.readthedocs.io/en/latest/endpoints/locking.html
+See the documentation of the `@lock` endpoint for more information: https://6.docs.plone.org/plone.restapi/docs/source/endpoints/locking.html.
 
 Pull Request: https://github.com/plone/plone.restapi/pull/1235
 
