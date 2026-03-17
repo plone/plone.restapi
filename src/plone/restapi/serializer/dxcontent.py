@@ -32,7 +32,6 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
 
-
 try:
     # plone.app.iterate is by intend not part of Products.CMFPlone dependencies
     # so we can not rely on having it
