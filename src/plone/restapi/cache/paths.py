@@ -1,7 +1,6 @@
 from Acquisition import aq_parent
 from plone.dexterity.content import DexterityContent
 from plone.dexterity.interfaces import IDexterityContent
-from typing import List
 from z3c.caching.interfaces import IPurgePaths
 from zope.component import adapter
 from zope.interface import implementer
@@ -30,7 +29,7 @@ class RestAPIPurgePaths:
         """Initialize RestAPIPurgePaths."""
         self.context = context
 
-    def getRelativePaths(self) -> List[str]:
+    def getRelativePaths(self) -> list[str]:
         """Return a list of paths that should be purged. The paths should be
         relative to the virtual hosting root, i.e. they should start with a
         '/'.
@@ -59,7 +58,7 @@ class RestAPIPurgePaths:
             paths.append(path)
         return paths
 
-    def getAbsolutePaths(self) -> List[str]:
+    def getAbsolutePaths(self) -> list[str]:
         """Return a list of paths that should be purged. The paths should be
         relative to the domain root, i.e. they should start with a '/'.
 
