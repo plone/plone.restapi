@@ -2,7 +2,7 @@
 
 [![image](https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=main)](https://coveralls.io/github/plone/plone.restapi?branch=main)
 
-[![image](https://app.readthedocs.org/projects/pip/badge)](https://plonerestapi.readthedocs.io/en/latest/)
+[![image](https://app.readthedocs.org/projects/pip/badge)](https://6.docs.plone.org/plone.restapi/docs/source/index.html)
 
 [![image](https://img.shields.io/pypi/v/plone.restapi.svg)](https://pypi.org/project/plone.restapi/)
 
@@ -12,7 +12,7 @@
 
 # Documentation
 
-<https://plonerestapi.readthedocs.io/en/latest/>
+https://6.docs.plone.org/plone.restapi/docs/source/index.html
 
 # Getting started
 
@@ -67,20 +67,20 @@ below 5.2.
 
 # Contribute
 
-- Issue Tracker: <https://github.com/plone/plone.restapi/issues>
-- Source Code: <https://github.com/plone/plone.restapi>
-- Documentation: <https://plonerestapi.readthedocs.io/en/latest>
+- Issue Tracker: https://github.com/plone/plone.restapi/issues
+- Source Code: https://github.com/plone/plone.restapi
+- Documentation: https://6.docs.plone.org/plone.restapi/docs/source/index.html
 
 # Examples
 
 `plone.restapi` has been used in production since its first alpha
 release. It can be seen in action at the following sites:
 
-- Zeelandia GmbH & Co. KG: <https://www.zeelandia.de> (by kitconcept
+- Zeelandia GmbH & Co. KG: https://www.zeelandia.de (by kitconcept
   GmbH)
-- VHS-Ehrenamtsportal: <https://vhs-ehrenamtsportal.de> (by kitconcept
+- VHS-Ehrenamtsportal: https://vhs-ehrenamtsportal.de (by kitconcept
   GmbH)
-- German Physical Society: <https://www.dpg-physik.de> (by kitconcept
+- German Physical Society: https://www.dpg-physik.de (by kitconcept
   GmbH)
 
 # Support
