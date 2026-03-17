@@ -1,7 +1,5 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
-from collections.abc import Iterable
-from collections.abc import Sequence
 from csv import writer
 from itertools import chain
 from plone.app.workflow.browser.sharing import merge_search_results
@@ -18,6 +16,8 @@ from Products.CMFPlone.utils import normalizeString
 from Products.PlonePAS.tools.memberdata import MemberData
 from Products.PlonePAS.tools.membership import default_portrait
 from Products.PlonePAS.utils import decleanId
+from typing import Iterable
+from typing import Sequence
 from urllib.parse import parse_qs
 from urllib.parse import quote
 from zExceptions import BadRequest
