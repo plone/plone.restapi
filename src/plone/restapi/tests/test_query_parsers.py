@@ -74,30 +74,49 @@ class TestBooleanIndexQueryParser(unittest.TestCase):
         qp = BooleanIndexQueryParser()
         self.assertEqual(True, qp.parse("True"))
         self.assertEqual(True, qp.parse("true"))
+        self.assertEqual(True, qp.parse("t"))
         self.assertEqual(True, qp.parse("1"))
+        self.assertEqual(True, qp.parse(1))
         self.assertEqual(True, qp.parse("yes"))
+        self.assertEqual(True, qp.parse("y"))
         self.assertEqual(True, qp.parse("on"))
         self.assertEqual(False, qp.parse("False"))
         self.assertEqual(False, qp.parse("false"))
+        self.assertEqual(False, qp.parse("f"))
         self.assertEqual(False, qp.parse("0"))
+        self.assertEqual(False, qp.parse(0))
         self.assertEqual(False, qp.parse("no"))
+        self.assertEqual(False, qp.parse("n"))
         self.assertEqual(False, qp.parse("off"))
 
     def test_casts_complex_query_values_to_boolean(self):
         qp = BooleanIndexQueryParser()
         self.assertEqual({"query": True}, qp.parse({"query": "True"}))
         self.assertEqual({"query": True}, qp.parse({"query": "true"}))
+        self.assertEqual({"query": True}, qp.parse({"query": "t"}))
         self.assertEqual({"query": True}, qp.parse({"query": "1"}))
+        self.assertEqual({"query": True}, qp.parse({"query": 1}))
         self.assertEqual({"query": True}, qp.parse({"query": "yes"}))
+        self.assertEqual({"query": True}, qp.parse({"query": "y"}))
         self.assertEqual({"query": False}, qp.parse({"query": "False"}))
         self.assertEqual({"query": False}, qp.parse({"query": "false"}))
+        self.assertEqual({"query": False}, qp.parse({"query": "f"}))
         self.assertEqual({"query": False}, qp.parse({"query": "0"}))
+        self.assertEqual({"query": False}, qp.parse({"query": 0}))
         self.assertEqual({"query": False}, qp.parse({"query": "no"}))
+        self.assertEqual({"query": False}, qp.parse({"query": "n"}))
+        self.assertEqual({"query": False}, qp.parse({"query": "off"}))
 
     def test_raises_for_invalid_query_type(self):
         qp = BooleanIndexQueryParser()
         with self.assertRaises(QueryParsingError):
             qp.parse("invalid")
+
+        with self.assertRaises(QueryParsingError):
+            qp.parse(2)
+
+        with self.assertRaises(QueryParsingError):
+            qp.parse(-1)
 
 
 class TestFieldIndexQueryParser(unittest.TestCase):

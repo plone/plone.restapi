@@ -149,6 +149,38 @@ All of the following parameters are optional.
 
 To search for specific aliases, send a `GET` request to the `@aliases` endpoint with one or more of the above named parameters as shown in the following example.
 
+```{warning}
+From version 10.0.0 boolean parameters validation is more strictly.
+
+Valid `True` values example:
+
+- 1
+- "1"
+- "y"
+- "yes"
+- "t"
+- "true"
+- True
+- "True"
+- "active"
+- "enabled"
+- "on"
+
+Valid `False` values example:
+
+- 0
+- "0"
+- "n"
+- "no"
+- "f"
+- "false"
+- False
+- "False"
+- "inactive"
+- "disabled"
+- "off"
+```
+
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_filter.req

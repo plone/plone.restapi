@@ -69,26 +69,43 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertNotIn("effective", response.json()["items"][0])
 
     def test_querystringsearch_fullobjects(self):
-        response = self.api_session.post(
-            "/@querystring-search",
-            json={
-                "query": [
-                    {
-                        "i": "portal_type",
-                        "o": "plone.app.querystring.operation.selection.is",
-                        "v": ["Document"],
-                    }
-                ],
-                "fullobjects": True,
-            },
-        )
+        query = {
+            "query": [
+                {
+                    "i": "portal_type",
+                    "o": "plone.app.querystring.operation.selection.is",
+                    "v": ["Document"],
+                }
+            ],
+            "fullobjects": True,
+        }
 
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("items", response.json())
-        self.assertIn("items_total", response.json())
-        self.assertIn("effective", response.json()["items"][0])
-        self.assertEqual(response.json()["items_total"], 1)
-        self.assertEqual(len(response.json()["items"]), 1)
+        # test True values
+        for value in [True, "True", "true", "t", "1", 1, "yes", "y", "on"]:
+            query["fullobjects"] = value
+            response = self.api_session.post("/@querystring-search", json=query)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("items", response.json())
+            self.assertIn("items_total", response.json())
+            self.assertIn("effective", response.json()["items"][0])
+            self.assertEqual(response.json()["items_total"], 1)
+            self.assertEqual(len(response.json()["items"]), 1)
+
+    def test_querystringsearch_fullobjects_raise_error_if_invalid_value(self):
+        query = {
+            "query": [
+                {
+                    "i": "portal_type",
+                    "o": "plone.app.querystring.operation.selection.is",
+                    "v": ["Document"],
+                }
+            ],
+            "fullobjects": "foo",
+        }
+
+        response = self.api_session.post("/@querystring-search", json=query)
+        self.assertEqual(response.status_code, 400)
 
     def test_querystringsearch_metadata_fields_post(self):
         response = self.api_session.post(

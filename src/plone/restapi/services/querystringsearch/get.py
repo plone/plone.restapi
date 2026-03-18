@@ -1,4 +1,5 @@
 from importlib.metadata import distribution
+from plone.restapi.bbb import boolean_value
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
 from plone.restapi.deserializer import parse_int
@@ -41,7 +42,11 @@ class QuerystringSearch:
         limit = data.get("limit")
         if limit is not None:
             limit = parse_int(data, "limit", None)
-        fullobjects = bool(data.get("fullobjects", False))
+
+        try:
+            fullobjects = boolean_value(data.get("fullobjects", False))
+        except ValueError as e:
+            raise BadRequest(str(e))
 
         if not query:
             raise BadRequest("No query supplied")

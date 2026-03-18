@@ -49,6 +49,38 @@ Parameters the endpoint will accept:
 - `limit` - integer, limits the number of returned results
 - `fullobjects` - boolean, if `true` then return the full objects instead of just the summary serialization
 
+```{warning}
+From version 10.0.0 boolean parameters validation is more strictly.
+
+Valid `True` values example:
+
+- 1
+- "1"
+- "y"
+- "yes"
+- "t"
+- "true"
+- True
+- "True"
+- "active"
+- "enabled"
+- "on"
+
+Valid `False` values example:
+
+- 0
+- "0"
+- "n"
+- "no"
+- "f"
+- "false"
+- False
+- "False"
+- "inactive"
+- "disabled"
+- "off"
+```
+
 ## Parameters
 
 ### Batch Start (`b_start`)

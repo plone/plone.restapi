@@ -120,8 +120,8 @@ class Aliases:
         if manual:
             try:
                 manual = boolean_value(manual)
-            except ValueError:
-                raise BadRequest('Parameter "manual" must be a boolean.')
+            except ValueError as e:
+                raise BadRequest(str(e))
 
         if start:
             try:
