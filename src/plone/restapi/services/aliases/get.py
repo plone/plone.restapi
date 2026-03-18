@@ -3,8 +3,8 @@ from DateTime import DateTime
 from DateTime.interfaces import DateTimeError
 from plone.app.redirector.interfaces import IRedirectionStorage
 from plone.restapi.batching import HypermediaBatch
+from plone.restapi.bbb import boolean_value
 from plone.restapi.bbb import IPloneSiteRoot
-from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import datetimelike_to_iso
 from plone.restapi.services import Service
@@ -119,7 +119,7 @@ class Aliases:
 
         if manual:
             try:
-                manual = boolean_value(manual, strict=True)
+                manual = boolean_value(manual)
             except ValueError:
                 raise BadRequest('Parameter "manual" must be a boolean.')
 

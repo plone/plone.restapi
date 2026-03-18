@@ -18,6 +18,7 @@ try:
     from plone.base.interfaces import ITestCasePloneSiteRoot
     from plone.base.navigationroot import get_navigation_root
     from plone.base.utils import base_hasattr
+    from plone.base.utils import boolean_value
     from plone.base.utils import safe_callable
     from plone.base.utils import safe_hasattr
     from plone.base.utils import safe_text
@@ -27,6 +28,7 @@ except ImportError:
     from plone.app.layout.navigation.root import (
         getNavigationRoot as get_navigation_root,
     )
+    from plone.restapi.deserializer import boolean_value
     from Products.CMFPlone.defaultpage import is_default_page
     from Products.CMFPlone.interfaces import IConstrainTypes
     from Products.CMFPlone.interfaces import IEditingSchema

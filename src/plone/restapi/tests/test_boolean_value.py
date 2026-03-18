@@ -50,9 +50,15 @@ class TestBooleanValue(unittest.TestCase):
     def test_boolean_value_off(self):
         self.assertFalse(boolean_value("off"))
 
-    def test_boolean_value_false_for_unknown(self):
-        self.assertFalse(boolean_value("foobar"))
+    def test_boolean_value_t(self):
+        self.assertTrue(boolean_value("t"))
 
-    def test_boolean_value_strict_raises_for_unknown(self):
+    def test_boolean_value_f(self):
+        self.assertFalse(boolean_value("f"))
+
+    def test_boolean_value_raises_for_unknown(self):
         with self.assertRaises(ValueError):
-            boolean_value("foobar", strict=True)
+            boolean_value("foobar")
+
+    def test_boolean_value_return_default_for_unknown(self):
+        self.assertTrue(boolean_value("foobar", default=True))
