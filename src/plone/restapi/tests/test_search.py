@@ -441,15 +441,87 @@ class TestSearchFunctional(unittest.TestCase):
 
     # BooleanIndex
 
-    def test_boolean_index_query(self):
+    def test_boolean_index_true_query(self):
+
         query = {"test_bool_field": True, "portal_type": "DXTestDocument"}
         response = self.api_session.get("/folder/@search", params=query)
         self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": "true", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": "True", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": "t", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": "y", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": "yes", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": 1, "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+    def test_boolean_index_false_query(self):
 
         query = {"test_bool_field": False, "portal_type": "DXTestDocument"}
         response = self.api_session.get("/folder/@search", params=query)
         self.assertEqual(
             ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": "false", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": "False", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": "f", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": "n", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": "no", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": 0, "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+
+    def test_boolean_index_query_return_error_if_invalid_value(self):
+        query = {"test_bool_field": "foo", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.json()["message"], "Could not parse value 'foo' as boolean"
+        )
+
+        query = {"test_bool_field": 2, "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.json()["message"], "Could not parse value '2' as boolean"
         )
 
     # FieldIndex
