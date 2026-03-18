@@ -1,4 +1,4 @@
-from plone.restapi.deserializer import boolean_value
+from plone.restapi.bbb import boolean_value
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
 import unittest

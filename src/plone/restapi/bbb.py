@@ -18,7 +18,6 @@ try:
     from plone.base.interfaces import ITestCasePloneSiteRoot
     from plone.base.navigationroot import get_navigation_root
     from plone.base.utils import base_hasattr
-    from plone.base.utils import boolean_value
     from plone.base.utils import safe_callable
     from plone.base.utils import safe_hasattr
     from plone.base.utils import safe_text
@@ -28,7 +27,6 @@ except ImportError:
     from plone.app.layout.navigation.root import (
         getNavigationRoot as get_navigation_root,
     )
-    from plone.restapi.deserializer import boolean_value
     from Products.CMFPlone.defaultpage import is_default_page
     from Products.CMFPlone.interfaces import IConstrainTypes
     from Products.CMFPlone.interfaces import IEditingSchema
@@ -49,3 +47,74 @@ except ImportError:
     from Products.CMFPlone.utils import safe_callable
     from Products.CMFPlone.utils import safe_hasattr
     from Products.CMFPlone.utils import safe_text
+
+
+# Backwards compatibility for old Plone versions that do not use plone.base.
+# See https://github.com/plone/plone.restapi/issues/1960 and
+# https://github.com/plone/plone.base/pull/112
+# remove this when we deprecate support for Plone 5.2 and 6.0
+
+try:
+    from plone.base.utils import boolean_value
+except ImportError:
+    # BBB Plone without plone.base
+    import logging
+
+    logger = logging.getLogger(__name__)
+
+    def is_truthy(value) -> bool:
+        """
+        Return `True`, if value is a boolean `True` or an integer `1` or
+        a string that looks like "yes", `False` otherwise.
+        """
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, int):
+            return value == 1
+        str_value = str(value).lower().strip()
+        return str_value in {
+            "1",
+            "y",
+            "yes",
+            "t",
+            "true",
+            "active",
+            "enabled",
+            "on",
+        }
+
+    def is_falsy(value) -> bool:
+        """
+        Return `True`, if value is a boolean `False` or an integer `0` or
+        a string that looks like "no", `False` otherwise.
+        """
+        if isinstance(value, bool):
+            return not value
+        if isinstance(value, int):
+            return value == 0
+        str_value = str(value).lower().strip()
+        return str_value in {
+            "0",
+            "n",
+            "no",
+            "f",
+            "false",
+            "inactive",
+            "disabled",
+            "off",
+        }
+
+    def boolean_value(value, default=None):
+        """Return a boolean value for the given input."""
+        if is_truthy(value):
+            return True
+        if is_falsy(value):
+            return False
+        if default is not None:
+            logger.warning(
+                "Could not parse value %r as boolean, returning default %r",
+                value,
+                default,
+            )
+            return default
+        raise ValueError(f"Could not parse value {value!r} as boolean")
