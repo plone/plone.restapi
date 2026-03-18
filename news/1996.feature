@@ -1,1 +1,1 @@
-Improve usage of boolean URL parameters with boolean_value method (backward compatibility for plone.base). @cekk
+Services which take boolean parameters now check the input more strictly, using the `boolean_value` util. @cekk
