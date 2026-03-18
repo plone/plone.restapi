@@ -2711,12 +2711,12 @@ Bugfixes:
 New Features:
 
 - Add support for expandable elements. See
-  <http://plonerestapi.readthedocs.io/en/latest/expansion.html> for
-  details. @buchi
+  https://6.docs.plone.org/plone.restapi/docs/source/usage/expansion.html
+  for details. @buchi
 - Translate titles in @workflow. @csenger
 - Add endpoints for locking/unlocking. See
-  <http://plonerestapi.readthedocs.io/en/latest/locking.html> for
-  details. @buchi
+  https://6.docs.plone.org/plone.restapi/docs/source/endpoints/locking.html
+  for details. @buchi
 - Add @controlpanels endpoint. @jaroel, timo
 
 Bugfixes:
