@@ -17,7 +17,6 @@ from zope.schema.vocabulary import SimpleVocabulary
 import transaction
 import unittest
 
-
 TEST_TERM_1 = SimpleTerm(42, token="token1", title="Title 1")
 TEST_TERM_2 = SimpleTerm(43, token="token2", title="Title 2")
 TEST_TERM_3 = SimpleTerm(44, token="token3")

@@ -1,7 +1,6 @@
 from importlib.metadata import distribution
 from plone.restapi.services import Service
 
-
 try:
     from Products.CMFPlone.controlpanel.browser.overview import OverviewControlPanel
 except ImportError:

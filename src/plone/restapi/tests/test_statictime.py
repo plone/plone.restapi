@@ -28,7 +28,6 @@ from zope.interface import alsoProvides
 import transaction
 import unittest
 
-
 # Check if comments from p.a.discussion are tz aware
 # Introduced via https://github.com/plone/plone.app.discussion/pull/204
 HAS_TZ_AWARE_COMMENTS = hasattr(comment, "localized_now")

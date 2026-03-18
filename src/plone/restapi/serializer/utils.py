@@ -7,7 +7,6 @@ from zope.i18n import translate
 
 import re
 
-
 RESOLVEUID_RE = re.compile("^(?:|.*/)resolve[Uu]id/([^/#]*)?(.*)?$")
 
 

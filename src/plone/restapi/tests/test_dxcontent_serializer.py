@@ -39,7 +39,6 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 import json
 import unittest
 
-
 HAS_PLONE_6 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
 )

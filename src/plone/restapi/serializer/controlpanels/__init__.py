@@ -15,7 +15,6 @@ from zope.interface import noLongerProvides
 
 import zope.schema
 
-
 SERVICE_ID = "@controlpanels"
 
 

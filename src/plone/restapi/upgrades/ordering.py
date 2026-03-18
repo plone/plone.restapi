@@ -5,7 +5,6 @@ from Products.Five.browser import BrowserView
 from zope.annotation.interfaces import IAnnotatable
 from zope.annotation.interfaces import IAnnotations
 
-
 ORDER_KEY = DefaultOrdering.ORDER_KEY
 QUERY = {"is_folderish": True}
 

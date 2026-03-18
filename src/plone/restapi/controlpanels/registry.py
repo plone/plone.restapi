@@ -6,7 +6,6 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import Interface
 
-
 try:
     from plone.base.interfaces.controlpanel import IDateAndTimeSchema
     from plone.base.interfaces.controlpanel import IEditingSchema

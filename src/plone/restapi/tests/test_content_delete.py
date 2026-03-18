@@ -13,7 +13,6 @@ import requests
 import transaction
 import unittest
 
-
 linkintegrity_version = distribution("plone.app.linkintegrity").version
 if version_parse(linkintegrity_version) >= version_parse("3.0.dev0"):
     NEW_LINKINTEGRITY = True
