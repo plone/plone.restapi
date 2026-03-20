@@ -152,4 +152,10 @@
       provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
       />
 
+  <adapter
+      factory=".errorhandling.ErrorHandling"
+      provides="zope.interface.Interface"
+      name="index.html"
+      />
+
 </configure>

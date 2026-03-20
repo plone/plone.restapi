@@ -56,7 +56,7 @@ class TestPermissions(unittest.TestCase):
         response = self.api_session.get(self.portal_url)
         self.assertEqual(response.status_code, 401)
         data = response.json()
-        self.assertEqual(data["type"], "Unauthorized")
+        self.assertEqual(data["error_type"], "Unauthorized")
         self.assertEqual(
             data["message"], "Missing 'plone.restapi: Use REST API' permission"
         )
