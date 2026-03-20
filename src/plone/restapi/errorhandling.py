@@ -1,5 +1,4 @@
 from plone.rest.errors import ErrorHandling as BaseErrorHandling
-from plone.restapi.problem_types import BACKWARDS_COMPAT_MODE
 from plone.restapi.problem_types import INTERNAL_ERROR
 from plone.restapi.problem_types import STATUS_MAP
 from plone.restapi.problem_types import get_backwards_compat
@@ -42,6 +41,13 @@ class ErrorHandling(BaseErrorHandling):
         if result is None:
             return None
 
+        if get_backwards_compat():
+            legacy_result = dict(result)
+            legacy_result["message"] = translate_message(
+                legacy_result.get("message", ""), self.request
+            )
+            return legacy_result
+
         status = self.request.response.getStatus()
         problem_type, title = STATUS_MAP.get(
             status, (INTERNAL_ERROR, "Internal Server Error")
@@ -57,14 +63,5 @@ class ErrorHandling(BaseErrorHandling):
             "detail": translated_message,
             "instance": self.request.get("PATH_INFO", ""),
         }
-
-        if get_backwards_compat():
-            error_response["message"] = translated_message
-            if "context" in result:
-                error_response["context"] = result["context"]
-            if "traceback" in result:
-                error_response["traceback"] = result["traceback"]
-            if "type" in result:
-                error_response["error_type"] = result["type"]
 
         return error_response

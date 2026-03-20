@@ -263,7 +263,7 @@ class TestFunctionalAuth(unittest.TestCase):
         )
 
         self.assertEqual(401, response.status_code)
-        self.assertEqual("Unauthorized", response.json().get("error_type"))
+        self.assertEqual("Unauthorized", response.json().get("type"))
         self.assertEqual(
             "You are not authorized to access this resource.",
             response.json().get("message"),
@@ -286,7 +286,7 @@ class TestFunctionalAuth(unittest.TestCase):
         )
 
         self.assertEqual(401, response.status_code)
-        self.assertEqual("Unauthorized", response.json().get("error_type"))
+        self.assertEqual("Unauthorized", response.json().get("type"))
         self.assertEqual(
             "You are not authorized to access this resource.",
             response.json().get("message"),
