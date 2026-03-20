@@ -39,7 +39,6 @@ from zope.schema.interfaces import IFromUnicode
 
 import os
 
-
 _ = MessageFactory("plone.restapi")
 
 

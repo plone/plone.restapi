@@ -3,7 +3,6 @@ from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.globalrequest import getRequest
 
-
 if HAS_PLONE_6:
     # In Plone 6.0+, we must use the mode parameter
     scale_parameter = {"mode": "scale"}

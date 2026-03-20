@@ -32,7 +32,6 @@ from zope.publisher.interfaces import IPublishTraverse
 import io
 import json
 
-
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
 
 try:

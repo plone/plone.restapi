@@ -35,7 +35,6 @@ import re
 import requests
 import time
 
-
 try:
     from plone.app.caching.testing import PloneAppCachingBase
 except ImportError:

@@ -5,7 +5,6 @@ from plone.restapi.exceptions import DeserializationError
 from urllib.parse import parse_qsl
 from urllib.parse import urlencode
 
-
 DEFAULT_BATCH_SIZE = 25
 
 

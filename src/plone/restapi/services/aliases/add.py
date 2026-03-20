@@ -18,7 +18,6 @@ from zope.publisher.interfaces import IPublishTraverse
 import logging
 import plone.protect.interfaces
 
-
 logger = logging.getLogger(__name__)
 
 

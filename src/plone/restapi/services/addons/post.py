@@ -8,7 +8,6 @@ from zope.publisher.interfaces import IPublishTraverse
 import logging
 import plone
 
-
 logger = logging.getLogger("Plone")
 
 
