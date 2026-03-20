@@ -60,36 +60,10 @@ The `plone.restapi` `@search` endpoint will not do that for you.
 You will have to add it if you want to keep this feature.
 ```
 
-```{warning}
-From version 10.0.0 boolean parameters validation is more strictly.
+```{versionchanged} plone.restapi 10.0.0
+Since plone.restapi version 10.0.0, boolean parameters are validated more strictly.
 
-Valid `True` values example:
-
-- 1
-- "1"
-- "y"
-- "yes"
-- "t"
-- "true"
-- True
-- "True"
-- "active"
-- "enabled"
-- "on"
-
-Valid `False` values example:
-
-- 0
-- "0"
-- "n"
-- "no"
-- "f"
-- "false"
-- False
-- "False"
-- "inactive"
-- "disabled"
-- "off"
+See {doc}`../usage/parameters` for details.
 ```
 
 ## Query format
