@@ -30,7 +30,6 @@ from zope.schema.interfaces import ISource
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
-
 INDEXES = (
     ("test_int_field", "FieldIndex"),
     ("test_list_field", "KeywordIndex"),

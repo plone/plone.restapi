@@ -4,7 +4,6 @@ from zope.component import queryUtility
 
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 OLD_BEHAVIOR_NAME = "plone.restapi.behaviors.ITiles"

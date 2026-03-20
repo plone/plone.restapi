@@ -19,7 +19,6 @@ from zope.component import getUtility
 from zope.interface import implementer
 from zope.interface import Interface
 
-
 if HAS_MULTILINGUAL:
     from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
 

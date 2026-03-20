@@ -17,7 +17,6 @@ from zope.schema.vocabulary import SimpleVocabulary
 import transaction
 import unittest
 
-
 TEST_TERM_1 = SimpleTerm(42, token="token1", title="Title 1")
 TEST_TERM_2 = SimpleTerm(43, token="token2", title="Title 2")
 TEST_TERM_3 = SimpleTerm(44, token="token3")
@@ -467,6 +466,27 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         response = response.json()
         self.assertEqual(len(response["items"]), 100)
+
+    def test_get_vocabulary_sorted_by_title(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?sort_on=title&b_size=-1"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+
+        self.assertEqual(
+            [item["title"] for item in response["items"]],
+            [
+                "This is a title for the seventh term",
+                "Title 1",
+                "Title 2",
+                "token3",
+                "token4",
+                "Tötle 5",
+                "Tötle 6",
+            ],
+        )
 
     def tearDown(self):
         self.api_session.close()

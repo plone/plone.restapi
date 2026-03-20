@@ -14,7 +14,6 @@ from zope.interface import alsoProvides
 
 import plone
 
-
 try:
     # Products.MailHost has a patch to fix quoted-printable soft line breaks.
     # See https://github.com/zopefoundation/Products.MailHost/issues/35
@@ -105,9 +104,11 @@ class EmailSendPost(Service):
             )
         )
 
-        message = f"{message_intro} \n {message}"
-
         message = message_from_string(message)
+        if not message.is_multipart():
+            payload = message.get_payload()
+            message.set_payload(f"{message_intro}\n\n{payload}")
+
         message["Reply-To"] = sender_from_address
         try:
             host.send(

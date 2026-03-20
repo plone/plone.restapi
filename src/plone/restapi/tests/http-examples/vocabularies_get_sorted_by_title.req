@@ -1,0 +1,4 @@
+GET /plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?sort_on=title HTTP/1.1
+Accept: application/json
+Accept-Language: es
+Authorization: Basic YWRtaW46c2VjcmV0

@@ -15,7 +15,6 @@ When an object is moved (renamed or cut/pasted into a different location), the r
 
 The API consumer can create, read, and delete aliases.
 
-
 | Verb     | URL         | Action                                 |
 | -------- | ----------- | -------------------------------------- |
 | `POST`   | `/@aliases` | Add one or more aliases                |
@@ -135,7 +134,20 @@ Response:
 
 ## Filter aliases
 
-To search for specific aliases, send a `GET` request to the `/@aliases` endpoint on site `root` with a `q` parameter:
+### Parameters
+
+All of the following parameters are optional.
+
+| Name      | Type    | Description                                            |
+| --------- | ------- | ------------------------------------------------------ |
+| `query`   | string  | Full-text search. Can match paths or text fields.      |
+| `manual`  | boolean | Filter by manual or automatically created redirects.   |
+| `start`   | string  | Filter redirects created **after** this date.          |
+| `end`     | string  | Filter redirects created **before** this date.         |
+| `b_start` | integer | Batch start index (offset).                            |
+| `b_size`  | integer | Batch size (maximum items returned).                   |
+
+To search for specific aliases, send a `GET` request to the `@aliases` endpoint with one or more of the above named parameters as shown in the following example.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests

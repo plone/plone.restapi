@@ -11,7 +11,6 @@ from zope.component import getMultiAdapter
 
 import packaging.version
 
-
 zcatalog_version = distribution("Products.ZCatalog").version
 if packaging.version.parse(zcatalog_version) >= packaging.version.parse("5.1"):
     SUPPORT_NOT_UUID_QUERIES = True
@@ -38,7 +37,9 @@ class QuerystringSearch:
         b_size = parse_int(data, "b_size", 25)
         sort_on = data.get("sort_on", None)
         sort_order = data.get("sort_order", None)
-        limit = parse_int(data, "limit", 1000)
+        limit = data.get("limit")
+        if limit is not None:
+            limit = parse_int(data, "limit", None)
         fullobjects = bool(data.get("fullobjects", False))
 
         if not query:

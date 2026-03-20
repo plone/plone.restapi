@@ -44,7 +44,9 @@ class RelationListFieldSerializer(DefaultFieldSerializer):
         """
         value = super().get_value()
         if value:
-            return [el for el in value if el.to_id]
+            # Only include relations that still resolve (skip broken relations
+            # e.g. when the target content was deleted). Avoids [null] in JSON.
+            return [el for el in value if el.to_object]
         if default is None:
             return []
         return default

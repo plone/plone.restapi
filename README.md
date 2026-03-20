@@ -2,7 +2,7 @@
 
 [![image](https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=main)](https://coveralls.io/github/plone/plone.restapi?branch=main)
 
-[![image](https://app.readthedocs.org/projects/pip/badge)](https://plonerestapi.readthedocs.io/en/latest/)
+[![image](https://app.readthedocs.org/projects/plonerestapi/badge)](https://6.docs.plone.org/plone.restapi/docs/source/index.html)
 
 [![image](https://img.shields.io/pypi/v/plone.restapi.svg)](https://pypi.org/project/plone.restapi/)
 
@@ -12,7 +12,7 @@
 
 # Documentation
 
-<https://plonerestapi.readthedocs.io/en/latest/>
+https://6.docs.plone.org/plone.restapi/docs/source/index.html
 
 # Getting started
 
@@ -37,7 +37,7 @@ curl -i -X POST https://demo.plone.org/++api++ \
     --user admin:admin
 ```
 
-> [!NOTE]  
+> [!NOTE]
 > You will need some kind of API browser application to explore the API.
 > You will also need to first obtain a basic authorization token.
 > We recommend using [Postman](https://www.postman.com/) which makes it
@@ -51,13 +51,12 @@ If it is not installed, add it using requirements.txt or as a dependency of anot
 
 # Python / Plone Compatibility
 
-plone.restapi 9 requires Python 3 and works with Plone 5.2 and Plone
-6.x.
+plone.restapi 10 requires Python 3 and works with Plone 6.2, 6.1, 6.0, and 5.2.
 
-plone.restapi 8 entered "maintenance" mode with the release of
-plone.restapi 9 (September 2023). It is not planned to backport any
+plone.restapi 9 entered "maintenance" mode with the release of
+plone.restapi 10 (end of 2025). It is not planned to backport any
 features to this version and we highly recommend to upgrade to
-plone.restapi 9.
+the latest version of plone.restapi.
 
 Python versions that reached their
 [end-of-life](https://devguide.python.org/versions/), including Python
@@ -68,20 +67,20 @@ below 5.2.
 
 # Contribute
 
-- Issue Tracker: <https://github.com/plone/plone.restapi/issues>
-- Source Code: <https://github.com/plone/plone.restapi>
-- Documentation: <https://plonerestapi.readthedocs.io/en/latest>
+- Issue Tracker: https://github.com/plone/plone.restapi/issues
+- Source Code: https://github.com/plone/plone.restapi
+- Documentation: https://6.docs.plone.org/plone.restapi/docs/source/index.html
 
 # Examples
 
 `plone.restapi` has been used in production since its first alpha
 release. It can be seen in action at the following sites:
 
-- Zeelandia GmbH & Co. KG: <https://www.zeelandia.de> (by kitconcept
+- Zeelandia GmbH & Co. KG: https://www.zeelandia.de (by kitconcept
   GmbH)
-- VHS-Ehrenamtsportal: <https://vhs-ehrenamtsportal.de> (by kitconcept
+- VHS-Ehrenamtsportal: https://vhs-ehrenamtsportal.de (by kitconcept
   GmbH)
-- German Physical Society: <https://www.dpg-physik.de> (by kitconcept
+- German Physical Society: https://www.dpg-physik.de (by kitconcept
   GmbH)
 
 # Support
@@ -93,7 +92,7 @@ If you require professional support, here is a list of Plone solution
 providers that contributed significantly to `plone.restapi` in the past.
 
 - [kitconcept GmbH](https://kitconcept.com) (Germany)
-- [4teamwork](https://www.4teamwork.ch/en) (Switzerland)
+- [Fabasoft (acquired 4teamwork)](https://www.fabasoft.com/de/fabasoft-schweiz) (Switzerland)
 - [CodeSyntax](https://www.codesyntax.com/en) (Spain)
 
 # License

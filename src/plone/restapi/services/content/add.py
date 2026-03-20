@@ -22,7 +22,6 @@ from zope.lifecycleevent import ObjectCreatedEvent
 
 import plone.protect.interfaces
 
-
 if HAS_MULTILINGUAL:
     from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
     from plone.app.multilingual.interfaces import ITranslationManager

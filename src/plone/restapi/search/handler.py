@@ -131,23 +131,19 @@ class SearchHandler:
                 bits = query["path"]["query"].split("/")[len(vhm_physical_path) :]
                 query["path"]["query"] = "/".join(bits) or "/"
 
-        default_sort_on = search_settings.sort_on
-
+        # Get default sort_on from registry if not specified in query
         if "sort_on" not in query:
-            if default_sort_on != "relevance":
-                query["sort_on"] = self.default_sort_on
-        elif query["sort_on"] == "relevance":
-            del query["sort_on"]
+            query["sort_on"] = search_settings.sort_on
+            # To rank by relevance, sort_on must be omitted
+            if query["sort_on"] == "relevance":
+                del query["sort_on"]
 
-        if not query.get("sort_order") and (
-            query.get("sort_on", "") == "Date"
-            or query.get("sort_on", "") == "effective"  # compatibility with Volto
-        ):
+        sort_on = query.get("sort_on")
+        # Remove sort_order if sort_on is not set
+        if not sort_on and "sort_order" in query:
+            del query["sort_order"]
+        # Default to reverse sort_order if sort_on is a date
+        elif sort_on in ("Date", "effective") and not query.get("sort_order"):
             query["sort_order"] = "reverse"
-        elif "sort_order" in query:
-            del query["sort_order"]
-
-        if "sort_order" in query and not query["sort_order"]:
-            del query["sort_order"]
 
         return query

@@ -4,6 +4,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from unittest import mock
 
 import transaction
 import unittest
@@ -361,3 +362,55 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
             },
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_querystringsearch_should_return_all_results_without_limit(self):
+        """Test that all results are returned when user doesn't specify limit.
+
+        Mocks Catalog._search_index to return 1001 items.
+        """
+        from BTrees.IIBTree import IISet
+        from plone.restapi.serializer.summary import DefaultJSONSummarySerializer
+        from Products.ZCatalog.Catalog import Catalog
+
+        num_results = 1001
+        mock_rs = IISet(range(num_results))
+        mock_brain = object()
+
+        def mock_search_index(catalog_self, cr, index_id, query, rs):
+            return mock_rs
+
+        def mock_getitem(catalog_self, index):
+            return mock_brain
+
+        original_serializer = DefaultJSONSummarySerializer.__call__
+
+        def mock_serializer(self):
+            if self.context is mock_brain:
+                return {}
+            return original_serializer(self)
+
+        with mock.patch.object(Catalog, "_search_index", mock_search_index):
+            with mock.patch.object(Catalog, "__getitem__", mock_getitem):
+                with mock.patch.object(
+                    DefaultJSONSummarySerializer, "__call__", mock_serializer
+                ):
+                    response = self.api_session.post(
+                        "/@querystring-search",
+                        json={
+                            "query": [
+                                {
+                                    "i": "portal_type",
+                                    "o": "plone.app.querystring.operation.selection.is",
+                                    "v": ["Document"],
+                                }
+                            ]
+                        },
+                    )
+
+                    self.assertEqual(response.status_code, 200)
+                    self.assertEqual(
+                        response.json()["items_total"],
+                        num_results,
+                        f"Expected {num_results} results, got {response.json()['items_total']}. "
+                        "QuerystringSearch should not impose a default limit.",
+                    )

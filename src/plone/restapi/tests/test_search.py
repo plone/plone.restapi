@@ -25,7 +25,6 @@ import packaging.version
 import transaction
 import unittest
 
-
 HAS_PLONE_6 = packaging.version.parse(
     distribution("Products.CMFPlone").version
 ) >= packaging.version.parse("6.0.0a1")
@@ -759,6 +758,19 @@ class TestSearchFunctional(unittest.TestCase):
 
         response = self.api_session.get(
             "/@search", params={"use_site_search_settings": 1, "sort_on": "effective"}
+        ).json()
+        self.assertEqual(
+            [item["title"] for item in response["items"]][0],
+            "Other Document",
+        )
+
+        response = self.api_session.get(
+            "/@search",
+            params={
+                "use_site_search_settings": 1,
+                "sort_on": "effective",
+                "sort_order": "reverse",
+            },
         ).json()
         self.assertEqual(
             [item["title"] for item in response["items"]][0],

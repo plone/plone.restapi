@@ -1,4 +1,8 @@
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
 
-null
+{
+    "context": "http://localhost:55001/plone",
+    "message": "You are not authorized to access this resource.",
+    "type": "Unauthorized"
+}

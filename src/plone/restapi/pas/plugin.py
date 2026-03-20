@@ -20,7 +20,6 @@ from zope.interface import implementer
 import jwt
 import time
 
-
 try:
     from importlib.metadata import version
 except ImportError:

@@ -8,7 +8,6 @@ from plone.restapi.serializer.working_copy import WorkingCopyInfo
 from Products.CMFCore.WorkflowTool import _marker
 from Products.CMFCore.WorkflowTool import WorkflowTool
 
-
 try:
     from plone.app.discussion.comment import Comment
 except ImportError:

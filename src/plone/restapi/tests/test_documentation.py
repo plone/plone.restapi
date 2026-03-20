@@ -53,7 +53,6 @@ import re
 import transaction
 import unittest
 
-
 TUS_HEADERS = [
     "upload-offset",
     "upload-length",
@@ -1043,6 +1042,25 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("@users", params={"search": "avram"})
         save_request_and_response_for_docs("users_searched", response)
 
+    def test_documentation_users_csv_format_get(self):
+        url = f"{self.portal.absolute_url()}/@users"
+        response = self.api_session.post(
+            url,
+            json={
+                "email": "noam.chomsky@example.com",
+                "username": "noamchomsky",
+                "fullname": "Noam Avram Chomsky",
+                "home_page": "web.mit.edu/chomsky",
+                "description": "Professor of Linguistics",
+                "location": "Cambridge, MA",
+                "roles": ["Contributor"],
+            },
+        )
+        self.api_session.headers.update({"Content-Type": "text/csv"})
+        self.api_session.headers.update({"Accept": "text/csv"})
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("users_get_csv_format", response)
+
     def test_documentation_users_created(self):
         response = self.api_session.post(
             "/@users",
@@ -1073,6 +1091,34 @@ class TestDocumentation(TestDocumentationBase):
             },
         )
         save_request_and_response_for_docs("users_add", response)
+
+    def test_documentation_users_csv_format_add(self):
+        url = f"{self.portal.absolute_url()}/@users"
+
+        content = b'username,email,fullname,description,roles,home_page,password\r\njdoe,jdoe@example.com,John Doe,Software developer from Berlin,"Member, Contributor",https://jdoe.dev,pass1234\nasmith,asmith@example.com,Alice Smith,Frontend engineer and designer,Member,https://alice.design,alicePwd!\r\nbwayne,bwayne@example.com,Bruce Wayne,Tech entrepreneur,,https://wayneenterprises.com,batman42\r\n'
+        csv_file = io.BytesIO(content)
+        csv_file.name = "users.csv"
+
+        # Setting a fixed boundary intentionally to make the producing .req and .resp files deterministic
+        boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+
+        # Manually construct the multipart body
+        body = (
+            f"--{boundary}\r\n"
+            f'Content-Disposition: form-data; name="file"; filename="{csv_file.name}"\r\n'
+            "Content-Type: text/csv\r\n\r\n"
+            f"{content.decode()}\r\n"
+            f"--{boundary}--\r\n"
+        )
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": "Basic YWRtaW46c2VjcmV0",
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
+        }
+
+        response = self.api_session.post(url, headers=headers, data=body)
+        save_request_and_response_for_docs("users_add_csv_format", response)
 
     def test_documentation_users_update(self):
         properties = {
@@ -1690,8 +1736,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',
             response.content,
         )
         save_request_and_response_for_docs("lock", response)
@@ -1704,8 +1749,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',
             response.content,
         )
         save_request_and_response_for_docs("lock_nonstealable_timeout", response)
@@ -1731,8 +1775,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',
             response.content,
         )
         save_request_and_response_for_docs("refresh_lock", response)
@@ -2023,6 +2066,12 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
             response = self.api_session.get("/@addons")
             save_request_and_response_for_docs("translated_messages_addons", response)
 
+    def test_documentation_vocabularies_get_sorted_by_title(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?sort_on=title"
+        )
+        save_request_and_response_for_docs("vocabularies_get_sorted_by_title", response)
+
 
 class TestCommenting(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -2194,7 +2243,7 @@ class TestCommenting(TestDocumentationBase):
         # Get aliases
         url = f"{self.document.absolute_url()}/@aliases"
 
-        payload = {"items": "/simple-alias"}
+        payload = {"items": [{"path": "/simple-alias", "datetime": "2022-05-05"}]}
         response = self.api_session.post(url, json=payload)
 
         response = self.api_session.get(url)
@@ -2322,7 +2371,7 @@ class TestCommenting(TestDocumentationBase):
     def test_aliases_root_filter(self):
         # Get aliases
         url = f"{self.portal.absolute_url()}/@aliases"
-        query = "?q=/fizzbuzz"
+        query = "?query=/fizzbuzz"
 
         payload = {
             "items": [
@@ -2342,6 +2391,30 @@ class TestCommenting(TestDocumentationBase):
 
         response = self.api_session.get(url + query)
         save_request_and_response_for_docs("aliases_root_filter", response)
+
+    def test_aliases_non_root_filter(self):
+        # Get aliases
+        url = f"{self.portal.absolute_url()}/front-page/@aliases"
+        query = "?query=/fizzbuzz"
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_non_root_filter", response)
 
 
 class TestControlPanelDocumentation(TestDocumentationBase):
@@ -3093,7 +3166,6 @@ class TestRules(TestDocumentationBase):
 
 
 class TestLinkintegrity(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
