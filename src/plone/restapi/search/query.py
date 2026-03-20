@@ -50,7 +50,6 @@ from zope.interface import Interface
 
 import logging
 
-
 log = logging.getLogger(__name__)
 
 # Marker value to signal that query values may be of an arbitrary type

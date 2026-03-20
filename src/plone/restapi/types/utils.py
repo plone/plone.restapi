@@ -44,7 +44,6 @@ from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
 
-
 if HAS_MULTILINGUAL:
     from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
 
