@@ -2,7 +2,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "@id": "http://localhost:55001/plone/@recyclebin?filter_type=Document&sort_by=title_asc",
+    "@id": "http://localhost:55001/plone/@recyclebin?portal_type=Document&sort_on=title&sort_order=ascending",
     "items": [
         {
             "@id": "http://localhost:55001/plone/@recyclebin/56a3e44a-f095-4027-a76e-7084059dd5dd",
@@ -20,8 +20,8 @@ Content-Type: application/json
             "recycle_id": "56a3e44a-f095-4027-a76e-7084059dd5dd",
             "size": 0,
             "title": "My Document",
-            "type": "Document",
-            "workflow_state": "private"
+            "@type": "Document",
+            "review_state": "private"
         },
         {
             "@id": "http://localhost:55001/plone/@recyclebin/771d4daf-6282-42a3-a09f-9c9fcd1265f6",
@@ -39,8 +39,8 @@ Content-Type: application/json
             "recycle_id": "771d4daf-6282-42a3-a09f-9c9fcd1265f6",
             "size": 0,
             "title": "Sub Document",
-            "type": "Document",
-            "workflow_state": "private"
+            "@type": "Document",
+            "review_state": "private"
         }
     ],
     "items_total": 2

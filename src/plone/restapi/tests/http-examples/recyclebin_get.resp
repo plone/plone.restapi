@@ -20,8 +20,8 @@ Content-Type: application/json
             "recycle_id": "6c952845-d878-4301-892b-2c7e8a24323a",
             "size": 0,
             "title": "My Document",
-            "type": "Document",
-            "workflow_state": "private"
+            "@type": "Document",
+            "review_state": "private"
         },
         {
             "@id": "http://localhost:55001/plone/@recyclebin/74202eb6-403b-4c5c-910f-55b399f75ee7",
@@ -39,8 +39,8 @@ Content-Type: application/json
             "recycle_id": "74202eb6-403b-4c5c-910f-55b399f75ee7",
             "size": 0,
             "title": "My Folder",
-            "type": "Folder",
-            "workflow_state": "private"
+            "@type": "Folder",
+            "review_state": "private"
         },
         {
             "@id": "http://localhost:55001/plone/@recyclebin/1d55485a-c26d-457d-a89c-f125ea041da6",
@@ -58,8 +58,8 @@ Content-Type: application/json
             "recycle_id": "1d55485a-c26d-457d-a89c-f125ea041da6",
             "size": 0,
             "title": "Sub Document",
-            "type": "Document",
-            "workflow_state": "private"
+            "@type": "Document",
+            "review_state": "private"
         }
     ],
     "items_total": 3

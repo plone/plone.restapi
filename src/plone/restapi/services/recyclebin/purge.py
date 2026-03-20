@@ -1,5 +1,6 @@
 from plone.base.interfaces.recyclebin import IRecycleBin
 from plone.restapi.services import Service
+from zExceptions import BadRequest
 from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.interface import implementer
@@ -49,13 +50,7 @@ class RecycleBinPurge(Service):
             # DELETE /@recyclebin/{item_id} - Delete specific item
             return self._purge_single_item(recycle_bin, self.params[0])
         else:
-            self.request.response.setStatus(400)
-            return {
-                "error": {
-                    "type": "BadRequest",
-                    "message": "Invalid path parameters",
-                }
-            }
+            raise BadRequest("Invalid path parameters")
 
     def _purge_single_item(self, recycle_bin, item_id):
         """Purge a single item from the recycle bin"""
