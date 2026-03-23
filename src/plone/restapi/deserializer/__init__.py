@@ -1,7 +1,14 @@
 from plone.restapi.exceptions import DeserializationError
 from zExceptions import BadRequest
+from zope.deferredimport import deprecated
 
 import json
+
+
+deprecated(
+    "Import from plone.restapi.bbb instead",
+    boolean_value="plone.restapi:bbb.boolean_value",
+)
 
 
 def json_body(request):
