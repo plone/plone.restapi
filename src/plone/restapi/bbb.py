@@ -57,6 +57,8 @@ except ImportError:
 try:
     from plone.base.utils import boolean_value
 except ImportError:
+    from typing import Optional
+
     # BBB Plone without boolean_value in plone.base
 
     def is_truthy(value) -> bool:
@@ -101,7 +103,7 @@ except ImportError:
             "off",
         }
 
-    def boolean_value(value, default: bool | None = None) -> bool:
+    def boolean_value(value, default: Optional[bool] = None) -> bool:
         """Return a boolean value for the given input.
 
         Raises ValueError if the input was not recognized as a boolean.
