@@ -28,7 +28,7 @@ See {doc}`../usage/parameters` for details.
 
 ## Upgrading to `plone.restapi` 9.x
 
-`plone.restapi` 9.x dropped support for Python 3.7, which reached its `end-of-life <https://devguide.python.org/versions/>`\_ in July 2023.
+`plone.restapi` 9.x dropped support for Python 3.7, which reached its [end of life](https://devguide.python.org/versions/) in July 2023.
 
 Upgrading to `plone.restapi` 9.x might require minor changes to your code base that are described in this section. If you are using a recent version of Volto, there are no changes necessary.
 
@@ -57,6 +57,7 @@ In `plone.restapi` 9.0.0, the following response would be returned with a `breac
 
 Pull Request: https://github.com/plone/plone.restapi/pull/1636
 
+
 ### Remove deprecated `@unlock`, `@refresh-lock` endpoints
 
 The deprecated `@unlock` and `@refresh-unlock` endpoints were removed in `plone.restapi` 9.
@@ -68,6 +69,7 @@ Send a `PATCH` request to the `@lock` endpoint to refresh a lock (replaces the `
 See the documentation of the `@lock` endpoint for more information: https://6.docs.plone.org/plone.restapi/docs/source/endpoints/locking.html.
 
 Pull Request: https://github.com/plone/plone.restapi/pull/1235
+
 
 ### Remove `plone.tiles` and the `@tiles` endpoint
 

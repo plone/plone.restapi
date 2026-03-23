@@ -15,7 +15,7 @@ This chapter describes the conventions for URL parameters accepted by the Plone 
 
 (boolean-parameters)=
 
-## Boolean Parameters
+## Boolean parameters
 
 ```{versionchanged} plone.restapi 10.0.0
 Since plone.restapi version 10.0.0, boolean parameters are validated more strictly.
