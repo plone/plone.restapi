@@ -57,10 +57,7 @@ except ImportError:
 try:
     from plone.base.utils import boolean_value
 except ImportError:
-    # BBB Plone without plone.base
-    import logging
-
-    logger = logging.getLogger(__name__)
+    # BBB Plone without boolean_value in plone.base
 
     def is_truthy(value) -> bool:
         """
@@ -104,17 +101,15 @@ except ImportError:
             "off",
         }
 
-    def boolean_value(value, default=None):
-        """Return a boolean value for the given input."""
+    def boolean_value(value, default: bool | None = None) -> bool:
+        """Return a boolean value for the given input.
+
+        Raises ValueError if the input was not recognized as a boolean.
+        """
         if is_truthy(value):
             return True
         if is_falsy(value):
             return False
-        if default is not None:
-            logger.warning(
-                "Could not parse value %r as boolean, returning default %r",
-                value,
-                default,
-            )
+        if isinstance(default, bool):
             return default
         raise ValueError(f"Could not parse value {value!r} as boolean")
