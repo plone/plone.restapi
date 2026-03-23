@@ -244,18 +244,18 @@ class UsersPost(Service):
         }
 
         if HAS_STANDALONE_GENERATORS:
-            generate_user_id(self.context, user_id_login_name_data)
-            generate_login_name(self.context, user_id_login_name_data)
+            user_id = generate_user_id(self.context, user_id_login_name_data)
+            login_name = generate_login_name(self.context, user_id_login_name_data)
         else:
             # BBB: plone.app.users without standalone generators (Plone < 6.2)
             register_view = getMultiAdapter(
                 (self.context, self.request), name="register"
             )
-            register_view.generate_user_id(user_id_login_name_data)
-            register_view.generate_login_name(user_id_login_name_data)
+            user_id = register_view.generate_user_id(user_id_login_name_data)
+            login_name = register_view.generate_login_name(user_id_login_name_data)
 
-        user_id = user_id_login_name_data.get("user_id", data.get("username"))
-        login_name = user_id_login_name_data.get("login_name", data.get("username"))
+user_id = user_id or username or email
+login_name = login_name or username or email
 
         username = user_id
         properties["username"] = user_id
