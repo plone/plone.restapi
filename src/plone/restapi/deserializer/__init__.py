@@ -4,7 +4,6 @@ from zope.deferredimport import deprecated
 
 import json
 
-
 deprecated(
     "Import from plone.restapi.bbb instead",
     boolean_value="plone.restapi:bbb.boolean_value",
