@@ -13,6 +13,8 @@ myst:
 
 This chapter describes the conventions for URL parameters accepted by the Plone REST API.
 
+(boolean-parameters)=
+
 ## Boolean Parameters
 
 ```{versionchanged} plone.restapi 10.0.0
