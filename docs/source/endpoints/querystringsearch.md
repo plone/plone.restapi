@@ -49,6 +49,12 @@ Parameters the endpoint will accept:
 - `limit` - integer, limits the number of returned results
 - `fullobjects` - boolean, if `true` then return the full objects instead of just the summary serialization
 
+```{versionchanged} plone.restapi 10.0.0
+Since plone.restapi version 10.0.0, boolean parameters are validated more strictly.
+
+See {doc}`../usage/parameters` for details.
+```
+
 ## Parameters
 
 ### Batch Start (`b_start`)

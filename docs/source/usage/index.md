@@ -19,12 +19,13 @@ This part of the documentation explains how to use the Plone REST API.
 
 authentication
 batching
+blocks
 content
 customization
 expansion
 exploring
 i18n
+parameters
 serialization
 types-schema
-blocks
 ```

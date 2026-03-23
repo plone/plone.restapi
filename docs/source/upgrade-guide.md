@@ -12,9 +12,23 @@ myst:
 This upgrade guide lists all breaking changes in `plone.restapi`.
 It explains the steps that are needed to upgrade to the latest version.
 
+## Upgrading to `plone.restapi` 10.x
+
+### `plone` namespace package
+
+`plone.restapi` 10.x starts using a PEP 420 namespace package for the `plone` namespace, instead of a `pkg_resources` namespace.
+This follows the change that was done for all packages in Plone 6.2.
+It is still possible to use `plone.restapi` 10.x with older versions of Plone, but you might need to use `horse-with-no-namespace` if you need to install `plone.restapi` as an editable package.
+
+### Boolean parameter parsing
+
+The REST API does stricter parsing of parameters that represent a boolean value.
+Make sure that you are sending one of the accepted values for boolean parameters.
+See {doc}`../usage/parameters` for details.
+
 ## Upgrading to `plone.restapi` 9.x
 
-`plone.restapi` 9.x dropped support for Python 3.7, which reached its `end-of-life <https://devguide.python.org/versions/>`_ in July 2023.
+`plone.restapi` 9.x dropped support for Python 3.7, which reached its [end of life](https://devguide.python.org/versions/) in July 2023.
 
 Upgrading to `plone.restapi` 9.x might require minor changes to your code base that are described in this section. If you are using a recent version of Volto, there are no changes necessary.
 
