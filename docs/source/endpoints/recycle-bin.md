@@ -41,7 +41,7 @@ The listing supports various query parameters for filtering and sorting:
 | `has_subitems` | Filter items with (`true`) or without (`false`) children | `has_subitems=true` |
 | `language` | Filter by language code | `language=it` |
 | `review_state` | Filter by workflow state | `review_state=published` |
-| `sort_on` | Sort field: `title`, `portal_type`, `path`, `size`, `deletion_date`, `review_state` | `sort_on=title` |
+| `sort_on` | Sort field: `title`, `portal_type`, `path`, `deletion_date`, `review_state` | `sort_on=title` |
 | `sort_order` | Sort direction: `ascending` or `descending` (default) | `sort_order=ascending` |
 
 ### Batching
@@ -61,7 +61,8 @@ The API supports standard Plone REST API batching parameters (`b_start`, `b_size
 
 ## Get individual item from recycle bin
 
-To retrieve detailed information about a specific item in the recycle bin, including its children, send a `GET` request to `@recyclebin/{item_id}`:
+To retrieve detailed information about a specific item in the recycle bin, including its sub-items, send a `GET` request to `@recyclebin/{item_id}`.
+The response includes a paginated `items` list with all flattened descendants. Standard batching parameters (`b_start`, `b_size`) are supported.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests

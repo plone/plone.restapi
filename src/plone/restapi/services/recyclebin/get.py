@@ -69,6 +69,8 @@ class RecycleBinGet(Service):
             }
 
         # Convert to serializable format with detailed information
+        children_dict = item.get("children", {})
+
         serialized_item = {
             "@id": f"{self.context.absolute_url()}/@recyclebin/{item_id}",
             "id": item["id"],
@@ -77,33 +79,57 @@ class RecycleBinGet(Service):
             "path": item["path"],
             "parent_path": item["parent_path"],
             "deletion_date": item["deletion_date"].isoformat(),
-            "size": item["size"],
             "recycle_id": item_id,
             "deleted_by": item.get("deleted_by", ""),
             "language": item.get("language", ""),
             "review_state": item.get("review_state", ""),
-            "has_children": bool(item.get("children")),
-            "children_count": len(item.get("children", {})),
+            "has_children": bool(children_dict),
             "actions": {
                 "restore": f"{self.context.absolute_url()}/@recyclebin/{item_id}/restore",
                 "purge": f"{self.context.absolute_url()}/@recyclebin/{item_id}",
             },
         }
 
-        children = []
-        for child in item.get("children", {}).values():
-            children.append(
-                {
-                    "id": child["id"],
-                    "title": child["title"],
-                    "@type": child["portal_type"],
-                    "path": child["path"],
-                    "size": child["size"],
-                }
-            )
-        serialized_item["children"] = children
+        # Flatten all descendants and apply batching
+        flattened = list(self._flatten_children(children_dict))
+        batch = HypermediaBatch(self.request, flattened)
+
+        serialized_item["items_total"] = batch.items_total
+        links = batch.links
+        if links:
+            serialized_item["batching"] = links
+        serialized_item["items"] = list(batch)
 
         return serialized_item
+
+    def _flatten_children(self, children_dict):
+        """Recursively yield all descendants as a flat sequence."""
+        for child_data in children_dict.values():
+            entry = {
+                "id": child_data["id"],
+                "title": child_data["title"],
+                "@type": child_data.get("portal_type", "Unknown"),
+                "path": child_data.get("path", ""),
+                "language": child_data.get("language", ""),
+                "review_state": child_data.get("review_state", ""),
+                "restore_id": child_data.get("restore_id", ""),
+            }
+            nested = child_data.get("children", {})
+            if isinstance(nested, dict) and nested:
+                entry["children_count"] = self._count_descendants(nested)
+            yield entry
+            if isinstance(nested, dict) and nested:
+                yield from self._flatten_children(nested)
+
+    def _count_descendants(self, children_dict):
+        """Recursively count all descendants in a children dict."""
+        count = 0
+        for child_data in children_dict.values():
+            count += 1
+            nested = child_data.get("children", {})
+            if isinstance(nested, dict) and nested:
+                count += self._count_descendants(nested)
+        return count
 
     def _reply_listing(self, recycle_bin):
         """Handle GET /@recyclebin - List items in the recycle bin"""
@@ -152,7 +178,6 @@ class RecycleBinGet(Service):
                 "path": item["path"],
                 "parent_path": item["parent_path"],
                 "deletion_date": item["deletion_date"].isoformat(),
-                "size": item["size"],
                 "recycle_id": item["recycle_id"],
                 "deleted_by": item.get("deleted_by", ""),
                 "language": item.get("language", ""),

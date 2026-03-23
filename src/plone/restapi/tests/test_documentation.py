@@ -1938,7 +1938,7 @@ class TestDocumentation(TestDocumentationBase):
 
         # This test documents filtering options
         response = self.api_session.get(
-            "/@recyclebin?filter_type=Document&sort_by=title_asc"
+            "/@recyclebin?portal_type=Document&sort_on=title&sort_order=ascending"
         )
         save_request_and_response_for_docs("recyclebin_get_filtered", response)
 

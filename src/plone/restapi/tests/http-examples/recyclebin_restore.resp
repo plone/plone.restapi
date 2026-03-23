@@ -5,9 +5,9 @@ Content-Type: application/json
     "message": "Item document1 restored successfully",
     "restored_item": {
         "@id": "http://localhost:55001/plone/document1",
+        "@type": "Document",
         "id": "document1",
-        "title": "My Document",
-        "@type": "Document"
+        "title": "My Document"
     },
     "status": "success"
 }

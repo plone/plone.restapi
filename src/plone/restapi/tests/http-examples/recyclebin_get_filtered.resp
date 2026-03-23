@@ -2,45 +2,43 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "@id": "http://localhost:55001/plone/@recyclebin?portal_type=Document&sort_on=title&sort_order=ascending",
+    "@id": "http://localhost:55001/plone/@recyclebin?portal_type=Document",
     "items": [
         {
-            "@id": "http://localhost:55001/plone/@recyclebin/56a3e44a-f095-4027-a76e-7084059dd5dd",
+            "@id": "http://localhost:55001/plone/@recyclebin/3428fff7-155a-4b53-afaa-833cba13ab4a",
+            "@type": "Document",
             "actions": {
-                "purge": "http://localhost:55001/plone/@recyclebin/56a3e44a-f095-4027-a76e-7084059dd5dd",
-                "restore": "http://localhost:55001/plone/@recyclebin/56a3e44a-f095-4027-a76e-7084059dd5dd/restore"
+                "purge": "http://localhost:55001/plone/@recyclebin/3428fff7-155a-4b53-afaa-833cba13ab4a",
+                "restore": "http://localhost:55001/plone/@recyclebin/3428fff7-155a-4b53-afaa-833cba13ab4a/restore"
             },
             "deleted_by": "test_user_1_",
-            "deletion_date": "2025-10-08T04:23:15.024785",
+            "deletion_date": "2026-03-21T21:35:00.106645",
             "has_children": false,
             "id": "document1",
             "language": "",
             "parent_path": "/plone",
             "path": "/plone/document1",
-            "recycle_id": "56a3e44a-f095-4027-a76e-7084059dd5dd",
-            "size": 0,
-            "title": "My Document",
-            "@type": "Document",
-            "review_state": "private"
+            "recycle_id": "3428fff7-155a-4b53-afaa-833cba13ab4a",
+            "review_state": "private",
+            "title": "My Document"
         },
         {
-            "@id": "http://localhost:55001/plone/@recyclebin/771d4daf-6282-42a3-a09f-9c9fcd1265f6",
+            "@id": "http://localhost:55001/plone/@recyclebin/54547a55-e1db-4821-afd6-b08e62694a0f",
+            "@type": "Folder",
             "actions": {
-                "purge": "http://localhost:55001/plone/@recyclebin/771d4daf-6282-42a3-a09f-9c9fcd1265f6",
-                "restore": "http://localhost:55001/plone/@recyclebin/771d4daf-6282-42a3-a09f-9c9fcd1265f6/restore"
+                "purge": "http://localhost:55001/plone/@recyclebin/54547a55-e1db-4821-afd6-b08e62694a0f",
+                "restore": "http://localhost:55001/plone/@recyclebin/54547a55-e1db-4821-afd6-b08e62694a0f/restore"
             },
             "deleted_by": "test_user_1_",
-            "deletion_date": "2025-10-08T04:23:15.015428",
-            "has_children": false,
-            "id": "subdoc",
+            "deletion_date": "2026-03-21T21:35:00.104531",
+            "has_children": true,
+            "id": "folder1",
             "language": "",
             "parent_path": "/plone",
-            "path": "/plone/folder1/subdoc",
-            "recycle_id": "771d4daf-6282-42a3-a09f-9c9fcd1265f6",
-            "size": 0,
-            "title": "Sub Document",
-            "@type": "Document",
-            "review_state": "private"
+            "path": "/plone/folder1",
+            "recycle_id": "54547a55-e1db-4821-afd6-b08e62694a0f",
+            "review_state": "private",
+            "title": "My Folder"
         }
     ],
     "items_total": 2

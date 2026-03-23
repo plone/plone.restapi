@@ -78,6 +78,31 @@ class RecycleBinTestBase(unittest.TestCase):
         recycle_id = self._delete_to_recyclebin(folder)
         return recycle_id, folder_title
 
+    def _add_nested_folder_to_recyclebin(self):
+        """Helper: create a 3-level deep folder tree and delete it.
+
+        Structure:
+          level-0/          (Folder)
+            doc-0           (Document)
+            level-1/        (Folder)
+              doc-1         (Document)
+              level-2/      (Folder)
+                doc-2       (Document)
+
+        Returns (recycle_id, "Level 0").
+        """
+        self.portal.invokeFactory("Folder", "level-0", title="Level 0")
+        f0 = self.portal["level-0"]
+        f0.invokeFactory("Document", "doc-0", title="Doc 0")
+        f0.invokeFactory("Folder", "level-1", title="Level 1")
+        f1 = f0["level-1"]
+        f1.invokeFactory("Document", "doc-1", title="Doc 1")
+        f1.invokeFactory("Folder", "level-2", title="Level 2")
+        f2 = f1["level-2"]
+        f2.invokeFactory("Document", "doc-2", title="Doc 2")
+        recycle_id = self._delete_to_recyclebin(f0)
+        return recycle_id, "Level 0"
+
     def _disable_recyclebin(self):
         """Helper: disable the recycle bin and commit."""
         registry = getUtility(IRegistry)
@@ -134,7 +159,6 @@ class TestRecycleBinGET(RecycleBinTestBase):
             "path",
             "parent_path",
             "deletion_date",
-            "size",
             "recycle_id",
             "deleted_by",
             "language",
@@ -180,13 +204,16 @@ class TestRecycleBinGET(RecycleBinTestBase):
     # ------------------------------------------------------------------
 
     def test_filter_by_type(self):
-        """portal_type parameter returns only items of matching portal_type."""
+        """portal_type parameter returns items of matching portal_type, including
+        parents whose children contain the specified type."""
         self._add_document_to_recyclebin(doc_id="doc1", doc_title="Doc 1")
         self._add_folder_to_recyclebin(folder_id="folder1", folder_title="Folder 1")
         response = self.api_session.get("/@recyclebin?portal_type=Document")
         data = response.json()
-        self.assertEqual(1, data["items_total"])
-        self.assertEqual("Document", data["items"][0]["@type"])
+        # Doc1 matches directly; Folder1 matches because its child is a Document.
+        self.assertEqual(2, data["items_total"])
+        types_returned = {item["@type"] for item in data["items"]}
+        self.assertIn("Document", types_returned)
 
     def test_filter_by_search_query_title(self):
         """title parameter filters by title."""
@@ -222,6 +249,37 @@ class TestRecycleBinGET(RecycleBinTestBase):
         data = response.json()
         self.assertEqual(0, data["items_total"])
         self.assertEqual([], data["items"])
+
+    def test_filter_title_matches_nested_child(self):
+        """title filter matches a deeply nested child and surfaces the parent."""
+        recycle_id, _title = self._add_nested_folder_to_recyclebin()
+        response = self.api_session.get("/@recyclebin?title=Doc+2")
+        data = response.json()
+        self.assertEqual(1, data["items_total"])
+        self.assertEqual(recycle_id, data["items"][0]["recycle_id"])
+
+    def test_filter_title_no_match_in_children(self):
+        """title filter that doesn't match root or any child returns nothing."""
+        self._add_nested_folder_to_recyclebin()
+        response = self.api_session.get("/@recyclebin?title=Nonexistent+XYZ")
+        data = response.json()
+        self.assertEqual(0, data["items_total"])
+
+    def test_filter_portal_type_matches_nested_child(self):
+        """portal_type filter matches a child type and surfaces the parent."""
+        recycle_id, _title = self._add_nested_folder_to_recyclebin()
+        # The nested structure contains Documents; root is a Folder.
+        response = self.api_session.get("/@recyclebin?portal_type=Document")
+        data = response.json()
+        self.assertEqual(1, data["items_total"])
+        self.assertEqual(recycle_id, data["items"][0]["recycle_id"])
+
+    def test_filter_portal_type_no_match_in_children(self):
+        """portal_type filter that matches neither root nor any child returns nothing."""
+        self._add_nested_folder_to_recyclebin()
+        response = self.api_session.get("/@recyclebin?portal_type=Event")
+        data = response.json()
+        self.assertEqual(0, data["items_total"])
 
     def test_filter_invalid_date_from_returns_bad_request(self):
         """A malformed date_from returns 400 BadRequest."""
@@ -285,14 +343,13 @@ class TestRecycleBinGET(RecycleBinTestBase):
             "path",
             "parent_path",
             "deletion_date",
-            "size",
             "recycle_id",
             "deleted_by",
             "language",
             "review_state",
             "has_children",
-            "children_count",
-            "children",
+            "items_total",
+            "items",
             "actions",
         }
         self.assertEqual(expected_keys, set(data.keys()))
@@ -310,19 +367,75 @@ class TestRecycleBinGET(RecycleBinTestBase):
         self.assertEqual(200, response.status_code)
         data = response.json()
         self.assertTrue(data["has_children"])
-        self.assertGreater(data["children_count"], 0)
-        self.assertGreater(len(data["children"]), 0)
+        self.assertGreater(data["items_total"], 0)
+        self.assertGreater(len(data["items"]), 0)
 
     def test_get_individual_item_children_structure(self):
         """Children entries in GET /@recyclebin/{id} have expected keys."""
         recycle_id, _title = self._add_folder_to_recyclebin()
         response = self.api_session.get(f"/@recyclebin/{recycle_id}")
-        child = response.json()["children"][0]
-        self.assertIn("id", child)
-        self.assertIn("title", child)
-        self.assertIn("@type", child)
-        self.assertIn("path", child)
-        self.assertIn("size", child)
+        child = response.json()["items"][0]
+        for key in (
+            "id",
+            "title",
+            "@type",
+            "path",
+            "restore_id",
+            "language",
+            "review_state",
+        ):
+            self.assertIn(key, child)
+
+    def test_get_individual_item_nested_children_flattened(self):
+        """GET /@recyclebin/{id} flattens all descendants."""
+        recycle_id, _title = self._add_nested_folder_to_recyclebin()
+        response = self.api_session.get(f"/@recyclebin/{recycle_id}")
+        self.assertEqual(200, response.status_code)
+        data = response.json()
+
+        items = data["items"]
+        ids = [c["id"] for c in items]
+
+        # All 5 descendants must be present (doc-0, level-1, doc-1, level-2, doc-2)
+        self.assertEqual(5, len(items))
+        for expected_id in ("doc-0", "level-1", "doc-1", "level-2", "doc-2"):
+            self.assertIn(expected_id, ids)
+
+        # items_total on root should be total descendants = 5
+        self.assertEqual(5, data["items_total"])
+
+    def test_get_individual_item_nested_children_have_restore_id(self):
+        """All descendants in flattened items have a non-empty restore_id."""
+        recycle_id, _title = self._add_nested_folder_to_recyclebin()
+        response = self.api_session.get(f"/@recyclebin/{recycle_id}")
+        for child in response.json()["items"]:
+            self.assertTrue(
+                child["restore_id"], f"Missing restore_id for {child['id']}"
+            )
+
+    def test_get_individual_item_folders_have_children_count(self):
+        """Folder descendants include children_count for their sub-tree."""
+        recycle_id, _title = self._add_nested_folder_to_recyclebin()
+        response = self.api_session.get(f"/@recyclebin/{recycle_id}")
+        by_id = {c["id"]: c for c in response.json()["items"]}
+
+        # level-1 has 3 descendants: doc-1, level-2, doc-2
+        self.assertEqual(3, by_id["level-1"]["children_count"])
+        # level-2 has 1 descendant: doc-2
+        self.assertEqual(1, by_id["level-2"]["children_count"])
+        # Documents should not have children_count
+        self.assertNotIn("children_count", by_id["doc-0"])
+
+    def test_get_individual_item_items_batching(self):
+        """GET /@recyclebin/{id}?b_size=2 paginates flattened descendants."""
+        recycle_id, _title = self._add_nested_folder_to_recyclebin()
+        # 5 descendants total; request first page of 2
+        response = self.api_session.get(f"/@recyclebin/{recycle_id}?b_size=2")
+        self.assertEqual(200, response.status_code)
+        data = response.json()
+        self.assertEqual(5, data["items_total"])
+        self.assertEqual(2, len(data["items"]))
+        self.assertIn("batching", data)
 
     # ------------------------------------------------------------------
     # Disabled recycle bin
