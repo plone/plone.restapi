@@ -7,7 +7,6 @@ from zope.interface import provider
 
 import json
 
-
 # In Plone 6, IBlocks implicitly enables the IDexterityTextIndexer behavior
 # to handle full-text indexing. In Plone 5, it is not available.
 try:

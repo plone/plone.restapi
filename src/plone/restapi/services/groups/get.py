@@ -8,7 +8,6 @@ from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
 
 

@@ -5,7 +5,6 @@ from zExceptions import Unauthorized
 
 import json
 
-
 _no_content_marker = object()
 
 

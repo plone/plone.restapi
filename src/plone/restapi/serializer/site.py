@@ -22,7 +22,6 @@ from zope.interface import Interface
 
 import json
 
-
 HAS_PLONE_6 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
 )

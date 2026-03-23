@@ -6,7 +6,6 @@ from zope.component import queryUtility
 
 import unittest
 
-
 DRAFTJS_BLOCK = {
     "@type": "text",
     "text": {
