@@ -254,8 +254,8 @@ class UsersPost(Service):
             user_id = register_view.generate_user_id(user_id_login_name_data)
             login_name = register_view.generate_login_name(user_id_login_name_data)
 
-user_id = user_id or username or email
-login_name = login_name or username or email
+        user_id = user_id or username or email
+        login_name = login_name or username or email
 
         username = user_id
         properties["username"] = user_id
