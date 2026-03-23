@@ -1,0 +1,1 @@
+Use standalone ``generate_user_id`` / ``generate_login_name`` functions from ``plone.app.users.utils`` instead of instantiating the registration form view. @jensens 
