@@ -12,7 +12,6 @@ from zope.component import getMultiAdapter
 
 import packaging.version
 
-
 zcatalog_version = distribution("Products.ZCatalog").version
 if packaging.version.parse(zcatalog_version) >= packaging.version.parse("5.1"):
     SUPPORT_NOT_UUID_QUERIES = True

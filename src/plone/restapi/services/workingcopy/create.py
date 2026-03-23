@@ -9,7 +9,6 @@ from zope.interface import alsoProvides
 
 import plone.protect.interfaces
 
-
 # It seems that p.a.iterate allows to locate the WC in the user folder,
 # for now, ignore it and use always the location as the parent
 # but allow space to implement it in the future if it's still relevant

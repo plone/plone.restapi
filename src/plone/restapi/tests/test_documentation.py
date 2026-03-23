@@ -53,7 +53,6 @@ import re
 import transaction
 import unittest
 
-
 TUS_HEADERS = [
     "upload-offset",
     "upload-length",
