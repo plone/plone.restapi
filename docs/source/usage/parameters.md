@@ -19,32 +19,28 @@ This chapter describes the conventions for URL parameters accepted by the Plone 
 Since plone.restapi version 10.0.0, boolean parameters are validated more strictly.
 ```
 
-Values that evaluate as `True`, where quoted values are strings, and unquoted values are either boolean or integer.
+The following strings represent a boolean value of `True`.
 
 - 1
-- "1"
-- "y"
-- "yes"
-- "t"
-- "true"
+- y
+- yes
+- t
+- true
 - True
-- "True"
-- "active"
-- "enabled"
-- "on"
+- active
+- enabled
+- on
 
-Values that evaluate as `False`, where quoted values are strings, and unquoted values are either boolean or integer.
+The following strings represent a boolean value of `False`.
 
 - 0
-- "0"
-- "n"
-- "no"
-- "f"
-- "false"
+- n
+- no
+- f
+- false
 - False
-- "False"
-- "inactive"
-- "disabled"
-- "off"
+- inactive
+- disabled
+- off
 
-Any other value will raise a `400 Bad Request` error.
+Any other value will return a `400 Bad Request` response.
