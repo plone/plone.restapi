@@ -1,43 +1,23 @@
-HTTP/1.1 503 Service Unavailable
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "context": "http://localhost:55001/plone",
-    "message": "'recycle_id'",
-    "traceback": [
-        "File \"/home/rohnsha0/code/buildout.coredev/eggs/v5/Zope-5.13-py3.13-linux-x86_64.egg/ZPublisher/WSGIPublisher.py\", line 181, in transaction_pubevents",
-        "    yield",
-        "",
-        "  File \"/home/rohnsha0/code/buildout.coredev/eggs/v5/Zope-5.13-py3.13-linux-x86_64.egg/ZPublisher/WSGIPublisher.py\", line 390, in publish_module",
-        "    response = _publish(request, new_mod_info)",
-        "",
-        "  File \"/home/rohnsha0/code/buildout.coredev/eggs/v5/Zope-5.13-py3.13-linux-x86_64.egg/ZPublisher/WSGIPublisher.py\", line 284, in publish",
-        "    result = mapply(obj,",
-        "                    request.args,",
-        "    ...<5 lines>...",
-        "                    request,",
-        "                    bind=1)",
-        "",
-        "  File \"/home/rohnsha0/code/buildout.coredev/eggs/v5/Zope-5.13-py3.13-linux-x86_64.egg/ZPublisher/mapply.py\", line 98, in mapply",
-        "    return debug(object, args, context)",
-        "",
-        "  File \"/home/rohnsha0/code/buildout.coredev/eggs/v5/Zope-5.13-py3.13-linux-x86_64.egg/ZPublisher/WSGIPublisher.py\", line 68, in call_object",
-        "    return obj(*args)",
-        "",
-        "  File \"/home/rohnsha0/code/buildout.coredev/eggs/v5/plone.rest-5.1.0-py3.13-linux-x86_64.egg/plone/rest/service.py\", line 21, in __call__",
-        "    return self.render()",
-        "           ~~~~~~~~~~~^^",
-        "",
-        "  File \"/home/rohnsha0/code/buildout.coredev/src/plone.restapi/src/plone/restapi/services/__init__.py\", line 19, in render",
-        "    content = self.reply()",
-        "",
-        "  File \"/home/rohnsha0/code/buildout.coredev/src/plone.restapi/src/plone/restapi/services/recyclebin/get.py\", line 39, in reply",
-        "    return self._reply_individual_item(recycle_bin)",
-        "           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^",
-        "",
-        "  File \"/home/rohnsha0/code/buildout.coredev/src/plone.restapi/src/plone/restapi/services/recyclebin/get.py\", line 71, in _reply_individual_item",
-        "    \"@id\": f\"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}\",",
-        "                                                        ~~~~^^^^^^^^^^^^^^"
-    ],
-    "type": "KeyError"
+    "@id": "http://localhost:55001/plone/@recyclebin/9543ec39-054a-48b3-967b-b9578f8b2b0d",
+    "@type": "Document",
+    "actions": {
+        "purge": "http://localhost:55001/plone/@recyclebin/9543ec39-054a-48b3-967b-b9578f8b2b0d",
+        "restore": "http://localhost:55001/plone/@recyclebin/9543ec39-054a-48b3-967b-b9578f8b2b0d/restore"
+    },
+    "deleted_by": "test_user_1_",
+    "deletion_date": "2026-03-21T21:35:00.215868",
+    "has_children": false,
+    "id": "document1",
+    "items": [],
+    "items_total": 0,
+    "language": "",
+    "parent_path": "/plone",
+    "path": "/plone/document1",
+    "recycle_id": "9543ec39-054a-48b3-967b-b9578f8b2b0d",
+    "review_state": "private",
+    "title": "My Document"
 }

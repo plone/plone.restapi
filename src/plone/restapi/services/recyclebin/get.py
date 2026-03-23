@@ -1,7 +1,9 @@
 from datetime import datetime
 from plone.base.interfaces.recyclebin import IRecycleBin
 from plone.restapi.batching import HypermediaBatch
+from plone.restapi.deserializer import boolean_value
 from plone.restapi.services import Service
+from zExceptions import BadRequest
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
@@ -67,93 +69,127 @@ class RecycleBinGet(Service):
             }
 
         # Convert to serializable format with detailed information
+        children_dict = item.get("children", {})
+
         serialized_item = {
-            "@id": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}",
+            "@id": f"{self.context.absolute_url()}/@recyclebin/{item_id}",
             "id": item["id"],
             "title": item["title"],
-            "type": item["type"],
+            "@type": item["portal_type"],
             "path": item["path"],
             "parent_path": item["parent_path"],
             "deletion_date": item["deletion_date"].isoformat(),
-            "size": item["size"],
-            "recycle_id": item["recycle_id"],
+            "recycle_id": item_id,
             "deleted_by": item.get("deleted_by", ""),
             "language": item.get("language", ""),
-            "workflow_state": item.get("workflow_state", ""),
-            "description": item.get("description", ""),
-            "creator": item.get("creator", ""),
-            "created": (
-                item.get("created", "").isoformat() if item.get("created") else ""
-            ),
-            "modified": (
-                item.get("modified", "").isoformat() if item.get("modified") else ""
-            ),
-            "effective": (
-                item.get("effective", "").isoformat() if item.get("effective") else ""
-            ),
-            "expires": (
-                item.get("expires", "").isoformat() if item.get("expires") else ""
-            ),
-            "has_children": "children" in item and len(item["children"]) > 0,
-            "children_count": len(item.get("children", [])),
+            "review_state": item.get("review_state", ""),
+            "has_children": bool(children_dict),
             "actions": {
-                "restore": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}/restore",
-                "purge": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}",
+                "restore": f"{self.context.absolute_url()}/@recyclebin/{item_id}/restore",
+                "purge": f"{self.context.absolute_url()}/@recyclebin/{item_id}",
             },
         }
 
-        # Add children information if present
-        if "children" in item and item["children"]:
-            children = []
-            for child in item["children"]:
-                child_info = {
-                    "id": child["id"],
-                    "title": child["title"],
-                    "type": child["type"],
-                    "path": child["path"],
-                    "size": child["size"],
-                    "recycle_id": child["recycle_id"],
-                }
-                children.append(child_info)
-            serialized_item["children"] = children
+        # Flatten all descendants and apply batching
+        flattened = list(self._flatten_children(children_dict))
+        batch = HypermediaBatch(self.request, flattened)
+
+        serialized_item["items_total"] = batch.items_total
+        links = batch.links
+        if links:
+            serialized_item["batching"] = links
+        serialized_item["items"] = list(batch)
 
         return serialized_item
 
+    def _flatten_children(self, children_dict):
+        """Recursively yield all descendants as a flat sequence."""
+        for child_data in children_dict.values():
+            entry = {
+                "id": child_data["id"],
+                "title": child_data["title"],
+                "@type": child_data.get("portal_type", "Unknown"),
+                "path": child_data.get("path", ""),
+                "language": child_data.get("language", ""),
+                "review_state": child_data.get("review_state", ""),
+                "restore_id": child_data.get("restore_id", ""),
+            }
+            nested = child_data.get("children", {})
+            if isinstance(nested, dict) and nested:
+                entry["children_count"] = self._count_descendants(nested)
+            yield entry
+            if isinstance(nested, dict) and nested:
+                yield from self._flatten_children(nested)
+
+    def _count_descendants(self, children_dict):
+        """Recursively count all descendants in a children dict."""
+        count = 0
+        for child_data in children_dict.values():
+            count += 1
+            nested = child_data.get("children", {})
+            if isinstance(nested, dict) and nested:
+                count += self._count_descendants(nested)
+        return count
+
     def _reply_listing(self, recycle_bin):
         """Handle GET /@recyclebin - List items in the recycle bin"""
-        # Get all items from recycle bin
-        all_items = recycle_bin.get_items()
+        form = self.request.form
 
-        # Apply filters
-        filtered_items = self._apply_filters(all_items)
+        # Parse date parameters
+        date_from = date_to = None
+        if form.get("date_from"):
+            try:
+                date_from = datetime.strptime(form["date_from"], "%Y-%m-%d").date()
+            except ValueError:
+                raise BadRequest("Invalid date_from format. Expected: YYYY-MM-DD")
+        if form.get("date_to"):
+            try:
+                date_to = datetime.strptime(form["date_to"], "%Y-%m-%d").date()
+            except ValueError:
+                raise BadRequest("Invalid date_to format. Expected: YYYY-MM-DD")
 
-        # Apply sorting
-        sorted_items = self._apply_sorting(filtered_items)
+        # Parse has_subitems boolean
+        has_subitems_raw = form.get("has_subitems")
+        has_subitems = (
+            boolean_value(has_subitems_raw) if has_subitems_raw is not None else None
+        )
+
+        items = recycle_bin.search(
+            title=form.get("title") or None,
+            path=form.get("path") or None,
+            portal_type=form.get("portal_type") or None,
+            date_from=date_from,
+            date_to=date_to,
+            deleted_by=form.get("deleted_by") or None,
+            has_subitems=has_subitems,
+            language=form.get("language") or None,
+            review_state=form.get("review_state") or None,
+            sort_on=form.get("sort_on", "deletion_date"),
+            sort_order=form.get("sort_order", "descending"),
+        )
 
         # Convert to serializable format
-        serialized_items = []
-        for item in sorted_items:
-            serialized_items.append(
-                {
-                    "@id": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}",
-                    "id": item["id"],
-                    "title": item["title"],
-                    "type": item["type"],
-                    "path": item["path"],
-                    "parent_path": item["parent_path"],
-                    "deletion_date": item["deletion_date"].isoformat(),
-                    "size": item["size"],
-                    "recycle_id": item["recycle_id"],
-                    "deleted_by": item.get("deleted_by", ""),
-                    "language": item.get("language", ""),
-                    "workflow_state": item.get("workflow_state", ""),
-                    "has_children": "children" in item and len(item["children"]) > 0,
-                    "actions": {
-                        "restore": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}/restore",
-                        "purge": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}",
-                    },
-                }
-            )
+        serialized_items = [
+            {
+                "@id": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}",
+                "@type": item["portal_type"],
+                "id": item["id"],
+                "title": item["title"],
+                "path": item["path"],
+                "parent_path": item["parent_path"],
+                "deletion_date": item["deletion_date"].isoformat(),
+                "recycle_id": item["recycle_id"],
+                "deleted_by": item.get("deleted_by", ""),
+                "language": item.get("language", ""),
+                "review_state": item.get("review_state", ""),
+                "has_children": bool(item.get("children")),
+                "actions": {
+                    "restore": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}/restore",
+                    "purge": f"{self.context.absolute_url()}/@recyclebin/{item['recycle_id']}",
+                },
+            }
+            for item in items
+        ]
 
         # Apply batching
         batch = HypermediaBatch(self.request, serialized_items)
@@ -168,120 +204,3 @@ class RecycleBinGet(Service):
         results["items"] = list(batch)
 
         return results
-
-    def _apply_filters(self, items):
-        """Apply filters based on request parameters"""
-        form = self.request.form
-
-        # Get filter parameters
-        search_query = form.get("search_query", "").lower()
-        filter_type = form.get("filter_type", "")
-        date_from_str = form.get("date_from", "")
-        date_to_str = form.get("date_to", "")
-        filter_deleted_by = form.get("filter_deleted_by", "")
-        filter_has_subitems = form.get("filter_has_subitems", "")
-        filter_language = form.get("filter_language", "")
-        filter_workflow_state = form.get("filter_workflow_state", "")
-
-        # Parse dates
-        date_from = None
-        date_to = None
-        try:
-            if date_from_str:
-                date_from = datetime.strptime(date_from_str, "%Y-%m-%d").date()
-            if date_to_str:
-                date_to = datetime.strptime(date_to_str, "%Y-%m-%d").date()
-        except ValueError:
-            # Invalid date format, ignore
-            pass
-
-        filtered_items = []
-
-        for item in items:
-            # Apply content type filtering
-            if filter_type and item.get("type") != filter_type:
-                continue
-
-            # Apply date range filtering
-            if date_from or date_to:
-                deletion_date = item.get("deletion_date")
-                if deletion_date:
-                    item_date = (
-                        deletion_date.date()
-                        if hasattr(deletion_date, "date")
-                        else deletion_date
-                    )
-                    if date_from and item_date < date_from:
-                        continue
-                    if date_to and item_date > date_to:
-                        continue
-
-            # Apply deleted by filtering
-            if filter_deleted_by and item.get("deleted_by") != filter_deleted_by:
-                continue
-
-            # Apply has subitems filtering
-            if filter_has_subitems:
-                has_children = "children" in item and len(item["children"]) > 0
-                if filter_has_subitems == "with_subitems" and not has_children:
-                    continue
-                elif filter_has_subitems == "without_subitems" and has_children:
-                    continue
-
-            # Apply language filtering
-            if filter_language and item.get("language") != filter_language:
-                continue
-
-            # Apply workflow state filtering
-            if (
-                filter_workflow_state
-                and item.get("workflow_state") != filter_workflow_state
-            ):
-                continue
-
-            # Apply search query filtering
-            if search_query:
-                title = item.get("title", "").lower()
-                path = item.get("path", "").lower()
-                if search_query not in title and search_query not in path:
-                    continue
-
-            filtered_items.append(item)
-
-        return filtered_items
-
-    def _apply_sorting(self, items):
-        """Apply sorting based on request parameters"""
-        sort_by = self.request.form.get("sort_by", "date_desc")
-
-        if sort_by == "title_asc":
-            items.sort(key=lambda x: x.get("title", "").lower())
-        elif sort_by == "title_desc":
-            items.sort(key=lambda x: x.get("title", "").lower(), reverse=True)
-        elif sort_by == "type_asc":
-            items.sort(key=lambda x: x.get("type", "").lower())
-        elif sort_by == "type_desc":
-            items.sort(key=lambda x: x.get("type", "").lower(), reverse=True)
-        elif sort_by == "path_asc":
-            items.sort(key=lambda x: x.get("path", "").lower())
-        elif sort_by == "path_desc":
-            items.sort(key=lambda x: x.get("path", "").lower(), reverse=True)
-        elif sort_by == "size_asc":
-            items.sort(key=lambda x: x.get("size", 0))
-        elif sort_by == "size_desc":
-            items.sort(key=lambda x: x.get("size", 0), reverse=True)
-        elif sort_by == "date_asc":
-            items.sort(key=lambda x: x.get("deletion_date", datetime.now()))
-        elif sort_by == "workflow_asc":
-            items.sort(key=lambda x: (x.get("workflow_state") or "").lower())
-        elif sort_by == "workflow_desc":
-            items.sort(
-                key=lambda x: (x.get("workflow_state") or "").lower(), reverse=True
-            )
-        else:
-            # Default: date_desc
-            items.sort(
-                key=lambda x: x.get("deletion_date", datetime.now()), reverse=True
-            )
-
-        return items
