@@ -1,1 +1,0 @@
-Added support for sorting vocabularies by title before batching for the `@vocabularies` endpoint. @hasansyed107

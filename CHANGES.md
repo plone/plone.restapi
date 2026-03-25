@@ -9,6 +9,42 @@
 
 <!-- towncrier release notes start -->
 
+## 10.0.0rc1 (2026-03-25)
+
+
+### Breaking changes
+
+- Services which take boolean parameters now check the input more strictly, using the `boolean_value` util. @cekk #1996
+
+
+### New features
+
+- The `@controlpanel` service now includes `searchable_text` for each control panel. @Manik-Khajuria-5 #1981
+- Added support for sorting vocabularies by title before batching for the `@vocabularies` endpoint. @hasansyed107 #1990
+- Add CSV import and export support to the @users endpoint. @jnptk 
+
+
+### Bug fixes
+
+- When serializing RelationList fields, don't include a null for broken relations. @aryan7081 #965
+- In the `@search` service, fix a case where the `sort_order` parameter was ignored. @mamico, @davisagli #1954
+- In the `@email-send` service, the `message_intro` string is no longer added to multipart messages, but continues to be prepended to the message payload for non-multipart messages. @Manik-Khajuria-5 #1956
+- Fix `HypermediaBatch` assuming a request always has a JSON body. @jnptk 
+
+
+### Internal
+
+- Consolidate test layers so PAM, Iterate, Blocks, and Workflows all share `PLONE_RESTAPI_DX_FIXTURE` as base, reducing redundant layer setup time. @jensens #1983
+- Use standalone ``generate_user_id`` / ``generate_login_name`` functions from ``plone.app.users.utils`` instead of instantiating the registration form view. @jensens #4292
+- Update configuration files @plone 
+
+
+### Documentation
+
+- Redirect documentation from Read the Docs to https://6.docs.plone.org/plone.restapi/docs/source/. @stevepiercy #1907
+- Explain how to customize serializers for content types @gforcada #1975
+- Update outdated commands in contributing docs. @jnptk 
+
 ## 10.0.0a1 (2026-01-13)
 
 
