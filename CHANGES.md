@@ -14,8 +14,10 @@
 
 ### Breaking changes:
 
-- Replace ``pkg_resources`` namespace with PEP 420 native namespace.
-  Support only Plone 6.2 and Python 3.10+. #3928
+- Replace `pkg_resources` namespace with PEP 420 native namespace.
+  This works best on Plone 6.2 and Python 3.10+, where the other `plone.*` packages made the same change.
+  It is still possible to use `plone.restapi` 10.x with older versions of Plone, even Plone 5.2, but you might need to use `horse-with-no-namespace` if you need to install `plone.restapi` as an editable package.
+  #3928
 
 
 ### New features:
@@ -31,19 +33,19 @@
 
 ### Documentation:
 
-- Fix link to querystring operators in docs. @jnptk 
+- Fix link to querystring operators in docs. @jnptk
 
 
 ### Tests:
 
-- Fix tests to expect an extra registry record.  @mauritsvanrees 
+- Fix tests to expect an extra registry record.  @mauritsvanrees
 
 ## 9.15.3 (2025-10-01)
 
 
 ### Internal:
 
-- Update configuration files @plone 
+- Update configuration files @plone
 
 ## 9.15.2 (2025-08-22)
 
@@ -51,7 +53,7 @@
 ### Bug fixes:
 
 - Serialize the `layout` of a Plone Site if it is a Plone 6 site. @erral #1939
-- When deserializing datetimes into an empty field, store them as timezone-aware datetimes. @davisagli 
+- When deserializing datetimes into an empty field, store them as timezone-aware datetimes. @davisagli
 
 ## 9.15.1 (2025-06-16)
 
@@ -67,7 +69,7 @@
 
 ### New features:
 
-- Include all summary fields when serializing `next_item` and `previous_item`. @davisagli 
+- Include all summary fields when serializing `next_item` and `previous_item`. @davisagli
 
 
 ### Bug fixes:
@@ -77,7 +79,7 @@
 
 ### Documentation:
 
-- Fix contributor documentation. @davisagli 
+- Fix contributor documentation. @davisagli
 
 ## 9.14.0 (2025-05-12)
 
@@ -175,7 +177,7 @@
 
 ### Internal:
 
-- Update configuration files @plone 
+- Update configuration files @plone
 
 ## 9.11.0 (2025-01-31)
 
