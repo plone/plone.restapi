@@ -73,9 +73,11 @@ setup(
         "plone.api",
         "plone.rest",  # json renderer moved to plone.restapi
         "plone.schema>=1.2.1",  # new/fixed json field
+        "Products.CMFCore",
         "Products.CMFPlone>=5.2",
         "PyJWT>=1.7.0",
         "pytz",
+        "Zope",
     ],
     extras_require={"test": TEST_REQUIRES},
     entry_points="""

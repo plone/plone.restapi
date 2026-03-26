@@ -12,7 +12,7 @@ from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import alsoProvides
 
-import plone
+import plone.protect
 
 try:
     # Products.MailHost has a patch to fix quoted-printable soft line breaks.

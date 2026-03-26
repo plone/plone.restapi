@@ -2,15 +2,9 @@
 # https://github.com/plone/meta/tree/main/src/plone/meta/default
 # See the inline comments on how to expand/tweak this configuration file
 name: Meta
+
 on:
   push:
-    branches:
-      - master
-      - main
-  pull_request:
-    branches:
-      - master
-      - main
   workflow_dispatch:
 
 ##
@@ -28,6 +22,8 @@ jobs:
     uses: plone/meta/.github/workflows/qa.yml@2.x
   coverage:
     uses: plone/meta/.github/workflows/coverage.yml@2.x
+  dependencies:
+    uses: plone/meta/.github/workflows/dependencies.yml@2.x
   release_ready:
     uses: plone/meta/.github/workflows/release_ready.yml@2.x
   circular:

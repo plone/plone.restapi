@@ -122,6 +122,9 @@ Zope = [
 ]
 python-dateutil = ['dateutil']
 pytest-plone = ['pytest', 'zope.pytestlayer', 'plone.testing', 'plone.app.testing']
+ignore-packages = ['collective.relationhelpers', 'importlib_metadata', 'plone.app.caching', 'plone.app.controlpanel', 'plone.app.discussion', 'plone.app.iterate', 'plone.app.multilingual', 'plone.base']
+PyJWT = ['jwt']
+'Products.CMFPlone' = ['Products.CMFEditions', 'Products.DateRecurringIndex', 'Products.ExtendedPathIndex', 'Products.MimetypesRegistry', 'Products.PlonePAS', 'Products.PluggableAuthService', 'Products.PluginIndexes', 'Products.ZCTextIndex', 'Products.statusmessages', 'plone.app.content', 'plone.app.contentlisting', 'plone.app.contentrules', 'plone.app.contenttypes', 'plone.app.dexterity', 'plone.app.event', 'plone.app.layout', 'plone.app.linkintegrity', 'plone.app.querystring', 'plone.app.redirector', 'plone.app.textfield', 'plone.app.i18n', 'plone.app.users', 'plone.app.vocabularies', 'plone.app.uuid', 'plone.app.workflow', 'plone.autoform', 'plone.batching', 'plone.behavior', 'plone.browserlayer', 'plone.caching', 'plone.contentrules', 'plone.dexterity', 'plone.event', 'plone.folder', 'plone.i18n', 'plone.indexer', 'plone.keyring', 'plone.locking', 'plone.memoize', 'plone.namedfile', 'plone.protect', 'plone.registry', 'plone.rfc822', 'plone.scale', 'plone.supermodel', 'plone.testing', 'plone.uuid', 'Products.CMFDynamicViewFTI', 'z3c.caching', 'z3c.form', 'z3c.formwidget.query', 'z3c.relationfield', 'zc.relation', 'zope.componentvocabulary', 'zope.intid']
 
 ##
 # Add extra configuration options in .meta.toml:
