@@ -28,6 +28,7 @@ TEST_REQUIRES = [
     "plone.app.testing",
     "plone.app.upgrade",
     "plone.rest>=3.0.1",
+    "plone.testing",
     "requests",
 ]
 
@@ -71,6 +72,7 @@ setup(
         "packaging",
         "python-dateutil",
         "plone.api",
+        "plone.app.layout",
         "plone.rest",  # json renderer moved to plone.restapi
         "plone.schema>=1.2.1",  # new/fixed json field
         "Products.CMFCore",
