@@ -4,7 +4,7 @@ from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
 
-import plone
+import plone.protect
 
 
 class EmailNotificationPost(Service):

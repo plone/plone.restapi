@@ -6,7 +6,7 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 import logging
-import plone
+import plone.protect
 
 logger = logging.getLogger("Plone")
 
