@@ -27,6 +27,7 @@ TEST_REQUIRES = [
     "plone.app.multilingual",
     "plone.app.testing",
     "plone.app.upgrade",
+    "plone.api",
     "plone.rest>=3.0.1",
     "requests",
 ]
@@ -70,7 +71,6 @@ setup(
     install_requires=[
         "packaging",
         "python-dateutil",
-        "plone.api",
         "plone.rest",  # json renderer moved to plone.restapi
         "plone.schema>=1.2.1",  # new/fixed json field
         "Products.CMFPlone>=5.2",
