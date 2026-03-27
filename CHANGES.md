@@ -9,6 +9,15 @@
 
 <!-- towncrier release notes start -->
 
+## 10.0.0rc2 (2026-03-27)
+
+
+### Bug fixes
+
+- Declare `plone.api` as runtime dependency instead of only a test dependency.
+  Explicitly add `plone.app.layout` as runtime dependency, and `plone.testing` as test dependency.
+  @mauritsvanrees #2007
+
 ## 10.0.0rc1 (2026-03-25)
 
 
