@@ -24,7 +24,7 @@ It is still possible to use `plone.restapi` 10.x with older versions of Plone, b
 
 The REST API does stricter parsing of parameters that represent a boolean value.
 Make sure that you are sending one of the accepted values for boolean parameters.
-See {doc}`../usage/parameters` for details.
+See {doc}`./usage/parameters` for details.
 
 ## Upgrading to `plone.restapi` 9.x
 
