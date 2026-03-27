@@ -9,7 +9,7 @@ from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-import plone
+import plone.protect
 
 
 @implementer(IPublishTraverse)
