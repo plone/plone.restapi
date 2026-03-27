@@ -18,6 +18,7 @@ import json
 import requests
 import transaction
 import unittest
+import uuid
 
 
 class TestContentPatch(unittest.TestCase):
@@ -197,3 +198,46 @@ class TestContentPatch(unittest.TestCase):
         self.assertEqual(204, response.status_code)
         transaction.begin()
         self.assertEqual("<p>example with '</p>", self.portal.doc1.text.raw)
+
+    def test_patch_file_with_multipart(self):
+        response = requests.post(
+            f"{self.portal.absolute_url()}/++api++",
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "File",
+                "file": {
+                    "filename": "test.txt",
+                    "data": "Spam and Eggs",
+                    "content_type": "text/plain",
+                },
+            },
+        )
+        transaction.commit()
+
+        response = response.json()
+
+        multipart_ref = uuid.uuid4().hex
+        response = requests.patch(
+            f"{self.portal.absolute_url()}/++api++/{response['id']}",
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            headers={"Accept": "application/json"},
+            files={
+                "data": json.dumps(
+                    {
+                        "file": {
+                            "data": multipart_ref,
+                        },
+                    }
+                ),
+                multipart_ref: (
+                    "test2.text",
+                    "Cheese and Eggs",
+                    "text/plain",
+                ),
+            },
+        )
+        self.assertEqual(204, response.status_code)
+        transaction.begin()
+        self.assertIn("test.txt", self.portal)
+        self.assertEqual(self.portal["test.txt"].file.data, b"Cheese and Eggs")
