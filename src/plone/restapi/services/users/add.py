@@ -9,6 +9,7 @@ try:
 except ImportError:
     # BBB: plone.app.users without standalone generators (Plone < 6.2)
     HAS_STANDALONE_GENERATORS = False
+from plone.registry.interfaces import IRegistry
 from plone.restapi import _
 from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.deserializer import json_body
@@ -23,8 +24,8 @@ from Products.CMFPlone.PasswordResetTool import InvalidRequestError
 from Products.CMFPlone.RegistrationTool import get_member_by_login_name
 from zExceptions import BadRequest
 from zExceptions import Forbidden
-from zope.component import getAdapter
 from zope.component import getMultiAdapter
+from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.i18n import translate
@@ -69,7 +70,8 @@ class UsersPost(Service):
 
     def validate_input_data(self, portal, original_data):
         """Returns a tuple of (required_fields, allowed_fields)"""
-        security = getAdapter(portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security = registry.forInterface(ISecuritySchema, prefix="plone")
 
         # remove data we don't want to check for
         data = {}
@@ -227,7 +229,8 @@ class UsersPost(Service):
 
     def _add_user(self, data, location=True):
         portal = getSite()
-        security = getAdapter(self.context, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security = registry.forInterface(ISecuritySchema, prefix="plone")
         registration = getToolByName(portal, "portal_registration")
 
         username = data.pop("username", None)
