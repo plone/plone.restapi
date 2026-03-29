@@ -6,13 +6,13 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_PASSWORD
+from plone.registry.interfaces import IRegistry
 from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
 from Products.MailHost.interfaces import IMailHost
-from zope.component import getAdapter
 from zope.component import getUtility
 
 import base64
@@ -212,7 +212,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_add_user_email_is_required_if_email_login_is_enabled(self):
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
@@ -225,7 +226,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_add_user_email_with_email_login_enabled(self):
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
@@ -242,7 +244,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_username_is_not_allowed_with_email_login_enabled(self):
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
@@ -260,7 +263,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_add_user_with_email_login_enabled(self):
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
@@ -313,7 +317,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(member.getProperty("fullname"), "Howard Zinn")
 
     def test_add_anon_user_sends_properties_are_saved(self):
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.enable_self_reg = True
         transaction.commit()
 
@@ -335,7 +340,8 @@ class TestUsersEndpoint(unittest.TestCase):
         """Make sure anonymous users cannot set their own roles.
         Allowing so would make them Manager.
         """
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.enable_self_reg = True
         transaction.commit()
 
@@ -356,7 +362,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_add_user_with_uuid_as_userid_enabled(self):
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         security_settings.use_uuid_as_userid = True
         transaction.commit()
@@ -844,7 +851,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_reset_with_uuid_as_userid_and_login_email_using_id(self):
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         security_settings.use_uuid_as_userid = True
         transaction.commit()
@@ -877,7 +885,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_reset_with_uuid_as_userid_and_login_email_using_mail(self):
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         security_settings.use_uuid_as_userid = True
         transaction.commit()
@@ -910,7 +919,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_reset_and_login_email_using_mail(self):
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         transaction.commit()
 
@@ -1000,7 +1010,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_anonymous_requires_enable_self_reg(self):
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.enable_self_reg = False
         transaction.commit()
 
@@ -1026,7 +1037,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(201, response.status_code)
 
     def test_anonymous_without_enable_user_pwd_choice_sends_mail(self):
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.enable_self_reg = True
         transaction.commit()
 
@@ -1047,7 +1059,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertTrue("To: avram.chomsky@example.com" in msg)
 
     def test_anonymous_with_sendPasswordReset_sends_mail(self):
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.enable_self_reg = True
         security_settings.use_email_as_login = True
         transaction.commit()
@@ -1070,7 +1083,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertTrue("To: avram.chomsky@example.com" in msg)
 
     def test_anonymous_can_set_password_with_enable_user_pwd_choice(self):
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.enable_self_reg = True
         transaction.commit()
 
@@ -1103,7 +1117,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(201, response.status_code)
 
     def test_anonymous_with_enable_user_pwd_choice_doent_send_email(self):
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.enable_self_reg = True
         security_settings.enable_user_pwd_choice = True
         transaction.commit()
@@ -1122,7 +1137,8 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(201, response.status_code)
 
     def test_anonymous_with_enable_user_sets_only_member_role(self):
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.enable_self_reg = True
         security_settings.enable_user_pwd_choice = True
         transaction.commit()
@@ -1261,7 +1277,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_get_user_portrait_if_email_login_enabled(self):
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         transaction.commit()
 
@@ -1498,7 +1515,8 @@ class TestUsersEndpoint(unittest.TestCase):
         they can log in with the new email
         """
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         transaction.commit()
         # Create a user
@@ -1551,7 +1569,8 @@ class TestUsersEndpoint(unittest.TestCase):
         they can log in with the new email
         """
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         transaction.commit()
         # Create a user
@@ -1611,7 +1630,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
         """
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         security_settings.use_uuid_as_userid = True
         transaction.commit()
@@ -1667,7 +1687,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
         """
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         security_settings.use_uuid_as_userid = True
 
@@ -1725,7 +1746,8 @@ class TestUsersEndpoint(unittest.TestCase):
         to a previously existing one
         """
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         transaction.commit()
 
@@ -1792,7 +1814,8 @@ class TestUsersEndpoint(unittest.TestCase):
         they can log in with the new email
         """
         # enable use_email_as_login
-        security_settings = getAdapter(self.portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security_settings = registry.forInterface(ISecuritySchema, prefix="plone")
         security_settings.use_email_as_login = True
         transaction.commit()
 
