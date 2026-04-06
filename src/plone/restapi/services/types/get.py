@@ -118,6 +118,7 @@ class TypesGet(Service):
     def reply(self):
         if not self.params:
             # List type info, including addable_types
+            self.content_type = "application/json"
             info = TypesInfo(self.context, self.request)
             return info(expand=True)["types"]
 
