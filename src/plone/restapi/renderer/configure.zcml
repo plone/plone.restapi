@@ -1,0 +1,18 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="plone.restapi"
+    >
+
+  <!-- JSON Renderer -->
+  <adapter
+      factory=".json.JSONRenderer"
+      name="application/json"
+      />
+
+  <!-- Markdown Renderer -->
+  <adapter
+      factory=".markdown.MarkdownRenderer"
+      name="text/markdown"
+      />
+
+</configure>

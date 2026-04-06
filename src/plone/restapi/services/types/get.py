@@ -94,6 +94,8 @@ class TypesInfoRoot(TypesInfo):
 
 @implementer(IPublishTraverse)
 class TypesGet(Service):
+    content_type = "application/json+schema"
+
     def __init__(self, context, request):
         super().__init__(context, request)
         self.params = []

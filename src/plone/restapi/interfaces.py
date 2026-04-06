@@ -275,3 +275,16 @@ class ISiteEndpointExpander(Interface):
 
     def __call__(data):
         """Add additional key/values to data"""
+
+
+class IRenderer(Interface):
+    """Adapter to render serialized data into a specific format.
+
+    Renderers take the Python data structure from serializers and convert
+    it to the final output format (JSON, Markdown, XML, etc.).
+    """
+
+    content_type = Attribute("The MIME type for this format")
+
+    def __call__(data):
+        """Render the data into the target format and return as string."""
