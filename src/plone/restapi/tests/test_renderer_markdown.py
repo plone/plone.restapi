@@ -50,7 +50,9 @@ class TestMarkdownRenderer(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.headers.get("Content-Type"), "text/markdown")
+        self.assertEqual(
+            response.headers.get("Content-Type"), "text/markdown; charset=utf-8"
+        )
 
     def test_markdown_basic_rendering(self):
         """Test that basic document is rendered as Markdown."""
