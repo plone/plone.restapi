@@ -95,8 +95,11 @@ class TestMarkdownRenderer(unittest.TestCase):
 
     def test_default_to_json(self):
         """Test that without Accept header, it defaults to JSON."""
+        url = self.doc.absolute_url().replace(
+            self.portal_url, self.portal_url + "/++api++"
+        )
         response = requests.get(
-            self.doc.absolute_url(),
+            url,
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
         )
 

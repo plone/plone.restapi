@@ -1,5 +1,5 @@
 HTTP/1.1 200 OK
-Content-Type: application/json+schema
+Content-Type: application/json
 
 {
     "behavior": "plone.dexterity.schema.generated",

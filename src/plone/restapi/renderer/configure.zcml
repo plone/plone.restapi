@@ -6,12 +6,14 @@
   <!-- JSON Renderer -->
   <adapter
       factory=".json.JSONRenderer"
+      provides="..interfaces.IRenderer"
       name="application/json"
       />
 
   <!-- Markdown Renderer -->
   <adapter
       factory=".markdown.MarkdownRenderer"
+      provides="..interfaces.IRenderer"
       name="text/markdown"
       />
 

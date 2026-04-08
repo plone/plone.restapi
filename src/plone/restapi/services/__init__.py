@@ -21,8 +21,14 @@ class Service(RestService):
         if content is not _no_content_marker:
             # Content negotiation: select renderer based on Accept header
             renderer, content_type = self._get_renderer()
-            # Allow services to override the content type
-            if hasattr(self, "content_type") and self.content_type:
+            # Allow services to explicitly override the content type.
+            # If the service has set an instance attribute content_type in reply(),
+            # use that instead of the negotiated content type.
+            # If the service class defines content_type (not inherited from Service),
+            # also respect that for backwards compatibility.
+            if "content_type" in self.__dict__ or (
+                "content_type" in self.__class__.__dict__ and self.content_type
+            ):
                 content_type = self.content_type
             self.request.response.setHeader("Content-Type", content_type)
             return renderer(content)

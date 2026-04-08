@@ -7,7 +7,7 @@
 
   <plone:service
       method="GET"
-      accept="application/json,text/markdown,*/*"
+      accept="application/json, text/markdown"
       factory=".get.ContentGet"
       for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
@@ -15,7 +15,7 @@
 
   <plone:service
       method="GET"
-      accept="application/json,text/markdown,*/*"
+      accept="application/json, text/markdown"
       factory=".get.ContentGet"
       for="Products.CMFCore.interfaces.IContentish"
       permission="zope2.View"
