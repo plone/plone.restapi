@@ -1,0 +1,1 @@
+Fix deserialization of content that has a non-context-aware defaultFactory. @davisagli
