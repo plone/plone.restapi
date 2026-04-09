@@ -2,6 +2,7 @@ from plone.app.contenttypes.indexers import SearchableText
 from plone.indexer.decorator import indexer
 from plone.restapi import HAS_PLONE_6
 from plone.restapi.behaviors import IBlocks
+from plone.restapi.blocks import visit_blocks
 from plone.restapi.blocks import visit_subblocks
 from plone.restapi.interfaces import IBlockSearchableText
 from zope.component import adapter
@@ -65,6 +66,41 @@ class SlateTextIndexer:
         return block.get("plaintext", "")
 
 
+@implementer(IBlockSearchableText)
+@adapter(IBlocks, IBrowserRequest)
+class PlateTextIndexer:
+    """Searchable Text indexer for plate blocks."""
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, block) -> str:
+        texts = [self.extract_plate_text(block["value"])]
+        for subblock in visit_subblocks(self.context, block):
+            texts.append(extract_text(subblock, self.context, self.request))
+        result = text_strip(texts)
+        print(result)
+        return result
+
+    def extract_plate_text(self, value) -> str:
+        match value:
+            case list():
+                return " ".join(self.extract_plate_text(item) for item in value)
+            case { "@type": _ }:
+                # sub-block, will be processed via visit_blocks
+                return ""
+            case dict():
+                texts = []
+                for key in ("text", "children"):
+                    if key in value:
+                        texts.append(self.extract_plate_text(value[key]))
+                return " ".join(texts)
+            case str():
+                return value.strip()
+        return ""
+
+
 def extract_text(block, obj, request):
     """Extract text information from a block.
 
@@ -93,23 +129,16 @@ def extract_text(block, obj, request):
     # Use server side adapters to extract the text data
     adapter = queryMultiAdapter((obj, request), IBlockSearchableText, name=block_type)
     result = adapter(block) if adapter is not None else ""
-    if not result:
-        for subblock in visit_subblocks(obj, block):
-            tmp_result = extract_text(subblock, obj, request)
-            result = f"{result}\n{tmp_result}"
     return result
 
 
-def get_blocks_text(obj):
+def get_blocks_text(obj) -> list[str]:
     """Extract text to be used by the SearchableText index in the Catalog."""
     request = getRequest()
-    blocks = obj.blocks
-    blocks_layout = obj.blocks_layout
-    blocks_text = []
-    for block_id in blocks_layout.get("items", []):
-        block = blocks.get(block_id, {})
-        blocks_text.append(extract_text(block, obj, request))
-    return blocks_text
+    texts = []
+    for block in visit_blocks(obj, obj.blocks):
+        texts.append(extract_text(block, obj, request))
+    return texts
 
 
 def text_strip(text_list):

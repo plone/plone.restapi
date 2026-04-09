@@ -26,5 +26,9 @@
       factory=".indexers.TableBlockSearchableText"
       name="table"
       />
+  <adapter
+      factory=".indexers.PlateTextIndexer"
+      name="__somersault__"
+      />
 
 </configure>
