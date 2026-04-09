@@ -84,20 +84,19 @@ class PlateTextIndexer:
         return result
 
     def extract_plate_text(self, value) -> str:
-        match value:
-            case list():
-                return " ".join(self.extract_plate_text(item) for item in value)
-            case { "@type": _ }:
+        if isinstance(value, list):
+            return " ".join(self.extract_plate_text(item) for item in value)
+        elif isinstance(value, dict):
+            if "@type" in value:
                 # sub-block, will be processed via visit_blocks
                 return ""
-            case dict():
-                texts = []
-                for key in ("text", "children"):
-                    if key in value:
-                        texts.append(self.extract_plate_text(value[key]))
-                return " ".join(texts)
-            case str():
-                return value.strip()
+            texts = []
+            for key in ("text", "children"):
+                if key in value:
+                    texts.append(self.extract_plate_text(value[key]))
+            return " ".join(texts)
+        elif isinstance(value, str):
+            return value.strip()
         return ""
 
 
