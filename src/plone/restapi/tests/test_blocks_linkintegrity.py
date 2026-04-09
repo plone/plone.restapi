@@ -248,6 +248,39 @@ class TestBlocksLinkintegrity(TestCase):
 
         self.assertEqual(len(value), 0)
 
+    def test_links_retriever_return_internal_links_type_a_in_plate_block(self):
+        uid = IUUID(self.doc2)
+        resolve_uid_link = f"../resolveuid/{uid}"
+        blocks = {
+            "__somersault__": {
+                "@type": "__somersault__",
+                "value": [
+                    {
+                        "blockWidth": "default",
+                        "children": [
+                            {"text": ""},
+                            {
+                                "blockWidth": "default",
+                                "children": [{"text": "This is a link"}],
+                                "id": "LR0yRMwNPU",
+                                "type": "a",
+                                "url": resolve_uid_link,
+                            },
+                            {"text": ""},
+                        ],
+                        "id": "IR4xX0-rK0",
+                        "type": "p",
+                    },
+                ],
+            },
+        }
+
+        self.portal.doc1.blocks = blocks
+        value = self.retrieve_links(blocks)
+
+        self.assertEqual(len(value), 1)
+        self.assertIn(resolve_uid_link, value)
+
 
 class TestLinkintegrityForBlocks(TestCase):
 
