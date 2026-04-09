@@ -5,6 +5,7 @@ from plone.restapi.behaviors import IBlocks
 from plone.restapi.blocks import visit_blocks
 from plone.restapi.blocks import visit_subblocks
 from plone.restapi.interfaces import IBlockSearchableText
+from typing import List
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
@@ -131,7 +132,7 @@ def extract_text(block, obj, request):
     return result
 
 
-def get_blocks_text(obj) -> list[str]:
+def get_blocks_text(obj) -> List[str]:
     """Extract text to be used by the SearchableText index in the Catalog."""
     request = getRequest()
     texts = []
