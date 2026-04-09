@@ -168,5 +168,4 @@ else:
         blocks_text = get_blocks_text(obj)
         # Extract text using the base plone.app.contenttypes indexer
         std_text = SearchableText(obj)
-        blocks_text.append(std_text)
-        return text_strip(blocks_text)
+        return text_strip([std_text] + blocks_text)
