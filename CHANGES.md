@@ -9,6 +9,18 @@
 
 <!-- towncrier release notes start -->
 
+## 10.0.0rc3 (2026-04-13)
+
+
+### New features
+
+- Add support for plate block from `@kitconcept/volto-plate` (text indexer, resolveuid transforms, link integrity). @davisagli #1998
+
+
+### Bug fixes
+
+- Fix deserialization of content that has a non-context-aware defaultFactory. @davisagli #2013
+
 ## 10.0.0rc2 (2026-03-27)
 
 
