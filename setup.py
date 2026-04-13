@@ -3,7 +3,7 @@ from setuptools import setup
 import pathlib
 import sys
 
-version = "10.0.0rc3"
+version = "10.0.0rc4.dev0"
 
 if getattr(sys.version_info, "major") == 2:
     raise ValueError(
