@@ -2,8 +2,10 @@ from plone.app.contenttypes.indexers import SearchableText
 from plone.indexer.decorator import indexer
 from plone.restapi import HAS_PLONE_6
 from plone.restapi.behaviors import IBlocks
+from plone.restapi.blocks import visit_blocks
 from plone.restapi.blocks import visit_subblocks
 from plone.restapi.interfaces import IBlockSearchableText
+from typing import List
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
@@ -65,6 +67,40 @@ class SlateTextIndexer:
         return block.get("plaintext", "")
 
 
+@implementer(IBlockSearchableText)
+@adapter(IBlocks, IBrowserRequest)
+class PlateTextIndexer:
+    """Searchable Text indexer for plate blocks."""
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, block) -> str:
+        texts = [self.extract_plate_text(block["value"])]
+        for subblock in visit_subblocks(self.context, block):
+            texts.append(extract_text(subblock, self.context, self.request))
+        result = text_strip(texts)
+        print(result)
+        return result
+
+    def extract_plate_text(self, value) -> str:
+        if isinstance(value, list):
+            return " ".join(self.extract_plate_text(item) for item in value)
+        elif isinstance(value, dict):
+            if "@type" in value:
+                # sub-block, will be processed via visit_blocks
+                return ""
+            texts = []
+            for key in ("text", "children"):
+                if key in value:
+                    texts.append(self.extract_plate_text(value[key]))
+            return " ".join(texts)
+        elif isinstance(value, str):
+            return value.strip()
+        return ""
+
+
 def extract_text(block, obj, request):
     """Extract text information from a block.
 
@@ -93,23 +129,16 @@ def extract_text(block, obj, request):
     # Use server side adapters to extract the text data
     adapter = queryMultiAdapter((obj, request), IBlockSearchableText, name=block_type)
     result = adapter(block) if adapter is not None else ""
-    if not result:
-        for subblock in visit_subblocks(obj, block):
-            tmp_result = extract_text(subblock, obj, request)
-            result = f"{result}\n{tmp_result}"
     return result
 
 
-def get_blocks_text(obj):
+def get_blocks_text(obj) -> List[str]:
     """Extract text to be used by the SearchableText index in the Catalog."""
     request = getRequest()
-    blocks = obj.blocks
-    blocks_layout = obj.blocks_layout
-    blocks_text = []
-    for block_id in blocks_layout.get("items", []):
-        block = blocks.get(block_id, {})
-        blocks_text.append(extract_text(block, obj, request))
-    return blocks_text
+    texts = []
+    for block in visit_blocks(obj, obj.blocks):
+        texts.append(extract_text(block, obj, request))
+    return texts
 
 
 def text_strip(text_list):
@@ -139,5 +168,4 @@ else:
         blocks_text = get_blocks_text(obj)
         # Extract text using the base plone.app.contenttypes indexer
         std_text = SearchableText(obj)
-        blocks_text.append(std_text)
-        return text_strip(blocks_text)
+        return text_strip([std_text] + blocks_text)

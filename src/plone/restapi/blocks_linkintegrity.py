@@ -54,11 +54,7 @@ class TextBlockLinksRetriever:
         return links
 
 
-@adapter(IBlocks, IBrowserRequest)
-@implementer(IBlockFieldLinkIntegrityRetriever)
-class SlateBlockLinksRetriever:
-    order = 100
-    block_type = "slate"
+class BaseSlateOrPlateBlockLinksRetriever:
     field = "value"
 
     def __init__(self, context, request):
@@ -77,8 +73,15 @@ class SlateBlockLinksRetriever:
                     value = handler(child)
                     if value:
                         self.links.append(value)
-
         return self.links
+
+
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldLinkIntegrityRetriever)
+class SlateBlockLinksRetriever(BaseSlateOrPlateBlockLinksRetriever):
+    order = 100
+    block_type = "slate"
+    field = "value"
 
     def handle_a(self, child):
         data = child.get("data", {})
@@ -90,6 +93,17 @@ class SlateBlockLinksRetriever:
     def handle_link(self, child):
         if child.get("data", {}).get("url"):
             return child["data"]["url"]
+
+
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldLinkIntegrityRetriever)
+class PlateBlockLinksRetriever(BaseSlateOrPlateBlockLinksRetriever):
+    order = 100
+    block_type = "__somersault__"
+    field = "value"
+
+    def handle_a(self, child):
+        return child.get("url")
 
 
 @adapter(IBlocks, IBrowserRequest)

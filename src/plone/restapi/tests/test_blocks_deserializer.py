@@ -738,3 +738,33 @@ class TestBlocksDeserializer(unittest.TestCase):
         res = self.deserialize(blocks=blocks)
         link = res.blocks["abc"]["href"]
         self.assertEqual(link, f"../resolveuid/{self.portal['renamed-doc'].UID()}")
+
+    def test_plate_internal_link_deserializer(self):
+        target_url = self.image.absolute_url()
+        blocks = {
+            "__somersault__": {
+                "@type": "__somersault__",
+                "value": [
+                    {
+                        "blockWidth": "default",
+                        "children": [
+                            {"text": ""},
+                            {
+                                "blockWidth": "default",
+                                "children": [{"text": "This is a link"}],
+                                "id": "LR0yRMwNPU",
+                                "type": "a",
+                                "url": target_url,
+                            },
+                            {"text": ""},
+                        ],
+                        "id": "IR4xX0-rK0",
+                        "type": "p",
+                    },
+                ],
+            },
+        }
+        res = self.deserialize(blocks=blocks)
+        value = res.blocks["__somersault__"]["value"]
+        link = value[0]["children"][1]["url"]
+        self.assertTrue(link.startswith("../resolveuid/"))

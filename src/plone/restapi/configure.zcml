@@ -151,5 +151,9 @@
       factory=".blocks_linkintegrity.SlateBlockLinksRetriever"
       provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
       />
+  <subscriber
+      factory=".blocks_linkintegrity.PlateBlockLinksRetriever"
+      provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
+      />
 
 </configure>

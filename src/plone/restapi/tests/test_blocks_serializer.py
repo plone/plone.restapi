@@ -637,3 +637,38 @@ class TestBlocksSerializer(unittest.TestCase):
         self.assertEqual(block["description"], "Custom description")
         href = block["href"][0]
         self.assertEqual(href["@id"], doc.absolute_url())
+
+    def test_plate_internal_link_serializer(self):
+        target_item = self.image
+        resolveuid_link = f"../resolveuid/{target_item.UID()}"
+        blocks = {
+            "__somersault__": {
+                "@type": "__somersault__",
+                "value": [
+                    {
+                        "blockWidth": "default",
+                        "children": [
+                            {"text": ""},
+                            {
+                                "blockWidth": "default",
+                                "children": [{"text": "This is a link"}],
+                                "id": "LR0yRMwNPU",
+                                "type": "a",
+                                "url": resolveuid_link,
+                            },
+                            {"text": ""},
+                        ],
+                        "id": "IR4xX0-rK0",
+                        "type": "p",
+                    },
+                ],
+            },
+        }
+
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks=blocks,
+        )
+        value = res["__somersault__"]["value"]
+        link = value[0]["children"][1]["url"]
+        self.assertTrue(link == target_item.absolute_url())
