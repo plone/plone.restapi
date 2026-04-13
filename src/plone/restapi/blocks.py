@@ -1,3 +1,4 @@
+from collections import deque
 from plone.restapi.interfaces import IBlockVisitor
 from zope.component import adapter
 from zope.component import subscribers
@@ -72,3 +73,15 @@ class NestedBlocksVisitor:
                     yield from block_value["data"]["blocks"].values()
         if "blocks" in block_value:
             yield from block_value["blocks"].values()
+        if block_value.get("@type") == "__somersault__":
+            yield from self.visit_plate_value(block_value.get("value", []))
+
+    def visit_plate_value(self, value):
+        queue = deque(value)
+        while queue:
+            child = queue.pop()
+            if isinstance(child, dict):
+                if "@type" in child:
+                    yield child
+                elif child.get("children", []):
+                    queue.extend(child["children"] or [])
