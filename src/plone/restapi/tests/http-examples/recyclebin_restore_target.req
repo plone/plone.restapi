@@ -1,0 +1,8 @@
+POST /plone/@recyclebin/d440fbb4-9b70-437f-b1d4-a86172724955/restore HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "target_path": "/plone/target_folder"
+}
