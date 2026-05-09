@@ -38,6 +38,7 @@
   <include package=".relations" />
   <include package=".roles" />
   <include package=".search" />
+  <include package=".slots" />
   <include package=".site" />
   <include package=".system" />
   <include package=".sources" />
@@ -62,6 +63,10 @@
   <include
       package=".email_send"
       zcml:condition="have plone-5"
+      />
+  <include
+      package=".rules"
+      zcml:condition="installed plone.app.contentrules"
       />
   <include
       package=".rules"

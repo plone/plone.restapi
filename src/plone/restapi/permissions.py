@@ -4,3 +4,4 @@
 UseRESTAPI = "plone.restapi: Use REST API"
 
 PloneManageUsers = "Plone Site Setup: Users and Groups"
+ModifySlotsPermission = "plone.restapi: Modify slots information"

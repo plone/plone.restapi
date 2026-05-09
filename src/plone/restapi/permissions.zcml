@@ -17,5 +17,14 @@
       id="plone.restapi.getusers"
       title="plone.restapi: Access Plone user information"
       />
+  <permission
+      id="plone.restapi.GetSlots"
+      title="plone.restapi: Access slots information"
+      />
+
+  <permission
+      id="plone.restapi.ModifySlots"
+      title="plone.restapi: Modify slots information"
+      />
 
 </configure>

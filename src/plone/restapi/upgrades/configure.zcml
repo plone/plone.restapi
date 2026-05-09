@@ -69,6 +69,16 @@
       handler="plone.restapi.upgrades.to0006.rename_iface_to_name_in_blocks_behavior"
       />
 
+
+  <genericsetup:registerProfile
+      name="0007"
+      title="plone.restapi.upgrades.0007"
+      description=""
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+      directory="profiles/0007"
+      />
+
   <genericsetup:upgradeStep
       title="Give permission plone.restapi: Access Plone user information to Site Administrator"
       description=""
@@ -77,5 +87,23 @@
       destination="0007"
       handler="plone.restapi.upgrades.to0007.site_administrator_permission"
       />
+
+    <genericsetup:registerProfile
+        name="0008"
+        title="plone.restapi.upgrades.0008"
+        description=""
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        for="plone.restapi.bbb.IMigratingPloneSiteRoot"
+        directory="profiles/0008"
+        />
+
+    <genericsetup:upgradeStep
+        title="Import slots configuration"
+        description=""
+        profile="plone.restapi:default"
+        source="0007"
+        destination="0008"
+        handler="plone.restapi.upgrades.to0008.slots_configuration"
+        />
 
 </configure>

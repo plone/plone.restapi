@@ -21,6 +21,14 @@
   <adapter factory=".dxfields.DecimalFieldDeserializer" />
   <adapter factory=".blocks.BlocksJSONFieldDeserializer" />
 
+  <adapter factory=".slots.SlotDeserializer" />
+  <adapter factory=".slots.SlotDeserializerRoot" />
+  <adapter factory=".slots.SlotsDeserializer" />
+  <adapter
+      factory=".slots.SlotsDeserializerRoot"
+      provides="plone.restapi.interfaces.IDeserializeFromJson"
+      />
+
   <subscriber
       factory=".blocks.TextBlockDeserializer"
       provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"

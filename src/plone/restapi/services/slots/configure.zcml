@@ -1,0 +1,57 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <!-- Get slots in Plone root (temporary, till Plone roots are dexterity) -->
+  <plone:service
+      method="GET"
+      factory=".get.SlotsGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@slots"
+      />
+
+  <!-- Get slots in contentish objects (contexts) -->
+  <plone:service
+      method="GET"
+      factory=".get.SlotsGet"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@slots"
+      />
+
+  <!-- Update slots in Plone root -->
+  <plone:service
+      method="PATCH"
+      factory=".update.SlotsPatch"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ModifyPortalContent"
+      name="@slots"
+      />
+
+  <!-- Update content in any context -->
+  <plone:service
+      method="PATCH"
+      factory=".update.SlotsPatch"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="cmf.ModifyPortalContent"
+      name="@slots"
+      />
+
+  <!-- <plone:service -->
+  <!--   method="POST" -->
+  <!--   for="Products.CMFCore.interfaces.IFolderish" -->
+  <!--   factory=".add.FolderPost" -->
+  <!--   permission="cmf.AddPortalContent" -->
+  <!--   /> -->
+
+  <!-- <plone:service -->
+  <!--   method="DELETE" -->
+  <!--   for="Products.CMFCore.interfaces.IContentish" -->
+  <!--   factory=".delete.ContentDelete" -->
+  <!--   permission="zope2.DeleteObjects" -->
+  <!--   /> -->
+
+</configure>
