@@ -78,7 +78,7 @@ Content-Type: application/json+schema
                     "No"
                 ]
             ],
-            "description": "Permitir comentarios para este tipo de contenido",
+            "description": "Permitir comentarios para este tipo de contenido.",
             "enum": [
                 "True",
                 "False"
