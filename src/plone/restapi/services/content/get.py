@@ -2,7 +2,7 @@ from plone.restapi.interfaces import IRenderer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import _no_content_marker
 from plone.restapi.services import Service
-from zope.component import queryAdapter
+from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 
 
@@ -14,16 +14,10 @@ class ContentGet(Service):
         content = self.reply()
         if content is _no_content_marker:
             return
-        accept = self.request.getHeader("Accept", "")
-        for mime_type in [m.strip().split(";")[0] for m in accept.split(",")]:
-            if mime_type and mime_type != "*/*":
-                renderer = queryAdapter(self.request, IRenderer, name=mime_type)
-                if renderer is not None:
-                    self.request.response.setHeader(
-                        "Content-Type", renderer.content_type
-                    )
-                    return renderer(content)
-        renderer = queryAdapter(self.request, IRenderer, name="application/json")
+        mime_type = self.request.getHeader("Accept").split(";")[0].strip()
+        renderer = getMultiAdapter(
+            (self.context, self.request), IRenderer, name=mime_type
+        )  # raises ComponentLookupError
         self.request.response.setHeader("Content-Type", renderer.content_type)
         return renderer(content)
 
