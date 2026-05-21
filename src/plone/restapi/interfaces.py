@@ -286,5 +286,8 @@ class IRenderer(Interface):
 
     content_type = Attribute("The MIME type for this format")
 
+    def __init__(context, request):
+        """Adapts a context and the request."""
+
     def __call__(data):
         """Render the data into the target format and return as string."""

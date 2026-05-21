@@ -9,13 +9,14 @@ import json
 
 
 @implementer(IRenderer)
-@adapter(Interface)
+@adapter(Interface, Interface)
 class JSONRenderer:
     """Render data as JSON."""
 
     content_type = "application/json"
 
-    def __init__(self, request):
+    def __init__(self, context, request):
+        self.context = context
         self.request = request
 
     def __call__(self, data):
