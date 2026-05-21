@@ -9,6 +9,19 @@
 
 <!-- towncrier release notes start -->
 
+## 9.15.5 (2026-05-21)
+
+
+### Bug fixes:
+
+- In the `@search` service, fix a case where the `sort_order` parameter was ignored. @mamico, @davisagli #1954
+- Remove default limit of 1000 from service @querystring-search. @wesleybl #1955
+
+
+### Internal:
+
+- Consolidate test layers so PAM, Iterate, Blocks, and Workflows all share `PLONE_RESTAPI_DX_FIXTURE` as base, reducing redundant layer setup time. @jensens #1983
+
 ## 9.15.4 (2026-01-13)
 
 
