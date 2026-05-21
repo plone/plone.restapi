@@ -24,6 +24,7 @@ forest.dot
 forest.json
 
 # venv / buildout related
+.venv/
 bin/
 develop-eggs/
 eggs/
@@ -47,6 +48,7 @@ local.cfg
 /sources/
 /venv/
 .installed.txt
+.mxdev_cache/
 
 /docs/styles/Microsoft/
 
