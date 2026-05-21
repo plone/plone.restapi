@@ -48,46 +48,45 @@ class SlateSerializer:
 
             node_type = node.get("type", "") if isinstance(node, dict) else ""
 
-            match node_type:
-                case "p":
-                    return f"{children}\n"
-                case "blockquote":
-                    return f"> {children}\n"
-                case "h1":
-                    return f"# {children}\n"
-                case "h2":
-                    return f"## {children}\n"
-                case "h3":
-                    return f"### {children}\n"
-                case "h4":
-                    return f"#### {children}\n"
-                case "h5":
-                    return f"##### {children}\n"
-                case "h6":
-                    return f"###### {children}\n"
-                case "hr":
-                    return "---\n"
-                case "strong":
-                    return f"**{children}**"
-                case "em":
-                    return f"*{children}*"
-                case "del":
-                    return f"~~{children}~~"
-                case "sub":
-                    return f"~{children}~"
-                case "sup":
-                    return f"^{children}^"
-                case "link":
-                    url = node.get("data", {}).get("url", "") if "data" in node else ""
-                    return f"[{children}]({url})"
-                case "li":
-                    indent = "    " * (depth - 1)
-                    if parent == "ol":
-                        return f"{indent}{index}. {children}\n"
-                    return f"{indent}- {children}\n"
-                case "ul" | "ol":
-                    return f"{children}{NEWLINE if depth == 0 else ''}"
-                case _:
-                    return children
+            if node_type == "p":
+                return f"{children}\n"
+            elif node_type == "blockquote":
+                return f"> {children}\n"
+            elif node_type == "h1":
+                return f"# {children}\n"
+            elif node_type == "h2":
+                return f"## {children}\n"
+            elif node_type == "h3":
+                return f"### {children}\n"
+            elif node_type == "h4":
+                return f"#### {children}\n"
+            elif node_type == "h5":
+                return f"##### {children}\n"
+            elif node_type == "h6":
+                return f"###### {children}\n"
+            elif node_type == "hr":
+                return "---\n"
+            elif node_type == "strong":
+                return f"**{children}**"
+            elif node_type == "em":
+                return f"*{children}*"
+            elif node_type == "del":
+                return f"~~{children}~~"
+            elif node_type == "sub":
+                return f"~{children}~"
+            elif node_type == "sup":
+                return f"^{children}^"
+            elif node_type == "link":
+                url = node.get("data", {}).get("url", "") if "data" in node else ""
+                return f"[{children}]({url})"
+            elif node_type == "li":
+                indent = "    " * (depth - 1)
+                if parent == "ol":
+                    return f"{indent}{index}. {children}\n"
+                return f"{indent}- {children}\n"
+            elif node_type in ("ul", "ol"):
+                return f"{children}{NEWLINE if depth == 0 else ''}"
+            else:
+                return children
 
         return extract_text(slate_data)
