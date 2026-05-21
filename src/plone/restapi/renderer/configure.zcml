@@ -3,6 +3,8 @@
     i18n_domain="plone.restapi"
     >
 
+  <include package=".blocks" />
+
   <!-- JSON Renderer -->
   <adapter
       factory=".json.JSONRenderer"
