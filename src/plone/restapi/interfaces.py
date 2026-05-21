@@ -291,3 +291,16 @@ class IRenderer(Interface):
 
     def __call__(data):
         """Render the data into the target format and return as string."""
+
+
+class IConvertBlockToMarkdown(Interface):
+    """Adapter to convert a block to Markdown.
+
+    Converters take the Python data structure of a block and convert it to a Markdown
+    representation of the Block."""
+
+    def __init__(context, request):
+        """Adapts a context and the request."""
+
+    def __call__(block_data):
+        """Converts a block to Markdown and return as string."""
