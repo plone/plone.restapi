@@ -3,6 +3,8 @@ from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
 
+NEWLINE = "\n"
+
 
 @implementer(IConvertBlockToMarkdown)
 @adapter(Interface, Interface)
@@ -84,7 +86,7 @@ class SlateSerializer:
                         return f"{indent}{index}. {children}\n"
                     return f"{indent}- {children}\n"
                 case "ul" | "ol":
-                    return f"{children}{'\n' if depth == 0 else ''}"
+                    return f"{children}{NEWLINE if depth == 0 else ''}"
                 case _:
                     return children
 
