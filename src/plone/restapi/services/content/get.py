@@ -19,6 +19,7 @@ class ContentGet(Service):
             (self.context, self.request), IRenderer, name=mime_type
         )  # raises ComponentLookupError
         self.request.response.setHeader("Content-Type", renderer.content_type)
+        self.request.response.setHeader("Vary", "Accept")
         return renderer(content)
 
     def reply(self):
