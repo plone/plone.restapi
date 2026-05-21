@@ -1,5 +1,7 @@
 """Tests for Markdown renderer."""
 
+from simplejson.compat import b
+
 from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -67,8 +69,8 @@ class TestMarkdownRenderer(unittest.TestCase):
 
         # Check for YAML frontmatter
         self.assertIn("---", content)
-        self.assertIn("@id:", content)
-        self.assertIn("@type: Document", content)
+        self.assertIn("'@id':", content)
+        self.assertIn("'@type': Document", content)
         self.assertIn("title: Test Document", content)
 
         # Check for title as H1
@@ -100,6 +102,7 @@ class TestMarkdownRenderer(unittest.TestCase):
         )
         response = requests.get(
             url,
+            headers={"Accept": "*/*"},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
         )
 
