@@ -15,9 +15,11 @@ class ContentGet(Service):
         if content is _no_content_marker:
             return
         mime_type = self.request.getHeader("Accept").split(";")[0].strip()
+        if mime_type == "*/*":
+            mime_type = "application/json"
         renderer = getMultiAdapter(
             (self.context, self.request), IRenderer, name=mime_type
-        )  # raises ComponentLookupError
+        )
         self.request.response.setHeader("Content-Type", renderer.content_type)
         self.request.response.setHeader("Vary", "Accept")
         return renderer(content)
