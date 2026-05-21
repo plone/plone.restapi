@@ -1,7 +1,5 @@
 """Tests for Markdown renderer."""
 
-from simplejson.compat import b
-
 from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
