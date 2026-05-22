@@ -204,7 +204,7 @@ class MarkdownRenderer:
             # Unknown content type, return as-is
             return content
 
-    def _render_blocks(self, blocks: dict, blocks_layout: list) -> list[str]:
+    def _render_blocks(self, blocks, blocks_layout):
         """Convert Volto blocks to Markdown.
 
         Simple text blocks are converted to Markdown, complex blocks are
