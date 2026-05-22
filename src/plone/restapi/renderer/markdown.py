@@ -229,7 +229,9 @@ class MarkdownRenderer:
             block_type = block.get("@type", "unknown")
 
             adapter = queryMultiAdapter(
-                (self.context, self.request), IConvertBlockToMarkdown, name=block_type
+                (self.context, self.request),
+                IConvertBlockToMarkdown,
+                name=f"block_{block_type}",
             )
 
             if adapter:

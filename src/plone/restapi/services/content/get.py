@@ -11,12 +11,12 @@ class ContentGet(Service):
 
     def render(self):
         self.check_permission()
-        content = self.reply()
-        if content is _no_content_marker:
-            return
         mime_type = self.request.getHeader("Accept").split(";")[0].strip()
         if mime_type == "*/*":
             mime_type = "application/json"
+        content = self.reply(is_json=(mime_type == "application/json"))
+        if content is _no_content_marker:
+            return
         renderer = getMultiAdapter(
             (self.context, self.request), IRenderer, name=mime_type
         )
@@ -24,11 +24,15 @@ class ContentGet(Service):
         self.request.response.setHeader("Vary", "Accept")
         return renderer(content)
 
-    def reply(self):
+    def reply(self, is_json=True):
         serializer = queryMultiAdapter((self.context, self.request), ISerializeToJson)
 
         if serializer is None:
             self.request.response.setStatus(501)
             return dict(error=dict(message="No serializer available."))
 
-        return serializer(version=self.request.get("version"))
+        return serializer(
+            version=self.request.get("version"),
+            include_items=is_json,
+            include_expansion=is_json,
+        )

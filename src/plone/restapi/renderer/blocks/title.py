@@ -13,5 +13,5 @@ class TitleSerializer:
         self.context = context
         self.request = request
 
-    def __call__(self):
+    def __call__(self, block_data):
         return f"# {self.context.title}"
