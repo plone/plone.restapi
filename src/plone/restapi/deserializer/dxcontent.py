@@ -21,6 +21,7 @@ from zope.interface import Interface
 from zope.lifecycleevent import Attributes
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFields
+from zope.schema.interfaces import IContextAwareDefaultFactory
 from zope.schema.interfaces import ValidationError
 
 
@@ -143,9 +144,14 @@ class DeserializeFromJson(OrderingMixin):
                             # During content creation we should set the value even if
                             # it is the same from the dm if the current_value was
                             # returned from a default_factory method
-                            should_change = (
-                                dm.field.defaultFactory(self.context) == current_value
+                            default_value = (
+                                dm.field.defaultFactory(self.context)
+                                if IContextAwareDefaultFactory.providedBy(
+                                    dm.field.defaultFactory
+                                )
+                                else dm.field.defaultFactory()
                             )
+                            should_change = default_value == current_value
                         else:
                             should_change = False
 

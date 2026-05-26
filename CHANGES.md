@@ -9,13 +9,77 @@
 
 <!-- towncrier release notes start -->
 
+## 10.0.0 (2026-05-18)
+
+No significant changes.
+
+
+## 10.0.0rc3 (2026-04-13)
+
+
+### New features
+
+- Add support for plate block from `@kitconcept/volto-plate` (text indexer, resolveuid transforms, link integrity). @davisagli #1998
+
+
+### Bug fixes
+
+- Fix deserialization of content that has a non-context-aware defaultFactory. @davisagli #2013
+
+## 10.0.0rc2 (2026-03-27)
+
+
+### Bug fixes
+
+- Declare `plone.api` as runtime dependency instead of only a test dependency.
+  Explicitly add `plone.app.layout` as runtime dependency, and `plone.testing` as test dependency.
+  @mauritsvanrees #2007
+
+## 10.0.0rc1 (2026-03-25)
+
+
+### Breaking changes
+
+- Services which take boolean parameters now check the input more strictly, using the `boolean_value` util. @cekk #1996
+
+
+### New features
+
+- The `@controlpanel` service now includes `searchable_text` for each control panel. @Manik-Khajuria-5 #1981
+- Added support for sorting vocabularies by title before batching for the `@vocabularies` endpoint. @hasansyed107 #1990
+- Add CSV import and export support to the @users endpoint. @jnptk 
+
+
+### Bug fixes
+
+- When serializing RelationList fields, don't include a null for broken relations. @aryan7081 #965
+- In the `@search` service, fix a case where the `sort_order` parameter was ignored. @mamico, @davisagli #1954
+- In the `@email-send` service, the `message_intro` string is no longer added to multipart messages, but continues to be prepended to the message payload for non-multipart messages. @Manik-Khajuria-5 #1956
+- Fix `HypermediaBatch` assuming a request always has a JSON body. @jnptk 
+
+
+### Internal
+
+- Consolidate test layers so PAM, Iterate, Blocks, and Workflows all share `PLONE_RESTAPI_DX_FIXTURE` as base, reducing redundant layer setup time. @jensens #1983
+- Use standalone ``generate_user_id`` / ``generate_login_name`` functions from ``plone.app.users.utils`` instead of instantiating the registration form view. @jensens #4292
+- Update configuration files @plone 
+
+
+### Documentation
+
+- Redirect documentation from Read the Docs to https://6.docs.plone.org/plone.restapi/docs/source/. @stevepiercy #1907
+- Explain how to customize serializers for content types @gforcada #1975
+- Update outdated commands in contributing docs. @jnptk 
+
 ## 10.0.0a1 (2026-01-13)
 
 
 ### Breaking changes:
 
-- Replace ``pkg_resources`` namespace with PEP 420 native namespace.
-  Support only Plone 6.2 and Python 3.10+. #3928
+- Replace `pkg_resources` namespace with PEP 420 native namespace.
+  This works best on Plone 6.2 and Python 3.10+, where the other `plone.*` packages made the same change.
+  It is still possible to use `plone.restapi` 10.x with older versions of Plone, even Plone 5.2, but you might need to use `horse-with-no-namespace` if you need to install `plone.restapi` as an editable package.
+  #3928
 
 
 ### New features:
@@ -31,19 +95,19 @@
 
 ### Documentation:
 
-- Fix link to querystring operators in docs. @jnptk 
+- Fix link to querystring operators in docs. @jnptk
 
 
 ### Tests:
 
-- Fix tests to expect an extra registry record.  @mauritsvanrees 
+- Fix tests to expect an extra registry record.  @mauritsvanrees
 
 ## 9.15.3 (2025-10-01)
 
 
 ### Internal:
 
-- Update configuration files @plone 
+- Update configuration files @plone
 
 ## 9.15.2 (2025-08-22)
 
@@ -51,7 +115,7 @@
 ### Bug fixes:
 
 - Serialize the `layout` of a Plone Site if it is a Plone 6 site. @erral #1939
-- When deserializing datetimes into an empty field, store them as timezone-aware datetimes. @davisagli 
+- When deserializing datetimes into an empty field, store them as timezone-aware datetimes. @davisagli
 
 ## 9.15.1 (2025-06-16)
 
@@ -67,7 +131,7 @@
 
 ### New features:
 
-- Include all summary fields when serializing `next_item` and `previous_item`. @davisagli 
+- Include all summary fields when serializing `next_item` and `previous_item`. @davisagli
 
 
 ### Bug fixes:
@@ -77,7 +141,7 @@
 
 ### Documentation:
 
-- Fix contributor documentation. @davisagli 
+- Fix contributor documentation. @davisagli
 
 ## 9.14.0 (2025-05-12)
 
@@ -175,7 +239,7 @@
 
 ### Internal:
 
-- Update configuration files @plone 
+- Update configuration files @plone
 
 ## 9.11.0 (2025-01-31)
 

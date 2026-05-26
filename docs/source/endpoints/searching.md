@@ -60,6 +60,12 @@ The `plone.restapi` `@search` endpoint will not do that for you.
 You will have to add it if you want to keep this feature.
 ```
 
+```{versionchanged} plone.restapi 10.0.0
+Since plone.restapi version 10.0.0, boolean parameters are validated more strictly.
+
+See {doc}`../usage/parameters` for details.
+```
+
 ## Query format
 
 Queries and query-wide options, such as `sort_on`, are submitted as query string parameters to the `/@search` request:

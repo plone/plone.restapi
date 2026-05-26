@@ -21,7 +21,7 @@ from zope.publisher.interfaces import IPublishTraverse
 
 import codecs
 import json
-import plone
+import plone.protect
 
 
 @implementer(IPublishTraverse)
