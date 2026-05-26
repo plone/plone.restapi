@@ -9,7 +9,7 @@ Content-Type: application/json
         "restore": "http://localhost:55001/plone/@recyclebin/ecf00e14-441d-4264-94de-6bbb9d0c66e7/restore"
     },
     "deleted_by": "test_user_1_",
-    "deletion_date": "2026-05-26T17:32:47.677221",
+    "deletion_date": "1995-07-31T17:30:00+00:00",
     "has_children": false,
     "id": "document1",
     "items": [],

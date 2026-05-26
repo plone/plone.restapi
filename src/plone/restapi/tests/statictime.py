@@ -13,6 +13,11 @@ try:
 except ImportError:
     Comment = None
 
+try:
+    from Products.CMFPlone.recyclebin import RecycleBin
+except ImportError:
+    RecycleBin = None
+
 
 _originals = {
     "WorkflowTool.getInfoFor": WorkflowTool.getInfoFor,
@@ -20,6 +25,8 @@ _originals = {
     "TTWLockable.lock_info": TTWLockable.lock_info,
     "WorkingCopyInfo.created": WorkingCopyInfo.created,
 }
+if RecycleBin is not None:
+    _originals["RecycleBin._get_deletion_date"] = RecycleBin._get_deletion_date
 
 
 class StaticTime:
@@ -136,6 +143,9 @@ class StaticTime:
 
         WorkingCopyInfo.created = static_wc_info_factory(self.static_created)
 
+        if RecycleBin is not None:
+            RecycleBin._get_deletion_date = lambda x: self.static_modified
+
     def stop(self):
         """Undo all the patches."""
         TTWLockable.lock_info = _originals["TTWLockable.lock_info"]
@@ -152,6 +162,9 @@ class StaticTime:
 
         del DexterityContent.modification_date
         del DexterityContent.creation_date
+
+        if RecycleBin is not None:
+            RecycleBin._get_deletion_date = _originals["RecycleBin._get_deletion_date"]
 
 
 def static_get_info_for_factory(dt_value):

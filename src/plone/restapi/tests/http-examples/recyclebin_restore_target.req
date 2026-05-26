@@ -1,4 +1,4 @@
-POST /plone/@recyclebin/0042813a-63a6-7b0d-8a98-403472a4eeec/restore HTTP/1.1
+POST /plone/@recyclebin/7cda273b-9e6a-3b17-3b2f-00ac6fd2e766/restore HTTP/1.1
 Accept: application/json
 Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json

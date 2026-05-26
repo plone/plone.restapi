@@ -12,7 +12,7 @@ Content-Type: application/json
                 "restore": "http://localhost:55001/plone/@recyclebin/8df93d6e-de82-2c67-2919-6e6fca9b0666/restore"
             },
             "deleted_by": "test_user_1_",
-            "deletion_date": "2026-05-26T17:32:47.558237",
+            "deletion_date": "1995-07-31T17:30:00+00:00",
             "has_children": false,
             "id": "document1",
             "language": "",
@@ -30,7 +30,7 @@ Content-Type: application/json
                 "restore": "http://localhost:55001/plone/@recyclebin/d46174f6-045e-f661-eada-a2ce0d342a98/restore"
             },
             "deleted_by": "test_user_1_",
-            "deletion_date": "2026-05-26T17:32:47.555788",
+            "deletion_date": "1995-07-31T17:30:00+00:00",
             "has_children": true,
             "id": "folder1",
             "language": "",
