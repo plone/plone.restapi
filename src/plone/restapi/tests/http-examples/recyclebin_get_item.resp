@@ -2,14 +2,14 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "@id": "http://localhost:55001/plone/@recyclebin/9543ec39-054a-48b3-967b-b9578f8b2b0d",
+    "@id": "http://localhost:55001/plone/@recyclebin/ecf00e14-441d-4264-94de-6bbb9d0c66e7",
     "@type": "Document",
     "actions": {
-        "purge": "http://localhost:55001/plone/@recyclebin/9543ec39-054a-48b3-967b-b9578f8b2b0d",
-        "restore": "http://localhost:55001/plone/@recyclebin/9543ec39-054a-48b3-967b-b9578f8b2b0d/restore"
+        "purge": "http://localhost:55001/plone/@recyclebin/ecf00e14-441d-4264-94de-6bbb9d0c66e7",
+        "restore": "http://localhost:55001/plone/@recyclebin/ecf00e14-441d-4264-94de-6bbb9d0c66e7/restore"
     },
     "deleted_by": "test_user_1_",
-    "deletion_date": "2026-03-21T21:35:00.215868",
+    "deletion_date": "2026-05-26T17:32:47.677221",
     "has_children": false,
     "id": "document1",
     "items": [],
@@ -17,7 +17,7 @@ Content-Type: application/json
     "language": "",
     "parent_path": "/plone",
     "path": "/plone/document1",
-    "recycle_id": "9543ec39-054a-48b3-967b-b9578f8b2b0d",
+    "recycle_id": "ecf00e14-441d-4264-94de-6bbb9d0c66e7",
     "review_state": "private",
     "title": "My Document"
 }

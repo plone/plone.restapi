@@ -31,9 +31,11 @@ from zope.interface import implementer
 
 import collective.MockMailHost
 import os
+import random
 import re
 import requests
 import time
+import uuid
 
 try:
     from plone.app.caching.testing import PloneAppCachingBase
@@ -144,6 +146,10 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         applyProfile(portal, "collective.MockMailHost:default")
         states = portal.portal_workflow["simple_publication_workflow"].states
         states["published"].title = "Published with accent é"  # noqa: E501
+
+        # Seed random number generator for consistent uuids in tests
+        rng = random.Random(12345)
+        uuid.uuid4 = lambda: uuid.UUID(int=rng.getrandbits(128))
 
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
