@@ -1,6 +1,8 @@
 from plone.base.interfaces.recyclebin import IRecycleBin
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from zExceptions import BadRequest
+from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.interface import implementer
@@ -71,26 +73,33 @@ class RecycleBinRestore(Service):
                 }
             }
 
-        # Get optional target container path from request body
+        # Get optional fields from request body
         data = json_body(self.request)
         target_path = data.get("target_path", None) if data else None
-        target_container = None
+        restore_id = data.get("restore_id", None) if data else None
 
+        if restore_id and not target_path:
+            raise BadRequest("target_path is required when restoring a child item")
+
+        target_container = None
         if target_path:
             try:
-                portal = self.context.portal_url.getPortalObject()
+                portal = getMultiAdapter(
+                    (self.context, self.request), name="plone_portal_state"
+                ).portal()
                 target_container = portal.unrestrictedTraverse(target_path)
             except (KeyError, AttributeError):
-                self.request.response.setStatus(400)
-                return {
-                    "error": {
-                        "type": "BadRequest",
-                        "message": f"Target path {target_path} not found",
-                    }
-                }
+                raise BadRequest(f"Target path {target_path} not found")
 
-        # Restore the item
-        restored_obj = recycle_bin.restore_item(item_id, target_container)
+        if restore_id:
+            restored_obj = recycle_bin.restore_child_item(
+                item_id, restore_id, target_container
+            )
+        else:
+            restored_obj = recycle_bin.restore_item(item_id, target_container)
+
+        if isinstance(restored_obj, dict) and not restored_obj.get("success", True):
+            raise BadRequest(restored_obj.get("error", "Failed to restore item"))
 
         if not restored_obj:
             self.request.response.setStatus(500)
@@ -109,6 +118,6 @@ class RecycleBinRestore(Service):
                 "@id": restored_obj.absolute_url(),
                 "id": restored_obj.getId(),
                 "title": restored_obj.Title(),
-                "type": restored_obj.portal_type,
+                "@type": restored_obj.portal_type,
             },
         }

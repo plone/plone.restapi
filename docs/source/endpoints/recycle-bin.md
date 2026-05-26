@@ -30,29 +30,23 @@ A list of all items in the recycle bin can be retrieved by sending a `GET` reque
 
 The listing supports various query parameters for filtering and sorting:
 
-- `search_query`: Search in title and path (case-insensitive)
-- `filter_type`: Filter by content type (e.g., "Document", "Folder")
-- `date_from`: Filter by deletion date from (YYYY-MM-DD format)
-- `date_to`: Filter by deletion date to (YYYY-MM-DD format)
-- `filter_deleted_by`: Filter by user who deleted the item
-- `filter_has_subitems`: Filter items with/without children (`with_subitems`, `without_subitems`)
-- `filter_language`: Filter by language code
-- `filter_workflow_state`: Filter by workflow state
-- `sort_by`: Sorting options:
-  - `date_desc` (default) - Most recent first
-  - `date_asc` - Oldest first
-  - `title_asc` / `title_desc` - Alphabetical by title
-  - `type_asc` / `type_desc` - By content type
-  - `path_asc` / `path_desc` - By path
-  - `size_asc` / `size_desc` - By size
-  - `workflow_asc` / `workflow_desc` - By workflow state
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `title` | Filter by title (case-insensitive substring match) | `title=my doc` |
+| `path` | Filter by path (case-insensitive substring match) | `path=/plone/news` |
+| `portal_type` | Filter by content type | `portal_type=Document` |
+| `date_from` | Filter by deletion date from (YYYY-MM-DD) | `date_from=2024-01-01` |
+| `date_to` | Filter by deletion date to (YYYY-MM-DD) | `date_to=2024-12-31` |
+| `deleted_by` | Filter by the user ID who deleted the item | `deleted_by=admin` |
+| `has_subitems` | Filter items with (`true`) or without (`false`) children | `has_subitems=true` |
+| `language` | Filter by language code | `language=it` |
+| `review_state` | Filter by workflow state | `review_state=published` |
+| `sort_on` | Sort field: `title`, `portal_type`, `path`, `deletion_date`, `review_state` | `sort_on=title` |
+| `sort_order` | Sort direction: `ascending` or `descending` (default) | `sort_order=ascending` |
 
 ### Batching
 
-The API supports standard Plone REST API batching parameters:
-
-- `b_start`: Starting position for batch
-- `b_size`: Number of items per batch
+The API supports standard Plone REST API batching parameters (`b_start`, `b_size`).
 
 #### Example with filtering and sorting
 
@@ -67,7 +61,8 @@ The API supports standard Plone REST API batching parameters:
 
 ## Get individual item from recycle bin
 
-To retrieve detailed information about a specific item in the recycle bin, send a GET request to `@recyclebin/{item_id}`:
+To retrieve detailed information about a specific item in the recycle bin, including its sub-items, send a `GET` request to `@recyclebin/{item_id}`.
+The response includes a paginated `items` list with all flattened descendants. Standard batching parameters (`b_start`, `b_size`) are supported.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -80,7 +75,7 @@ To retrieve detailed information about a specific item in the recycle bin, send 
 
 ## Restore an item from the recycle bin
 
-An item can be restored from the recycle bin by issuing a `POST` to the given URL:
+An item can be restored to its original location by issuing a `POST` to `@recyclebin/{item_id}/restore`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -91,9 +86,9 @@ An item can be restored from the recycle bin by issuing a `POST` to the given UR
 :language: http
 ```
 
-### Restore to specific target location
+### Restore to a specific location
 
-You can specify a target path to restore the item to a different location than its original:
+Pass a `target_path` in the request body to restore the item to a different folder:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -106,7 +101,7 @@ You can specify a target path to restore the item to a different location than i
 
 ## Purge a specific item from the recycle bin
 
-To permanently delete a specific item from the recycle bin, send a DELETE request to the `@recyclebin/{item_id}` endpoint:
+To permanently delete a specific item, send a `DELETE` request to `@recyclebin/{item_id}`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -119,7 +114,7 @@ To permanently delete a specific item from the recycle bin, send a DELETE reques
 
 ## Empty the entire recycle bin
 
-To permanently delete all items from the recycle bin, send a DELETE request to the `@recyclebin` endpoint:
+To permanently delete all items, send a `DELETE` request to `@recyclebin`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
