@@ -7,9 +7,9 @@ myst:
     "keywords": "Plone, plone.restapi, REST, API, Recycle Bin"
 ---
 
-# Recycle Bin
+# Recycle bin
 
-The Recycle Bin REST API provides endpoints to interact with the Plone Recycle Bin functionality.
+Plone's recycle bin functionality is managed through the `@recyclebin` endpoint.
 
 Reading or writing recycle bin data requires the `cmf.ManagePortal` permission.
 

@@ -38,3 +38,21 @@ class TestBlocksVisitor(unittest.TestCase):
             visited.append(block["@id"])
         # depth-first traversal
         self.assertEqual(visited, ["block2", "block1"])
+
+    def test_visit_blocks_in_plate_value(self):
+        visited = []
+        blocks = {
+            "__somersault__": {
+                "@type": "__somersault__",
+                "value": [
+                    {
+                        "type": "p",
+                        "children": [{"@type": "image"}],
+                    }
+                ],
+            }
+        }
+        for block in visit_blocks(self.doc, blocks):
+            visited.append(block["@type"])
+        # depth-first traversal
+        self.assertEqual(visited, ["image", "__somersault__"])

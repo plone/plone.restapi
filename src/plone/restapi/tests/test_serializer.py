@@ -396,7 +396,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertIn("UID", items[1])
         self.assertEqual(items[1]["id"], self.portal.doc2.getId())
 
-    def test_serialize_to_json_collection_include_items(self):
+    def test_serialize_to_json_collection_include_items_if_param_is_truthy(self):
         self.portal.invokeFactory("Collection", id="collection1")
         self.portal.collection1.title = "My Collection"
         self.portal.collection1.description = "This is a collection with two documents"
@@ -418,19 +418,70 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             "Collection", self.serialize(self.portal.collection1).get("@type")
         )
 
-        self.request.form["include_items"] = False
-        without_items = self.serialize(self.portal.collection1)
-        self.assertFalse("items" in without_items)
-        self.assertFalse("items_total" in without_items)
+        for value in (True, "true", "True", 1, "1", "yes", "on", "t"):
+            self.request.form["include_items"] = value
+            serialized = self.serialize(self.portal.collection1)
+            items = serialized.get("items")
+            self.assertEqual(
+                sorted([item["title"] for item in items]),
+                [self.portal.doc1.Title(), self.portal.doc2.Title()],
+            )
+            self.assertEqual(serialized.get("items_total"), 2)
 
-        self.request.form["include_items"] = True
-        serialized = self.serialize(self.portal.collection1)
-        items = serialized.get("items")
+    def test_serialize_to_json_collection_do_not_include_items_if_param_is_falsy(self):
+        self.portal.invokeFactory("Collection", id="collection1")
+        self.portal.collection1.title = "My Collection"
+        self.portal.collection1.description = "This is a collection with two documents"
+        self.portal.collection1.query = [
+            {
+                "i": "portal_type",
+                "o": "plone.app.querystring.operation.string.is",
+                "v": "Document",
+            }
+        ]
+        self.portal.invokeFactory("Document", id="doc2", title="Document 2")
+        self.portal.doc1.reindexObject()
+        self.portal.doc2.reindexObject()
+
         self.assertEqual(
-            sorted([item["title"] for item in items]),
-            [self.portal.doc1.Title(), self.portal.doc2.Title()],
+            "Collection", self.serialize(self.portal.collection1).get("@type")
         )
-        self.assertEqual(serialized.get("items_total"), 2)
+        self.assertEqual(
+            "Collection", self.serialize(self.portal.collection1).get("@type")
+        )
+
+        for value in (False, "false", "False", 0, "0", "no", "off", "f"):
+            self.request.form["include_items"] = value
+            without_items = self.serialize(self.portal.collection1)
+            self.assertFalse("items" in without_items)
+            self.assertFalse("items_total" in without_items)
+
+    def test_serialize_to_json_collection_include_items_return_error_when_passing_invalid_boolean_value(
+        self,
+    ):
+        self.portal.invokeFactory("Collection", id="collection1")
+        self.portal.collection1.title = "My Collection"
+        self.portal.collection1.description = "This is a collection with two documents"
+        self.portal.collection1.query = [
+            {
+                "i": "portal_type",
+                "o": "plone.app.querystring.operation.string.is",
+                "v": "Document",
+            }
+        ]
+        self.portal.invokeFactory("Document", id="doc2", title="Document 2")
+        self.portal.doc1.reindexObject()
+        self.portal.doc2.reindexObject()
+
+        self.request.form["include_items"] = "foo"
+        with self.assertRaises(ValueError) as cm:
+            self.serialize(self.portal.collection1)
+        self.assertEqual("Could not parse value 'foo' as boolean", str(cm.exception))
+
+        self.request.form["include_items"] = 2
+        with self.assertRaises(ValueError) as cm:
+            self.serialize(self.portal.collection1)
+        self.assertEqual("Could not parse value 2 as boolean", str(cm.exception))
 
     def test_serialize_returns_site_root_common(self):
         self.assertIn("title", self.serialize(self.portal))
