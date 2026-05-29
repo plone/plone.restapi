@@ -1,3 +1,4 @@
+from datetime import datetime
 from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
@@ -102,7 +103,7 @@ class DefaultJSONSummarySerializer:
                 summary[field] = None
                 continue
             summary[field] = json_compatible(value)
-            if field in ("start", "end"):
+            if field in ("start", "end") and isinstance(value, datetime):
                 summary[f"{field}_timezone"] = get_timezone_name(value)
         return summary
 
