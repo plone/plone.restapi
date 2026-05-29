@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timezone
 from plone.app.discussion.browser.comment import EditCommentForm
 from plone.app.discussion.browser.comments import CommentForm
 from plone.app.discussion.interfaces import IConversation
@@ -129,7 +130,7 @@ class CommentsUpdate(Service):
         if errors:
             raise BadRequest({"errors": [err.error for err in errors]})
 
-        comment.modification_date = datetime.utcnow()
+        comment.modification_date = datetime.now(timezone.utc)
         form.handleComment(form=form, action=action)
 
         fix_location_header(self.context, self.request)
