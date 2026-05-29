@@ -808,8 +808,8 @@ class TestDXContentSerializer(unittest.TestCase):
         self.portal.invokeFactory(
             "Event",
             id="event1",
-            start=datetime(2026, 5, 29, 0, tzinfo=tz),
-            end=datetime(2026, 5, 29, 1, tzinfo=tz),
+            start=tz.localize(datetime(2026, 5, 29, 0)),
+            end=tz.localize(datetime(2026, 5, 29, 1)),
         )
         event = self.portal.event1
         obj = self.serialize(event)

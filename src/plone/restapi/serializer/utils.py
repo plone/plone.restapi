@@ -2,6 +2,7 @@ from datetime import datetime
 from plone.app.uuid.utils import uuidToCatalogBrain
 from plone.dexterity.schema import lookup_fti
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
+from typing import Optional
 from typing import Union
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
@@ -65,7 +66,9 @@ def get_portal_type_title(portal_type):
     return getattr(fti, "Title", lambda: portal_type)()
 
 
-def get_timezone_name(dt: datetime) -> Union[str, None]:
+def get_timezone_name(dt: Optional[datetime]) -> Union[str, None]:
+    if dt is None:
+        return None
     tzinfo = dt.tzinfo
     if isinstance(tzinfo, ZoneInfo):
         return tzinfo.key
