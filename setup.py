@@ -72,7 +72,6 @@ setup(
         "packaging",
         "python-dateutil",
         "plone.api",
-        "plone.app.layout",
         "plone.rest",  # json renderer moved to plone.restapi
         "plone.schema>=1.2.1",  # new/fixed json field
         "Products.CMFCore",

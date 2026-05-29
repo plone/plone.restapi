@@ -1,10 +1,10 @@
 from datetime import datetime
 from datetime import timezone
 from DateTime import DateTime
-from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.dexterity.content import DexterityContent
 from plone.locking.lockable import TTWLockable
 from plone.restapi.serializer.working_copy import WorkingCopyInfo
+from plone.restapi.services.history.get import ContentHistory
 from Products.CMFCore.WorkflowTool import _marker
 from Products.CMFCore.WorkflowTool import WorkflowTool
 
@@ -16,7 +16,7 @@ except ImportError:
 
 _originals = {
     "WorkflowTool.getInfoFor": WorkflowTool.getInfoFor,
-    "ContentHistoryViewlet.fullHistory": ContentHistoryViewlet.fullHistory,
+    "ContentHistory.fullHistory": ContentHistory.fullHistory,
     "TTWLockable.lock_info": TTWLockable.lock_info,
     "WorkingCopyInfo.created": WorkingCopyInfo.created,
 }
@@ -58,7 +58,7 @@ class StaticTime:
     - WorkflowTool.getInfoFor
         - (if asked for 'review_history')
 
-    - ContentHistoryViewlet
+    - ContentHistory
         - fullHistory
 
     - TTWLockable
@@ -128,9 +128,7 @@ class StaticTime:
 
         WorkflowTool.getInfoFor = static_get_info_for_factory(self.static_modified)
 
-        ContentHistoryViewlet.fullHistory = static_full_history_factory(
-            self.static_modified
-        )
+        ContentHistory.fullHistory = static_full_history_factory(self.static_modified)
 
         TTWLockable.lock_info = static_lock_info_factory(self.static_modified)
 
@@ -139,9 +137,7 @@ class StaticTime:
     def stop(self):
         """Undo all the patches."""
         TTWLockable.lock_info = _originals["TTWLockable.lock_info"]
-        ContentHistoryViewlet.fullHistory = _originals[
-            "ContentHistoryViewlet.fullHistory"
-        ]
+        ContentHistory.fullHistory = _originals["ContentHistory.fullHistory"]
         WorkflowTool.getInfoFor = _originals["WorkflowTool.getInfoFor"]
 
         if Comment is not None:
@@ -179,7 +175,7 @@ def static_get_info_for_factory(dt_value):
         if name == "review_history":
             base_date = dt_value
 
-            # The ContentHistoryViewlet.fullHistory method assembles results
+            # The ContentHistory.fullHistory method assembles results
             # from both the review_history (i.e., this method's result) and
             # the revision history, and intertwines their elements in
             # chronological order. That doesn't work if we already return
@@ -207,7 +203,7 @@ def static_get_info_for_factory(dt_value):
 
 
 def static_full_history_factory(dt_value):
-    """Returns a static time replacement for ContentHistoryViewlet.fullHistory
+    """Returns a static time replacement for ContentHistory.fullHistory
     configured with the given datetime value as a base.
     """
     if isinstance(dt_value, datetime):
@@ -225,7 +221,7 @@ def static_full_history_factory(dt_value):
         In other words, they will be stable (static), but different for each
         event, and should still reflect proper order of events.
         """
-        actions = _originals["ContentHistoryViewlet.fullHistory"](self)
+        actions = _originals["ContentHistory.fullHistory"](self)
 
         base_date = dt_value
         for idx, action in enumerate(actions):
