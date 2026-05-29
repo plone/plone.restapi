@@ -38,6 +38,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 
 import json
 import unittest
+import zoneinfo
 
 HAS_PLONE_6 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
@@ -801,6 +802,19 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = self.serialize(self.portal)
         self.assertIn("layout", obj)
         self.assertEqual(current_layout, obj["layout"])
+
+    def test_serializer_includes_event_timezones(self):
+        tz = zoneinfo.ZoneInfo("America/Los_Angeles")
+        self.portal.invokeFactory(
+            "Event",
+            id="event1",
+            start=datetime(2026, 5, 29, 0, tzinfo=tz),
+            end=datetime(2026, 5, 29, 1, tzinfo=tz),
+        )
+        event = self.portal.event1
+        obj = self.serialize(event)
+        self.assertEqual(obj["start_timezone"], "America/Los_Angeles")
+        self.assertEqual(obj["end_timezone"], "America/Los_Angeles")
 
 
 class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
