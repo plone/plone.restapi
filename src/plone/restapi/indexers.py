@@ -81,7 +81,6 @@ class PlateTextIndexer:
         for subblock in visit_subblocks(self.context, block):
             texts.append(extract_text(subblock, self.context, self.request))
         result = text_strip(texts)
-        print(result)
         return result
 
     def extract_plate_text(self, value) -> str:
