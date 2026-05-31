@@ -97,6 +97,8 @@ class SearchHandler:
                 return []
 
         self._constrain_query_by_path(query)
+        # Temporary workaround/proof in plone.restapi.search.handler
+        query.pop("metadata_fields", None)
         query = self._parse_query(query)
 
         lazy_resultset = self.catalog.searchResults(**query)
