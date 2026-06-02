@@ -22,14 +22,25 @@ Basic Python data types that have a corresponding type in JSON, such as integers
 ## Dates and Times
 
 Since JSON does not have native support for dates and times, the Python and Zope `datetime` types will be serialized to an ISO 8601 date string.
+Timezone-aware values are converted to UTC.
 
-| Python                               | JSON                    |
-| ------------------------------------ | ----------------------- |
-| `time(19, 45, 55)`                   | `"19:45:55"`            |
-| `date(2015, 11, 23)`                 | `"2015-11-23"`          |
-| `datetime(2015, 11, 23, 19, 45, 55)` | `"2015-11-23T19:45:55"` |
-| `DateTime("2015/11/23 19:45:55")`    | `"2015-11-23T19:45:55"` |
+| Python                                                             | JSON                          |
+| ------------------------------------------------------------------ | ----------------------------- |
+| `time(19, 45, 55)`                                                 | `"19:45:55"`                  |
+| `date(2015, 11, 23)`                                               | `"2015-11-23"`                |
+| `datetime(2015, 11, 23, 19, 45, 55)`                               | `"2015-11-23T19:45:55"`       |
+| `datetime(2015, 11, 23, 19, 45, tzinfo=ZoneInfo("Europe/Vienna"))` | `"2015-11-23T17:45:00+00:00"` |
+| `DateTime("2015/11/23 19:45:55 UTC")`                              | `"2015-11-23T19:45:55+00:00"` |
 
+Event types additionally expose `start_timezone` and `end_timezone` fields.
+The `start` and `end` datetime values are still serialized and deserialized as UTC values with an offset of `+00:00`, but `start_timezone` and `end_timezone` allow the client (or plone.restapi) to convert the datetime values to the requested timezone.
+
+| field name       | Python                                                           | JSON                          |
+| ---------------- | ---------------------------------------------------------------- | ----------------------------- |
+| `start`          | `datetime(2026, 5, 26, 10, 0, tzinfo=ZoneInfo("Europe/Vienna"))` | `"2026-05-26T08:00:00+00:00"` |
+| `start_timezone` | `"Europe/Vienna"`                                                | `"Europe/Vienna"`             |
+| `end`            | `datetime(2026, 5, 31, 10, 0, tzinfo=ZoneInfo("Europe/Vienna"))` | `"2026-05-31T08:00:00+00:00"` |
+| `end_timezone`   | `"Europe/Vienna"`                                                | `"Europe/Vienna"`             |
 
 ## Decimal Type
 
