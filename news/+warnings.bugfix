@@ -1,1 +1,0 @@
-Fix warnings about `utcnow` and a short HMAC secret in tests. @davisagli
