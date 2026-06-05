@@ -9,6 +9,16 @@
 
 <!-- towncrier release notes start -->
 
+## 9.15.6 (2026-06-05)
+
+
+### Bug fixes:
+
+- Security: in rich text fields, do not accept input that claims it is already sanitized.
+  Specifically, raise a ValueError when deserializing a text field with input mimetype `text/x-html-safe`.
+  See https://github.com/plone/plone.restapi/security/advisories/GHSA-8rqh-vxpr-x77p
+  @gyst, @mauritsvanrees 
+
 ## 9.15.5 (2026-05-21)
 
 
