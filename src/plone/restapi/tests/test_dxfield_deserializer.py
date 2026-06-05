@@ -316,6 +316,23 @@ class TestDXFieldDeserializer(unittest.TestCase):
         )
         self.assertEqual("latin1", value.encoding)
 
+    def test_richtext_deserialization_rejects_spoofed_safe_mime_type(self):
+        # Defense-in-depth: a client must not be able to claim its payload
+        # is already sanitized by setting the content-type to safe html.
+        from plone.app.textfield import RichText
+
+        field = RichText()
+        deserializer = getMultiAdapter(
+            (field, self.portal.doc1, self.request), IFieldDeserializer
+        )
+        with self.assertRaises(ValueError):
+            deserializer(
+                {
+                    "data": "<img src=x onerror=alert(1)>",
+                    "content-type": "text/x-html-safe",
+                }
+            )
+
     def test_richtext_deserialization_fix_apostrophe(self):
         value = self.deserialize("test_richtext_field", "<p>char with &#x27;</p>")
         self.assertEqual("<p>char with '</p>", value.raw)
