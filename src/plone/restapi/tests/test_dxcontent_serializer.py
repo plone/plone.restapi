@@ -813,8 +813,8 @@ class TestDXContentSerializer(unittest.TestCase):
         )
         event = self.portal.event1
         obj = self.serialize(event)
-        self.assertEqual(obj["start_timezone"], "America/Los_Angeles")
-        self.assertEqual(obj["end_timezone"], "America/Los_Angeles")
+        self.assertEqual(obj["start.timezone"], "America/Los_Angeles")
+        self.assertEqual(obj["end.timezone"], "America/Los_Angeles")
 
 
 class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):

@@ -116,8 +116,8 @@ class DefaultJSONSummarySerializer:
                 summary[field] = None
                 continue
             summary[field] = json_compatible(value)
-            if field in ("start", "end") and isinstance(value, datetime):
-                summary[f"{field}_timezone"] = get_timezone_name(value)
+            if isinstance(value, datetime):
+                summary[f"{field}.timezone"] = get_timezone_name(value)
         return summary
 
     def metadata_fields(self):

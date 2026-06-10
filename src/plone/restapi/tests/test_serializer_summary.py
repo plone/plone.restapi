@@ -247,9 +247,9 @@ class TestSummarySerializers(unittest.TestCase):
         self.assertLessEqual(
             {
                 "start": "2026-05-29T07:00:00+00:00",
-                "start_timezone": "America/Los_Angeles",
+                "start.timezone": "America/Los_Angeles",
                 "end": "2026-05-29T08:00:00+00:00",
-                "end_timezone": "America/Los_Angeles",
+                "end.timezone": "America/Los_Angeles",
             }.items(),
             summary.items(),
         )

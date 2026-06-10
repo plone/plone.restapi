@@ -129,10 +129,9 @@ class DeserializeFromJson(OrderingMixin):
                     if deserializer is None:
                         continue
 
-                    if name == "start" and "start_timezone" in data:
-                        deserializer.requested_timezone = data["start_timezone"]
-                    elif name == "end" and "end_timezone" in data:
-                        deserializer.requested_timezone = data["end_timezone"]
+                    requested_timezone = data.get(f"{name}.timezone")
+                    if requested_timezone is not None:
+                        deserializer.requested_timezone = requested_timezone
 
                     try:
                         value = deserializer(data[name])

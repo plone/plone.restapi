@@ -1,7 +1,7 @@
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from datetime import datetime
 from plone.app.contenttypes.interfaces import ILink
-from plone.app.event.dx.behaviors import IEventBasic
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
@@ -133,12 +133,11 @@ class SerializeToJson:
             schema_serializer = getMultiAdapter(
                 (schema, obj, self.request), ISchemaSerializer
             )
-            result.update(schema_serializer())
-
-        # Add event timezones
-        if IEventBasic.providedBy(self.context):
-            result["start_timezone"] = get_timezone_name(self.context.start)
-            result["end_timezone"] = get_timezone_name(self.context.end)
+            schema_data = schema_serializer()
+            for k, v in schema_data.items():
+                if isinstance(v, datetime):
+                    result[f"{k}.timezone"] = get_timezone_name(v)
+            result.update(schema_data)
 
         target_url = getMultiAdapter(
             (self.context, self.request), IObjectPrimaryFieldTarget

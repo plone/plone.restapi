@@ -32,15 +32,15 @@ Timezone-aware values are converted to UTC.
 | `datetime(2015, 11, 23, 19, 45, tzinfo=ZoneInfo("Europe/Vienna"))` | `"2015-11-23T17:45:00+00:00"` |
 | `DateTime("2015/11/23 19:45:55 UTC")`                              | `"2015-11-23T19:45:55+00:00"` |
 
-Event types additionally expose `start_timezone` and `end_timezone` fields.
-The `start` and `end` datetime values are still serialized and deserialized as UTC values with an offset of `+00:00`, but `start_timezone` and `end_timezone` allow the client (or plone.restapi) to convert the datetime values to the requested timezone.
+Event types additionally expose `start.timezone` and `end.timezone` fields.
+The `start` and `end` datetime values are still serialized and deserialized as UTC values with an offset of `+00:00`, but `start.timezone` and `end.timezone` allow the client (or plone.restapi) to convert the datetime values to the requested timezone.
 
 | field name       | Python                                                           | JSON                          |
 | ---------------- | ---------------------------------------------------------------- | ----------------------------- |
 | `start`          | `datetime(2026, 5, 26, 10, 0, tzinfo=ZoneInfo("Europe/Vienna"))` | `"2026-05-26T08:00:00+00:00"` |
-| `start_timezone` | `"Europe/Vienna"`                                                | `"Europe/Vienna"`             |
+| `start.timezone` | `"Europe/Vienna"`                                                | `"Europe/Vienna"`             |
 | `end`            | `datetime(2026, 5, 31, 10, 0, tzinfo=ZoneInfo("Europe/Vienna"))` | `"2026-05-31T08:00:00+00:00"` |
-| `end_timezone`   | `"Europe/Vienna"`                                                | `"Europe/Vienna"`             |
+| `end.timezone`   | `"Europe/Vienna"`                                                | `"Europe/Vienna"`             |
 
 ## Decimal Type
 
