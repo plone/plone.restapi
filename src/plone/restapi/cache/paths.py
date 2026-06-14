@@ -6,7 +6,6 @@ from z3c.caching.interfaces import IPurgePaths
 from zope.component import adapter
 from zope.interface import implementer
 
-
 CONTEXT_ENDPOINTS = [
     "/@actions",
     "/@breadcrumbs",

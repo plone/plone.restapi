@@ -12,7 +12,6 @@ from zope.schema.interfaces import IVocabularyFactory
 
 import transaction
 
-
 try:
     from Products.CMFPlone.relationhelper import rebuild_relations
 except ImportError:

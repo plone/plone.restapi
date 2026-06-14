@@ -8,7 +8,6 @@ from zope.interface import Interface
 
 import logging
 
-
 try:
     from ZTUtils.Lazy import Lazy
 except ImportError:

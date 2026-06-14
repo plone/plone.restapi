@@ -7,7 +7,6 @@ from zope.interface import alsoProvides
 import logging
 import plone.protect.interfaces
 
-
 log = logging.getLogger(__name__)
 
 

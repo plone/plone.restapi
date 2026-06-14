@@ -149,6 +149,12 @@ All of the following parameters are optional.
 
 To search for specific aliases, send a `GET` request to the `@aliases` endpoint with one or more of the above named parameters as shown in the following example.
 
+```{versionchanged} plone.restapi 10.0.0
+Since plone.restapi version 10.0.0, boolean parameters are validated more strictly.
+
+See {doc}`../usage/parameters` for details.
+```
+
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_filter.req

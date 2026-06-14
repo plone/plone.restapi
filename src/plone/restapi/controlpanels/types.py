@@ -1,3 +1,4 @@
+from plone.dexterity.interfaces import IDexterityFTI
 from plone.i18n.normalizer import idnormalizer
 from plone.restapi.controlpanels import RegistryConfigletPanel
 from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
@@ -7,6 +8,7 @@ from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
 from zExceptions import BadRequest
 from zope.component import adapter
+from zope.component import getAllUtilitiesRegisteredFor
 from zope.component import queryMultiAdapter
 from zope.interface import alsoProvides
 from zope.interface import implementer
@@ -21,6 +23,17 @@ import plone.protect.interfaces
 class DexterityTypesControlpanel(RegistryConfigletPanel):
     configlet_id = "dexterity-types"
     configlet_category_id = "plone-content"
+
+    def get_searchable_text(self):
+
+        text_parts = super().get_searchable_text()
+
+        ftis = getAllUtilitiesRegisteredFor(IDexterityFTI)
+        for fti in ftis:
+            if fti.Title():
+                text_parts.append(fti.Title())
+
+        return text_parts
 
     def add(self, names):
         data = json_body(self.request)

@@ -27,7 +27,6 @@ import json
 import os
 import time
 
-
 TUS_OPTIONS_RESPONSE_HEADERS = {
     "Tus-Resumable": "1.0.0",
     "Tus-Version": "1.0.0",

@@ -53,7 +53,6 @@ import re
 import transaction
 import unittest
 
-
 TUS_HEADERS = [
     "upload-offset",
     "upload-length",
@@ -758,7 +757,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("types_document_delete_fieldset", response)
 
     def test_documentation_jwt_login(self):
-        self.portal.acl_users.jwt_auth._secret = "secret"
+        self.portal.acl_users.jwt_auth._secret = "secret" * 2
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
         transaction.commit()
@@ -770,7 +769,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("jwt_login", response)
 
     def test_documentation_jwt_logged_in(self):
-        self.portal.acl_users.jwt_auth._secret = "secret"
+        self.portal.acl_users.jwt_auth._secret = "secret" * 2
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
         self.portal.acl_users.jwt_auth.store_tokens = True
@@ -787,7 +786,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("jwt_logged_in", response)
 
     def test_documentation_jwt_login_renew(self):
-        self.portal.acl_users.jwt_auth._secret = "secret"
+        self.portal.acl_users.jwt_auth._secret = "secret" * 2
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
         transaction.commit()
@@ -804,7 +803,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("jwt_login_renew", response)
 
     def test_documentation_jwt_logout(self):
-        self.portal.acl_users.jwt_auth._secret = "secret"
+        self.portal.acl_users.jwt_auth._secret = "secret" * 2
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
         self.portal.acl_users.jwt_auth.store_tokens = True
@@ -1043,6 +1042,25 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("@users", params={"search": "avram"})
         save_request_and_response_for_docs("users_searched", response)
 
+    def test_documentation_users_csv_format_get(self):
+        url = f"{self.portal.absolute_url()}/@users"
+        response = self.api_session.post(
+            url,
+            json={
+                "email": "noam.chomsky@example.com",
+                "username": "noamchomsky",
+                "fullname": "Noam Avram Chomsky",
+                "home_page": "web.mit.edu/chomsky",
+                "description": "Professor of Linguistics",
+                "location": "Cambridge, MA",
+                "roles": ["Contributor"],
+            },
+        )
+        self.api_session.headers.update({"Content-Type": "text/csv"})
+        self.api_session.headers.update({"Accept": "text/csv"})
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("users_get_csv_format", response)
+
     def test_documentation_users_created(self):
         response = self.api_session.post(
             "/@users",
@@ -1073,6 +1091,34 @@ class TestDocumentation(TestDocumentationBase):
             },
         )
         save_request_and_response_for_docs("users_add", response)
+
+    def test_documentation_users_csv_format_add(self):
+        url = f"{self.portal.absolute_url()}/@users"
+
+        content = b'username,email,fullname,description,roles,home_page,password\r\njdoe,jdoe@example.com,John Doe,Software developer from Berlin,"Member, Contributor",https://jdoe.dev,pass1234\nasmith,asmith@example.com,Alice Smith,Frontend engineer and designer,Member,https://alice.design,alicePwd!\r\nbwayne,bwayne@example.com,Bruce Wayne,Tech entrepreneur,,https://wayneenterprises.com,batman42\r\n'
+        csv_file = io.BytesIO(content)
+        csv_file.name = "users.csv"
+
+        # Setting a fixed boundary intentionally to make the producing .req and .resp files deterministic
+        boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+
+        # Manually construct the multipart body
+        body = (
+            f"--{boundary}\r\n"
+            f'Content-Disposition: form-data; name="file"; filename="{csv_file.name}"\r\n'
+            "Content-Type: text/csv\r\n\r\n"
+            f"{content.decode()}\r\n"
+            f"--{boundary}--\r\n"
+        )
+
+        headers = {
+            "Accept": "application/json",
+            "Authorization": "Basic YWRtaW46c2VjcmV0",
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
+        }
+
+        response = self.api_session.post(url, headers=headers, data=body)
+        save_request_and_response_for_docs("users_add_csv_format", response)
 
     def test_documentation_users_update(self):
         properties = {
@@ -1910,6 +1956,12 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
         with patch_addon_versions("1.2.3"):
             response = self.api_session.get("/@addons")
             save_request_and_response_for_docs("translated_messages_addons", response)
+
+    def test_documentation_vocabularies_get_sorted_by_title(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?sort_on=title"
+        )
+        save_request_and_response_for_docs("vocabularies_get_sorted_by_title", response)
 
 
 class TestCommenting(TestDocumentationBase):

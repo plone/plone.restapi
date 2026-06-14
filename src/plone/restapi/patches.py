@@ -7,7 +7,6 @@ from ZPublisher.HTTPRequest import ZopeFieldStorage
 
 import logging
 
-
 logger = logging.getLogger(__name__)
 _attr = "VALUE_LIMIT"
 _limit = getattr(ZopeFieldStorage, _attr, None)

@@ -30,7 +30,6 @@ from zope.schema.interfaces import ISource
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
-
 INDEXES = (
     ("test_int_field", "FieldIndex"),
     ("test_list_field", "KeywordIndex"),
@@ -299,6 +298,9 @@ class IDXTestDocumentSchema(model.Schema):
         return "DefaultFactory"
 
     test_default_factory_field = schema.TextLine(
+        required=True, defaultFactory=lambda: "DefaultFactory"
+    )
+    test_context_aware_default_factory_field = schema.TextLine(
         required=True, defaultFactory=default_factory
     )
 

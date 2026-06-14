@@ -21,7 +21,6 @@ from zope.schema.interfaces import IVocabularyFactory
 
 import plone.protect.interfaces
 
-
 MAX = 2500
 
 try:

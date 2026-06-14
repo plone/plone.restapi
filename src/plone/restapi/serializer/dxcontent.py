@@ -7,7 +7,7 @@ from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.bbb import base_hasattr
-from plone.restapi.deserializer import boolean_value
+from plone.restapi.bbb import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.interfaces import IPrimaryFieldTarget
@@ -31,7 +31,6 @@ from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
-
 
 try:
     # plone.app.iterate is by intend not part of Products.CMFPlone dependencies

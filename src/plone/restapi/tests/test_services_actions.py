@@ -12,7 +12,6 @@ from Products.CMFCore.ActionInformation import ActionCategory
 import transaction
 import unittest
 
-
 TEST_CATEGORY_ID = "testcategory"
 
 

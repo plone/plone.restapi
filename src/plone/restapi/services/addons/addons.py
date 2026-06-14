@@ -11,7 +11,6 @@ from zope.i18n import translate
 import logging
 import packaging.version
 
-
 try:
     from plone.base import PloneMessageFactory as _
 except ImportError:

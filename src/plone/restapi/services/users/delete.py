@@ -8,7 +8,6 @@ from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-
 FALSE_VALUES = (0, "0", False, "false", "no")
 
 

@@ -4,7 +4,6 @@ from zope.component import queryUtility
 
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 DEPRECATED_NEW_BEHAVIOR_NAME = "plone.restapi.behaviors.IBlocks"

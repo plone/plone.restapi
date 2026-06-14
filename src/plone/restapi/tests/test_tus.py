@@ -25,7 +25,6 @@ import tempfile
 import transaction
 import unittest
 
-
 UPLOAD_DATA = b"abcdefgh"
 UPLOAD_MIMETYPE = "text/plain"
 UPLOAD_FILENAME = "test.txt"

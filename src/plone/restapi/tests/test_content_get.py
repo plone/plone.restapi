@@ -179,6 +179,23 @@ class TestContentGet(unittest.TestCase):
             response.json()["relatedItems"],
         )
 
+    def test_get_content_related_items_returns_empty_list_when_related_deleted(self):
+        """When a related item is deleted, REST API should return [] not [null]."""
+        intids = getUtility(IIntIds)
+        self.portal.folder1.folder2.doc2.relatedItems = [
+            RelationValue(intids.getId(self.portal.folder1.doc1))
+        ]
+        transaction.commit()
+        self.portal.folder1.manage_delObjects(["doc1"])
+        transaction.commit()
+        response = requests.get(
+            self.portal.folder1.folder2.doc2.absolute_url() + "?fullobjects",
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json().get("relatedItems"), [])
+
 
 class TestBlocksContentGet(unittest.TestCase):
     layer = PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING

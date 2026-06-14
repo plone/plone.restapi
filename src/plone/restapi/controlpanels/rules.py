@@ -25,6 +25,21 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
     def publishTraverse(self, request, name):
         return self.context.restrictedTraverse("++rule++" + name)
 
+    def get_searchable_text(self):
+        text_parts = super().get_searchable_text()
+
+        cpanel = queryMultiAdapter(
+            (self.context, self.request), name="rules-controlpanel"
+        )
+        if cpanel:
+            registered_rules = cpanel.registeredRules()
+            for rule in registered_rules:
+                if isinstance(rule, dict):
+                    if rule.get("title"):
+                        text_parts.append(rule["title"])
+
+        return text_parts
+
     def add(self, names):
         data = json_body(self.request)
         rules = queryMultiAdapter((self.context, self.request), name="+rule")

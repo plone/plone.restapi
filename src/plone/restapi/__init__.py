@@ -8,7 +8,6 @@ from plone.restapi.pas import plugin
 from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin
 from zope.i18nmessageid import MessageFactory
 
-
 try:
     distribution("plone.app.multilingual")
     HAS_MULTILINGUAL = True

@@ -8,7 +8,6 @@ from zope.component.hooks import getSite
 
 import re
 
-
 PATH_RE = re.compile(r"^(.*?)((?=/@@|#).*)?$")
 
 

@@ -26,7 +26,6 @@ from zope.schema.interfaces import IVocabularyTokenized
 
 import logging
 
-
 log = logging.getLogger(__name__)
 
 

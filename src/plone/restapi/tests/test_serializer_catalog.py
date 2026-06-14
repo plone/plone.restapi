@@ -11,7 +11,6 @@ from zope.component import getMultiAdapter
 import packaging.version
 import unittest
 
-
 HAS_PLONE_6 = packaging.version.parse(
     distribution("Products.CMFPlone").version
 ) >= packaging.version.parse("6.0.0a1")

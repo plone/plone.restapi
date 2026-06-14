@@ -3,7 +3,6 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from transaction import commit
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 
@@ -44,8 +43,6 @@ class TestPublicationFields(unittest.TestCase):
 
         self.app = self.layer["app"]
         self.portal = self.layer["portal"]
-
-        commit()
 
     def tearDown(self):
         os.environ["TZ"] = "UTC"

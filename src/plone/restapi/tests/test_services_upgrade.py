@@ -8,7 +8,6 @@ from Products.CMFPlone.factory import _DEFAULT_PROFILE
 import transaction
 import unittest
 
-
 # Python 3 is only supported on 5.2+.
 # This means you can not upgrade from 5.1 or earlier.
 START_VERSION = "5200"

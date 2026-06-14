@@ -20,7 +20,6 @@ import Missing
 import pytz
 import unittest
 
-
 try:
     from plone.app.event.adapters import OccurrenceContentListingObject
 except ImportError:

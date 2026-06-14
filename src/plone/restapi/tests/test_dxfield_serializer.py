@@ -24,7 +24,6 @@ from zope.interface.verify import verifyClass
 
 import os
 
-
 HAS_PLONE_6 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
 )
