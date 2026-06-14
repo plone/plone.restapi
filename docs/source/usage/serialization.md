@@ -131,24 +131,24 @@ Content-Type: application/json
 
 {
   "@type": "File",
-  "title": "My file",
+  "title": "Hello, Plone",
   "file": {
-    "data": "attachment_002",
+    "data": "attachment_001"
   },
   "leadimage": {
-    "data": "attachment_001",
+    "data": "attachment_002"
   }
 }
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="attachment_001"; filename="profile.jpg"
-Content-Type: image/jpeg
+Content-Disposition: form-data; name="attachment_001"; filename="hello_plone.odt"
+Content-Type: application/vnd.oasis.opendocument.text
 
-[Binary data of the JPEG file]
+[Binary data of hello_plone.odt]
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="atttachment_02"; filename="docuument.docx"
-Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+Content-Disposition: form-data; name="attachment_002"; filename="logo.svg"
+Content-Type: image/svg+xml
 
-[Binary data of the Word document]
+[Binary data of logo.svg]
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ```
 
