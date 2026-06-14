@@ -1,3 +1,4 @@
+from importlib.metadata import distribution
 from OFS.interfaces import IObjectWillBeAddedEvent
 from plone.app.testing import login
 from plone.app.testing import setRoles
@@ -15,10 +16,15 @@ from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 import json
+import packaging.version
 import requests
 import transaction
 import unittest
 import uuid
+
+HAS_PLONE_62 = packaging.version.parse(
+    distribution("Products.CMFPlone").version
+) >= packaging.version.parse("6.2.0a1")
 
 
 class TestContentPatch(unittest.TestCase):
@@ -199,6 +205,7 @@ class TestContentPatch(unittest.TestCase):
         transaction.begin()
         self.assertEqual("<p>example with '</p>", self.portal.doc1.text.raw)
 
+    @unittest.skipUnless(HAS_PLONE_62, "Multipart PATCH requires Plone >= 6.2")
     def test_patch_file_with_multipart(self):
         response = requests.post(
             f"{self.portal.absolute_url()}/++api++",
