@@ -57,10 +57,6 @@ repos:
 #  _your own configuration lines_
 #  """
 ##
--   repo: https://github.com/mgedmin/check-manifest
-    rev: "0.51"
-    hooks:
-    -   id: check-manifest
 -   repo: https://github.com/regebro/pyroma
     rev: "5.0.1"
     hooks:

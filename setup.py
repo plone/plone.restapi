@@ -3,7 +3,7 @@ from setuptools import setup
 import pathlib
 import sys
 
-version = "10.0.0rc2.dev0"
+version = "10.0.2.dev0"
 
 if getattr(sys.version_info, "major") == 2:
     raise ValueError(
@@ -27,8 +27,8 @@ TEST_REQUIRES = [
     "plone.app.multilingual",
     "plone.app.testing",
     "plone.app.upgrade",
-    "plone.api",
     "plone.rest>=3.0.1",
+    "plone.testing",
     "requests",
 ]
 
@@ -71,11 +71,15 @@ setup(
     install_requires=[
         "packaging",
         "python-dateutil",
+        "plone.api",
+        "plone.app.layout",
         "plone.rest",  # json renderer moved to plone.restapi
         "plone.schema>=1.2.1",  # new/fixed json field
+        "Products.CMFCore",
         "Products.CMFPlone>=5.2",
         "PyJWT>=1.7.0",
         "pytz",
+        "Zope",
     ],
     extras_require={"test": TEST_REQUIRES},
     entry_points="""
