@@ -2,6 +2,7 @@ from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from io import BytesIO
 from OFS.Image import Image
+from plone.registry.interfaces import IRegistry
 from plone.restapi import _
 from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.permissions import PloneManageUsers
@@ -12,7 +13,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import set_own_login_name
 from Products.PlonePAS.tools.membership import default_portrait
 from Products.PlonePAS.utils import scale_image
-from zope.component import getAdapter
+from zope.component import getUtility
 from zope.component.hooks import getSite
 from zope.i18n import translate
 from zope.interface import alsoProvides
@@ -80,7 +81,8 @@ class UsersPatch(Service):
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
-        security = getAdapter(self.context, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security = registry.forInterface(ISecuritySchema, prefix="plone")
 
         if self.can_manage_users:
             current_roles = user.getRoles()
