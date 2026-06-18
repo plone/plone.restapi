@@ -46,7 +46,9 @@ class ITaggedValuesSchema(model.Schema):
 
     parametrized_widget_field = schema.TextLine(title="Parametrized widget field")
     form.widget(
-        "parametrized_widget_field", a_param="some_value", defaultFactory=lambda: "Foo"
+        "parametrized_widget_field",
+        a_param="some_value",
+        defaultFactory=lambda: "Foo",
     )
 
     not_parametrized_widget_field = schema.TextLine(
@@ -459,7 +461,11 @@ class TestJsonSchemaProviders(TestCase):
 
     def test_int(self):
         field = schema.Int(
-            title="My field", description="My great field", min=0, max=100, default=50
+            title="My field",
+            description="My great field",
+            min=0,
+            max=100,
+            default=50,
         )
         adapter = getMultiAdapter(
             (field, self.portal, self.request), IJsonSchemaProvider
@@ -742,9 +748,33 @@ class TestJsonSchemaProviders(TestCase):
             adapter.get_schema(),
         )
 
+    def test_richtext_with_default(self):
+        field = RichText(
+            title="My field",
+            description="My great field",
+            default="<p>Some default value</p>",
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": "My field",
+                "factory": "Rich Text",
+                "description": "My great field",
+                "widget": "richtext",
+                "default": "<p>Some default value</p>",
+            },
+            adapter.get_schema(),
+        )
+
     def test_date(self):
         field = schema.Date(
-            title="My field", description="My great field", default=date(2016, 1, 1)
+            title="My field",
+            description="My great field",
+            default=date(2016, 1, 1),
         )
         adapter = getMultiAdapter(
             (field, self.portal, self.request), IJsonSchemaProvider
@@ -781,7 +811,9 @@ class TestJsonSchemaProviders(TestCase):
 
     def test_jsonfield(self):
         field = JSONField(
-            title="My field", description="My great field", widget="my_widget_name"
+            title="My field",
+            description="My great field",
+            widget="my_widget_name",
         )
         adapter = getMultiAdapter(
             (field, self.portal, self.request), IJsonSchemaProvider
