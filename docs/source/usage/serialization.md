@@ -109,6 +109,49 @@ Image URLs are created using the UID-based URL that changes each time the image 
 }
 ```
 
+### Upload using multipart/form-data
+
+It's possible to upload a file or image using multipart/form-data in a POST or PATCH request.
+In the form, the field data must be present and should contain the JSON data for the REST API request.
+Other binary files are referenced by an ID in the data attribute of the corresponding file or image field.
+
+```{note}
+Multipart PATCH requests require Zope >= 6 (Plone >= 6.2).
+```
+
+Example:
+
+```
+POST /++api++/folder1 HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="data"
+Content-Type: application/json
+
+{
+  "@type": "File",
+  "title": "Hello, Plone",
+  "file": {
+    "data": "attachment_001"
+  },
+  "leadimage": {
+    "data": "attachment_002"
+  }
+}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="attachment_001"; filename="hello_plone.odt"
+Content-Type: application/vnd.oasis.opendocument.text
+
+[Binary data of hello_plone.odt]
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="attachment_002"; filename="logo.svg"
+Content-Type: image/svg+xml
+
+[Binary data of logo.svg]
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+```
+
 ### Upload (deserialization)
 
 For file or image fields, the client must provide the file's data as a mapping containing the file data and some additional metadata:

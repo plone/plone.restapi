@@ -15,7 +15,19 @@ def json_body(request):
     # Once we have fixed this, we can remove the temporary patches.py.
     # See there for background information.
     try:
-        data = json.loads(request.get("BODY") or "{}")
+        if request.method in ("POST", "PATCH", "PUT") and request.getHeader(
+            "content-type", ""
+        ).startswith("multipart/form-data"):
+            # multipart/form-data
+            # Not all multipart requests carry a JSON "data" field (e.g. CSV
+            # file uploads use a "file" field). Return an empty dict so callers
+            # like HypermediaBatch treat the request as having no JSON body.
+            if "data" not in request.form:
+                return {}
+            request.form["data"].seek(0)
+            data = json.load(request.form["data"])
+        else:
+            data = json.loads(request.get("BODY") or "{}")
     except ValueError:
         raise DeserializationError("No JSON object could be decoded")
     if not isinstance(data, dict):
