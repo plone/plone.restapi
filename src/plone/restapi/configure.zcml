@@ -95,6 +95,7 @@
       />
   <include package=".services" />
   <include package=".serializer" />
+  <include package=".renderer" />
   <include package=".deserializer" />
   <include package=".types" />
   <include package=".search" />
