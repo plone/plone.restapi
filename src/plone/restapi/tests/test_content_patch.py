@@ -20,7 +20,6 @@ import requests
 import transaction
 import unittest
 
-
 HAS_PLONE_62 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE62MARKER", False
 )
