@@ -1,0 +1,1 @@
+Make calls to time.tzset() in tests conditional on operating system. Windows does not support it.
