@@ -140,6 +140,16 @@ class DeserializeFromJson(OrderingMixin):
                         current_value = dm.get()
                         if value != current_value:
                             should_change = True
+                            if (
+                                getattr(value, "_hash", None) is not None
+                                and getattr(value, "_hash", None)
+                                == getattr(current_value, "_hash", None)
+                                and getattr(value, "filename", None)
+                                == getattr(current_value, "filename", None)
+                                and getattr(value, "contentType", None)
+                                == getattr(current_value, "contentType", None)
+                            ):
+                                should_change = False
                         elif create and dm.field.defaultFactory:
                             # During content creation we should set the value even if
                             # it is the same from the dm if the current_value was
