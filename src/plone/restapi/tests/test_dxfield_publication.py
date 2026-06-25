@@ -1,14 +1,13 @@
-from DateTime import DateTime
-from plone.registry.interfaces import IRegistry
-from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from zope.component import getMultiAdapter
-from zope.component import getUtility
-
 import os
 import time
 import unittest
+
+from DateTime import DateTime
+from plone.registry.interfaces import IRegistry
+from zope.component import getMultiAdapter, getUtility
+
+from plone.restapi.interfaces import IDeserializeFromJson, ISerializeToJson
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
 
 class TestPublicationFields(unittest.TestCase):
@@ -67,7 +66,9 @@ class TestPublicationFields(unittest.TestCase):
     def test_effective_date_deserialization_localized(self):
         self.portal.invokeFactory("Document", id="doc-test", title="Test Document")
         doc = self.portal["doc-test"]
-        deserializer = getMultiAdapter((self.portal["doc-test"], self.request), IDeserializeFromJson)
+        deserializer = getMultiAdapter(
+            (self.portal["doc-test"], self.request), IDeserializeFromJson
+        )
         deserializer(data={"effective": "2015-05-20T10:39:54.361+00"})
         self.assertEqual(str(doc.effective_date), "2015/05/20 12:39:00 Europe/Rome")
 
