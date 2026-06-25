@@ -1,13 +1,14 @@
+from DateTime import DateTime
+from plone.registry.interfaces import IRegistry
+from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from zope.component import getMultiAdapter
+from zope.component import getUtility
+
 import os
 import time
 import unittest
-
-from DateTime import DateTime
-from plone.registry.interfaces import IRegistry
-from zope.component import getMultiAdapter, getUtility
-
-from plone.restapi.interfaces import IDeserializeFromJson, ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
 
 class TestPublicationFields(unittest.TestCase):
