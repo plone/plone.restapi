@@ -1,39 +1,39 @@
 # pylint: disable=E1002
 # E1002: Use of super on an old style class
-import os
-import re
-import time
-from urllib.parse import urljoin, urlparse
-
-import collective.MockMailHost
-import requests
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
-from plone.app.i18n.locales.interfaces import IContentLanguages, IMetadataLanguages
-from plone.app.testing import (
-    SITE_OWNER_NAME,
-    SITE_OWNER_PASSWORD,
-    TEST_USER_ID,
-    FunctionalTesting,
-    IntegrationTesting,
-    PloneSandboxLayer,
-    applyProfile,
-    login,
-    quickInstallProduct,
-    setRoles,
-)
+from plone.app.i18n.locales.interfaces import IContentLanguages
+from plone.app.i18n.locales.interfaces import IMetadataLanguages
+from plone.app.testing import applyProfile
+from plone.app.testing import FunctionalTesting
+from plone.app.testing import IntegrationTesting
+from plone.app.testing import login
+from plone.app.testing import PloneSandboxLayer
+from plone.app.testing import quickInstallProduct
+from plone.app.testing import setRoles
+from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
 from plone.i18n.interfaces import ILanguageSchema
 from plone.registry.interfaces import IRegistry
+from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
+from plone.restapi.tests.helpers import add_catalog_indexes
 from plone.testing import zope
 from plone.testing.layer import Layer
 from plone.uuid.interfaces import IUUIDGenerator
 from Products.CMFCore.utils import getToolByName
 from requests.exceptions import ConnectionError
-from zope.component import getGlobalSiteManager, getUtility
+from urllib.parse import urljoin
+from urllib.parse import urlparse
+from zope.component import getGlobalSiteManager
+from zope.component import getUtility
 from zope.configuration import xmlconfig
 from zope.interface import implementer
 
-from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
-from plone.restapi.tests.helpers import add_catalog_indexes
+import collective.MockMailHost
+import os
+import re
+import requests
+import time
 
 try:
     from plone.app.caching.testing import PloneAppCachingBase
