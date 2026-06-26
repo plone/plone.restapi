@@ -1,0 +1,1 @@
+Subject field serializer return "additionalItems" flag based on what is set in Plone control panel. [cekk]
