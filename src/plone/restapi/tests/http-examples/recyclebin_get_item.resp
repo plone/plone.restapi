@@ -1,0 +1,23 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@recyclebin/ecf00e14-441d-4264-94de-6bbb9d0c66e7",
+    "@type": "Document",
+    "actions": {
+        "purge": "http://localhost:55001/plone/@recyclebin/ecf00e14-441d-4264-94de-6bbb9d0c66e7",
+        "restore": "http://localhost:55001/plone/@recyclebin/ecf00e14-441d-4264-94de-6bbb9d0c66e7/restore"
+    },
+    "deleted_by": "test_user_1_",
+    "deletion_date": "1995-07-31T17:30:00+00:00",
+    "has_children": false,
+    "id": "document1",
+    "items": [],
+    "items_total": 0,
+    "language": "",
+    "parent_path": "/plone",
+    "path": "/plone/document1",
+    "recycle_id": "ecf00e14-441d-4264-94de-6bbb9d0c66e7",
+    "review_state": "private",
+    "title": "My Document"
+}

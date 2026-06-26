@@ -34,6 +34,7 @@
   <include package=".querysources" />
   <include package=".querystring" />
   <include package=".querystringsearch" />
+  <include package=".recyclebin" />
   <include package=".registry" />
   <include package=".relations" />
   <include package=".roles" />
