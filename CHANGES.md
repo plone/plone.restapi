@@ -9,6 +9,19 @@
 
 <!-- towncrier release notes start -->
 
+## 10.0.2 (2026-06-26)
+
+
+### Bug fixes
+
+- Make the `@site` endpoint public, so that anonymous requests get the site bootstrap data even on sites that require authentication to view content. @reebalazs #2022
+
+
+### Internal
+
+- Replace `getAdapter(context, ISecuritySchema)` with `registry.forInterface(ISecuritySchema, prefix="plone")` in user services. @jensens #2011
+- Remove redundant and deprecated pull request preview build workflow. @stevepiercy 
+
 ## 10.0.1 (2026-06-05)
 
 
