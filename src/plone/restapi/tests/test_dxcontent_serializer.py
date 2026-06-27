@@ -37,6 +37,7 @@ from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import json
+import pytz
 import unittest
 
 HAS_PLONE_6 = getattr(
@@ -801,6 +802,19 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = self.serialize(self.portal)
         self.assertIn("layout", obj)
         self.assertEqual(current_layout, obj["layout"])
+
+    def test_serializer_includes_event_timezones(self):
+        tz = pytz.timezone("America/Los_Angeles")
+        self.portal.invokeFactory(
+            "Event",
+            id="event1",
+            start=tz.localize(datetime(2026, 5, 29, 0)),
+            end=tz.localize(datetime(2026, 5, 29, 1)),
+        )
+        event = self.portal.event1
+        obj = self.serialize(event)
+        self.assertEqual(obj["start_timezone"], "America/Los_Angeles")
+        self.assertEqual(obj["end_timezone"], "America/Los_Angeles")
 
 
 class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):

@@ -1,3 +1,4 @@
+from datetime import datetime
 from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
@@ -5,6 +6,7 @@ from plone.restapi.interfaces import IJSONSummarySerializerMetadata
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.utils import get_portal_type_title
+from plone.restapi.serializer.utils import get_timezone_name
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
 from zope.component import adapter
@@ -101,6 +103,8 @@ class DefaultJSONSummarySerializer:
                 summary[field] = None
                 continue
             summary[field] = json_compatible(value)
+            if field in ("start", "end") and isinstance(value, datetime):
+                summary[f"{field}_timezone"] = get_timezone_name(value)
         return summary
 
     def metadata_fields(self):

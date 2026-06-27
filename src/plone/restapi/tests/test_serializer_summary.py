@@ -216,6 +216,29 @@ class TestSummarySerializers(unittest.TestCase):
             summary,
         )
 
+    def test_event_brain_summary(self):
+        tz = pytz.timezone("America/Los_Angeles")
+        self.event1 = createContentInContainer(
+            self.portal,
+            "Event",
+            id="event1",
+            title="Test event",
+            start=tz.localize(datetime(2026, 5, 29, 0)),
+            end=tz.localize(datetime(2026, 5, 29, 1)),
+        )
+        brain = self.catalog(UID=self.event1.UID())[0]
+        self.request.form.update({"metadata_fields": "_all"})
+        summary = getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
+        self.assertLessEqual(
+            {
+                "start": "2026-05-29T07:00:00+00:00",
+                "start_timezone": "America/Los_Angeles",
+                "end": "2026-05-29T08:00:00+00:00",
+                "end_timezone": "America/Los_Angeles",
+            }.items(),
+            summary.items(),
+        )
+
 
 class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
