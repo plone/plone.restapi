@@ -12,7 +12,6 @@ import unittest
 
 
 class TestPublicationFields(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -22,7 +21,8 @@ class TestPublicationFields(unittest.TestCase):
 
         tz = "Europe/Rome"
         os.environ["TZ"] = tz
-        time.tzset()
+        if os.name != "nt":
+            time.tzset()
 
         # Patch DateTime's timezone for deterministic behavior.
         self.DT_orig_localZone = DateTime.localZone
@@ -46,7 +46,8 @@ class TestPublicationFields(unittest.TestCase):
 
     def tearDown(self):
         os.environ["TZ"] = "UTC"
-        time.tzset()
+        if os.name != "nt":
+            time.tzset()
 
         from DateTime import DateTime
 
