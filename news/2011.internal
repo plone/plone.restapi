@@ -1,1 +1,0 @@
-Replace `getAdapter(context, ISecuritySchema)` with `registry.forInterface(ISecuritySchema, prefix="plone")` in user services. @jensens

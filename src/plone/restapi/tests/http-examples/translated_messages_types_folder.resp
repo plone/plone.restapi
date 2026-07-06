@@ -138,6 +138,7 @@ Content-Type: application/json+schema
             "behavior": "plone.dublincore",
             "description": "Usado en listados de elementos y resultados de b\u00fasquedas.",
             "factory": "Text",
+            "maxLength": 10000,
             "title": "Descripci\u00f3n",
             "type": "string",
             "widget": "textarea"
@@ -251,6 +252,7 @@ Content-Type: application/json+schema
             "behavior": "plone.dublincore",
             "description": "",
             "factory": "Text line (String)",
+            "maxLength": 1024,
             "title": "T\u00edtulo",
             "type": "string"
         }
