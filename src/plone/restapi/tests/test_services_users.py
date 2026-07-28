@@ -13,6 +13,8 @@ from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
 from Products.MailHost.interfaces import IMailHost
+from unittest.mock import MagicMock
+from unittest.mock import patch
 from zope.component import getUtility
 
 import base64
@@ -31,6 +33,15 @@ class TestUnit(unittest.TestCase):
         self.assertEqual(extract("TEXT/PLAIN"), "text/plain")
         self.assertEqual(extract("text / plain"), "text/plain")
         self.assertEqual(extract(" text/plain ; charset=utf-8"), "text/plain")
+
+    def test_is_default_portrait_without_default_portrait(self):
+        """A missing default portrait must not raise, but report a mismatch."""
+        from plone.restapi.services.users import get as users_get
+
+        portal = MagicMock()
+        portal.restrictedTraverse.return_value = None
+        with patch.object(users_get, "getSite", return_value=portal):
+            self.assertFalse(users_get.isDefaultPortrait(MagicMock()))
 
 
 class TestUsersEndpoint(unittest.TestCase):
@@ -438,6 +449,20 @@ class TestUsersEndpoint(unittest.TestCase):
             transaction.commit()
 
         response = self.api_session.get("/@users/noam")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["portrait"].endswith("/@portrait/noam"))
+
+    def test_get_user_with_portrait_set_and_no_default_portrait(self):
+        from plone.restapi.services.users import get as users_get
+
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
+
+        with patch.object(users_get, "default_portrait", "no-such-default-portrait"):
+            response = self.api_session.get("/@users/noam")
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()["portrait"].endswith("/@portrait/noam"))
