@@ -1,0 +1,1 @@
+Add IJsonCompatible converter for IRichTextValue to handle nested RichText fields safely.
