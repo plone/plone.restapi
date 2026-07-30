@@ -4,6 +4,7 @@ from datetime import timedelta
 from DateTime import DateTime
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
+from plone.app.textfield.value import RichTextValue
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest import TestCase
@@ -218,3 +219,16 @@ class TestJsonCompatibleConverters(TestCase):
 
     def test_missing_value(self):
         self.assertEqual(None, json_compatible(Missing.Value))
+
+    def test_richtext_value_nested(self):
+        value = RichTextValue(
+            raw="<p>foo</p>", mimeType="text/html", outputMimeType="text/x-html-safe"
+        )
+        self.assertEqual(
+            {
+                "data": "<p>foo</p>",
+                "content-type": "text/html",
+                "encoding": "utf-8",
+            },
+            json_compatible({"foo": value})["foo"],
+        )

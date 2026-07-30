@@ -175,6 +175,16 @@ def timedelta_converter(value):
     return json_compatible(value.total_seconds())
 
 
+@adapter(IRichTextValue)
+@implementer(IJsonCompatible)
+def richtext_converter(value):
+    return {
+        "data": json_compatible(value.raw),
+        "content-type": json_compatible(value.mimeType),
+        "encoding": json_compatible(value.encoding),
+    }
+
+
 @adapter(IRichTextValue, IDexterityContent)
 @implementer(IContextawareJsonCompatible)
 class RichtextDXContextConverter:
