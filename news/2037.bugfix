@@ -1,0 +1,1 @@
+Fix schema serialization with Dict and List fields that don't specify a value_type/key_type. @erral 
