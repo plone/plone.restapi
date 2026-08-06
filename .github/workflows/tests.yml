@@ -24,12 +24,11 @@ jobs:
       # git checkout
       - uses: actions/checkout@v7
 
-      # Python setup
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+      - name: Install uv + caching
+        uses: astral-sh/setup-uv@v9.0.0
         with:
+          enable-cache: true
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
 
       # Run tests
       - name: Install dependencies

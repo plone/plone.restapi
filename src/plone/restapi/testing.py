@@ -77,7 +77,8 @@ class DateTimeFixture(Layer):
     def setUp(self):
         tz = "UTC"
         os.environ["TZ"] = tz
-        time.tzset()
+        if os.name != "nt":
+            time.tzset()
 
         # Patch DateTime's timezone for deterministic behavior.
         from DateTime import DateTime
@@ -95,7 +96,8 @@ class DateTimeFixture(Layer):
     def tearDown(self):
         if "TZ" in os.environ:
             del os.environ["TZ"]
-        time.tzset()
+        if os.name != "nt":
+            time.tzset()
 
         from DateTime import DateTime
 
