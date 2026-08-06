@@ -11,6 +11,7 @@ from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import IContextawareJsonCompatible
 from plone.restapi.interfaces import IJsonCompatible
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
@@ -177,16 +178,10 @@ def timedelta_converter(value):
 @adapter(IRichTextValue)
 @implementer(IJsonCompatible)
 def richtextvalue_converter(value):
+    # Use the context-aware converter with the site as the context
     context = getSite()
-    if context is not None:
-        adapter = queryMultiAdapter((value, context), IContextawareJsonCompatible)
-        if adapter:
-            return adapter()
-    return {
-        "data": json_compatible(value.output),
-        "content-type": json_compatible(value.mimeType),
-        "encoding": json_compatible(value.encoding),
-    }
+    adapter = getMultiAdapter((value, context), IContextawareJsonCompatible)
+    return adapter()
 
 
 @adapter(IRichTextValue, Interface)
