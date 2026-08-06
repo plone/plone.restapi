@@ -1,0 +1,2 @@
+Fix serialization of RichTextValue objects when an explicit context is not known.
+[erral]
