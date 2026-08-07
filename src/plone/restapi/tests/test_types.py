@@ -844,3 +844,48 @@ class TestJsonSchemaProviders(TestCase):
             },
             adapter.get_schema(),
         )
+
+    def test_dict_without_types(self):
+        field = schema.Dict(title="My field", description="My great field")
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+        self.assertEqual(
+            {
+                "type": "dict",
+                "title": "My field",
+                "description": "My great field",
+            },
+            adapter.get_schema(),
+        )
+
+    def test_list_without_value_type(self):
+        field = schema.List(title="My field", description="My great field")
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+        self.assertEqual(
+            {
+                "type": "array",
+                "title": "My field",
+                "description": "My great field",
+                "factory": "List",
+                "uniqueItems": False,
+                "additionalItems": True,
+                "items": {},
+            },
+            adapter.get_schema(),
+        )
+
+    def test_dict_with_generic_field_value_type(self):
+        field = schema.Dict(
+            title="Generic Dict", value_type=schema.Field(title="Generic Value")
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+        schema_data = adapter.get_schema()
+        # Should not crash, and value_type schema should omit 'type'
+        self.assertIn("value_type", schema_data)
+        self.assertNotIn("type", schema_data["value_type"]["schema"])
+        self.assertEqual("Generic Value", schema_data["value_type"]["schema"]["title"])
