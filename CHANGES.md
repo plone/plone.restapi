@@ -9,6 +9,17 @@
 
 <!-- towncrier release notes start -->
 
+## 10.0.3 (2026-08-21)
+
+
+### Bug fixes
+
+- Fix serialization of RichTextValue objects when an explicit context is not known.
+  [erral] #1583
+- Make calls to time.tzset() in tests conditional on operating system. Windows does not support it. @ewohnlich #2027
+- Fix an `AttributeError` in the `@users` endpoint when the site's default portrait cannot be traversed. `isDefaultPortrait` now reports a mismatch instead of raising. @ericof #2035
+- Fix schema serialization with Dict and List fields that don't specify a value_type/key_type. @erral #2037
+
 ## 10.0.2 (2026-06-26)
 
 

@@ -1,1 +1,0 @@
-Fix an `AttributeError` in the `@users` endpoint when the site's default portrait cannot be traversed. `isDefaultPortrait` now reports a mismatch instead of raising. @ericof
