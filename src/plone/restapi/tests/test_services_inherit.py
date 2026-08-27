@@ -180,7 +180,7 @@ class TestServiceInherit(unittest.TestCase):
             title="Restricted Child",
         )
         alsoProvides(restricted_parent, ITestBehaviorMarker)
-        api.content.transition(restricted_child, to_state='published')
+        api.content.transition(restricted_child, to_state="published")
         transaction.commit()
 
         logout()
