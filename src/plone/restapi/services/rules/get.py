@@ -23,9 +23,8 @@ class ContentRulesGet(Service):
         assignable_rules = manage_assignments.assignable_rules()
 
         return {
-            "content-rules": {
-                "acquired_rules": acquired_rules,
-                "assigned_rules": assigned_rules,
-                "assignable_rules": assignable_rules,
-            }
+            "@id": f"{self.context.absolute_url()}/@content-rules",
+            "acquired_rules": acquired_rules,
+            "assigned_rules": assigned_rules,
+            "assignable_rules": assignable_rules,
         }
