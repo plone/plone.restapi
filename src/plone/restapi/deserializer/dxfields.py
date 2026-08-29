@@ -256,6 +256,16 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
             content_type = value.get("content-type", content_type)
             filename = value.get("filename", filename)
             data = value.get("data", "")
+            if self.request.getHeader("content-type", "").startswith(
+                "multipart/form-data"
+            ):
+                data = self.request.form[data]
+                if not filename and data.filename:
+                    filename = data.filename
+                if content_type == "application/octet-stream" and data.headers.get(
+                    "Content-Type"
+                ):
+                    content_type = data.headers.get("Content-Type")
             if isinstance(data, str):
                 data = data.encode("utf-8")
             if "encoding" in value:
