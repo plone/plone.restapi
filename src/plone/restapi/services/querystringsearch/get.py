@@ -50,6 +50,37 @@ class QuerystringSearch:
         if not query:
             raise BadRequest("No query supplied")
 
+        # If this is accessed through a VHM the client does not know
+        # the complete physical path of an object. But the path index
+        # indexes the complete physical path. Complete the path.
+        vhm_physical_path = self.request.get("VirtualRootPhysicalPath")
+        if vhm_physical_path:
+            for criterion in query:
+                if criterion.get("i") == "path":
+                    v = criterion.get("v")
+                    if isinstance(v, str) and v.startswith("/"):
+                        path_parts = v.split("::", 1)
+                        path = path_parts[0].lstrip("/")
+                        full_path = "/".join(vhm_physical_path + (path,))
+                        if len(path_parts) > 1:
+                            criterion["v"] = f"{full_path}::{path_parts[1]}"
+                        else:
+                            criterion["v"] = full_path
+                    elif isinstance(v, list):
+                        new_v = []
+                        for p in v:
+                            if isinstance(p, str) and p.startswith("/"):
+                                path_parts = p.split("::", 1)
+                                path = path_parts[0].lstrip("/")
+                                full_path = "/".join(vhm_physical_path + (path,))
+                                if len(path_parts) > 1:
+                                    new_v.append(f"{full_path}::{path_parts[1]}")
+                                else:
+                                    new_v.append(full_path)
+                            else:
+                                new_v.append(p)
+                        criterion["v"] = new_v
+
         if sort_order:
             sort_order = "descending" if sort_order == "descending" else "ascending"
 

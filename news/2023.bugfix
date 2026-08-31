@@ -1,0 +1,1 @@
+Fix Virtual Host Monster (VHM) path resolution in @querystring-search endpoint.
