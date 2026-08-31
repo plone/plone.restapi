@@ -9,6 +9,20 @@
 
 <!-- towncrier release notes start -->
 
+## 9.15.7 (2026-08-31)
+
+
+### New features:
+
+- Add support for the `RESTAPI_ADDITIONAL_NON_METADATA_ATTRIBUTES` environment variable, a comma-separated list of extra attribute names appended to the summary serializer's `non_metadata_attributes`. 
+
+
+### Bug fixes:
+
+- Fix the security check when a wrong permission is specified.
+  @ale-rt #2041
+- Security: in summary serializer only allow access to metadata that is available in the catalog. 
+
 ## 9.15.6 (2026-06-05)
 
 
