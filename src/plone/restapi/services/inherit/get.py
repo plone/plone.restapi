@@ -37,7 +37,7 @@ class InheritedBehaviorExpander:
                         obj
                         for obj in self.context.aq_chain
                         if registration.marker.providedBy(obj)
-                        and _check_permission("View", self, obj)
+                        and _check_permission("zope2.View", self, obj)
                     ),
                     None,
                 )

@@ -19,7 +19,7 @@ jobs:
       matrix:
         include:
           - python-version: "3.13"
-            plone-version: "6.2"
+            plone-version: "6.1"
     steps:
       # git checkout
       - uses: actions/checkout@v5
