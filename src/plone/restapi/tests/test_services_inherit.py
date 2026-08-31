@@ -180,15 +180,27 @@ class TestServiceInherit(unittest.TestCase):
             title="Restricted Child",
         )
         alsoProvides(restricted_parent, ITestBehaviorMarker)
+        api.content.transition(restricted_child, to_state="published")
         transaction.commit()
 
         logout()
         anon_session = RelativeSession(self.portal.absolute_url())
         anon_session.headers.update({"Accept": "application/json"})
 
+        # Anonymous is allowed to view the child, as it is published.
+        url = f"{restricted_child.absolute_url()}"
+        response = anon_session.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        # Anonymous is also allowed to request an inherited behavior on the
+        # published child.
         url = f"{restricted_child.absolute_url()}/@inherit?expand.inherit.behaviors=plone.testbehavior.ITestBehavior"
         response = anon_session.get(url)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 200)
+
+        # But no data of the parent is exposed, as the parent is private.
+        data = response.json()
+        self.assertEqual(sorted(data.keys()), ["@id"])
 
     def test_inherit_expansion(self):
         response = self.api_session.get(
