@@ -9,6 +9,7 @@ from plone.dexterity.utils import createContentInContainer
 from plone.event.interfaces import IEvent
 from plone.event.interfaces import IEventRecurrence
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.serializer.summary import JSONSummarySerializerMetadata
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from Products.CMFCore.utils import getToolByName
@@ -19,6 +20,7 @@ from zope.interface import alsoProvides
 import Missing
 import pytz
 import unittest
+import unittest.mock as mock
 
 try:
     from plone.app.event.adapters import OccurrenceContentListingObject
@@ -200,6 +202,19 @@ class TestSummarySerializers(unittest.TestCase):
             }.items(),
             summary.items(),
         )
+
+    def test_extra_non_metadata_attributes_env_var(self):
+        with mock.patch(
+            "plone.restapi.serializer.summary.ADDITIONAL_NON_METADATA_ATTRIBUTES",
+            {"customAttribute", "anotherCustomAttribute"},
+        ):
+            non_metadata_attributes = (
+                JSONSummarySerializerMetadata().non_metadata_attributes()
+            )
+        self.assertIn("customAttribute", non_metadata_attributes)
+        self.assertIn("anotherCustomAttribute", non_metadata_attributes)
+        self.assertIn("getPath", non_metadata_attributes)
+        self.assertIn("getURL", non_metadata_attributes)
 
     def test_dx_type_summary(self):
         summary = getMultiAdapter((self.doc1, self.request), ISerializeToJsonSummary)()

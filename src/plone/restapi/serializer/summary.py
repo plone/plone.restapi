@@ -12,6 +12,19 @@ from zope.component import getAllUtilitiesRegisteredFor
 from zope.interface import implementer
 from zope.interface import Interface
 
+import logging
+import os
+
+logger = logging.getLogger(__name__)
+
+ADDITIONAL_NON_METADATA_ATTRIBUTES = {
+    attr.strip()
+    for attr in os.environ.get("RESTAPI_ADDITIONAL_NON_METADATA_ATTRIBUTES", "").split(
+        ","
+    )
+    if attr.strip()
+}
+
 
 @implementer(IJSONSummarySerializerMetadata)
 class JSONSummarySerializerMetadata:
@@ -30,7 +43,7 @@ class JSONSummarySerializerMetadata:
         return {
             "getPath",
             "getURL",
-        }
+        } | ADDITIONAL_NON_METADATA_ATTRIBUTES
 
     def blocklisted_attributes(self):
         return {
@@ -112,14 +125,26 @@ class DefaultJSONSummarySerializer:
         if not isinstance(additional_metadata_fields, list):
             additional_metadata_fields = [additional_metadata_fields]
         additional_metadata_fields = set(additional_metadata_fields)
+        if not additional_metadata_fields:
+            return self.default_metadata_fields
 
+        fields_cache = self.request.get("_summary_fields_cache", None)
+        if fields_cache is None:
+            catalog = getToolByName(self.context, "portal_catalog")
+            fields_cache = set(catalog.schema()) | self.non_metadata_attributes
+            self.request.set("_summary_fields_cache", fields_cache)
         if "_all" in additional_metadata_fields:
-            fields_cache = self.request.get("_summary_fields_cache", None)
-            if fields_cache is None:
-                catalog = getToolByName(self.context, "portal_catalog")
-                fields_cache = set(catalog.schema()) | self.non_metadata_attributes
-                self.request.set("_summary_fields_cache", fields_cache)
             additional_metadata_fields = fields_cache
+        else:
+            rejected_metadata_fields = additional_metadata_fields - fields_cache
+            if rejected_metadata_fields:
+                logger.debug(
+                    "Rejected metadata_fields %s requested for %s: not available "
+                    "in the catalog schema or non_metadata_attributes.",
+                    sorted(rejected_metadata_fields),
+                    self.context,
+                )
+            additional_metadata_fields = additional_metadata_fields & fields_cache
 
         return self.default_metadata_fields | additional_metadata_fields
 
