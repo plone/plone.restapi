@@ -49,30 +49,10 @@ Content-Type: application/json
         "filename": "image.png",
         "height": 56,
         "scales": {
-            "great": {
-                "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png",
-                "height": 56,
-                "width": 215
-            },
-            "huge": {
-                "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png",
-                "height": 56,
-                "width": 215
-            },
             "icon": {
                 "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png",
                 "height": 8,
                 "width": 32
-            },
-            "large": {
-                "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png",
-                "height": 56,
-                "width": 215
-            },
-            "larger": {
-                "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png",
-                "height": 56,
-                "width": 215
             },
             "listing": {
                 "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png",
@@ -83,16 +63,6 @@ Content-Type: application/json
                 "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png",
                 "height": 52,
                 "width": 200
-            },
-            "preview": {
-                "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png",
-                "height": 56,
-                "width": 215
-            },
-            "teaser": {
-                "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png",
-                "height": 56,
-                "width": 215
             },
             "thumb": {
                 "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png",
