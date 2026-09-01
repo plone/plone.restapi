@@ -1,6 +1,7 @@
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.app.contenttypes.interfaces import ILink
+from plone.app.event.dx.behaviors import IEventBasic
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
@@ -19,6 +20,7 @@ from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
 from plone.restapi.serializer.schema import _check_permission
 from plone.restapi.serializer.utils import get_portal_type_title
+from plone.restapi.serializer.utils import get_timezone_name
 from plone.restapi.services.locking import lock_info
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
@@ -132,6 +134,11 @@ class SerializeToJson:
                 (schema, obj, self.request), ISchemaSerializer
             )
             result.update(schema_serializer())
+
+        # Add event timezones
+        if IEventBasic.providedBy(self.context):
+            result["start_timezone"] = get_timezone_name(self.context.start)
+            result["end_timezone"] = get_timezone_name(self.context.end)
 
         target_url = getMultiAdapter(
             (self.context, self.request), IObjectPrimaryFieldTarget

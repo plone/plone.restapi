@@ -46,7 +46,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
 
         self.portal.invokeFactory("DXTestDocument", id="doc1", title="Test Document")
 
-    def deserialize(self, fieldname, value):
+    def deserialize(self, fieldname, value, **deserializer_attrs):
         for schema in iterSchemata(self.portal.doc1):
             if fieldname in schema:
                 field = schema.get(fieldname)
@@ -54,6 +54,8 @@ class TestDXFieldDeserializer(unittest.TestCase):
         deserializer = getMultiAdapter(
             (field, self.portal.doc1, self.request), IFieldDeserializer
         )
+        for k, v in deserializer_attrs.items():
+            setattr(deserializer, k, v)
         return deserializer(value)
 
     def test_ascii_deserialization_returns_native_string(self):
@@ -114,21 +116,24 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertTrue(isinstance(value, date))
         self.assertEqual(date(2015, 12, 20), value)
 
-    def test_datetime_deserialization_defaults_to_timezone_from_request(self):
-        self.portal.doc1.test_datetime_field = None
-        value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361+01")
-        self.assertEqual(
-            timezone("Europe/Zurich").localize(
-                datetime(2015, 12, 20, 10, 39, 54, 361000)
-            ),
-            value,
-        )
-
     def test_datetime_deserialization_defaults_to_utc(self):
         self.portal.doc1.test_datetime_field = None
         value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361")
         self.assertEqual(
             datetime(2015, 12, 20, 10, 39, 54, 361000, timezone("UTC")), value
+        )
+
+    def test_datetime_deserialization_converts_to_utc(self):
+        self.portal.doc1.test_datetime_field = None
+        value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361+01")
+        self.assertEqual(
+            datetime(2015, 12, 20, 9, 39, 54, 361000, timezone("UTC")), value
+        )
+        self.assertEqual(
+            timezone("Europe/Zurich").localize(
+                datetime(2015, 12, 20, 10, 39, 54, 361000)
+            ),
+            value,
         )
 
     def test_datetime_deserialization_converts_to_existing_timezone(self):
@@ -181,6 +186,20 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with RequiredField(field):
             with self.assertRaises(RequiredMissing):
                 self.deserialize(field_name, None)
+
+    def test_datetime_deserialization_converts_to_requested_timezone(self):
+        value = self.deserialize(
+            "test_datetime_field",
+            "2015-12-20T10:39:54.361+00:00",
+            requested_timezone="Europe/Zurich",
+        )
+        self.assertEqual(
+            timezone("Europe/Zurich").localize(
+                datetime(2015, 12, 20, 11, 39, 54, 361000)
+            ),
+            value,
+        )
+        self.assertEqual("Europe/Zurich", value.tzinfo.zone)
 
     def test_text_deserialization_returns_decimal(self):
         value = self.deserialize("test_decimal_field", "1.1")
