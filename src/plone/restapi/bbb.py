@@ -1,4 +1,5 @@
 try:
+    from plone.base.defaultpage import check_default_page_via_view
     from plone.base.defaultpage import is_default_page
     from plone.base.interfaces import IConstrainTypes
     from plone.base.interfaces import IEditingSchema
@@ -27,6 +28,7 @@ except ImportError:
     from plone.app.layout.navigation.root import (
         getNavigationRoot as get_navigation_root,
     )
+    from Products.CMFPlone.defaultpage import check_default_page_via_view
     from Products.CMFPlone.defaultpage import is_default_page
     from Products.CMFPlone.interfaces import IConstrainTypes
     from Products.CMFPlone.interfaces import IEditingSchema
