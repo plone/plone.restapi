@@ -164,6 +164,22 @@ class TestWorkflowTransition(TestCase):
         self.assertTrue(isinstance(doc1.effective_date, DateTime))
         self.assertTrue(doc1.effective_date >= now)
 
+    def test_transition_with_expired_date_results_in_400(self):
+        doc1 = self.portal.doc1
+        doc1.setExpirationDate(DateTime() - 1)
+        service = self.traverse("/plone/doc1/@workflow/publish")
+        res = service.reply()
+        self.assertEqual(400, self.request.response.getStatus())
+        self.assertEqual("Bad Request", res["error"]["type"])
+        self.assertEqual(
+            "Cannot set an effective date on or after the expiration date.",
+            res["error"]["message"],
+        )
+        self.assertEqual(None, doc1.effective_date)
+        self.assertEqual(
+            "private", self.wftool.getInfoFor(self.portal.doc1, "review_state")
+        )
+
     def test_calling_endpoint_without_transition_gives_400(self):
         service = self.traverse("/plone/doc1/@workflow")
         res = service.reply()
@@ -199,11 +215,11 @@ class TestWorkflowTransition(TestCase):
         )
 
     def test_transition_with_expiration_date(self):
-        self.request["BODY"] = '{"expires": "2019-06-20T18:00:00"}'
+        self.request["BODY"] = '{"expires": "2099-06-20T18:00:00"}'
         service = self.traverse("/plone/doc1/@workflow/publish")
         service.reply()
         self.assertEqual(
-            "2019-06-20T18:00:00+00:00", self.portal.doc1.expires().ISO8601()
+            "2099-06-20T18:00:00+00:00", self.portal.doc1.expires().ISO8601()
         )
 
     def test_invalid_transition_results_in_400(self):

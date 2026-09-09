@@ -106,7 +106,13 @@ class WorkflowTransition(Service):
                 deserializer(data=publication_dates)
 
             if obj.EffectiveDate() == "None":
-                obj.setEffectiveDate(DateTime())
+                effective = DateTime()
+                expires = obj.ExpirationDate()
+                if expires != "None" and DateTime(expires) <= effective:
+                    raise BadRequest(
+                        "Cannot set an effective date on or after the expiration date."
+                    )
+                obj.setEffectiveDate(effective)
                 obj.reindexObject()
             if not self.wftool.getWorkflowsFor(obj):
                 continue
