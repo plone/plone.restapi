@@ -9,7 +9,7 @@
       method="GET"
       factory=".get.SiteGet"
       for="plone.restapi.bbb.IPloneSiteRoot"
-      permission="zope2.View"
+      permission="zope.Public"
       name="@site"
       />
 

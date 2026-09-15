@@ -10,7 +10,7 @@ myst:
 # Site
 
 The `@site` endpoint provides general site-wide information, such as the site title, logo, and other information.
-It uses the `zope2.View` permission, which requires appropriate authorization.
+It is accessible to anonymous users, so that a frontend can fetch the data it needs to bootstrap itself, even on sites that require authentication to view content.
 
 Send a `GET` request to the `@site` endpoint:
 
@@ -57,4 +57,9 @@ class MyAddonExpander:
 ```{tip}
 Use this for data that is needed to render any page, but that does not change depending on the context.
 If the data is context-dependent, use a custom API expander instead.
+```
+
+```{warning}
+The `@site` endpoint is public.
+Expanders must only add information that may be disclosed to anonymous users.
 ```

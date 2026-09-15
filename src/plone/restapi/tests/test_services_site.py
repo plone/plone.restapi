@@ -12,6 +12,7 @@ from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import Interface
 
+import transaction
 import unittest
 
 
@@ -46,6 +47,20 @@ class TestServicesSite(unittest.TestCase):
         self.assertIn("plone.default_language", response.json())
         self.assertEqual(response.json()["plone.portal_timezone"], "UTC")
         self.assertEqual(response.json()["features"]["multilingual"], False)
+
+    def test_get_site_anonymous_with_restricted_site_root(self):
+        # @site provides the public bootstrap data a frontend needs before
+        # rendering anything, so it must remain accessible to anonymous
+        # users even on sites that require authentication to view content.
+        self.portal.manage_permission("View", roles=["Manager"], acquire=False)
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/@site",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("plone.site_title", response.json())
 
     def test_get_site_expander(self):
         @adapter(Interface, Interface)

@@ -9,6 +9,60 @@
 
 <!-- towncrier release notes start -->
 
+## 10.0.4 (2026-08-31)
+
+
+### New features
+
+- Add support for the `RESTAPI_ADDITIONAL_NON_METADATA_ATTRIBUTES` environment variable, a comma-separated list of extra attribute names appended to the summary serializer's `non_metadata_attributes`. 
+
+
+### Bug fixes
+
+- Fix the security check when a wrong permission is specified.
+  @ale-rt #2041
+- Security: in summary serializer only allow access to metadata that is available in the catalog. 
+
+
+### Tests
+
+- Fix expected test output due to more recent `plone.app.discussion` profile.  @mauritsvanrees 
+
+## 10.0.3 (2026-08-21)
+
+
+### Bug fixes
+
+- Fix serialization of RichTextValue objects when an explicit context is not known.
+  [erral] #1583
+- Make calls to time.tzset() in tests conditional on operating system. Windows does not support it. @ewohnlich #2027
+- Fix an `AttributeError` in the `@users` endpoint when the site's default portrait cannot be traversed. `isDefaultPortrait` now reports a mismatch instead of raising. @ericof #2035
+- Fix schema serialization with Dict and List fields that don't specify a value_type/key_type. @erral #2037
+
+## 10.0.2 (2026-06-26)
+
+
+### Bug fixes
+
+- Make the `@site` endpoint public, so that anonymous requests get the site bootstrap data even on sites that require authentication to view content. @reebalazs #2022
+
+
+### Internal
+
+- Replace `getAdapter(context, ISecuritySchema)` with `registry.forInterface(ISecuritySchema, prefix="plone")` in user services. @jensens #2011
+- Remove redundant and deprecated pull request preview build workflow. @stevepiercy 
+
+## 10.0.1 (2026-06-05)
+
+
+### Bug fixes
+
+- Fix warnings about `utcnow` and a short HMAC secret in tests. @davisagli 
+- Security: in rich text fields, do not accept input that claims it is already sanitized.
+  Specifically, raise a ValueError when deserializing a text field with input mimetype `text/x-html-safe`.
+  See https://github.com/plone/plone.restapi/security/advisories/GHSA-8rqh-vxpr-x77p
+  @gyst 
+
 ## 10.0.0 (2026-05-18)
 
 No significant changes.
