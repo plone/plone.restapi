@@ -4,6 +4,7 @@ from BTrees.OIBTree import OIBTree
 from BTrees.OOBTree import OOBTree
 from datetime import datetime
 from datetime import timedelta
+from datetime import timezone
 from plone.keyring.interfaces import IKeyManager
 from plone.keyring.keyring import GenerateSecret
 from plone.restapi import deserializer
@@ -207,7 +208,7 @@ class JWTAuthenticationPlugin(BasePlugin):
         if timeout is None:
             timeout = self.token_timeout
         if timeout:
-            payload["exp"] = datetime.utcnow() + timedelta(seconds=timeout)
+            payload["exp"] = datetime.now(timezone.utc) + timedelta(seconds=timeout)
         if data is not None:
             payload.update(data)
         token = jwt.encode(payload, self._signing_secret(), algorithm="HS256")

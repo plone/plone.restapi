@@ -286,7 +286,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
 @adapter(IRichText, IDexterityContent, IBrowserRequest)
 class RichTextFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
-        content_type = self.field.default_mime_type
+        content_type = orig_content_type = self.field.default_mime_type
         encoding = "utf8"
         if isinstance(value, dict):
             content_type = value.get("content-type", content_type)
@@ -298,6 +298,10 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
                 data = f.read().decode("utf8")
         else:
             data = value
+        # Defense-in-depth: a client must not be able to claim its payload
+        # is already sanitized by setting the content-type to safe html.
+        if content_type == "text/x-html-safe" and content_type != orig_content_type:
+            raise ValueError("Not allowed to set content-type text/x-html-safe")
         value = RichTextValue(
             raw=html_parser.unescape(data),
             mimeType=content_type,

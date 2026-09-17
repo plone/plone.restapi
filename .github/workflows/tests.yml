@@ -22,14 +22,13 @@ jobs:
             plone-version: "6.2"
     steps:
       # git checkout
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
-      # Python setup
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+      - name: Install uv + caching
+        uses: astral-sh/setup-uv@v10.0.1
         with:
+          enable-cache: true
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
 
       # Run tests
       - name: Install dependencies

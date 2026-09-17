@@ -57,8 +57,8 @@ Content-Type: application/json
             "upgrade_info": {
                 "available": false,
                 "hasProfile": true,
-                "installedVersion": "3000",
-                "newVersion": "3000",
+                "installedVersion": "3001",
+                "newVersion": "3001",
                 "required": false
             },
             "version": "1.2.3"
