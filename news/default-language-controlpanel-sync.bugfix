@@ -1,0 +1,1 @@
+Patching `@controlpanels/language` now syncs the site language on non-multilingual sites when `default_language` changes, while multilingual sites keep their existing language state. @sneridagh
