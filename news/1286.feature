@@ -1,0 +1,1 @@
+Add check for protected vocabulary ind endpoint 'vocabularies' [ksuess]
