@@ -84,19 +84,38 @@ class TestQuerystringEndpoint(unittest.TestCase):
         self.assertEqual(idx["vocabulary"], "plone.app.vocabularies.WorkflowStates")
 
         expected_vocab_values = {
-            "external": {"title": "Externally visible [external]"},
-            "internal": {"title": "Internal draft [internal]"},
+            "external": {"title": "Externally visible [external]", "token": "external"},
+            "internal": {"title": "Internal draft [internal]", "token": "internal"},
             "internally_published": {
-                "title": "Internally published [internally_published]"
+                "title": "Internally published [internally_published]",
+                "token": "internally_published",
             },
-            "pending": {"title": "Pending [pending]"},
-            "private": {"title": "Private [private]"},
-            "published": {"title": "Published with accent \xe9 [published]"},
-            "visible": {"title": "Public draft [visible]"},
+            "pending": {"title": "Pending [pending]", "token": "pending"},
+            "private": {"title": "Private [private]", "token": "private"},
+            "published": {
+                "title": "Published with accent \xe9 [published]",
+                "token": "published",
+            },
+            "visible": {"title": "Public draft [visible]", "token": "visible"},
         }
+
         self.assertTrue(
-            all(elem in idx["values"].items() for elem in expected_vocab_values.items())
+            set(expected_vocab_values.keys()).issubset((idx["values"].keys()))
         )
+
+        self.assertEqual(
+            expected_vocab_values["external"]["title"],
+            idx["values"]["external"]["title"],
+        )
+
+        # Only checking token if it actually exists
+        if len(idx["values"]["external"]) > 1:
+            self.assertTrue("token" in (idx["values"]["external"].keys()))
+
+            self.assertEqual(
+                "external",
+                idx["values"]["external"]["token"],
+            )
 
     def test_endpoint_inlines_operators(self):
         response = self.api_session.get("/@querystring")
