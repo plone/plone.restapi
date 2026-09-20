@@ -211,6 +211,48 @@ class TestFolderCreate(unittest.TestCase):
         sm.unregisterHandler(record_event, (IObjectAddedEvent,))
         sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
 
+    def test_post_to_folder_object_created_event_has_final_id(self):
+        """IObjectCreatedEvent must fire with the final, INameChooser-resolved ID.
+
+        When no 'id' is supplied, plone.restapi assigns a temporary ID and
+        renames the object via INameChooser before adding it to the container.
+        Subscribers must see the final ID (e.g. 'my-sequential-doc') on
+        event.object.id, not the temporary one (e.g. 'document.2026-03-06.1234').
+
+        Regression test for https://github.com/plone/plone.restapi/issues/1362
+        """
+        sm = getGlobalSiteManager()
+        created_event_ids = []
+
+        def capture_id(event):
+            created_event_ids.append(event.object.id)
+
+        sm.registerHandler(capture_id, (IObjectCreatedEvent,))
+
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"@type": "Document", "title": "My Sequential Doc"},
+        )
+        self.assertEqual(201, response.status_code)
+
+        final_id = response.json()["id"]
+        self.assertEqual(
+            1, len(created_event_ids), "Expected exactly one ObjectCreatedEvent"
+        )
+
+        event_id = created_event_ids[0]
+        self.assertEqual(
+            final_id,
+            event_id,
+            f"IObjectCreatedEvent carried '{event_id}' but final ID was '{final_id}'. "
+            "Subscribers relying on event.object.id will see a stale value. "
+            "See https://github.com/plone/plone.restapi/issues/1362",
+        )
+
+        sm.unregisterHandler(capture_id, (IObjectCreatedEvent,))
+
     def test_post_to_folder_with_apostrophe_dont_return_500(self):
         response = requests.post(
             self.portal.folder1.absolute_url(),
