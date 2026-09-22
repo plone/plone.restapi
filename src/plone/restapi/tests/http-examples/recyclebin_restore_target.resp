@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "message": "Item document1 restored successfully",
+    "restored_item": {
+        "@id": "http://localhost:55001/plone/target_folder/document1",
+        "@type": "Document",
+        "id": "document1",
+        "title": "My Document"
+    },
+    "status": "success"
+}
