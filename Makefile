@@ -90,7 +90,7 @@ clean-test: ## remove test and coverage artifacts
 
 $(BIN_FOLDER)/pip $(BIN_FOLDER)/tox $(BIN_FOLDER)/mxdev: ## Set up Python virtual environment
 	@echo "$(GREEN)==> Setup Python virtual environment$(RESET)"
-	uv venv --python=3.13 --seed $(VENV_FOLDER)
+	uv venv --python=3.13 --seed $(VENV_FOLDER) || $(PYTHON) -m venv $(VENV_FOLDER)
 	$(BIN_FOLDER)/pip install -U "pip" "pipx" "wheel" "cookiecutter" "mxdev" "tox" "pre-commit" -c constraints.txt
 	$(BIN_FOLDER)/pre-commit install
 
