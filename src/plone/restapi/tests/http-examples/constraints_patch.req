@@ -1,0 +1,15 @@
+PATCH /plone/folder/@constraints HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "immediately_addable_types": [
+        "News Item"
+    ],
+    "locally_allowed_types": [
+        "Document",
+        "News Item"
+    ],
+    "mode": "enabled"
+}

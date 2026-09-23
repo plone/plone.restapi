@@ -1881,6 +1881,25 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@site")
         save_request_and_response_for_docs("site_get", response)
 
+    def test_documentation_constraints_get(self):
+        self.portal.invokeFactory("Folder", id="folder", title="My Folder")
+        transaction.commit()
+        response = self.api_session.get("/folder/@constraints")
+        save_request_and_response_for_docs("constraints_get", response)
+
+    def test_documentation_constraints_patch(self):
+        self.portal.invokeFactory("Folder", id="folder", title="My Folder")
+        transaction.commit()
+        response = self.api_session.patch(
+            "/folder/@constraints",
+            json={
+                "mode": "enabled",
+                "locally_allowed_types": ["Document", "News Item"],
+                "immediately_addable_types": ["News Item"],
+            },
+        )
+        save_request_and_response_for_docs("constraints_patch", response)
+
     def test_inherit_get(self):
         self.doc = self.portal.invokeFactory(
             "Document", id="document", title="Test document"
