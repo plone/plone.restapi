@@ -156,6 +156,13 @@ docs-livehtml: $(BIN_FOLDER)/sphinx-autobuild  ## Rebuild Sphinx documentation o
 		--ignore "*.swp" \
 		-b html . "$(BUILDDIR)/html" $(SPHINXOPTS)
 
+.PHONY: docs-linkcheck
+docs-linkcheck: $(BIN_FOLDER)/sphinx-build  ## Run linkcheck
+	cd $(DOCS_DIR) && $(BIN_FOLDER)/sphinx-build -b linkcheck -W $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
+	@echo "Link check complete; look for any errors in the above output " \
+		"or in $(BUILDDIR)/linkcheck/ ."
+	@echo
+
 .PHONY: docs-linkcheckbroken
 docs-linkcheckbroken: $(BIN_FOLDER)/sphinx-build  ## Run linkcheck and show only broken links
 	cd $(DOCS_DIR) && $(BIN_FOLDER)/sphinx-build -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck | GREP_COLORS='0;31' grep -wi "broken\|redirect" --color=auto  && if test $$? = 0; then exit 1; fi || test $$? = 1
