@@ -47,8 +47,10 @@ The server responds with the current mode and the effective type lists:
 
 `disabled`
 :   Use the portal type defaults ({guilabel}`Use portal default`)
+
 `enabled`
 :   Use the lists set on this folder ({guilabel}`Select manually`)
+
 `acquire`
 :   Inherit from the parent folder ({guilabel}`Use parent folder settings`)
 
