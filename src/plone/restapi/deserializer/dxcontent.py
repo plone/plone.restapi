@@ -129,6 +129,10 @@ class DeserializeFromJson(OrderingMixin):
                     if deserializer is None:
                         continue
 
+                    requested_timezone = data.get(f"{name}.timezone")
+                    if requested_timezone is not None:
+                        deserializer.requested_timezone = requested_timezone
+
                     try:
                         value = deserializer(data[name])
                     except ValueError as e:

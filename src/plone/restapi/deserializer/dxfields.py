@@ -10,6 +10,7 @@ from plone.restapi.deserializer.utils import path2uid
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.services.content.tus import TUSUpload
 from pytz import timezone
+from pytz import UnknownTimeZoneError
 from pytz import utc
 from z3c.form.interfaces import IDataManager
 from zope.component import adapter
@@ -89,6 +90,9 @@ class LinkTextLineFieldDeserializer(TextLineFieldDeserializer):
 @implementer(IFieldDeserializer)
 @adapter(IDatetime, IDexterityContent, IBrowserRequest)
 class DatetimeFieldDeserializer(DefaultFieldDeserializer):
+
+    requested_timezone = None
+
     def __call__(self, value):
         # This happens when a 'null' is posted for a non-required field.
         if value is None:
@@ -119,6 +123,14 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
             # The IPublication adapter is a special case that expects
             # a timezone-naive local datetime
             value = dt.astimezone().replace(tzinfo=None)
+        elif self.requested_timezone is not None:
+            # Use the requested timezone if set
+            try:
+                tz = timezone(self.requested_timezone)
+            except UnknownTimeZoneError:
+                raise ValueError(f"Unknown timezone: {self.requested_timezone}")
+            else:
+                value = tz.normalize(dt.astimezone(tz))
         else:
             # Otherwise let's check what is currently stored.
             dm = queryMultiAdapter((self.context, self.field), IDataManager)
