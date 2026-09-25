@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from plone.autoform.form import AutoExtensibleForm
     from plone.contentrules.rule.interfaces import IRuleElementData
     from plone.contentrules.rule.rule import Rule
-    from plone.z3cform.layout import FormWrapper
+    from Products.Five.browser import BrowserView
     from zope.publisher.interfaces.browser import IBrowserRequest
 
 
@@ -94,7 +94,7 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
 
     # Helpers
 
-    def _get_view(self, rules: Any) -> FormWrapper:
+    def _get_view(self, rules: Any) -> BrowserView:
         """Return the add form view for content rules.
 
         :param rules: The rule adding view (``+rule``).
