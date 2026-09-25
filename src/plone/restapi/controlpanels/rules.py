@@ -16,6 +16,21 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 import plone.protect.interfaces
 
 
+def include_fieldset_fields(form):
+    """Make the form's fields include the fields of all its fieldsets.
+
+    ``plone.autoform`` puts fields declared in a non-default fieldset on
+    ``form.groups``, and the rule element forms are not group forms, so
+    ``applyChanges`` and ``form.fields`` would otherwise skip them.
+
+    :param form: An updated :class:`plone.autoform.form.AutoExtensibleForm`.
+    """
+    fields = form.fields
+    for group in form.groups:
+        fields += group.fields
+    form.fields = fields
+
+
 @adapter(Interface, IControlpanelLayer)
 @implementer(IContentRulesControlpanel, IBrowserPublisher)
 class ContentRulesControlpanel(RegistryConfigletPanel):
@@ -84,6 +99,7 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             else:
                 form = view.form_instance
                 form.update()
+                include_fieldset_fields(form)
                 extra_ob = form.create(data)
                 form.add(extra_ob)
         return self.get([rule.__name__])
@@ -107,6 +123,7 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             fields = {"@id": f"{base_url}/{rule_name}/{category}/{idx}"}
             if view:
                 view.form_instance.update()
+                include_fieldset_fields(view.form_instance)
                 for field in view.form_instance.fields:
                     fields[field] = getattr(extra_ob, field)
                 schema = view.form.schema
@@ -145,6 +162,7 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             extra_ob = extras[idx]
             view = queryMultiAdapter((extra_ob, self.request), name="edit")
             view.form_instance.update()
+            include_fieldset_fields(view.form_instance)
             view.form_instance.applyChanges(data)
 
     def delete(self, names):
