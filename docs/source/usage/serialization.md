@@ -145,10 +145,10 @@ Content-Type: application/json
   "@type": "File",
   "title": "Hello, Plone",
   "file": {
-    "data": "attachment_001"
+    "part": "attachment_001"
   },
   "leadimage": {
-    "data": "attachment_002"
+    "part": "attachment_002"
   }
 }
 ------WebKitFormBoundary7MA4YWxkTrZu0gW

@@ -152,7 +152,7 @@ class TestFolderCreate(unittest.TestCase):
                         "@type": "File",
                         "title": "My File",
                         "file": {
-                            "data": multipart_ref,
+                            "part": multipart_ref,
                         },
                     }
                 ),
@@ -180,7 +180,7 @@ class TestFolderCreate(unittest.TestCase):
                         "@type": "File",
                         "title": "My File",
                         "file": {
-                            "data": multipart_ref,
+                            "part": multipart_ref,
                         },
                     }
                 ),

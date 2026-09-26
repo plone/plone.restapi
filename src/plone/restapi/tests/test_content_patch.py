@@ -233,7 +233,7 @@ class TestContentPatch(unittest.TestCase):
                 "data": json.dumps(
                     {
                         "file": {
-                            "data": multipart_ref,
+                            "part": multipart_ref,
                         },
                     }
                 ),
