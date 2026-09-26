@@ -39,6 +39,14 @@ The server will respond with the results that are filtered based on the query yo
 :language: http
 ```
 
+### Virtual Host Monster Support
+
+When accessed through a Virtual Host Monster (VHM), the endpoint automatically resolves virtual paths provided in the `query` criteria to their physical counterparts in the catalog.
+
+For example, if your Plone site is physically located at `/Plone` but served at `http://plone.org/`, a query for `v: "/folder"` will be automatically expanded to `/Plone/folder` before being passed to the catalog.
+
+This expansion applies to any value in a `path` criterion that starts with a `/`. It also correctly handles the `::depth` suffix.
+
 Parameters the endpoint will accept:
 
 - `query` - `plone.app.querystring` query, required

@@ -204,6 +204,14 @@ Be aware that this might induce performance issues when retrieving a lot of reso
 Normally the search just serializes catalog brains, but with `fullobjects`, we wake up all the returned objects.
 ```
 
+## Virtual Host Monster Support
+
+When accessed through a Virtual Host Monster (VHM), the `/@search` endpoint automatically resolves virtual paths provided in the `path` parameter to their physical counterparts in the catalog.
+
+For example, if your Plone site is physically located at `/Plone` but served at `http://plone.org/`, a query for `path=/folder` will be automatically expanded to `/Plone/folder` before being passed to the catalog.
+
+This expansion applies to both string and list values for the `path` parameter, provided they start with a `/`.
+
 ## Restrict search results to Plone's search settings
 
 By default, the search endpoint does not exclude any types from its results.
