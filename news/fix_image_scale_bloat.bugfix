@@ -1,0 +1,1 @@
+Optimization: Avoid redundant object updates in PATCH requests when image content is identical to existing content.
