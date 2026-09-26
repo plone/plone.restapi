@@ -20,7 +20,6 @@ PROJECT_NAME = "plone.restapi"
 
 allow_module("json")
 
-# BBB: Plone 5.2
 HAS_PLONE_6 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
 )

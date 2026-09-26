@@ -7,12 +7,13 @@ from decimal import Decimal
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from plone.app.textfield.interfaces import IRichTextValue
-from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import IContextawareJsonCompatible
 from plone.restapi.interfaces import IJsonCompatible
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
+from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.i18nmessageid.message import Message
@@ -66,8 +67,8 @@ def json_compatible(value, context=None):
         adapter = queryMultiAdapter((value, context), IContextawareJsonCompatible)
         if adapter:
             return adapter()
-    else:
-        return IJsonCompatible(value, None)
+
+    return IJsonCompatible(value, None)
 
 
 @adapter(Interface)
@@ -80,8 +81,7 @@ def default_converter(value):
         return value
 
     raise TypeError(
-        "No converter for making"
-        " {!r} ({}) JSON compatible.".format(value, type(value))
+        f"No converter for making {value!r} ({type(value)}) JSON compatible."
     )
 
 
@@ -175,7 +175,16 @@ def timedelta_converter(value):
     return json_compatible(value.total_seconds())
 
 
-@adapter(IRichTextValue, IDexterityContent)
+@adapter(IRichTextValue)
+@implementer(IJsonCompatible)
+def richtextvalue_converter(value):
+    # Use the context-aware converter with the site as the context
+    context = getSite()
+    adapter = getMultiAdapter((value, context), IContextawareJsonCompatible)
+    return adapter()
+
+
+@adapter(IRichTextValue, Interface)
 @implementer(IContextawareJsonCompatible)
 class RichtextDXContextConverter:
     def __init__(self, value, context):

@@ -68,12 +68,16 @@ class DefaultJsonSchemaProvider:
         You should override `additional` method to provide more properties
         about the field."""
         schema = {
-            "type": self.get_type(),
             "title": self.get_title(),
             "description": self.get_description(),
         }
 
+        field_type = self.get_type()
+        if field_type:
+            schema["type"] = field_type
+
         widget = self.get_widget()
+
         if widget:
             schema["widget"] = widget
 
@@ -96,7 +100,7 @@ class DefaultJsonSchemaProvider:
         return schema
 
     def get_type(self):
-        raise NotImplementedError
+        return None
 
     def get_factory(self):
         pass
@@ -270,11 +274,14 @@ class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
 
     def get_items(self):
         """Get items properties."""
-        value_type_adapter = getMultiAdapter(
-            (self.field.value_type, self.context, self.request), IJsonSchemaProvider
-        )
+        if self.field.value_type:
+            value_type_adapter = getMultiAdapter(
+                (self.field.value_type, self.context, self.request), IJsonSchemaProvider
+            )
 
-        return value_type_adapter.get_schema()
+            return value_type_adapter.get_schema()
+
+        return {}
 
     def additional(self):
         info = {}
@@ -434,20 +441,25 @@ class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
 
     def additional(self):
         info = {}
-        key_type = getMultiAdapter(
-            (self.field.key_type, self.context, self.request), IJsonSchemaProvider
-        )
-        info["key_type"] = {
-            "schema": key_type.get_schema(),
-            "additional": key_type.additional(),
-        }
-        value_type = getMultiAdapter(
-            (self.field.value_type, self.context, self.request), IJsonSchemaProvider
-        )
-        info["value_type"] = {
-            "schema": value_type.get_schema(),
-            "additional": value_type.additional(),
-        }
+        if self.field.key_type:
+            key_type = getMultiAdapter(
+                (self.field.key_type, self.context, self.request), IJsonSchemaProvider
+            )
+            info["key_type"] = {
+                "schema": key_type.get_schema(),
+                "additional": key_type.additional(),
+            }
+
+        if self.field.value_type:
+            value_type = getMultiAdapter(
+                (self.field.value_type, self.context, self.request), IJsonSchemaProvider
+            )
+
+            info["value_type"] = {
+                "schema": value_type.get_schema(),
+                "additional": value_type.additional(),
+            }
+
         return info
 
 

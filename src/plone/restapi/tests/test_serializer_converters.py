@@ -4,6 +4,7 @@ from datetime import timedelta
 from DateTime import DateTime
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
+from plone.app.textfield.value import RichTextValue
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest import TestCase
@@ -218,3 +219,33 @@ class TestJsonCompatibleConverters(TestCase):
 
     def test_missing_value(self):
         self.assertEqual(None, json_compatible(Missing.Value))
+
+    def test_richtext_value_nested(self):
+        value = RichTextValue(
+            raw="<p>foo</p>", mimeType="text/html", outputMimeType="text/x-html-safe"
+        )
+        expected = {
+            "data": "<p>foo</p>",
+            "content-type": "text/html",
+            "encoding": "utf-8",
+        }
+        self.assertEqual(expected, json_compatible(value))
+        self.assertEqual(
+            expected,
+            json_compatible({"foo": value})["foo"],
+        )
+
+    def test_richtext_value_link_resolution_with_fallback(self):
+        # Verify that relative links are resolved against the site root
+        # when using the fallback context
+        html = '<p><a href="resolveuid/12345">link</a></p>'
+        value = RichTextValue(
+            raw=html, mimeType="text/html", outputMimeType="text/x-html-safe"
+        )
+        # Note: Since the UID isn't real, it won't be resolved to a URL,
+        # but output_relative_to will still be called.
+        # If we had a real object, we could test it further.
+        # The main thing is that it doesn't crash and returns valid JSON.
+        result = json_compatible(value)
+        self.assertIn("data", result)
+        self.assertEqual(result["content-type"], "text/html")
