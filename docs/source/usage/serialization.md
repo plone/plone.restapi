@@ -109,19 +109,21 @@ Image URLs are created using the UID-based URL that changes each time the image 
 }
 ```
 
-### Upload using multipart/form-data
+### Upload (deserialization)
 
-It's possible to upload a file or image using multipart/form-data in a POST or PATCH request.
+#### Upload using multipart/form-data
+
+It's possible to upload a file or image using `multipart/form-data` in a POST or PATCH request.
 In the form, the field data must be present and should contain the JSON data for the REST API request.
 Other binary files are referenced by an ID in the data attribute of the corresponding file or image field.
 
-```{note}
+```{versionadded} Plone 6.2
 Multipart PATCH requests require Zope >= 6 (Plone >= 6.2).
 ```
 
 Example:
 
-```
+```http
 POST /++api++/folder1 HTTP/1.1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
@@ -152,7 +154,7 @@ Content-Type: image/svg+xml
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ```
 
-### Upload (deserialization)
+#### Upload as base64-encoded data
 
 For file or image fields, the client must provide the file's data as a mapping containing the file data and some additional metadata:
 
