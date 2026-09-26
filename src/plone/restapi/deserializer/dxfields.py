@@ -247,7 +247,12 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
         content_type = "application/octet-stream"
         filename = None
         if isinstance(value, dict):
-            if "data" not in value:
+            is_multipart = self.request.getHeader("content-type", "").startswith(
+                "multipart/form-data"
+            )
+            if is_multipart and "part" in value:
+                pass
+            elif "data" not in value:
                 # We are probably pushing the contents of a previous GET
                 # That contain the read representation of the file
                 # with the 'download' key so we return the same stored file
@@ -255,7 +260,16 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
 
             content_type = value.get("content-type", content_type)
             filename = value.get("filename", filename)
-            data = value.get("data", "")
+            if is_multipart:
+                data = self.request.form[value["part"]]
+                if not filename and data.filename:
+                    filename = data.filename
+                if content_type == "application/octet-stream" and data.headers.get(
+                    "Content-Type"
+                ):
+                    content_type = data.headers.get("Content-Type")
+            else:
+                data = value.get("data", "")
             if isinstance(data, str):
                 data = data.encode("utf-8")
             if "encoding" in value:
