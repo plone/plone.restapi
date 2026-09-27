@@ -1,7 +1,5 @@
 [![image](https://github.com/plone/plone.restapi/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/plone/plone.restapi/actions/workflows/tests.yml)
 
-[![image](https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=main)](https://coveralls.io/github/plone/plone.restapi?branch=main)
-
 [![image](https://app.readthedocs.org/projects/plonerestapi/badge)](https://6.docs.plone.org/plone.restapi/docs/source/index.html)
 
 [![image](https://img.shields.io/pypi/v/plone.restapi.svg)](https://pypi.org/project/plone.restapi/)

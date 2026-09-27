@@ -75,6 +75,8 @@ def getPortraitUrl(user):
 def isDefaultPortrait(value):
     portal = getSite()
     default_portrait_value = portal.restrictedTraverse(default_portrait, None)
+    if default_portrait_value is None:
+        return False
     return (
         aq_inner(value).getPhysicalPath()
         == aq_inner(default_portrait_value).getPhysicalPath()

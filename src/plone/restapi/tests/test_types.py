@@ -2,8 +2,10 @@ from datetime import date
 from decimal import Decimal
 from plone.app.multilingual.dx import directives
 from plone.app.textfield import RichText
+from plone.app.textfield.value import RichTextValue
 from plone.autoform import directives as form
 from plone.dexterity.fti import DexterityFTI
+from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
@@ -46,7 +48,9 @@ class ITaggedValuesSchema(model.Schema):
 
     parametrized_widget_field = schema.TextLine(title="Parametrized widget field")
     form.widget(
-        "parametrized_widget_field", a_param="some_value", defaultFactory=lambda: "Foo"
+        "parametrized_widget_field",
+        a_param="some_value",
+        defaultFactory=lambda: "Foo",
     )
 
     not_parametrized_widget_field = schema.TextLine(
@@ -459,7 +463,11 @@ class TestJsonSchemaProviders(TestCase):
 
     def test_int(self):
         field = schema.Int(
-            title="My field", description="My great field", min=0, max=100, default=50
+            title="My field",
+            description="My great field",
+            min=0,
+            max=100,
+            default=50,
         )
         adapter = getMultiAdapter(
             (field, self.portal, self.request), IJsonSchemaProvider
@@ -742,9 +750,46 @@ class TestJsonSchemaProviders(TestCase):
             adapter.get_schema(),
         )
 
+    def test_richtext_with_default(self):
+        field = RichText(
+            title="My field",
+            description="My great field",
+            default=RichTextValue(
+                raw="<p>Some default value</p>",
+                mimeType="text/html",
+                outputMimeType="text/x-html-safe",
+            ),
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        schema = adapter.get_schema()
+        self.assertIsInstance(schema["default"], RichTextValue)
+
+        # After conversion to JSON compatible it should be a dict
+        schema = json_compatible(schema)
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": "My field",
+                "factory": "Rich Text",
+                "description": "My great field",
+                "widget": "richtext",
+                "default": {
+                    "data": "<p>Some default value</p>",
+                    "content-type": "text/html",
+                    "encoding": "utf-8",
+                },
+            },
+            schema,
+        )
+
     def test_date(self):
         field = schema.Date(
-            title="My field", description="My great field", default=date(2016, 1, 1)
+            title="My field",
+            description="My great field",
+            default=date(2016, 1, 1),
         )
         adapter = getMultiAdapter(
             (field, self.portal, self.request), IJsonSchemaProvider
@@ -781,7 +826,9 @@ class TestJsonSchemaProviders(TestCase):
 
     def test_jsonfield(self):
         field = JSONField(
-            title="My field", description="My great field", widget="my_widget_name"
+            title="My field",
+            description="My great field",
+            widget="my_widget_name",
         )
         adapter = getMultiAdapter(
             (field, self.portal, self.request), IJsonSchemaProvider
@@ -797,3 +844,48 @@ class TestJsonSchemaProviders(TestCase):
             },
             adapter.get_schema(),
         )
+
+    def test_dict_without_types(self):
+        field = schema.Dict(title="My field", description="My great field")
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+        self.assertEqual(
+            {
+                "type": "dict",
+                "title": "My field",
+                "description": "My great field",
+            },
+            adapter.get_schema(),
+        )
+
+    def test_list_without_value_type(self):
+        field = schema.List(title="My field", description="My great field")
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+        self.assertEqual(
+            {
+                "type": "array",
+                "title": "My field",
+                "description": "My great field",
+                "factory": "List",
+                "uniqueItems": False,
+                "additionalItems": True,
+                "items": {},
+            },
+            adapter.get_schema(),
+        )
+
+    def test_dict_with_generic_field_value_type(self):
+        field = schema.Dict(
+            title="Generic Dict", value_type=schema.Field(title="Generic Value")
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+        schema_data = adapter.get_schema()
+        # Should not crash, and value_type schema should omit 'type'
+        self.assertIn("value_type", schema_data)
+        self.assertNotIn("type", schema_data["value_type"]["schema"])
+        self.assertEqual("Generic Value", schema_data["value_type"]["schema"]["title"])
