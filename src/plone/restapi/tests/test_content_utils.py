@@ -5,8 +5,6 @@ from plone.restapi.services.content.utils import create
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zExceptions import Unauthorized
 from zope.component import getGlobalSiteManager
-from zope.event import notify
-from zope.lifecycleevent import ObjectCreatedEvent
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
 
 import unittest
@@ -94,8 +92,7 @@ class TestAddContent(unittest.TestCase):
 
         try:
             obj = create(self.folder, "Document", "my-document")
-            notify(ObjectCreatedEvent(obj))
-            obj = add(self.folder, obj)
+            obj = add(self.folder, obj, notify_created=True)
             self.assertEqual(aq_parent(obj), self.portal)
         finally:
             sm.unregisterHandler(move_object, (IObjectAddedEvent,))
