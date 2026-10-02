@@ -1,6 +1,6 @@
 from AccessControl.Permissions import use_mailhost_services
 from plone import api
-from plone.base import PloneMessageFactory as _
+from plone.restapi import _
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.statusmessages.interfaces import IStatusMessage
