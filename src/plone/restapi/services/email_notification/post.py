@@ -72,6 +72,26 @@ class EmailNotificationPost(Service):
         message = message_from_string(message)
         message["Reply-To"] = from_address
         to_address = from_address
+        portal_title = api.portal.get_registry_record("plone.site_title")
+
+        if not subject:
+            if not sender_fullname:
+                subject = self.context.translate(
+                    _(
+                        "A portal user via ${portal_title}",
+                        mapping={"portal_title": portal_title},
+                    )
+                )
+            else:
+                subject = self.context.translate(
+                    _(
+                        "${sender_fullname} via ${portal_title}",
+                        mapping={
+                            "sender_fullname": sender_fullname,
+                            "portal_title": portal_title,
+                        },
+                    )
+                )
 
         try:
             # This actually sends out the mail
