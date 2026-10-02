@@ -1,3 +1,4 @@
+from AccessControl.Permissions import use_mailhost_services
 from plone import api
 from plone.base import PloneMessageFactory as _
 from plone.restapi.deserializer import json_body
@@ -5,6 +6,8 @@ from plone.restapi.services import Service
 from Products.statusmessages.interfaces import IStatusMessage
 from smtplib import SMTPException
 from zExceptions import BadRequest
+from zExceptions import Forbidden
+from zExceptions import Unauthorized
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
 
@@ -37,6 +40,14 @@ class EmailNotificationPost(Service):
         sender_fullname = data.get("name", "")
         subject = data.get("subject", "")
         template = data.get("template", "contact-info")
+
+        if not api.user.has_permission(use_mailhost_services):
+            if api.user.is_anonymous():
+                raise Unauthorized("You are not authorized to access this resource.")
+            else:
+                raise Forbidden(
+                    "You're permissions are not suffecient to access this resource."
+                )
 
         if not from_address or not message:
             raise BadRequest("Missing from or message parameters")
