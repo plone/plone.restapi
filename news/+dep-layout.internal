@@ -1,0 +1,1 @@
+Refactor to avoid direct dependency on plone.app.layout. @davisagli
