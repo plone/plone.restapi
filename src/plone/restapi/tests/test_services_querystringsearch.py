@@ -4,6 +4,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from plone.restapi.tests.helpers import result_paths
 from unittest import mock
 
 import transaction
@@ -431,3 +432,195 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
                         f"Expected {num_results} results, got {response.json()['items_total']}. "
                         "QuerystringSearch should not impose a default limit.",
                     )
+
+
+class TestQuerystringSearchVHM(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+
+        self.api_session = RelativeSession(self.portal_url, test=self)
+        self.api_session.headers.update({"Accept": "application/json"})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+        self.portal.invokeFactory("Folder", "folder", title="Folder")
+        self.portal.folder.invokeFactory("Document", "doc1", title="Document 1")
+        transaction.commit()
+
+    def tearDown(self):
+        self.api_session.close()
+
+    def test_querystringsearch_vhm_path(self):
+        # Install a Virtual Host Monster
+        if "virtual_hosting" not in self.app.objectIds():
+            from Products.SiteAccess.VirtualHostMonster import (
+                manage_addVirtualHostMonster,
+            )
+
+            manage_addVirtualHostMonster(self.app, "virtual_hosting")
+        transaction.commit()
+
+        # If we go through the VHM we will get results if we only use
+        # the part of the path inside the VHM
+        vhm_url = "{}/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/{}".format(
+            self.app.absolute_url(),
+            "@querystring-search",
+        )
+
+        # Test with string path
+        response = self.api_session.post(
+            vhm_url,
+            json={
+                "query": [
+                    {
+                        "i": "path",
+                        "o": "plone.app.querystring.operation.string.path",
+                        "v": "/folder::1",
+                    }
+                ]
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("/folder/doc1", result_paths(response.json()))
+
+    def test_querystringsearch_vhm_multiple_paths(self):
+        # Install a Virtual Host Monster
+        if "virtual_hosting" not in self.app.objectIds():
+            from Products.SiteAccess.VirtualHostMonster import (
+                manage_addVirtualHostMonster,
+            )
+
+            manage_addVirtualHostMonster(self.app, "virtual_hosting")
+
+        self.portal.invokeFactory("Folder", "folder2", title="Folder 2")
+        self.portal.folder2.invokeFactory("Document", "doc2", title="Document 2")
+        transaction.commit()
+
+        vhm_url = "{}/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/{}".format(
+            self.app.absolute_url(),
+            "@querystring-search",
+        )
+
+        # Test with multiple path criteria
+        response = self.api_session.post(
+            vhm_url,
+            json={
+                "query": [
+                    {
+                        "i": "path",
+                        "o": "plone.app.querystring.operation.string.path",
+                        "v": "/folder",
+                    },
+                    {
+                        "i": "path",
+                        "o": "plone.app.querystring.operation.string.path",
+                        "v": "/folder2",
+                    },
+                ]
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        paths = result_paths(response.json())
+        self.assertIn("/folder", paths)
+        self.assertIn("/folder2", paths)
+
+
+class TestVHMPathCorrectionUnit(unittest.TestCase):
+
+    def test_path_correction_string(self):
+        from plone.restapi.services.querystringsearch.get import QuerystringSearch
+
+        request = mock.Mock()
+        request.get.return_value = ("", "Plone", "en")
+        # Mock json_body to return our query
+        with mock.patch(
+            "plone.restapi.services.querystringsearch.get.json_body"
+        ) as mock_json_body:
+            mock_json_body.return_value = {
+                "query": [{"i": "path", "o": "op", "v": "/folder::1"}]
+            }
+            context = mock.Mock()
+            service = QuerystringSearch(context, request)
+
+            # We only want to test the path correction part, so we'll mock the rest of __call__
+            # by causing it to fail after the correction
+            with mock.patch(
+                "plone.restapi.services.querystringsearch.get.getMultiAdapter"
+            ) as mock_adapter:
+                mock_adapter.side_effect = Exception("Stop here")
+                try:
+                    service()
+                except Exception as e:
+                    if str(e) != "Stop here":
+                        raise
+
+            # Check if query was modified in place (since it's a list of dicts)
+            query = mock_json_body.return_value["query"]
+            self.assertEqual(query[0]["v"], "/Plone/en/folder::1")
+
+    def test_path_correction_list(self):
+        from plone.restapi.services.querystringsearch.get import QuerystringSearch
+
+        request = mock.Mock()
+        request.get.return_value = ("", "Plone", "en")
+        with mock.patch(
+            "plone.restapi.services.querystringsearch.get.json_body"
+        ) as mock_json_body:
+            mock_json_body.return_value = {
+                "query": [
+                    {
+                        "i": "path",
+                        "o": "op",
+                        "v": ["/folder1", "/folder2::2", "some-uid"],
+                    }
+                ]
+            }
+            context = mock.Mock()
+            service = QuerystringSearch(context, request)
+
+            with mock.patch(
+                "plone.restapi.services.querystringsearch.get.getMultiAdapter"
+            ) as mock_adapter:
+                mock_adapter.side_effect = Exception("Stop here")
+                try:
+                    service()
+                except Exception:
+                    pass
+
+            query = mock_json_body.return_value["query"]
+            self.assertEqual(
+                query[0]["v"], ["/Plone/en/folder1", "/Plone/en/folder2::2", "some-uid"]
+            )
+
+    def test_no_path_correction_without_vhm(self):
+        from plone.restapi.services.querystringsearch.get import QuerystringSearch
+
+        request = mock.Mock()
+        request.get.return_value = None
+        with mock.patch(
+            "plone.restapi.services.querystringsearch.get.json_body"
+        ) as mock_json_body:
+            mock_json_body.return_value = {
+                "query": [{"i": "path", "o": "op", "v": "/folder::1"}]
+            }
+            context = mock.Mock()
+            service = QuerystringSearch(context, request)
+
+            with mock.patch(
+                "plone.restapi.services.querystringsearch.get.getMultiAdapter"
+            ) as mock_adapter:
+                mock_adapter.side_effect = Exception("Stop here")
+                try:
+                    service()
+                except Exception:
+                    pass
+
+            query = mock_json_body.return_value["query"]
+            self.assertEqual(query[0]["v"], "/folder::1")
