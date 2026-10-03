@@ -487,6 +487,33 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
         self.assertEqual(response.status_code, 401)
 
+    def _create_published_document(self):
+        document = api.content.create(
+            container=self.portal, id="doc", type="Document", title="Doc"
+        )
+        api.content.transition(obj=document, transition="publish")
+        transaction.commit()
+        return document
+
+    def test_types_context_portal_type_accessible_for_anonymous(self):
+        document = self._create_published_document()
+        self.api_session.auth = ()
+        response = self.api_session.get(f"{document.absolute_url()}/@types/Document")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["title"], "Page")
+
+    def test_types_other_portal_type_not_accessible_for_anonymous(self):
+        document = self._create_published_document()
+        self.api_session.auth = ()
+        response = self.api_session.get(f"{document.absolute_url()}/@types/Folder")
+        self.assertEqual(response.status_code, 401)
+
+    def test_types_list_not_accessible_for_anonymous_on_content(self):
+        document = self._create_published_document()
+        self.api_session.auth = ()
+        response = self.api_session.get(f"{document.absolute_url()}/@types")
+        self.assertEqual(response.status_code, 401)
+
     def test_contextaware_addable(self):
         response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
 
