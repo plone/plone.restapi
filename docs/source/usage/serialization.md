@@ -68,6 +68,14 @@ RichTextValue(
 
 ## File / Image Fields
 
+(serialization-file-image-fields-label)=
+
+## File and image fields
+
+File and image fields can be serialized for downloads or deserialized for uploads.
+
+
+(download-serialization-label)=
 
 ### Download (serialization)
 
