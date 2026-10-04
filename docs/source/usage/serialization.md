@@ -120,6 +120,15 @@ For upload, either {ref}`multipart/form-data <upload-multipart-form-data-label>`
 
 (upload-multipart-form-data-label)=
 
+(upload-deserialization-label)=
+
+### Upload (deserialization)
+
+For upload, either {ref}`multipart/form-data <upload-multipart-form-data-label>` or {ref}`base64-encoded data <upload-base64-encoded-data-label>` may be used.
+
+
+(upload-multipart-form-data-label)=
+
 #### Upload using multipart/form-data
 
 ```{versionadded} Plone 6.2
