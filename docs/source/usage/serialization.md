@@ -162,6 +162,8 @@ Content-Type: image/svg+xml
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ```
 
+(upload-base64-encoded-data-label)=
+
 #### Upload as base64-encoded data
 
 For file or image fields, the client must provide the file's data as a mapping containing the file data and some additional metadata:
