@@ -109,16 +109,6 @@ Image URLs are created using the UID-based URL that changes each time the image 
 }
 ```
 
-### Upload (deserialization)
-
-(upload-deserialization-label)=
-
-### Upload (deserialization)
-
-For upload, either {ref}`multipart/form-data <upload-multipart-form-data-label>` or {ref}`base64-encoded data <upload-base64-encoded-data-label>` may be used.
-
-
-(upload-multipart-form-data-label)=
 
 (upload-deserialization-label)=
 
@@ -136,9 +126,8 @@ Multipart PATCH requests require Zope >= 6 (Plone >= 6.2).
 ```
 
 It's possible to upload one or multiple files or images using `multipart/form-data` in a single POST or PATCH request.
-In the form, the field data must be present and should contain the JSON data for the REST API request.
-Other binary files are referenced by an ID in the data attribute of the corresponding file or image field.
-
+In the request body, the part named `data` must be present and should contain the JSON data for the REST API request.
+Fields that contain an uploaded file should be an object with a `part` key referring to the name of the multipart part which contains the file's name, content type and data.
 
 Example:
 
