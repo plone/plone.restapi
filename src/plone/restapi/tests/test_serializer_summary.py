@@ -216,6 +216,39 @@ class TestSummarySerializers(unittest.TestCase):
         self.assertIn("getPath", non_metadata_attributes)
         self.assertIn("getURL", non_metadata_attributes)
 
+    def test_request_metadata_cache_is_reused(self):
+        # The per-request metadata cache must take effect, so the metadata is
+        # only computed once even when many items are serialized in the same
+        # request (e.g. a search result or folder listing with many items).
+        from plone.restapi.serializer import summary as summary_module
+
+        self.request.other.pop("summary_serializer_metadata", None)
+
+        with mock.patch.object(
+            summary_module,
+            "merge_serializer_metadata_utilities_data",
+            wraps=summary_module.merge_serializer_metadata_utilities_data,
+        ) as merge_mock:
+            getMultiAdapter((self.doc1, self.request), ISerializeToJsonSummary)()
+            getMultiAdapter((self.doc1, self.request), ISerializeToJsonSummary)()
+
+        self.assertEqual(merge_mock.call_count, 1)
+
+    def test_request_parameter_does_not_break_serialization(self):
+        # A client-supplied form or query string parameter that happens to use
+        # the same name as the internal per-request cache must not break
+        # serialization with a TypeError.
+        self.request.other.pop("summary_serializer_metadata", None)
+        self.request.form["summary_serializer_metadata"] = "injected"
+        try:
+            summary = getMultiAdapter(
+                (self.doc1, self.request), ISerializeToJsonSummary
+            )()
+        finally:
+            del self.request.form["summary_serializer_metadata"]
+
+        self.assertEqual(summary["@type"], "DXTestDocument")
+
     def test_dx_type_summary(self):
         summary = getMultiAdapter((self.doc1, self.request), ISerializeToJsonSummary)()
 

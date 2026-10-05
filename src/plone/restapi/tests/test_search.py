@@ -789,6 +789,17 @@ class TestSearchFunctional(unittest.TestCase):
         ).json()
         self.assertEqual(response["items_total"], 1)
 
+    def test_search_use_site_search_settings_with_portal_type_containing_query(self):
+        # A portal_type string that happens to contain the substring "query"
+        # must not be mistaken for a {"query": ...} dict, which raised a
+        # TypeError (HTTP 500) in filter_query.
+        response = self.api_session.get(
+            "/@search",
+            params={"use_site_search_settings": 1, "portal_type": "Subquery"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["items_total"], 0)
+
     def test_search_use_site_search_settings_for_types(self):
         response = self.api_session.get(
             "/@search", params={"use_site_search_settings": 1}

@@ -44,3 +44,4 @@ this file, one to a line, like so:
 - Jon Pentland
 - Leonardo J. Caballero G.
 - Steve Piercy
+- Marcel Liebischer
