@@ -90,7 +90,7 @@ clean-test: ## remove test and coverage artifacts
 
 $(BIN_FOLDER)/pip $(BIN_FOLDER)/tox $(BIN_FOLDER)/mxdev: ## Set up Python virtual environment
 	@echo "$(GREEN)==> Setup Python virtual environment$(RESET)"
-	uv venv --python=3.13 --seed $(VENV_FOLDER)
+	uv venv --python=3.13 --seed $(VENV_FOLDER) || $(PYTHON) -m venv $(VENV_FOLDER)
 	$(BIN_FOLDER)/pip install -U "pip" "pipx" "wheel" "cookiecutter" "mxdev" "tox" "pre-commit" -c constraints.txt
 	$(BIN_FOLDER)/pre-commit install
 
@@ -155,6 +155,13 @@ docs-livehtml: $(BIN_FOLDER)/sphinx-autobuild  ## Rebuild Sphinx documentation o
 	cd "$(DOCS_DIR)" && $(BIN_FOLDER)/sphinx-autobuild \
 		--ignore "*.swp" \
 		-b html . "$(BUILDDIR)/html" $(SPHINXOPTS)
+
+.PHONY: docs-linkcheck
+docs-linkcheck: $(BIN_FOLDER)/sphinx-build  ## Run linkcheck
+	cd $(DOCS_DIR) && $(BIN_FOLDER)/sphinx-build -b linkcheck -W $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
+	@echo "Link check complete; look for any errors in the above output " \
+		"or in $(BUILDDIR)/linkcheck/ ."
+	@echo
 
 .PHONY: docs-linkcheckbroken
 docs-linkcheckbroken: $(BIN_FOLDER)/sphinx-build  ## Run linkcheck and show only broken links
