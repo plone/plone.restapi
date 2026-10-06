@@ -1,11 +1,23 @@
+from datetime import datetime
 from plone.app.uuid.utils import uuidToCatalogBrain
 from plone.dexterity.schema import lookup_fti
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
+from typing import Optional
+from typing import Union
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 
+import pytz
 import re
+
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:
+
+    class ZoneInfo:
+        key = None
+
 
 RESOLVEUID_RE = re.compile("^(?:|.*/)resolve[Uu]id/([^/#]*)?(.*)?$")
 
@@ -52,3 +64,15 @@ def get_portal_type_title(portal_type):
     if request:
         return translate(getattr(fti, "Title", lambda: portal_type)(), context=request)
     return getattr(fti, "Title", lambda: portal_type)()
+
+
+def get_timezone_name(dt: Optional[datetime]) -> Union[str, None]:
+    if dt is None:
+        return None
+    tzinfo = dt.tzinfo
+    if isinstance(tzinfo, ZoneInfo):
+        return tzinfo.key
+    elif isinstance(tzinfo, pytz.tzinfo.BaseTzInfo) and tzinfo.zone:
+        return tzinfo.zone
+    elif tzinfo is not None:
+        return tzinfo.tzname(dt)
