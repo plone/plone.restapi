@@ -29,7 +29,7 @@ class ContentGet(Service):
 
         if serializer is None:
             self.request.response.setStatus(501)
-            return dict(error=dict(message="No serializer available."))
+            return {"error": {"message": "No serializer available."}}
 
         return serializer(
             version=self.request.get("version"),

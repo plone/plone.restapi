@@ -66,7 +66,7 @@ class MarkdownRenderer:
         # Add title as H1 if present
         # TODO: this makes content objects with the blocks behavior have two titles
         # because of the title block converter
-        if "title" in data and data["title"]:
+        if data.get("title"):
             parts.append(f"# {data['title']}")
             parts.append("")
 
