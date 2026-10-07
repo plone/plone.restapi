@@ -79,6 +79,7 @@ setup(
         "Products.CMFPlone>=5.2",
         "PyJWT>=1.7.0",
         "pytz",
+        "PyYAML",
         "Zope",
     ],
     extras_require={"test": TEST_REQUIRES},
