@@ -514,6 +514,14 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get(f"{document.absolute_url()}/@types")
         self.assertEqual(response.status_code, 401)
 
+    def test_types_context_portal_type_field_not_accessible_for_anonymous(self):
+        document = self._create_published_document()
+        self.api_session.auth = ()
+        response = self.api_session.get(
+            f"{document.absolute_url()}/@types/Document/title"
+        )
+        self.assertEqual(response.status_code, 401)
+
     def test_contextaware_addable(self):
         response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
 
