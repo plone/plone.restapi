@@ -10,6 +10,7 @@ from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
 from plone.restapi.bbb import INavigationRoot
+from plone.restapi.search.handler import SearchHandler
 from plone.restapi.search.query import ZCatalogCompatibleQueryAdapter
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -941,3 +942,46 @@ class TestSearchFunctional(unittest.TestCase):
                     "sort_order": "ascending",
                 },
             )
+
+    def test_zcatalogcompatiblequeryadapter_drops_metadata_fields(self):
+        """metadata_fields is a control parameter, not a catalog index.
+
+        It is read from the request by the summary serializer, and must not
+        be handed to catalog.searchResults(): a catalog that validates its
+        query -- rather than silently ignoring unknown keys the way ZCatalog
+        does -- rejects it.
+        """
+        query_adapter = ZCatalogCompatibleQueryAdapter(self.portal, self.request)
+        parsed = query_adapter(
+            {
+                "SearchableText": "lorem",
+                "metadata_fields": ["portal_type", "review_state"],
+            }
+        )
+        self.assertNotIn("metadata_fields", parsed)
+        self.assertIn("SearchableText", parsed)
+
+    def test_search_handler_does_not_pass_metadata_fields_to_catalog(self):
+        class RecordingCatalog:
+            def __init__(self, catalog):
+                self._catalog_tool = catalog
+                self.last_query = None
+
+            def searchResults(self, **query):
+                self.last_query = query
+                return self._catalog_tool.searchResults(**query)
+
+            def __getattr__(self, name):
+                return getattr(self._catalog_tool, name)
+
+        handler = SearchHandler(self.portal, self.request)
+        recorder = RecordingCatalog(handler.catalog)
+        handler.catalog = recorder
+        handler.search(
+            {
+                "SearchableText": "lorem",
+                "metadata_fields": ["portal_type", "review_state"],
+            }
+        )
+        self.assertIsNotNone(recorder.last_query)
+        self.assertNotIn("metadata_fields", recorder.last_query)
