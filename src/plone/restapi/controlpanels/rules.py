@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from plone.contentrules.engine.interfaces import IRuleStorage
 from plone.restapi.controlpanels import RegistryConfigletPanel
 from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
 from plone.restapi.deserializer import json_body
@@ -15,6 +16,7 @@ from zExceptions import BadRequest
 from zExceptions import NotFound
 from zope.component import adapter
 from zope.component import queryMultiAdapter
+from zope.component import queryUtility
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import Interface
@@ -342,3 +344,15 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
         # calls authorize directly, so we need to override that here
         cpanel.authorize = lambda: True
         cpanel.delete_rule()
+
+
+@adapter(Interface, IControlpanelLayer)
+@implementer(IContentRulesControlpanel)
+def content_rules_controlpanel(context, request):
+    """Return the content rules control panel, or None when content rules
+    are not activated (no storage or no add-on browser layer)."""
+    if queryUtility(IRuleStorage) is None:
+        return None
+    if queryMultiAdapter((context, request), name="rules-controlpanel") is None:
+        return None
+    return ContentRulesControlpanel(context, request)

@@ -1,5 +1,6 @@
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from plone.restapi.services.rules import ensure_rules_activated
 from zope.component import queryMultiAdapter
 from zope.interface import alsoProvides
 
@@ -10,6 +11,7 @@ class ContentRulesUpdate(Service):
     """Update content rules"""
 
     def reply(self):
+        ensure_rules_activated(self.context, self.request)
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
