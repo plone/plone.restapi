@@ -47,6 +47,9 @@ class TestContentRulesNotActivated(unittest.TestCase):
 
     def test_content_rules_404_without_layer(self):
         # Storage present, browser layer missing (upgrade not run yet).
+        from plone.contentrules.engine.interfaces import IRuleStorage
+        from zope.component import queryUtility
+
         setup = getToolByName(self.portal, "portal_setup")
         setup.runImportStepFromProfile(
             "profile-plone.app.contentrules:default",
@@ -54,7 +57,10 @@ class TestContentRulesNotActivated(unittest.TestCase):
             run_dependencies=False,
         )
         transaction.commit()
+        self.assertIsNotNone(queryUtility(IRuleStorage))
         response = self.api_session.get("/@content-rules")
+        self.assertEqual(response.status_code, 404)
+        response = self.api_session.get("/@controlpanels/content-rules")
         self.assertEqual(response.status_code, 404)
 
     def test_controlpanel_write_methods_404_for_unknown_panel(self):
@@ -62,5 +68,12 @@ class TestContentRulesNotActivated(unittest.TestCase):
         for method in ("post", "patch", "delete"):
             response = getattr(self.api_session, method)(
                 "/@controlpanels/content-rules/some-rule", json={}
+            )
+            self.assertEqual(response.status_code, 404, method)
+
+    def test_write_methods_404_for_truly_unknown_panel(self):
+        for method in ("post", "patch", "delete"):
+            response = getattr(self.api_session, method)(
+                "/@controlpanels/does-not-exist/x", json={}
             )
             self.assertEqual(response.status_code, 404, method)
