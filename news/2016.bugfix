@@ -1,0 +1,2 @@
+Fix `@controlpanels/content-rules` to read and write values for content rule action and condition fields that are declared in a non-default fieldset.
+@ericof
