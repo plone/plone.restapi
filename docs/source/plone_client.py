@@ -1,12 +1,11 @@
 """Custom sphinxcontrib-httpexample builder for @plone/client."""
 
-from urllib.parse import parse_qs
-from urllib.parse import urlparse
-import re
-
 from sphinx.util import logging
 from sphinxcontrib.httpexample import HTTPRequest
+from urllib.parse import parse_qs
+from urllib.parse import urlparse
 
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -211,6 +210,4 @@ await cli.login({{username: '{username}', password: '{password}'}});
         request.command,
         path,
     )
-    return output + (
-        f"// No @plone/client mapping for {request.command} {path} yet.\n"
-    )
+    return output + (f"// No @plone/client mapping for {request.command} {path} yet.\n")
