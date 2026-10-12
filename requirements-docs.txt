@@ -5,6 +5,6 @@ setuptools  # required by sphinxcontrib.httpexample, remove when it migrates to 
 sphinx-autobuild
 sphinx-copybutton
 sphinxcontrib.httpdomain
-sphinxcontrib.httpexample
+sphinxcontrib-httpexample>=2.0
 sphinxext-opengraph
 vale
