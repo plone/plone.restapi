@@ -84,9 +84,10 @@ class DefaultJSONSummarySerializer:
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        # Cache summary_serializer_metadata on request
-        metadata = self.request.form.get("summary_serializer_metadata", None)
-        if not metadata:
+        # Cache on the request: read via request.get() so the value stored by
+        # request.set() is reused; isinstance() ignores a same-named parameter.
+        metadata = self.request.get("summary_serializer_metadata", None)
+        if not isinstance(metadata, dict):
             metadata = merge_serializer_metadata_utilities_data()
             self.request.set("summary_serializer_metadata", metadata)
 

@@ -1,0 +1,1 @@
+Allow anonymous users to read the `@types` schema of the context's own content type, so Volto's default view works for them. Other types and the types list still require authentication. @ericof
