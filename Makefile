@@ -47,6 +47,8 @@ BUILDDIR        = ../_build/
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(SPHINXOPTS) .
 VALEFILES       := $(shell find $(DOCS_DIR) -type f -name "*.md" -print)
 
+TEST_ARGS ?= ""
+
 all: help
 
 # Add the following 'help' target to your Makefile
@@ -119,7 +121,7 @@ check: $(BIN_FOLDER)/tox ## Check and fix code base according to Plone standards
 
 .PHONY: test
 test: $(BIN_FOLDER)/zope-testrunner ## Run tests
-	zope_i18n_compile_mo_files=True $(BIN_FOLDER)/zope-testrunner --all --test-path=src -s plone.restapi
+	zope_i18n_compile_mo_files=True $(BIN_FOLDER)/zope-testrunner --all --test-path=src -s plone.restapi $(TEST_ARGS)
 
 .PHONY: i18n
 i18n: $(BIN_FOLDER)/update_restapi_locales ## Update locales
