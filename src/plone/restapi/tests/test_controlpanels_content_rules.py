@@ -7,7 +7,7 @@ from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.contentrules.rule.interfaces import IRuleElementData
-from plone.restapi.testing import PLONE_RESTAPI_DX_FIXTURE
+from plone.restapi.testing import PLONE_RESTAPI_RULES_FIXTURE
 from plone.restapi.testing import RelativeSession
 from plone.supermodel.directives import fieldset
 from plone.supermodel.model import Schema
@@ -96,7 +96,7 @@ ZCML = """
 
 
 class ContentRulesFieldsetLayer(PloneSandboxLayer):
-    defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
+    defaultBases = (PLONE_RESTAPI_RULES_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
         xmlconfig.string(ZCML, context=configurationContext)

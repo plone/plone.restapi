@@ -26,6 +26,7 @@ from plone.restapi.interfaces import ILoginProviders
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_RULES_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import patch_addon_versions
@@ -43,6 +44,11 @@ from zope.event import notify
 from zope.interface import alsoProvides
 from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent import ObjectModifiedEvent
+
+try:
+    from plone.app.contentrules.browser.interfaces import IPloneAppContentrulesLayer
+except ImportError:  # plone.app.contentrules < 7
+    IPloneAppContentrulesLayer = None
 
 import collections
 import io
@@ -2615,10 +2621,12 @@ class TestIterateDocumentation(TestDocumentationBase):
 
 
 class TestRules(TestDocumentationBase):
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_RULES_FUNCTIONAL_TESTING
 
     def setUp(self):
         super().setUp()
+        if IPloneAppContentrulesLayer is not None:
+            alsoProvides(self.request, IPloneAppContentrulesLayer)
 
         # Create two test rules and assign them globally
 

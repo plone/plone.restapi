@@ -57,7 +57,7 @@
 
   <!-- Rules Controlpanel -->
   <adapter
-      factory="plone.restapi.controlpanels.rules.ContentRulesControlpanel"
+      factory="plone.restapi.controlpanels.rules.content_rules_controlpanel"
       provides="plone.restapi.controlpanels.interfaces.IContentRulesControlpanel"
       name="content-rules"
       zcml:condition="installed plone.app.contentrules"
