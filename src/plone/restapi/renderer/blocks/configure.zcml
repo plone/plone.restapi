@@ -6,19 +6,19 @@
   <!-- Title Serializer -->
   <adapter
       factory=".title.TitleSerializer"
-      name="block_title"
+      name="title"
       />
 
   <!-- Slate Serializer -->
   <adapter
       factory=".slate.SlateSerializer"
-      name="block_slate"
+      name="slate"
       />
 
   <!-- Image Serializer -->
   <adapter
       factory=".image.ImageSerializer"
-      name="block_image"
+      name="image"
       />
 
 </configure>
