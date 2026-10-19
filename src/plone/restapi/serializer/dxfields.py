@@ -12,15 +12,19 @@ from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.utils import uid_to_url
+from plone.restapi.types.utils import SchemaValues
+from plone.restapi.types.utils import serialize_schema_values
 from Products.CMFCore.permissions import ModifyPortalContent
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.schema import getFieldsInOrder
 from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IField
+from zope.schema.interfaces import IObject
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import IVocabularyTokenized
 
@@ -72,6 +76,11 @@ class CollectionFieldSerializer(DefaultFieldSerializer):
             self.field = self.field.bind(self.context)
         value = self.get_value()
         value_type = self.field.value_type
+        if value is not None and IObject.providedBy(value_type):
+            return [
+                serialize_object(value_type, item, self.context, self.request)
+                for item in value
+            ]
         if (
             value is not None
             and IChoice.providedBy(value_type)
@@ -88,12 +97,32 @@ class CollectionFieldSerializer(DefaultFieldSerializer):
                         % (
                             v,
                             self.field.title,
-                            self.context.portal_type,
-                            self.context.absolute_url(1),
+                            getattr(self.context, "portal_type", None),
+                            getattr(self.context, "absolute_url", lambda x: "")(1),
                         )
                     )
             value = values
         return json_compatible(value)
+
+
+def serialize_object(field, value, context, request):
+    """Serialize a value providing the schema of an Object field."""
+    if value is None:
+        return None
+    schema = field.schema
+    values = {name: sub.get(value) for name, sub in getFieldsInOrder(schema)}
+    return serialize_schema_values(
+        SchemaValues(schema, values).__of__(context), request, schema
+    )
+
+
+@adapter(IObject, IDexterityContent, Interface)
+@implementer(IFieldSerializer)
+class ObjectFieldSerializer(DefaultFieldSerializer):
+    def __call__(self):
+        return serialize_object(
+            self.field, self.get_value(), self.context, self.request
+        )
 
 
 @adapter(INamedImageField, IDexterityContent, Interface)

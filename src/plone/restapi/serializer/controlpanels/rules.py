@@ -1,11 +1,11 @@
 from plone.contentrules.rule.interfaces import IRuleAction
 from plone.contentrules.rule.interfaces import IRuleCondition
-from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.controlpanels import ControlpanelSerializeToJson
 from plone.restapi.serializer.controlpanels import SERVICE_ID
 from plone.restapi.types import utils
+from plone.restapi.types.utils import FakeDXContext  # noqa: F401 BBB
 from zope.component import adapter
 from zope.component import getAllUtilitiesRegisteredFor
 from zope.component import queryMultiAdapter
@@ -13,36 +13,9 @@ from zope.component.hooks import getSite
 from zope.interface import implementer
 
 
-@implementer(IDexterityContent)
-class FakeDXContext:
-    """Fake DX content class, so we can reuse the DX field serializers"""
-
-
 def rule_schema_as_json(schema, request):
-    """Build a complete JSON schema for the given controlpanel."""
-    context = FakeDXContext()
-    fieldsets = utils.get_fieldsets(context, request, schema)
-
-    # Build JSON schema properties
-    properties = utils.get_jsonschema_properties(context, request, fieldsets)
-
-    # Determine required fields
-    required = []
-    for field in utils.iter_fields(fieldsets):
-        if field.field.required:
-            required.append(field.field.getName())
-
-    # Include field modes
-    for field in utils.iter_fields(fieldsets):
-        if field.mode:
-            properties[field.field.getName()]["mode"] = field.mode
-
-    return {
-        "type": "object",
-        "properties": properties,
-        "required": required,
-        "fieldsets": utils.get_fieldset_infos(fieldsets),
-    }
+    """Build a complete JSON schema for the given rule element schema."""
+    return utils.get_jsonschema_for_schema(utils.SchemaValues(), request, schema)
 
 
 @implementer(ISerializeToJson)
