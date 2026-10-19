@@ -12,7 +12,6 @@
   <adapter factory=".dxfields.BoolFieldDeserializer" />
   <adapter factory=".dxfields.ChoiceFieldDeserializer" />
   <adapter factory=".dxfields.CollectionFieldDeserializer" />
-  <adapter factory=".dxfields.ObjectFieldDeserializer" />
   <adapter factory=".dxfields.DictFieldDeserializer" />
   <adapter factory=".dxfields.TextLineFieldDeserializer" />
   <adapter factory=".dxfields.LinkTextLineFieldDeserializer" />
