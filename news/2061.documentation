@@ -1,0 +1,1 @@
+Move the example representations of the default content types from the endpoints section to "Content Manipulation", and use the `endpoints/content-types` page for the `@content-types` service. [sneridagh]

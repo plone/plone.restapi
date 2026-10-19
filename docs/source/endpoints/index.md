@@ -22,7 +22,6 @@ aliases
 breadcrumbs
 comments
 content-types
-content-type-settings
 content-rules
 contextnavigation
 controlpanels
