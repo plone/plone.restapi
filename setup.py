@@ -21,6 +21,7 @@ long_description = "\n".join(
 TEST_REQUIRES = [
     "collective.MockMailHost",
     "plone.app.caching",
+    "plone.app.contentrules",
     "plone.app.contenttypes[test]",
     "plone.app.iterate",
     "plone.app.discussion[test]",

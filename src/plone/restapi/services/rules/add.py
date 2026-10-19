@@ -1,4 +1,5 @@
 from plone.restapi.services import Service
+from plone.restapi.services.rules import ensure_rules_activated
 from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
 from zope.interface import alsoProvides
@@ -22,6 +23,7 @@ class ContentRulesAdd(Service):
         return self
 
     def reply(self):
+        ensure_rules_activated(self.context, self.request)
 
         if not self.params:
             raise BadRequest("Missing parameter rule_id")

@@ -257,6 +257,28 @@ PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING = FunctionalTesting(
 )
 
 
+class PloneRestApiRulesLayer(PloneSandboxLayer):
+    defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
+
+    def setUpZope(self, app, configurationContext):
+        import plone.app.contentrules
+
+        self.loadZCML(package=plone.app.contentrules)
+
+    def setUpPloneSite(self, portal):
+        # Plone 6.3+: content rules are a core add-on with their own profile.
+        # Plone 6.2: Products.CMFPlone sets them up, there is no profile.
+        if portal.portal_setup.profileExists("plone.app.contentrules:default"):
+            applyProfile(portal, "plone.app.contentrules:default")
+
+
+PLONE_RESTAPI_RULES_FIXTURE = PloneRestApiRulesLayer()
+PLONE_RESTAPI_RULES_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(PLONE_RESTAPI_RULES_FIXTURE, zope.WSGI_SERVER_FIXTURE),
+    name="PloneRestApiRulesLayer:Functional",
+)
+
+
 class PloneRestApIBlocksLayer(PloneSandboxLayer):
     defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
 
