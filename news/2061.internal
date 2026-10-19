@@ -1,0 +1,1 @@
+Share the JSON schema and value conversion helpers (`get_jsonschema_for_schema`, `serialize_schema_values`, `deserialize_schema_values` and the `SchemaValues` context) in `plone.restapi.types.utils` between control panels, content rules and new services. `FakeDXContext` remains as an alias. [sneridagh]

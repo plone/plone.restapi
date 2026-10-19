@@ -12,6 +12,7 @@ This approach should ensure that all these directives get respected and
 processed the same way they would for a server-rendered form.
 """
 
+from Acquisition import Implicit
 from collections import OrderedDict
 from copy import copy
 from plone.autoform.form import AutoExtensibleForm
@@ -25,6 +26,7 @@ from plone.dexterity.utils import getAdditionalSchemata
 from plone.i18n.normalizer import idnormalizer
 from plone.restapi import HAS_MULTILINGUAL
 from plone.restapi.interfaces import IFieldDeserializer
+from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import IJsonCompatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.supermodel import serializeModel
@@ -41,8 +43,13 @@ from zope.component import queryUtility
 from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
+from zope.interface import alsoProvides
 from zope.interface import implementer
+from zope.interface.exceptions import Invalid
+from zope.schema import getFieldsInOrder
 from zope.schema.interfaces import IVocabularyFactory
+from zope.schema.interfaces import RequiredMissing
+from zope.schema.interfaces import ValidationError
 
 if HAS_MULTILINGUAL:
     from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
@@ -60,8 +67,27 @@ FIELD_PROPERTIES_MAPPING = {
 
 
 @implementer(IDexterityContent)
-class FakeDXContext:
-    """Fake DX content class, so we can reuse the DX field deserializers"""
+class SchemaValues(Implicit):
+    """Transient values for the fields of a zope.schema interface.
+
+    It provides IDexterityContent, so the field serializers, deserializers and
+    JSON schema providers registered for content work for any schema, such as
+    control panels, content rules or content type settings. Wrap it with
+    ``__of__(context)`` when vocabularies or converters need to acquire site
+    tools.
+    """
+
+    def __init__(self, schema=None, values=None):
+        if schema is None:
+            return
+        values = values or {}
+        for name, field in getFieldsInOrder(schema):
+            setattr(self, name, values.get(name, field.missing_value))
+        alsoProvides(self, schema)
+
+
+# BBB
+FakeDXContext = SchemaValues
 
 
 def create_form(context, request, base_schema, additional_schemata=None):
@@ -180,6 +206,139 @@ def get_jsonschema_properties(
             properties[fieldname] = adapter.get_schema()
 
     return properties
+
+
+def is_readonly(field, mode=None):
+    """Return whether a form never writes the field (read-only or display)."""
+    return field.readonly or mode == "display"
+
+
+def _schema_items(schema, fieldsets):
+    """Return (field, mode) pairs, from processed fieldsets when given."""
+    if fieldsets is None:
+        return [(field, None) for name, field in getFieldsInOrder(schema)]
+    return [(item.field, item.mode) for item in iter_fields(fieldsets)]
+
+
+def get_jsonschema_for_schema(context, request, schema, fieldsets=None):
+    """Build a complete JSON schema for a zope.schema interface.
+
+    The result has the shape used by control panels: properties, required
+    field names and fieldset infos. Pass ``fieldsets`` from
+    ``get_fieldsets()`` or ``get_form_fieldsets()`` to reuse them.
+    """
+    if fieldsets is None:
+        fieldsets = get_fieldsets(context, request, schema)
+    properties = get_jsonschema_properties(context, request, fieldsets)
+    required = []
+    for field, mode in _schema_items(schema, fieldsets):
+        name = field.getName()
+        if is_readonly(field, mode):
+            properties[name]["readOnly"] = True
+        elif field.required:
+            required.append(name)
+        if mode:
+            properties[name]["mode"] = mode
+    return {
+        "type": "object",
+        "properties": properties,
+        "required": required,
+        "fieldsets": get_fieldset_infos(fieldsets),
+    }
+
+
+def serialize_schema_values(context, request, schema, fieldsets=None):
+    """Serialize the values ``context`` holds for the fields of ``schema``.
+
+    Without ``fieldsets``, all fields of the schema are serialized, including
+    those that autoform omits.
+    """
+    data = {}
+    for field, mode in _schema_items(schema, fieldsets):
+        name = field.getName()
+        serializer = queryMultiAdapter((field, context, request), IFieldSerializer)
+        data[name] = serializer() if serializer else getattr(context, name, None)
+    return data
+
+
+def deserialize_schema_values(
+    context,
+    request,
+    schema,
+    data,
+    current=None,
+    fieldsets=None,
+    partial=True,
+    strict=False,
+):
+    """Convert JSON ``data`` to Python values for the fields of ``schema``.
+
+    Returns ``(values, errors)``. Errors have the ``field``, ``message`` and
+    ``error`` keys used by control panels. ``current`` holds the stored values,
+    so converters and invariants see the fields that ``data`` omits.
+
+    Read-only and display-mode fields are skipped. In ``strict`` mode they are
+    reported instead, together with unknown fields, missing required fields
+    (unless ``partial``) and violated schema invariants.
+    """
+    items = {
+        field.getName(): (field, mode)
+        for field, mode in _schema_items(schema, fieldsets)
+    }
+    if current is None:
+        snapshot = SchemaValues()
+    else:
+        snapshot = SchemaValues(schema, current)
+    if context is not None:
+        snapshot = snapshot.__of__(context)
+    values, errors = {}, []
+    if strict:
+        for name in data.keys() - items.keys():
+            errors.append({"field": name, "message": "Unknown field", "error": None})
+    for name, (field, mode) in items.items():
+        readonly = is_readonly(field, mode)
+        if name not in data:
+            if strict and not partial and field.required and not readonly:
+                exc = RequiredMissing(name)
+                errors.append({"field": name, "message": exc.doc(), "error": exc})
+            continue
+        if readonly:
+            if strict:
+                errors.append(
+                    {"field": name, "message": "Field is read-only", "error": None}
+                )
+            continue
+        deserializer = queryMultiAdapter((field, snapshot, request), IFieldDeserializer)
+        try:
+            value = deserializer(data[name])
+            # Bind, so context source binders resolve during validation.
+            field.bind(snapshot).validate(value)
+        except ValidationError as exc:
+            errors.append({"field": name, "message": exc.doc(), "error": exc})
+        except (ValueError, Invalid) as exc:
+            errors.append({"field": name, "message": str(exc), "error": exc})
+        else:
+            values[name] = value
+    if strict and not errors:
+        candidate = SchemaValues(schema, {**(current or {}), **values})
+        if context is not None:
+            candidate = candidate.__of__(context)
+        try:
+            schema.validateInvariants(candidate)
+        except Invalid as exc:
+            errors.append({"message": str(exc), "error": exc})
+    return values, errors
+
+
+def format_errors(errors, request, mask=True):
+    """Translate error messages and, with ``mask``, hide Python error classes."""
+    for error in errors:
+        if mask:
+            # Drop Python specific error classes in order to be able to better
+            # handle errors on front-end
+            error["error"] = "ValidationError"
+        error["message"] = translate(error["message"], context=request)
+    return errors
 
 
 def get_widget_params(schemas):
