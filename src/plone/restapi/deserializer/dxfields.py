@@ -20,6 +20,7 @@ from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.schema.interfaces import IBool
 from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDatetime
@@ -55,6 +56,23 @@ class DefaultFieldDeserializer:
 
         value = IFromUnicode(self.field).fromUnicode(value)
         # IFromUnicode.fromUnicode() will validate, no need to do it twice
+        return value
+
+
+@implementer(IFieldDeserializer)
+@adapter(IBool, IDexterityContent, IBrowserRequest)
+class BoolFieldDeserializer(DefaultFieldDeserializer):
+    """Accept JSON booleans, and "true" or "false" from form-encoded input.
+
+    Other strings used to become False silently.
+    """
+
+    def __call__(self, value):
+        if isinstance(value, str) and value.lower() in ("true", "false"):
+            value = value.lower() == "true"
+        if value is not None and not isinstance(value, bool):
+            raise ValueError(f"Expected a boolean, got {value!r}")
+        self.field.validate(value)
         return value
 
 

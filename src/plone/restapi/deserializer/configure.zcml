@@ -9,6 +9,7 @@
 
   <adapter factory=".dxfields.DefaultFieldDeserializer" />
   <adapter factory=".dxfields.DatetimeFieldDeserializer" />
+  <adapter factory=".dxfields.BoolFieldDeserializer" />
   <adapter factory=".dxfields.ChoiceFieldDeserializer" />
   <adapter factory=".dxfields.CollectionFieldDeserializer" />
   <adapter factory=".dxfields.ObjectFieldDeserializer" />
