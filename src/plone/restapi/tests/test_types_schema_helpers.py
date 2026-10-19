@@ -1,7 +1,5 @@
 from plone.autoform import directives
 from plone.namedfile.field import NamedBlobImage
-from plone.restapi.interfaces import IFieldDeserializer
-from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import deserialize_schema_values
@@ -44,6 +42,10 @@ class IRange(model.Schema):
             raise Invalid("Start must not be after end")
 
 
+class IWithRange(model.Schema):
+    range = schema.Object(title="Range", schema=IRange, required=False)
+
+
 class ISettings(model.Schema):
     title = schema.TextLine(title="Title")
     kind = schema.Choice(title="Kind", values=("a", "b"), required=False)
@@ -59,10 +61,6 @@ class ISettings(model.Schema):
     secret = schema.TextLine(title="Secret", required=False)
     directives.omitted("internal")
     internal = schema.TextLine(title="Internal", required=False)
-    range = schema.Object(title="Range", schema=IRange, required=False)
-    ranges = schema.List(
-        title="Ranges", value_type=schema.Object(schema=IRange), required=False
-    )
 
     @invariant
     def title_not_kind(data):
@@ -112,13 +110,12 @@ class TestJsonSchemaForSchema(TestCase):
         self.assertEqual(result["required"], ["title"])
         self.assertEqual(
             result["fieldsets"][0]["fields"],
-            ["title", "kind", "types", "shown", "secret", "range", "ranges"],
+            ["title", "kind", "types", "shown", "secret"],
         )
 
     def test_nested_object_schema(self):
-        range_schema = get_jsonschema_for_schema(self.portal, self.request, ISettings)[
-            "properties"
-        ]["range"]
+        result = get_jsonschema_for_schema(self.portal, self.request, IWithRange)
+        range_schema = result["properties"]["range"]
         self.assertEqual(range_schema["type"], "object")
         self.assertNotIn("factory", range_schema)
         self.assertEqual(set(range_schema["properties"]), {"start", "end"})
@@ -149,8 +146,6 @@ class TestSchemaValuesConversion(TestCase):
             "types": ["Document"],
             "created": "today",
             "internal": "x",
-            "range": SchemaValues(IRange, {"start": 1, "end": 2}),
-            "ranges": [SchemaValues(IRange, {"start": 3})],
         }
         current.update(data)
         return SchemaValues(ISettings, current).__of__(self.portal)
@@ -161,8 +156,6 @@ class TestSchemaValuesConversion(TestCase):
         self.assertEqual(data["kind"], {"token": "a", "title": None})
         self.assertEqual(data["types"], [{"token": "Document", "title": "Page"}])
         self.assertEqual(data["internal"], "x")
-        self.assertEqual(data["range"], {"start": 1, "end": 2})
-        self.assertEqual(data["ranges"], [{"start": 3, "end": None}])
 
     def test_serialize_processed_fields(self):
         context = self.values()
@@ -229,47 +222,3 @@ class TestSchemaValuesConversion(TestCase):
         )
         self.assertEqual(errors, [])
         self.assertEqual(values, {"kind": "b", "types": ["Document", "Folder"]})
-
-    def test_objects_roundtrip(self):
-        context = self.values()
-        data = serialize_schema_values(context, self.request, ISettings)
-        values, errors = deserialize_schema_values(
-            self.portal,
-            self.request,
-            ISettings,
-            {"range": data["range"], "ranges": data["ranges"]},
-            current={"title": "Hello", "kind": "a"},
-            strict=True,
-        )
-        self.assertEqual(errors, [])
-        self.assertTrue(IRange.providedBy(values["range"]))
-        self.assertEqual((values["range"].start, values["range"].end), (1, 2))
-        self.assertEqual(values["ranges"][0].start, 3)
-
-    def test_object_errors(self):
-        for value, message in (
-            ("x", "Expected an object"),
-            ({"start": 2, "end": 1}, "Start must not be after end"),
-            ({"end": 1}, "start: Required input is missing."),
-            ({"start": 1, "extra": 1}, "extra: Unknown field"),
-        ):
-            values, errors = deserialize_schema_values(
-                self.portal,
-                self.request,
-                ISettings,
-                {"range": value},
-                current={"title": "Hello"},
-                strict=True,
-            )
-            self.assertEqual(errors[0]["field"], "range")
-            self.assertIn(message, errors[0]["message"])
-
-    def test_field_adapters_for_objects(self):
-        field = ISettings["range"]
-        context = self.values()
-        serializer = getMultiAdapter((field, context, self.request), IFieldSerializer)
-        self.assertEqual(serializer(), {"start": 1, "end": 2})
-        deserializer = getMultiAdapter(
-            (field, context, self.request), IFieldDeserializer
-        )
-        self.assertIsNone(deserializer(None))

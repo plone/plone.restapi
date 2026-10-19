@@ -9,9 +9,6 @@ from plone.namedfile.interfaces import INamedField
 from plone.restapi.deserializer.utils import path2uid
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.services.content.tus import TUSUpload
-from plone.restapi.types.utils import deserialize_schema_values
-from plone.restapi.types.utils import format_errors
-from plone.restapi.types.utils import SchemaValues
 from pytz import timezone
 from pytz import utc
 from z3c.form.interfaces import IDataManager
@@ -28,7 +25,6 @@ from zope.schema.interfaces import IDecimal
 from zope.schema.interfaces import IDict
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
-from zope.schema.interfaces import IObject
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
@@ -199,37 +195,6 @@ class CollectionFieldDeserializer(DefaultFieldDeserializer):
         self.field.validate(value)
 
         return value
-
-
-@implementer(IFieldDeserializer)
-@adapter(IObject, IDexterityContent, IBrowserRequest)
-class ObjectFieldDeserializer(DefaultFieldDeserializer):
-    def __call__(self, value):
-        if value is None:
-            self.field.validate(value)
-            return None
-        if not isinstance(value, dict):
-            raise ValueError("Expected an object")
-        schema = self.field.schema
-        values, errors = deserialize_schema_values(
-            self.context, self.request, schema, value, partial=False, strict=True
-        )
-        if errors:
-            raise ValueError(
-                "; ".join(
-                    (
-                        f"{error['field']}: {error['message']}"
-                        if error.get("field")
-                        else error["message"]
-                    )
-                    for error in format_errors(errors, self.request)
-                )
-            )
-        result = SchemaValues(schema, values)
-        # Validate wrapped, so source binders of subfields can acquire tools,
-        # but return the plain value, which can be stored.
-        self.field.validate(result.__of__(self.context))
-        return result
 
 
 @implementer(IFieldDeserializer)
