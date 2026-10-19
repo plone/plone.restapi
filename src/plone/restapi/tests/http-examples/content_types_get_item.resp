@@ -1,0 +1,298 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@content-types/Event",
+    "data": {
+        "allow_discussion": false,
+        "allowed_content_types": [],
+        "allowed_content_types_mode": {
+            "title": "No types",
+            "token": "none"
+        },
+        "default_page": true,
+        "description": "Events can be shown in calendars.",
+        "global_allow": true,
+        "searchable": true,
+        "title": "Event",
+        "versioning": {
+            "title": "Automatic",
+            "token": "automatic"
+        }
+    },
+    "id": "Event",
+    "items_total": 0,
+    "schema": {
+        "fieldsets": [
+            {
+                "fields": [
+                    "title",
+                    "description"
+                ],
+                "id": "general",
+                "title": "General"
+            },
+            {
+                "fields": [
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "allowed_content_types"
+                ],
+                "id": "contents",
+                "title": "Contents"
+            },
+            {
+                "fields": [
+                    "searchable",
+                    "default_page"
+                ],
+                "id": "visibility",
+                "title": "Visibility"
+            },
+            {
+                "fields": [
+                    "allow_discussion"
+                ],
+                "id": "comments",
+                "title": "Comments"
+            },
+            {
+                "fields": [
+                    "versioning"
+                ],
+                "id": "versioning",
+                "title": "Versioning"
+            }
+        ],
+        "properties": {
+            "allow_discussion": {
+                "description": "",
+                "factory": "Yes/No",
+                "title": "Allow comments",
+                "type": "boolean"
+            },
+            "allowed_content_types": {
+                "additionalItems": true,
+                "default": [],
+                "description": "Kept while all types are allowed",
+                "factory": "Multiple Choice",
+                "items": {
+                    "choices": [
+                        [
+                            "TempFolder",
+                            "TempFolder"
+                        ],
+                        [
+                            "Plone Site",
+                            "Plone Site"
+                        ],
+                        [
+                            "Collection",
+                            "Collection"
+                        ],
+                        [
+                            "Document",
+                            "Page"
+                        ],
+                        [
+                            "Folder",
+                            "Folder"
+                        ],
+                        [
+                            "Link",
+                            "Link"
+                        ],
+                        [
+                            "File",
+                            "File"
+                        ],
+                        [
+                            "Image",
+                            "Image"
+                        ],
+                        [
+                            "News Item",
+                            "News Item"
+                        ],
+                        [
+                            "Event",
+                            "Event"
+                        ],
+                        [
+                            "Discussion Item",
+                            "Comment"
+                        ],
+                        [
+                            "ATTestDocument",
+                            "Test Document"
+                        ],
+                        [
+                            "ATTestFolder",
+                            "Test Folder"
+                        ],
+                        [
+                            "DXTestDocument",
+                            "DX Test Document"
+                        ]
+                    ],
+                    "description": "",
+                    "enum": [
+                        "TempFolder",
+                        "Plone Site",
+                        "Collection",
+                        "Document",
+                        "Folder",
+                        "Link",
+                        "File",
+                        "Image",
+                        "News Item",
+                        "Event",
+                        "Discussion Item",
+                        "ATTestDocument",
+                        "ATTestFolder",
+                        "DXTestDocument"
+                    ],
+                    "enumNames": [
+                        "TempFolder",
+                        "Plone Site",
+                        "Collection",
+                        "Page",
+                        "Folder",
+                        "Link",
+                        "File",
+                        "Image",
+                        "News Item",
+                        "Event",
+                        "Comment",
+                        "Test Document",
+                        "Test Folder",
+                        "DX Test Document"
+                    ],
+                    "factory": "Choice",
+                    "title": "",
+                    "type": "string",
+                    "vocabulary": {
+                        "@id": "http://localhost:55001/plone/portal_types/Event/@sources/"
+                    }
+                },
+                "title": "Selected types",
+                "type": "array",
+                "uniqueItems": true
+            },
+            "allowed_content_types_mode": {
+                "choices": [
+                    [
+                        "all",
+                        "All types"
+                    ],
+                    [
+                        "selected",
+                        "Selected types"
+                    ],
+                    [
+                        "none",
+                        "No types"
+                    ]
+                ],
+                "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                "enum": [
+                    "all",
+                    "selected",
+                    "none"
+                ],
+                "enumNames": [
+                    "All types",
+                    "Selected types",
+                    "No types"
+                ],
+                "factory": "Choice",
+                "title": "Allowed content types",
+                "type": "string",
+                "vocabulary": {
+                    "@id": "http://localhost:55001/plone/portal_types/Event/@sources/allowed_content_types_mode"
+                }
+            },
+            "default_page": {
+                "description": "Content of this type can be a folder's default page",
+                "factory": "Yes/No",
+                "title": "Usable as a default page",
+                "type": "boolean"
+            },
+            "description": {
+                "default": "",
+                "description": "",
+                "factory": "Text",
+                "title": "Description",
+                "type": "string",
+                "widget": "textarea"
+            },
+            "global_allow": {
+                "description": "Allow adding content of this type in any folder",
+                "factory": "Yes/No",
+                "title": "Globally addable",
+                "type": "boolean"
+            },
+            "searchable": {
+                "description": "",
+                "factory": "Yes/No",
+                "title": "Shown in search results",
+                "type": "boolean"
+            },
+            "title": {
+                "description": "",
+                "factory": "Text line (String)",
+                "minLength": 1,
+                "title": "Title",
+                "type": "string"
+            },
+            "versioning": {
+                "choices": [
+                    [
+                        "off",
+                        "Off"
+                    ],
+                    [
+                        "manual",
+                        "Manual"
+                    ],
+                    [
+                        "automatic",
+                        "Automatic"
+                    ]
+                ],
+                "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                "enum": [
+                    "off",
+                    "manual",
+                    "automatic"
+                ],
+                "enumNames": [
+                    "Off",
+                    "Manual",
+                    "Automatic"
+                ],
+                "factory": "Choice",
+                "title": "Versioning",
+                "type": "string",
+                "vocabulary": {
+                    "@id": "http://localhost:55001/plone/portal_types/Event/@sources/versioning"
+                }
+            }
+        },
+        "required": [
+            "title",
+            "global_allow",
+            "allowed_content_types_mode",
+            "searchable",
+            "default_page",
+            "allow_discussion",
+            "versioning"
+        ],
+        "type": "object"
+    },
+    "title": "Event",
+    "workflow": {
+        "follows_default": true,
+        "id": "simple_publication_workflow"
+    }
+}

@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
+
+  <plone:service
+      method="GET"
+      factory=".get.ContentTypesGet"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@content-types"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".add.ContentTypesPost"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@content-types"
+      />
+
+  <plone:service
+      method="PATCH"
+      factory=".update.ContentTypesPatch"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@content-types"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".delete.ContentTypesDelete"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@content-types"
+      />
+
+</configure>

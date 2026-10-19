@@ -2371,6 +2371,80 @@ class TestControlPanelDocumentation(TestDocumentationBase):
         )
 
 
+class TestContentTypesDocumentation(TestDocumentationBase):
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def create_type(self):
+        response = self.api_session.post(
+            "/@content-types",
+            json={
+                "title": "Conference event",
+                "description": "An event at a conference.",
+            },
+        )
+        self.assertEqual(201, response.status_code, response.text)
+        return response
+
+    def test_content_types_get_listing(self):
+        response = self.api_session.get("/@content-types")
+        self.assertEqual(200, response.status_code, response.text)
+        # The response lists every type, see the item example for its shape.
+        save_request_for_docs("content_types_get", response)
+
+    def test_content_types_get_item(self):
+        response = self.api_session.get("/@content-types/Event")
+        self.assertEqual(200, response.status_code, response.text)
+        save_request_and_response_for_docs("content_types_get_item", response)
+
+    def test_content_types_post(self):
+        response = self.create_type()
+        self.assertEqual("conference_event", response.json()["id"])
+        save_request_and_response_for_docs("content_types_post", response)
+
+    def test_content_types_copy(self):
+        response = self.api_session.post(
+            "/@content-types",
+            json={
+                "title": "Conference event",
+                "id": "ConferenceEvent",
+                "description": "An event at a conference.",
+                "copy_from": "Event",
+            },
+        )
+        self.assertEqual(201, response.status_code, response.text)
+        save_request_for_docs("content_types_copy", response)
+
+    def test_content_types_patch(self):
+        self.create_type()
+        response = self.api_session.patch(
+            "/@content-types/conference_event",
+            json={
+                "global_allow": False,
+                "allowed_content_types_mode": "selected",
+                "allowed_content_types": ["Image", "File"],
+                "searchable": True,
+                "versioning": "manual",
+            },
+        )
+        self.assertEqual(204, response.status_code, response.text)
+        save_request_and_response_for_docs("content_types_patch", response)
+
+    def test_content_types_delete(self):
+        self.create_type()
+        response = self.api_session.delete("/@content-types/conference_event")
+        self.assertEqual(204, response.status_code, response.text)
+        save_request_and_response_for_docs("content_types_delete", response)
+
+    def test_content_types_delete_nonempty(self):
+        response = self.api_session.post(
+            "/", json={"@type": "Document", "id": "example", "title": "Example"}
+        )
+        self.assertEqual(201, response.status_code, response.text)
+        response = self.api_session.delete("/@content-types/Document")
+        self.assertEqual(409, response.status_code, response.text)
+        save_request_and_response_for_docs("content_types_delete_nonempty", response)
+
+
 class TestPAMDocumentation(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
