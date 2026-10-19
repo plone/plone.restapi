@@ -152,6 +152,25 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual("Professor of Linguistics", noam.get("description"))  # noqa
         self.assertEqual("Cambridge, MA", noam.get("location"))
 
+    def test_list_users_with_non_integer_limit(self):
+        """A limit that is not an integer is a client error, not a 500.
+
+        Every other service parses its integer parameters with parse_int,
+        which answers 400 with "Invalid <name>: Not an integer".
+        """
+        for limit in ["abc", "1.5", "10,20"]:
+            with self.subTest(limit=limit):
+                response = self.api_session.get(f"/@users?query=noam&limit={limit}")
+                self.assertEqual(400, response.status_code)
+                self.assertIn("Invalid limit", response.json()["message"])
+
+    def test_list_users_with_valid_limit(self):
+        """The values that worked before still work."""
+        for limit in ["1", "", "-1"]:
+            with self.subTest(limit=limit):
+                response = self.api_session.get(f"/@users?query=noam&limit={limit}")
+                self.assertEqual(200, response.status_code)
+
     def test_list_users_without_being_manager(self):
         noam_api_session = RelativeSession(self.portal_url, test=self)
         noam_api_session.headers.update({"Accept": "application/json"})

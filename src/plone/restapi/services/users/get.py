@@ -7,6 +7,7 @@ from plone.namedfile.browser import ALLOWED_INLINE_MIMETYPES
 from plone.namedfile.browser import DISALLOWED_INLINE_MIMETYPES
 from plone.namedfile.browser import USE_DENYLIST
 from plone.namedfile.utils import stream_data
+from plone.restapi.deserializer import parse_int
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.permissions import PloneManageUsers
 from plone.restapi.services import _no_content_marker
@@ -213,7 +214,14 @@ class UsersGet(Service):
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
             groups_filter = self.query.get("groups-filter:list", [])
-            limit = int(self.query.get("limit", [DEFAULT_SEARCH_RESULTS_LIMIT])[0])
+            # parse_qs gives every value as a list, so the parameter has to be
+            # unwrapped before parse_int sees it. Going through parse_int keeps
+            # a bad limit a 400 here, as it already is on the other services.
+            limit = parse_int(
+                {"limit": self.query.get("limit", [DEFAULT_SEARCH_RESULTS_LIMIT])[0]},
+                "limit",
+                DEFAULT_SEARCH_RESULTS_LIMIT,
+            )
             if query or groups_filter or self.search_term or limit:
                 if self.has_permission_to_query():
                     users = self._get_filtered_users(
