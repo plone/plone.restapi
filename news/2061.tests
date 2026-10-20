@@ -1,0 +1,2 @@
+Add an acceptance test layer and `make acceptance-backend-start` target for frontend tests against a local REST API checkout.
+[sneridagh]

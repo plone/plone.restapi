@@ -26,6 +26,7 @@ TEST_REQUIRES = [
     "plone.app.iterate",
     "plone.app.discussion[test]",
     "plone.app.multilingual",
+    "plone.app.robotframework",
     "plone.app.testing",
     "plone.app.upgrade",
     "plone.rest>=3.0.1",
