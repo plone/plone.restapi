@@ -21,6 +21,7 @@ addons
 aliases
 breadcrumbs
 comments
+constraints
 content-types
 content-rules
 contextnavigation

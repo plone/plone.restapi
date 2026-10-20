@@ -1,0 +1,15 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/folder/@constraints",
+    "configurable": true,
+    "immediately_addable_types": [
+        "News Item"
+    ],
+    "locally_allowed_types": [
+        "Document",
+        "News Item"
+    ],
+    "mode": "enabled"
+}
