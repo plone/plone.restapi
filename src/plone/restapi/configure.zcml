@@ -97,6 +97,7 @@
   <include package=".serializer" />
   <include package=".deserializer" />
   <include package=".types" />
+  <include package=".typesettings" />
   <include package=".search" />
   <include package=".cache" />
 

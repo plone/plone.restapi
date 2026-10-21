@@ -1,0 +1,15 @@
+PATCH /plone/@content-types/conference_event HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "allowed_content_types": [
+        "Image",
+        "File"
+    ],
+    "allowed_content_types_mode": "selected",
+    "global_allow": false,
+    "searchable": true,
+    "versioning": "manual"
+}
