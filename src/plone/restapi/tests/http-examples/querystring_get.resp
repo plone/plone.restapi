@@ -181,13 +181,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -199,7 +199,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -265,13 +265,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -283,7 +283,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -361,13 +361,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -379,7 +379,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -445,13 +445,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -463,7 +463,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -669,13 +669,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -687,7 +687,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -996,13 +996,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1014,7 +1014,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -1117,13 +1117,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1135,7 +1135,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -1201,13 +1201,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1219,7 +1219,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -1285,13 +1285,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1303,7 +1303,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -1369,13 +1369,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1387,7 +1387,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -1516,13 +1516,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1534,7 +1534,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -1691,13 +1691,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1709,7 +1709,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },

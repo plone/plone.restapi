@@ -27,7 +27,7 @@ Content-Type: application/json
             "upgrade_info": {
                 "available": false,
                 "hasProfile": true,
-                "installedVersion": "3.0.0",
+                "installedVersion": "4.0.0",
                 "newVersion": "1.2.3",
                 "required": true
             },
@@ -57,8 +57,8 @@ Content-Type: application/json
             "upgrade_info": {
                 "available": false,
                 "hasProfile": true,
-                "installedVersion": "3000",
-                "newVersion": "3000",
+                "installedVersion": "3001",
+                "newVersion": "3001",
                 "required": false
             },
             "version": "1.2.3"

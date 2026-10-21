@@ -124,6 +124,7 @@ Content-Type: application/json
             "behavior": "plone.dublincore",
             "description": "Used in item listings and search results.",
             "factory": "Text",
+            "maxLength": 10000,
             "title": "Summary",
             "type": "string",
             "widget": "textarea"
@@ -244,6 +245,7 @@ Content-Type: application/json
             "behavior": "plone.dublincore",
             "description": "",
             "factory": "Text line (String)",
+            "maxLength": 1024,
             "title": "Title",
             "type": "string"
         },
