@@ -1,1 +1,1 @@
-Describe `schema.Object` fields that are not files or images correctly in JSON schemas: they no longer claim a `File` factory, use plain property names, and list their required fields. Boolean fields now reject values other than booleans and the strings "true" and "false". Other strings used to become false silently. [sneridagh]
+Describe `schema.Object` fields that are not files or images correctly in JSON schemas: they use plain property names, list their required fields, and no longer claim a `File` factory. @sneridagh

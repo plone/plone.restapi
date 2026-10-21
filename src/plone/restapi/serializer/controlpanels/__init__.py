@@ -45,7 +45,7 @@ class ControlpanelSummarySerializeToJson:
 def get_jsonschema_for_controlpanel(controlpanel, context, request, form=None):
     """Build a complete JSON schema for the given controlpanel."""
     fieldsets = utils.get_form_fieldsets(form) if form else None
-    return utils.get_jsonschema_for_schema(
+    return utils._get_jsonschema_for_schema(
         context, request, controlpanel.schema, fieldsets=fieldsets
     )
 
@@ -82,7 +82,7 @@ class ControlpanelSerializeToJson:
             # Temporarily provide IDexterityContent, so we can use DX field
             # serializers
             alsoProvides(proxy, IDexterityContent)
-            json_data = utils.serialize_schema_values(
+            json_data = utils._serialize_schema_values(
                 proxy, self.controlpanel.request, self.schema
             )
             noLongerProvides(proxy, IDexterityContent)

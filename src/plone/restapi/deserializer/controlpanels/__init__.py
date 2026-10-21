@@ -2,15 +2,18 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.types.utils import deserialize_schema_values
-from plone.restapi.types.utils import FakeDXContext  # noqa: F401 BBB
-from plone.restapi.types.utils import format_errors
+from plone.restapi.types.utils import _deserialize_schema_values
+from plone.restapi.types.utils import _format_errors
+from plone.restapi.types.utils import SchemaValues
 from z3c.form.interfaces import IManagerValidator
 from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.interface import implementer
+
+# BBB
+FakeDXContext = SchemaValues
 
 
 @implementer(IDeserializeFromJson)
@@ -34,7 +37,7 @@ class ControlpanelDeserializeFromJson:
 
         proxy = self.registry.forInterface(self.schema, prefix=self.schema_prefix)
 
-        values, errors = deserialize_schema_values(
+        values, errors = _deserialize_schema_values(
             self.context, self.request, self.schema, data
         )
         for name, value in values.items():
@@ -49,5 +52,5 @@ class ControlpanelDeserializeFromJson:
 
         if errors:
             raise BadRequest(
-                format_errors(errors, self.request, mask=mask_validation_errors)
+                _format_errors(errors, self.request, mask=mask_validation_errors)
             )

@@ -35,6 +35,11 @@ from plone.supermodel.utils import mergedTaggedValueDict
 from plone.supermodel.utils import mergedTaggedValueList
 from plone.supermodel.utils import syncSchema
 from Products.CMFCore.utils import getToolByName
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Tuple
 from z3c.form import form as z3c_form
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
@@ -46,7 +51,9 @@ from zope.i18n import translate
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface.exceptions import Invalid
+from zope.interface.interface import InterfaceClass
 from zope.schema import getFieldsInOrder
+from zope.schema.interfaces import IField
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.interfaces import RequiredMissing
 from zope.schema.interfaces import ValidationError
@@ -208,19 +215,33 @@ def get_jsonschema_properties(
     return properties
 
 
-def is_readonly(field, mode=None):
+# Helpers shared by control panels, content rules and content type settings.
+# They are private: plone.restapi does not support them as a public API.
+
+Fieldsets = List[Dict[str, Any]]
+Errors = List[Dict[str, Any]]
+
+
+def _is_readonly(field: IField, mode: Optional[str] = None) -> bool:
     """Return whether a form never writes the field (read-only or display)."""
     return field.readonly or mode == "display"
 
 
-def _schema_items(schema, fieldsets):
+def _schema_items(
+    schema: InterfaceClass, fieldsets: Optional[Fieldsets]
+) -> List[Tuple[IField, Optional[str]]]:
     """Return (field, mode) pairs, from processed fieldsets when given."""
     if fieldsets is None:
         return [(field, None) for name, field in getFieldsInOrder(schema)]
     return [(item.field, item.mode) for item in iter_fields(fieldsets)]
 
 
-def get_jsonschema_for_schema(context, request, schema, fieldsets=None):
+def _get_jsonschema_for_schema(
+    context: Any,
+    request: Any,
+    schema: InterfaceClass,
+    fieldsets: Optional[Fieldsets] = None,
+) -> Dict[str, Any]:
     """Build a complete JSON schema for a zope.schema interface.
 
     The result has the shape used by control panels: properties, required
@@ -233,7 +254,7 @@ def get_jsonschema_for_schema(context, request, schema, fieldsets=None):
     required = []
     for field, mode in _schema_items(schema, fieldsets):
         name = field.getName()
-        if is_readonly(field, mode):
+        if _is_readonly(field, mode):
             properties[name]["readOnly"] = True
         elif field.required:
             required.append(name)
@@ -247,7 +268,12 @@ def get_jsonschema_for_schema(context, request, schema, fieldsets=None):
     }
 
 
-def serialize_schema_values(context, request, schema, fieldsets=None):
+def _serialize_schema_values(
+    context: Any,
+    request: Any,
+    schema: InterfaceClass,
+    fieldsets: Optional[Fieldsets] = None,
+) -> Dict[str, Any]:
     """Serialize the values ``context`` holds for the fields of ``schema``.
 
     Without ``fieldsets``, all fields of the schema are serialized, including
@@ -261,25 +287,28 @@ def serialize_schema_values(context, request, schema, fieldsets=None):
     return data
 
 
-def deserialize_schema_values(
-    context,
-    request,
-    schema,
-    data,
-    current=None,
-    fieldsets=None,
-    partial=True,
-    strict=False,
-):
+def _deserialize_schema_values(
+    context: Any,
+    request: Any,
+    schema: InterfaceClass,
+    data: Dict[str, Any],
+    current: Optional[Dict[str, Any]] = None,
+    fieldsets: Optional[Fieldsets] = None,
+    partial: bool = True,
+    strict: bool = False,
+) -> Tuple[Dict[str, Any], Errors]:
     """Convert JSON ``data`` to Python values for the fields of ``schema``.
 
     Returns ``(values, errors)``. Errors have the ``field``, ``message`` and
     ``error`` keys used by control panels. ``current`` holds the stored values,
     so converters and invariants see the fields that ``data`` omits.
 
-    Read-only and display-mode fields are skipped. In ``strict`` mode they are
-    reported instead, together with unknown fields, missing required fields
-    (unless ``partial``) and violated schema invariants.
+    Fields missing from ``data`` are left out of ``values``, so ``data`` can
+    hold only the fields being changed. Read-only and display-mode fields are
+    skipped. In ``strict`` mode they are reported instead, together with
+    unknown fields, missing required fields (unless ``partial``) and violated
+    schema invariants. Lenient mode does not check invariants, so callers like
+    control panels can check them their own way.
     """
     items = {
         field.getName(): (field, mode)
@@ -296,7 +325,7 @@ def deserialize_schema_values(
         for name in data.keys() - items.keys():
             errors.append({"field": name, "message": "Unknown field", "error": None})
     for name, (field, mode) in items.items():
-        readonly = is_readonly(field, mode)
+        readonly = _is_readonly(field, mode)
         if name not in data:
             if strict and not partial and field.required and not readonly:
                 exc = RequiredMissing(name)
@@ -330,7 +359,7 @@ def deserialize_schema_values(
     return values, errors
 
 
-def format_errors(errors, request, mask=True):
+def _format_errors(errors: Errors, request: Any, mask: bool = True) -> Errors:
     """Translate error messages and, with ``mask``, hide Python error classes."""
     for error in errors:
         if mask:
