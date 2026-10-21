@@ -2,12 +2,12 @@ from plone.autoform import directives
 from plone.namedfile.field import NamedBlobImage
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.restapi.types.utils import deserialize_schema_values
+from plone.restapi.types.utils import _deserialize_schema_values
+from plone.restapi.types.utils import _get_jsonschema_for_schema
+from plone.restapi.types.utils import _serialize_schema_values
 from plone.restapi.types.utils import FakeDXContext
 from plone.restapi.types.utils import get_fieldsets
-from plone.restapi.types.utils import get_jsonschema_for_schema
 from plone.restapi.types.utils import SchemaValues
-from plone.restapi.types.utils import serialize_schema_values
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
@@ -96,7 +96,7 @@ class TestJsonSchemaForSchema(TestCase):
         self.request = self.layer["request"]
 
     def test_readonly_modes_and_required(self):
-        result = get_jsonschema_for_schema(self.portal, self.request, ISettings)
+        result = _get_jsonschema_for_schema(self.portal, self.request, ISettings)
         properties = result["properties"]
         self.assertEqual(result["type"], "object")
         # z3c.form leaves read-only schema fields out of forms.
@@ -114,7 +114,7 @@ class TestJsonSchemaForSchema(TestCase):
         )
 
     def test_nested_object_schema(self):
-        result = get_jsonschema_for_schema(self.portal, self.request, IWithRange)
+        result = _get_jsonschema_for_schema(self.portal, self.request, IWithRange)
         range_schema = result["properties"]["range"]
         self.assertEqual(range_schema["type"], "object")
         self.assertNotIn("factory", range_schema)
@@ -151,7 +151,7 @@ class TestSchemaValuesConversion(TestCase):
         return SchemaValues(ISettings, current).__of__(self.portal)
 
     def test_serialize_all_fields_by_default(self):
-        data = serialize_schema_values(self.values(), self.request, ISettings)
+        data = _serialize_schema_values(self.values(), self.request, ISettings)
         self.assertEqual(data["title"], "Hello")
         self.assertEqual(data["kind"], {"token": "a", "title": None})
         self.assertEqual(data["types"], [{"token": "Document", "title": "Page"}])
@@ -160,13 +160,13 @@ class TestSchemaValuesConversion(TestCase):
     def test_serialize_processed_fields(self):
         context = self.values()
         fieldsets = get_fieldsets(context, self.request, ISettings)
-        data = serialize_schema_values(
+        data = _serialize_schema_values(
             context, self.request, ISettings, fieldsets=fieldsets
         )
         self.assertNotIn("internal", data)
 
     def test_lenient_mode_skips_unknown_and_readonly(self):
-        values, errors = deserialize_schema_values(
+        values, errors = _deserialize_schema_values(
             self.portal,
             self.request,
             ISettings,
@@ -177,7 +177,7 @@ class TestSchemaValuesConversion(TestCase):
 
     def test_strict_mode_reports_unknown_readonly_and_missing(self):
         fieldsets = get_fieldsets(self.portal, self.request, ISettings)
-        values, errors = deserialize_schema_values(
+        values, errors = _deserialize_schema_values(
             self.portal,
             self.request,
             ISettings,
@@ -193,7 +193,7 @@ class TestSchemaValuesConversion(TestCase):
 
     def test_strict_partial_invariants_see_current_values(self):
         current = {"title": "a", "kind": "b"}
-        values, errors = deserialize_schema_values(
+        values, errors = _deserialize_schema_values(
             self.portal,
             self.request,
             ISettings,
@@ -202,7 +202,7 @@ class TestSchemaValuesConversion(TestCase):
             strict=True,
         )
         self.assertEqual(errors[0]["message"], "Title and kind must differ")
-        values, errors = deserialize_schema_values(
+        values, errors = _deserialize_schema_values(
             self.portal,
             self.request,
             ISettings,
@@ -213,7 +213,7 @@ class TestSchemaValuesConversion(TestCase):
         self.assertEqual((values, errors), ({"title": "c"}, []))
 
     def test_choices_accept_tokens_and_term_dicts(self):
-        values, errors = deserialize_schema_values(
+        values, errors = _deserialize_schema_values(
             self.portal,
             self.request,
             ISettings,

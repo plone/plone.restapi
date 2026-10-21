@@ -5,17 +5,20 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.controlpanels import ControlpanelSerializeToJson
 from plone.restapi.serializer.controlpanels import SERVICE_ID
 from plone.restapi.types import utils
-from plone.restapi.types.utils import FakeDXContext  # noqa: F401 BBB
+from plone.restapi.types.utils import SchemaValues
 from zope.component import adapter
 from zope.component import getAllUtilitiesRegisteredFor
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
 
+# BBB
+FakeDXContext = SchemaValues
+
 
 def rule_schema_as_json(schema, request):
     """Build a complete JSON schema for the given rule element schema."""
-    return utils.get_jsonschema_for_schema(utils.SchemaValues(), request, schema)
+    return utils._get_jsonschema_for_schema(SchemaValues(), request, schema)
 
 
 @implementer(ISerializeToJson)
