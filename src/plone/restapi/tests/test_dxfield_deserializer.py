@@ -76,6 +76,15 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertTrue(isinstance(value, bool), "Not a <bool>")
         self.assertEqual(False, value)
 
+    def test_bool_deserialization_accepts_true_and_false_strings(self):
+        self.assertIs(self.deserialize("test_bool_field", "true"), True)
+        self.assertIs(self.deserialize("test_bool_field", "False"), False)
+
+    def test_bool_deserialization_rejects_other_values(self):
+        for value in ("yes", "on", "", 1):
+            with self.assertRaises((ValueError, ValidationError)):
+                self.deserialize("test_bool_field", value)
+
     def test_bytes_deserialization_returns_bytestring(self):
         value = self.deserialize("test_bytes_field", "Foo")
         self.assertTrue(isinstance(value, bytes), "Not a <bytes>")

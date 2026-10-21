@@ -1,0 +1,1 @@
+Share the code that builds JSON schemas and converts values for `zope.schema` interfaces between control panels, content rules and new services, in private helpers of `plone.restapi.types.utils`. The new `SchemaValues` context replaces the three `FakeDXContext` copies, and `FakeDXContext` remains as an alias. @sneridagh

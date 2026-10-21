@@ -1,0 +1,1 @@
+Describe `schema.Object` fields that are not files or images correctly in JSON schemas: they use plain property names, list their required fields, and no longer claim a `File` factory. @sneridagh
