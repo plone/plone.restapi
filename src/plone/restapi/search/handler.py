@@ -116,7 +116,7 @@ class SearchHandler:
         search_settings = registry.forInterface(ISearchSchema, prefix="plone")
 
         types = query.get("portal_type", [])
-        if "query" in types:
+        if isinstance(types, dict) and "query" in types:
             types = types["query"]
         query["portal_type"] = self.filter_types(types)
 
