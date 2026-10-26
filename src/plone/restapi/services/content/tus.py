@@ -248,7 +248,11 @@ class UploadPatch(UploadFileBase):
             obj = self.context
 
         if not fieldname:
-            info = IPrimaryFieldInfo(obj, None)
+            try:
+                info = IPrimaryFieldInfo(obj, None)
+            except TypeError:
+                # No primary field present (older plone.dexterity raises)
+                info = None
             if info is not None:
                 fieldname = info.fieldname
             elif base_hasattr(obj, "getPrimaryField"):
