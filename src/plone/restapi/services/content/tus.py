@@ -220,7 +220,9 @@ class UploadPatch(UploadFileBase):
         offset = tus_upload.offset()
 
         if tus_upload.finished:
-            self.create_or_modify_content(tus_upload)
+            error = self.create_or_modify_content(tus_upload)
+            if error is not None:
+                return error
         else:
             self.request.response.setHeader("Upload-Expires", tus_upload.expires())
 
