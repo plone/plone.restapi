@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Plone 6.1 pinned versions set (official constraints).
-ARG PLONE_CONSTRAINTS=https://dist.plone.org/release/6.1-latest/constraints.txt
+ARG PLONE_CONSTRAINTS=https://dist.plone.org/release/6.2-latest/constraints.txt
 RUN curl -fsSL "$PLONE_CONSTRAINTS" -o /tmp/constraints.txt \
     # plone.restapi itself is installed from source below; drop its pin
     && sed -i '/^plone\.restapi==/d' /tmp/constraints.txt
