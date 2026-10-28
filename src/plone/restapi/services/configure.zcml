@@ -50,6 +50,7 @@
   <include package=".userschema" />
   <include package=".vocabularies" />
   <include package=".workflow" />
+  <include package=".workflows" />
   <include
       package=".workingcopy"
       zcml:condition="installed plone.app.iterate"

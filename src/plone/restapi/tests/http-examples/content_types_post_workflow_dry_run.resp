@@ -1,0 +1,25 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "current": "simple_publication_workflow",
+    "states": [
+        {
+            "count": 0,
+            "id": "pending",
+            "suggested": "private"
+        },
+        {
+            "count": 1,
+            "id": "private",
+            "suggested": "private"
+        },
+        {
+            "count": 1,
+            "id": "published",
+            "suggested": "external"
+        }
+    ],
+    "unaffected": 0,
+    "workflow": "intranet_workflow"
+}

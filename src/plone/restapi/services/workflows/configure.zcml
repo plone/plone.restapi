@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
+
+  <plone:service
+      method="GET"
+      factory=".get.WorkflowsGet"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@workflows"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".update.WorkflowsPost"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@workflows"
+      />
+
+</configure>

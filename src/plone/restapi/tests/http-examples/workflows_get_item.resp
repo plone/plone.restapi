@@ -1,0 +1,172 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@workflows/simple_publication_workflow",
+    "description": " - Simple workflow that is useful for basic web sites. - Things start out as private, and can either be submitted for review, or published directly. - The creator of a content item can edit the item even after it is published.",
+    "id": "simple_publication_workflow",
+    "initial_state": "private",
+    "states": [
+        {
+            "description": "Waiting to be reviewed, not editable by the owner.",
+            "id": "pending",
+            "permission_roles": {
+                "Access contents information": [
+                    "Manager",
+                    "Owner",
+                    "Editor",
+                    "Reader",
+                    "Contributor",
+                    "Reviewer",
+                    "Site Administrator"
+                ],
+                "Modify portal content": [
+                    "Manager",
+                    "Reviewer",
+                    "Site Administrator"
+                ],
+                "View": [
+                    "Manager",
+                    "Owner",
+                    "Editor",
+                    "Reader",
+                    "Contributor",
+                    "Reviewer",
+                    "Site Administrator"
+                ]
+            },
+            "title": "Pending review",
+            "transitions": [
+                "publish",
+                "reject",
+                "retract"
+            ],
+            "visibility": "restricted"
+        },
+        {
+            "description": "Can only be seen and edited by the owner.",
+            "id": "private",
+            "permission_roles": {
+                "Access contents information": [
+                    "Manager",
+                    "Owner",
+                    "Editor",
+                    "Reader",
+                    "Contributor",
+                    "Site Administrator"
+                ],
+                "Modify portal content": [
+                    "Manager",
+                    "Owner",
+                    "Editor",
+                    "Site Administrator"
+                ],
+                "View": [
+                    "Manager",
+                    "Owner",
+                    "Editor",
+                    "Reader",
+                    "Contributor",
+                    "Site Administrator"
+                ]
+            },
+            "title": "Private",
+            "transitions": [
+                "publish",
+                "submit"
+            ],
+            "visibility": "restricted"
+        },
+        {
+            "description": "Visible to everyone, editable by the owner.",
+            "id": "published",
+            "permission_roles": {
+                "Access contents information": [
+                    "Anonymous"
+                ],
+                "Modify portal content": [
+                    "Manager",
+                    "Owner",
+                    "Editor",
+                    "Site Administrator"
+                ],
+                "View": [
+                    "Anonymous"
+                ]
+            },
+            "title": "Published with accent \u00e9",
+            "transitions": [
+                "retract",
+                "reject"
+            ],
+            "visibility": "anyone"
+        }
+    ],
+    "title": "Simple Publication Workflow",
+    "transitions": [
+        {
+            "description": "Publishing the item makes it visible to other users.",
+            "guard": {
+                "expression": "",
+                "permissions": [
+                    "Review portal content"
+                ],
+                "roles": []
+            },
+            "id": "publish",
+            "new_state": "published",
+            "title": "Publish"
+        },
+        {
+            "description": "Sending the item back will return the item to the original author instead of publishing it. You should preferably include a reason for why it was not published.",
+            "guard": {
+                "expression": "",
+                "permissions": [
+                    "Review portal content"
+                ],
+                "roles": []
+            },
+            "id": "reject",
+            "new_state": "private",
+            "title": "Send back"
+        },
+        {
+            "description": "If you submitted the item by mistake or want to perform additional edits, this will take it back.",
+            "guard": {
+                "expression": "",
+                "permissions": [
+                    "Request review"
+                ],
+                "roles": []
+            },
+            "id": "retract",
+            "new_state": "private",
+            "title": "Retract"
+        },
+        {
+            "description": "Puts your item in a review queue, so it can be published on the site.",
+            "guard": {
+                "expression": "",
+                "permissions": [
+                    "Request review"
+                ],
+                "roles": []
+            },
+            "id": "submit",
+            "new_state": "pending",
+            "title": "Submit for publication"
+        }
+    ],
+    "types": [
+        "ATTestDocument",
+        "ATTestFolder",
+        "Collection",
+        "DXTestDocument",
+        "Document",
+        "Event",
+        "Folder",
+        "Link",
+        "News Item",
+        "TempFolder"
+    ]
+}
