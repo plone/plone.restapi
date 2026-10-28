@@ -1,9 +1,13 @@
+from plone.behavior.interfaces import IBehavior
 from plone.restapi import _
 from zope import schema
+from zope.component import getUtilitiesFor
 from zope.interface import Attribute
 from zope.interface import Interface
 from zope.interface import invariant
+from zope.interface import provider
 from zope.interface.exceptions import Invalid
+from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -46,6 +50,29 @@ class ITypeSettings(Interface):
 
         Called before the content type is removed.
         """
+
+
+def behavior_registrations():
+    """Return every registered behavior once, by its name.
+
+    Behaviors are registered under their short name and their interface
+    identifier. Behaviors without a short name use the identifier.
+    """
+    registrations = {}
+    for _name, registration in getUtilitiesFor(IBehavior):
+        name = registration.name or registration.interface.__identifier__
+        registrations.setdefault(name, registration)
+    return registrations
+
+
+@provider(IContextSourceBinder)
+def available_behaviors(context):
+    return SimpleVocabulary(
+        [
+            SimpleTerm(name, name, registration.title)
+            for name, registration in sorted(behavior_registrations().items())
+        ]
+    )
 
 
 def titled_vocabulary(*terms):
@@ -123,6 +150,21 @@ class IVersioningSettings(Interface):
             ("manual", _("Manual")),
             ("automatic", _("Automatic")),
         ),
+    )
+
+
+class IBehaviorsSettings(Interface):
+    behaviors = schema.List(
+        title=_("Behaviors"),
+        description=_(
+            "The complete list of the type's behaviors. Their order sets "
+            "where their fields appear in the edit form."
+        ),
+        value_type=schema.Choice(source=available_behaviors),
+        required=False,
+        default=[],
+        missing_value=[],
+        unique=True,
     )
 
 

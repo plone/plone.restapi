@@ -468,6 +468,42 @@ class TestServicesTypes(unittest.TestCase):
             "contact_info" not in [f["id"] for f in response.json().get("fieldsets")]
         )  # noqa
 
+    def test_preview_with_other_behaviors(self):
+        before = self.portal.portal_types.Document.behaviors
+        response = self.api_session.get(
+            "/@types/Document",
+            params={"behaviors": "plone.leadimage,plone.dublincore"},
+        )
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(
+            response.headers.get("Content-Type"), "application/json+schema"
+        )
+        properties = response.json()["properties"]
+        self.assertEqual(properties["image"]["behavior"], "plone.leadimage")
+        self.assertIn("title", properties)
+        self.assertNotIn("relatedItems", properties)
+        # The type's own fields stay.
+        self.assertIn("author_email", properties)
+        # Nothing changes.
+        transaction.begin()
+        self.assertEqual(self.portal.portal_types.Document.behaviors, before)
+        properties = self.api_session.get("/@types/Document").json()["properties"]
+        self.assertNotIn("image", properties)
+
+    def test_preview_without_behaviors(self):
+        response = self.api_session.get("/@types/Document?behaviors=")
+        self.assertEqual(response.status_code, 200, response.text)
+        properties = response.json()["properties"]
+        self.assertNotIn("title", properties)
+        self.assertIn("author_email", properties)
+
+    def test_preview_with_unknown_behavior(self):
+        response = self.api_session.get(
+            "/@types/Document", params={"behaviors": "plone.dublincore,nope"}
+        )
+        self.assertEqual(response.status_code, 400, response.text)
+        self.assertEqual(response.json()["message"], "Unknown behavior: nope")
+
     def test_get_types_with_unknown_type(self):
         response = self.api_session.get(
             f"{self.portal.absolute_url()}/@types/UnknownType"

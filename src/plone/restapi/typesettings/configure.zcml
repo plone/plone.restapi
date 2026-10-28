@@ -20,5 +20,9 @@
       factory=".settings.VersioningSettings"
       name="versioning"
       />
+  <adapter
+      factory=".settings.BehaviorsSettings"
+      name="behaviors"
+      />
 
 </configure>
