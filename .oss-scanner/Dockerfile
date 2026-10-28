@@ -2,7 +2,7 @@
 # Assumes the build context is the root of a plone.restapi checkout.
 # Network is available during this build only; the audit runs offline,
 # so everything needed for building and running tests is installed here.
-FROM python:3.12-slim-bookworm
+FROM python:3.14-slim-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PIP_NO_CACHE_DIR=1 \
