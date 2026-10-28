@@ -1,8 +1,11 @@
 """Core content type settings."""
 
+from plone.behavior.interfaces import IBehavior
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.registry.interfaces import IRegistry
 from plone.restapi import _
+from plone.restapi.typesettings.interfaces import behavior_registrations
+from plone.restapi.typesettings.interfaces import IBehaviorsSettings
 from plone.restapi.typesettings.interfaces import ICommentsSettings
 from plone.restapi.typesettings.interfaces import IContentsSettings
 from plone.restapi.typesettings.interfaces import IGeneralSettings
@@ -13,6 +16,7 @@ from Products.CMFCore.interfaces import ITypeInformation
 from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getUtility
+from zope.component import queryUtility
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema import getFieldNames
@@ -205,3 +209,47 @@ class VersioningSettings(TypeSettings):
             repository.setVersionableContentTypes([t for t in types if t != name])
         for policy_id in tuple(repository.getPolicyMap().get(name, ())):
             repository.removePolicyFromContentType(name, policy_id)
+
+
+def behavior_name(stored):
+    """Return the name a stored behavior is listed under, or ``None``.
+
+    FTIs can store a behavior by its interface identifier or a former dotted
+    name.
+    """
+    registration = queryUtility(IBehavior, name=stored)
+    if registration is None:
+        for candidate in behavior_registrations().values():
+            if stored in candidate.former_dotted_names:
+                registration = candidate
+                break
+    if registration is None:
+        return None
+    return registration.name or registration.interface.__identifier__
+
+
+@adapter(IDexterityFTI, IBrowserRequest)
+class BehaviorsSettings(TypeSettings):
+    """The ordered behaviors of a Dexterity type."""
+
+    title = _("Behaviors")
+    # Before versioning, which is written after it: in a PATCH that changes
+    # both, the versioning setting decides about the versioning behavior.
+    order = 45
+    schema = IBehaviorsSettings
+
+    def read(self):
+        names = [behavior_name(stored) for stored in self.context.behaviors]
+        return {"behaviors": [name for name in names if name]}
+
+    def write(self, data):
+        if "behaviors" not in data:
+            return
+        # Behaviors that aren't registered aren't listed, so a new list
+        # doesn't remove them: they come back if their add-on does.
+        unknown = [
+            stored for stored in self.context.behaviors if not behavior_name(stored)
+        ]
+        behaviors = tuple(data["behaviors"] or ()) + tuple(unknown)
+        if behaviors != tuple(self.context.behaviors):
+            self.context.manage_changeProperties(behaviors=behaviors)

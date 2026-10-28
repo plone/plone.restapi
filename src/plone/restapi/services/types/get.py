@@ -1,4 +1,5 @@
 from plone.dexterity.interfaces import IDexterityContent
+from plone.dexterity.interfaces import IDexterityFTI
 from plone.restapi.bbb import IConstrainTypes
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.interfaces import IExpandableElement
@@ -147,6 +148,10 @@ class TypesGet(Service):
         except Exception:
             dtype = self.context
 
+        behaviors = self.request.form.get("behaviors")
+        if behaviors is not None:
+            return self.reply_for_behaviors(dtype, portal_type, behaviors)
+
         try:
             schema = get_info_for_type(dtype, self.request, portal_type)
         except KeyError:
@@ -157,6 +162,37 @@ class TypesGet(Service):
                 "message": "Type '%s' could not be found." % portal_type,
             }
 
+        self.content_type = "application/json+schema"
+        return schema
+
+    def reply_for_behaviors(self, dtype, portal_type, behaviors):
+        """The schema the type would have with these behaviors, in this order.
+
+        A dry run: the type doesn't change. ``behaviors`` is the complete
+        list, comma-separated, like the ``behaviors`` of ``@content-types``.
+        """
+        if isinstance(behaviors, str):
+            behaviors = behaviors.split(",")
+        behaviors = [name.strip() for name in behaviors if name.strip()]
+        types_tool = getToolByName(self.context, "portal_types")
+        if not IDexterityFTI.providedBy(types_tool.getTypeInfo(portal_type)):
+            self.content_type = "application/json"
+            self.request.response.setStatus(404)
+            return {
+                "type": "NotFound",
+                "message": "Type '%s' could not be found." % portal_type,
+            }
+        try:
+            schema = get_info_for_type(
+                dtype, self.request, portal_type, behaviors=behaviors
+            )
+        except KeyError as error:
+            self.content_type = "application/json"
+            self.request.response.setStatus(400)
+            return {
+                "type": "BadRequest",
+                "message": "Unknown behavior: %s" % error.args[0],
+            }
         self.content_type = "application/json+schema"
         return schema
 

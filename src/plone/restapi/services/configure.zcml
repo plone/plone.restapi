@@ -13,6 +13,7 @@
   <include package=".actions" />
   <include package=".addons" />
   <include package=".aliases" />
+  <include package=".behaviors" />
   <include package=".breadcrumbs" />
   <include package=".content" />
   <include package=".contenttypes" />

@@ -120,7 +120,14 @@ class TestContentTypesRead(ContentTypesTestCase):
         self.assertEqual(result["items_total"], 0)
         self.assertEqual(
             [fieldset["id"] for fieldset in result["schema"]["fieldsets"]],
-            ["general", "contents", "visibility", "comments", "versioning"],
+            [
+                "general",
+                "contents",
+                "visibility",
+                "comments",
+                "behaviors",
+                "versioning",
+            ],
         )
         fields = [
             name
@@ -336,6 +343,72 @@ class TestContentTypesUpdate(ContentTypesTestCase):
             "plone.app.versioningbehavior.behaviors.IVersionable", fti.behaviors
         )
         self.assertIn("plone.app.lockingbehavior.behaviors.ILocking", fti.behaviors)
+
+
+class TestContentTypesBehaviors(ContentTypesTestCase):
+    def behaviors(self, type_id="Document"):
+        return tokens(self.data(type_id)["behaviors"])
+
+    def test_behaviors_are_the_ordered_list(self):
+        fti = self.portal.portal_types.Document
+        self.assertEqual(self.behaviors(), list(fti.behaviors))
+        field = self.get().json()["schema"]["properties"]["behaviors"]
+        self.assertEqual(field["type"], "array")
+        self.assertTrue(field["uniqueItems"])
+        choices = dict(field["items"]["choices"])
+        self.assertEqual(choices["plone.leadimage"], "Lead Image")
+
+    def test_patch_replaces_the_list_in_order(self):
+        behaviors = ["plone.leadimage", "plone.dublincore", "plone.namefromtitle"]
+        response = self.patch({"behaviors": behaviors})
+        self.assertEqual(response.status_code, 204, response.text)
+        transaction.begin()
+        self.assertEqual(self.portal.portal_types.Document.behaviors, tuple(behaviors))
+        self.assertEqual(self.behaviors(), behaviors)
+        # The schema follows.
+        properties = self.api.get("/@types/Document").json()["properties"]
+        self.assertIn("image", properties)
+        self.assertNotIn("relatedItems", properties)
+
+    def test_legacy_names_are_listed_by_name(self):
+        fti = self.portal.portal_types.Document
+        fti.behaviors = ("plone.app.dexterity.behaviors.metadata.IDublinCore",)
+        transaction.commit()
+        self.assertEqual(self.behaviors(), ["plone.dublincore"])
+
+    def test_unregistered_behaviors_are_kept_but_not_listed(self):
+        fti = self.portal.portal_types.Document
+        fti.behaviors = ("plone.dublincore", "collective.gone")
+        transaction.commit()
+        self.assertEqual(self.behaviors(), ["plone.dublincore"])
+        self.assertEqual(self.patch({"behaviors": ["plone.basic"]}).status_code, 204)
+        transaction.begin()
+        self.assertEqual(fti.behaviors, ("plone.basic", "collective.gone"))
+
+    def test_unknown_and_repeated_behaviors_are_refused(self):
+        before = self.portal.portal_types.Document.behaviors
+        response = self.patch({"behaviors": ["plone.dublincore", "collective.nope"]})
+        self.assertEqual(response.status_code, 400, response.text)
+        self.assertEqual([e["field"] for e in errors(response)], ["behaviors"])
+        response = self.patch({"behaviors": ["plone.basic", "plone.basic"]})
+        self.assertEqual(response.status_code, 400, response.text)
+        transaction.begin()
+        self.assertEqual(self.portal.portal_types.Document.behaviors, before)
+
+    def test_versioning_decides_about_its_behavior(self):
+        behaviors = [b for b in self.behaviors() if b != "plone.versioning"]
+        response = self.patch({"behaviors": behaviors, "versioning": "manual"})
+        self.assertEqual(response.status_code, 204, response.text)
+        self.assertIn("plone.versioning", self.behaviors())
+        response = self.patch(
+            {"behaviors": behaviors + ["plone.versioning"], "versioning": "off"}
+        )
+        self.assertEqual(response.status_code, 204, response.text)
+        self.assertNotIn("plone.versioning", self.behaviors())
+
+    def test_only_dexterity_types_have_behaviors(self):
+        data = self.data("Discussion Item")
+        self.assertNotIn("behaviors", data)
 
 
 class TestContentTypesCreate(ContentTypesTestCase):
