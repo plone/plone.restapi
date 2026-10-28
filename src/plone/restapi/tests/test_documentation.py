@@ -2435,6 +2435,34 @@ class TestContentTypesDocumentation(TestDocumentationBase):
         self.assertEqual(204, response.status_code, response.text)
         save_request_and_response_for_docs("content_types_delete", response)
 
+    def test_content_types_patch_behaviors(self):
+        response = self.api_session.patch(
+            "/@content-types/Event",
+            json={
+                "behaviors": [
+                    "plone.eventbasic",
+                    "plone.dublincore",
+                    "plone.namefromtitle",
+                    "plone.leadimage",
+                ]
+            },
+        )
+        self.assertEqual(204, response.status_code, response.text)
+        save_request_and_response_for_docs("content_types_patch_behaviors", response)
+
+    def test_behaviors_get(self):
+        response = self.api_session.get("/@behaviors")
+        self.assertEqual(200, response.status_code, response.text)
+        # The response lists every behavior of the site.
+        save_request_for_docs("behaviors_get", response)
+
+    def test_types_get_with_behaviors(self):
+        response = self.api_session.get(
+            "/@types/Event?behaviors=plone.eventbasic,plone.dublincore"
+        )
+        self.assertEqual(200, response.status_code, response.text)
+        save_request_for_docs("types_get_with_behaviors", response)
+
     def test_content_types_delete_nonempty(self):
         response = self.api_session.post(
             "/", json={"@type": "Document", "id": "example", "title": "Example"}

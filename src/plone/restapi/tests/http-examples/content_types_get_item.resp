@@ -10,6 +10,68 @@ Content-Type: application/json
             "title": "No types",
             "token": "none"
         },
+        "behaviors": [
+            {
+                "title": "Full-Text Indexing",
+                "token": "plone.textindexer"
+            },
+            {
+                "title": "Event Basic",
+                "token": "plone.eventbasic"
+            },
+            {
+                "title": "Event Recurrence",
+                "token": "plone.eventrecurrence"
+            },
+            {
+                "title": "Event Location",
+                "token": "plone.eventlocation"
+            },
+            {
+                "title": "Event Attendees",
+                "token": "plone.eventattendees"
+            },
+            {
+                "title": "Event Contact",
+                "token": "plone.eventcontact"
+            },
+            {
+                "title": "Dublin Core metadata",
+                "token": "plone.dublincore"
+            },
+            {
+                "title": "Name from title",
+                "token": "plone.namefromtitle"
+            },
+            {
+                "title": "RichText",
+                "token": "plone.richtext"
+            },
+            {
+                "title": "Allow discussion",
+                "token": "plone.allowdiscussion"
+            },
+            {
+                "title": "Exclude From navigation",
+                "token": "plone.excludefromnavigation"
+            },
+            {
+                "title": "Short name",
+                "token": "plone.shortname"
+            },
+            {
+                "title": "Related items",
+                "token": "plone.relateditems"
+            },
+            {
+                "title": "Versioning",
+                "token": "plone.versioning"
+            },
+            {
+                "title": "Locking",
+                "token": "plone.locking"
+            }
+        ],
         "default_page": true,
         "description": "Events can be shown in calendars.",
         "global_allow": true,
@@ -55,6 +117,13 @@ Content-Type: application/json
                 ],
                 "id": "comments",
                 "title": "Comments"
+            },
+            {
+                "fields": [
+                    "behaviors"
+                ],
+                "id": "behaviors",
+                "title": "Behaviors"
             },
             {
                 "fields": [
@@ -211,6 +280,228 @@ Content-Type: application/json
                 "vocabulary": {
                     "@id": "http://localhost:55001/plone/portal_types/Event/@sources/allowed_content_types_mode"
                 }
+            },
+            "behaviors": {
+                "additionalItems": true,
+                "default": [],
+                "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                "factory": "Multiple Choice",
+                "items": {
+                    "choices": [
+                        [
+                            "plone.allowdiscussion",
+                            "Allow discussion"
+                        ],
+                        [
+                            "plone.basic",
+                            "Basic metadata"
+                        ],
+                        [
+                            "plone.categorization",
+                            "Categorization"
+                        ],
+                        [
+                            "plone.collection",
+                            "Collection"
+                        ],
+                        [
+                            "plone.constraintypes",
+                            "Folder Addable Constrains"
+                        ],
+                        [
+                            "plone.dublincore",
+                            "Dublin Core metadata"
+                        ],
+                        [
+                            "plone.eventattendees",
+                            "Event Attendees"
+                        ],
+                        [
+                            "plone.eventbasic",
+                            "Event Basic"
+                        ],
+                        [
+                            "plone.eventcontact",
+                            "Event Contact"
+                        ],
+                        [
+                            "plone.eventlocation",
+                            "Event Location"
+                        ],
+                        [
+                            "plone.eventrecurrence",
+                            "Event Recurrence"
+                        ],
+                        [
+                            "plone.excludefromnavigation",
+                            "Exclude From navigation"
+                        ],
+                        [
+                            "plone.leadimage",
+                            "Lead Image"
+                        ],
+                        [
+                            "plone.locking",
+                            "Locking"
+                        ],
+                        [
+                            "plone.namefromfilename",
+                            "Name from file name"
+                        ],
+                        [
+                            "plone.namefromtitle",
+                            "Name from title"
+                        ],
+                        [
+                            "plone.navigationroot",
+                            "Navigation root"
+                        ],
+                        [
+                            "plone.nextpreviousenabled",
+                            "Next previous navigation"
+                        ],
+                        [
+                            "plone.nextprevioustoggle",
+                            "Next previous navigation toggle"
+                        ],
+                        [
+                            "plone.ownership",
+                            "Ownership"
+                        ],
+                        [
+                            "plone.publication",
+                            "Date range"
+                        ],
+                        [
+                            "plone.relateditems",
+                            "Related items"
+                        ],
+                        [
+                            "plone.richtext",
+                            "RichText"
+                        ],
+                        [
+                            "plone.shortname",
+                            "Short name"
+                        ],
+                        [
+                            "plone.tableofcontents",
+                            "Table of contents"
+                        ],
+                        [
+                            "plone.textindexer",
+                            "Full-Text Indexing"
+                        ],
+                        [
+                            "plone.thumb_icon",
+                            "Thumbs and icon handling"
+                        ],
+                        [
+                            "plone.translatable",
+                            "Multilingual Support"
+                        ],
+                        [
+                            "plone.versioning",
+                            "Versioning"
+                        ],
+                        [
+                            "tests.restapi.test_annotations_behavior",
+                            "Test Annotations Behavior"
+                        ],
+                        [
+                            "tests.restapi.test_behavior",
+                            "Test Behavior"
+                        ],
+                        [
+                            "volto.blocks",
+                            "Blocks"
+                        ],
+                        [
+                            "volto.blocks.editable.layout",
+                            "Blocks (Editable Layout)"
+                        ]
+                    ],
+                    "description": "",
+                    "enum": [
+                        "plone.allowdiscussion",
+                        "plone.basic",
+                        "plone.categorization",
+                        "plone.collection",
+                        "plone.constraintypes",
+                        "plone.dublincore",
+                        "plone.eventattendees",
+                        "plone.eventbasic",
+                        "plone.eventcontact",
+                        "plone.eventlocation",
+                        "plone.eventrecurrence",
+                        "plone.excludefromnavigation",
+                        "plone.leadimage",
+                        "plone.locking",
+                        "plone.namefromfilename",
+                        "plone.namefromtitle",
+                        "plone.navigationroot",
+                        "plone.nextpreviousenabled",
+                        "plone.nextprevioustoggle",
+                        "plone.ownership",
+                        "plone.publication",
+                        "plone.relateditems",
+                        "plone.richtext",
+                        "plone.shortname",
+                        "plone.tableofcontents",
+                        "plone.textindexer",
+                        "plone.thumb_icon",
+                        "plone.translatable",
+                        "plone.versioning",
+                        "tests.restapi.test_annotations_behavior",
+                        "tests.restapi.test_behavior",
+                        "volto.blocks",
+                        "volto.blocks.editable.layout"
+                    ],
+                    "enumNames": [
+                        "Allow discussion",
+                        "Basic metadata",
+                        "Categorization",
+                        "Collection",
+                        "Folder Addable Constrains",
+                        "Dublin Core metadata",
+                        "Event Attendees",
+                        "Event Basic",
+                        "Event Contact",
+                        "Event Location",
+                        "Event Recurrence",
+                        "Exclude From navigation",
+                        "Lead Image",
+                        "Locking",
+                        "Name from file name",
+                        "Name from title",
+                        "Navigation root",
+                        "Next previous navigation",
+                        "Next previous navigation toggle",
+                        "Ownership",
+                        "Date range",
+                        "Related items",
+                        "RichText",
+                        "Short name",
+                        "Table of contents",
+                        "Full-Text Indexing",
+                        "Thumbs and icon handling",
+                        "Multilingual Support",
+                        "Versioning",
+                        "Test Annotations Behavior",
+                        "Test Behavior",
+                        "Blocks",
+                        "Blocks (Editable Layout)"
+                    ],
+                    "factory": "Choice",
+                    "title": "",
+                    "type": "string",
+                    "vocabulary": {
+                        "@id": "http://localhost:55001/plone/portal_types/Event/@sources/"
+                    }
+                },
+                "title": "Behaviors",
+                "type": "array",
+                "uniqueItems": true
             },
             "default_page": {
                 "description": "Content of this type can be a folder's default page",

@@ -19,6 +19,7 @@ This part of the documentation explains the endpoints of Plone REST API.
 
 addons
 aliases
+behaviors
 breadcrumbs
 comments
 content-types

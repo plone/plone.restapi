@@ -85,6 +85,7 @@ Choice values have a `token` and a `title`, like in control panels and content.
 | `visibility` | `searchable` | Whether items of this type are shown in search results. |
 | `visibility` | `default_page` | Whether items of this type can be a folder's default page. |
 | `comments` | `allow_discussion` | Whether items of this type allow comments. |
+| `behaviors` | `behaviors` | IDs of the type's behaviors, in order. Dexterity types only. |
 | `versioning` | `versioning` | `off`, `manual`, or `automatic`. |
 
 `allowed_content_types_mode` and `allowed_content_types` work together:
@@ -99,6 +100,20 @@ The service checks these rules against the stored values too, so changing only t
 Changing the versioning updates the repository policies of the type and its versioning behavior.
 Enabling versioning also enables locking, and disabling versioning keeps locking.
 Repository policies added by add-ons are kept.
+
+`behaviors` is the complete, ordered list of the type's behaviors.
+Their order sets where their fields appear in the edit form.
+Behaviors are listed by their name, such as `plone.dublincore`, also when the type stores the interface identifier.
+A `PATCH` replaces the list: a behavior left out is disabled.
+Behaviors stored on the type that aren't registered, for example those of an uninstalled add-on, aren't listed and are kept.
+In a `PATCH` that changes `behaviors` and `versioning`, the versioning setting decides whether the type has the versioning behavior.
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/content_types_patch_behaviors.req
+```
+
+Use the {doc}`behaviors` service to list the behaviors and the fields they add, and the `behaviors` parameter of the {doc}`types` service to preview the edit form with other behaviors.
 
 ## Change settings
 
