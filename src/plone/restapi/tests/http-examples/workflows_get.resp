@@ -1,0 +1,104 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@workflows",
+    "default": "simple_publication_workflow",
+    "items": [
+        {
+            "@id": "http://localhost:55001/plone/@workflows/comment_review_workflow",
+            "description": "A simple review workflow for comments",
+            "id": "comment_review_workflow",
+            "initial_state": "pending",
+            "states": [
+                "pending",
+                "published",
+                "rejected",
+                "spam"
+            ],
+            "title": "Comment Review Workflow"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@workflows/plone_workflow",
+            "description": " - Users can create content that is immediately publicly accessible. - Content can be submitted for publication by the content's creator or a Manager, which is typically done to promote events or news to the front page. - Reviewers can publish or reject content, content owners can retract their submissions. - While the content is awaiting review it is readable by anybody. - If content is published, it can only be retracted by a Manager.",
+            "id": "plone_workflow",
+            "initial_state": "visible",
+            "states": [
+                "pending",
+                "private",
+                "published",
+                "visible"
+            ],
+            "title": "Community Workflow"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@workflows/folder_workflow",
+            "description": " - Used in conjunction with the Community workflow. - Has no pending state. - Allows owner to publish the folder without approval.",
+            "id": "folder_workflow",
+            "initial_state": "visible",
+            "states": [
+                "private",
+                "published",
+                "visible"
+            ],
+            "title": "Community Workflow for Folders"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@workflows/intranet_folder_workflow",
+            "description": " - Normally used with the Intranet/Extranet workflow on folder types. - Only has two states: Private and Internal Draft.",
+            "id": "intranet_folder_workflow",
+            "initial_state": "internal",
+            "states": [
+                "internal",
+                "private"
+            ],
+            "title": "Intranet Workflow for Folders"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@workflows/intranet_workflow",
+            "description": " - An intranet workflow where content is only accessible if you are logged in. - Basic states are: Internal Draft, Pending Review, Internally Published and Private. - Also has an Externally Published state, so you can make selected content available to people outside the intranet.",
+            "id": "intranet_workflow",
+            "initial_state": "internal",
+            "states": [
+                "internal",
+                "internally_published",
+                "pending",
+                "private",
+                "external"
+            ],
+            "title": "Intranet/Extranet Workflow"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@workflows/simple_publication_workflow",
+            "description": " - Simple workflow that is useful for basic web sites. - Things start out as private, and can either be submitted for review, or published directly. - The creator of a content item can edit the item even after it is published.",
+            "id": "simple_publication_workflow",
+            "initial_state": "private",
+            "states": [
+                "pending",
+                "private",
+                "published"
+            ],
+            "title": "Simple Publication Workflow"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@workflows/comment_one_state_workflow",
+            "description": "- Essentially a workflow with no transitions, but has a Published state, so portlets and applications that expect that state will continue to work.",
+            "id": "comment_one_state_workflow",
+            "initial_state": "published",
+            "states": [
+                "published"
+            ],
+            "title": "Single State Workflow"
+        },
+        {
+            "@id": "http://localhost:55001/plone/@workflows/one_state_workflow",
+            "description": "- Essentially a workflow with no transitions, but has a Published state, so portlets and applications that expect that state will continue to work.",
+            "id": "one_state_workflow",
+            "initial_state": "published",
+            "states": [
+                "published"
+            ],
+            "title": "Single State Workflow"
+        }
+    ]
+}

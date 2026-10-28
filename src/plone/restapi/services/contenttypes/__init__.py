@@ -23,6 +23,7 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.security import checkPermission
 
 SERVICE_ID = "@content-types"
+WORKFLOW = "workflow"
 
 
 @implementer(IPublishTraverse)
@@ -43,14 +44,30 @@ class ContentTypesService(Service):
     def types_tool(self):
         return getToolByName(self.context, "portal_types")
 
-    def get_fti(self):
-        if len(self.params) != 1 or self.params[0] not in self.types_tool:
+    def get_fti(self, *path):
+        """Return the type in the URL, which must be followed by ``path``."""
+        if (
+            not self.params
+            or self.params[1:] != list(path)
+            or self.params[0] not in self.types_tool
+        ):
             raise NotFound("Unknown content type")
         return self.types_tool[self.params[0]]
 
     def url(self, type_id=None):
         url = f"{self.context.absolute_url()}/{SERVICE_ID}"
         return url if type_id is None else f"{url}/{quote(type_id, safe='')}"
+
+    def workflow(self, type_id, chains=None):
+        """Return the type's workflow, and whether it follows the default."""
+        workflow = getToolByName(self.context, "portal_workflow")
+        if chains is None:
+            chains = dict(workflow.listChainOverrides())
+        chain = workflow.getChainFor(type_id)
+        return {
+            "id": chain[0] if chain else None,
+            "follows_default": chains.get(type_id) is None,
+        }
 
     def json_body(self):
         try:
@@ -111,7 +128,6 @@ class ContentTypesService(Service):
                 )
             )
         type_id = fti.getId()
-        chain = workflow.getChainFor(type_id)
         return json_compatible(
             {
                 "@id": self.url(type_id),
@@ -125,10 +141,7 @@ class ContentTypesService(Service):
                     "fieldsets": fieldsets,
                 },
                 "data": data,
-                "workflow": {
-                    "id": chain[0] if chain else None,
-                    "follows_default": chains.get(type_id) is None,
-                },
+                "workflow": self.workflow(type_id, chains),
             }
         )
 
