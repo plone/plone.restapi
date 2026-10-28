@@ -58,3 +58,4 @@ Everything in an HTTP request is untrusted: URL path and traversal segments, que
 - Provide a reproducer using the project's test layers (`plone.restapi.testing`, e.g. `PLONE_RESTAPI_DX_FUNCTIONAL_TESTING`) or HTTP requests against a default Plone 6 site with the relevant user role, stating exactly which role is used for each request.
 - State which permission or role the attacker holds and which the operation should require.
 - Proposed patches should be minimal, follow existing code style, include a regression test, and add a changelog entry in `news/` (towncrier fragment). Prefer fixing the permission check or serializer/deserializer at the root rather than adding endpoint-specific filters.
+- The patch should be compatible with Python 3.8 as minimum.  This could be tested with the `py38-plone52` tox environment, but that would require network access.
