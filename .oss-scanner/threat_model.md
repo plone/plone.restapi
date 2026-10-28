@@ -27,7 +27,7 @@ Everything in an HTTP request is untrusted: URL path and traversal segments, que
 5. **Write operations with side effects** (copy/move, workflow transitions, lock/unlock, content-rules, add-on install/uninstall, registry and control panel updates, email sending, database/system information). Concerns: missing permission checks, checks on the wrong object (source vs target), CSRF-like or confused-deputy issues, SSRF, mail header injection or abuse as an open relay.
 6. **File and upload handling** (file/image fields, TUS uploads, `@upload`). Concerns: path traversal, unbounded resource consumption, content-type confusion leading to stored XSS when served, unsafe temporary file handling.
 7. **Traversal** (`++api++`, `++resource++`, namespace traversers, service lookup by name). Concerns: reaching unintended views/adapters, bypassing permission declarations, unauthorized access to private attributes via traversal.
-8. **Query construction** (catalog query building from query strings and JSON bodies). Concerns: queries returning unauthorized results, denial of service via pathological queries; note that ZCatalog is not SQL, so classic SQL injection does not apply.
+8. **Query construction** (catalog query building from query strings and JSON bodies). Concerns: queries returning unauthorized results, denial of service via pathological queries.
 
 ## What is in scope (please report)
 
