@@ -27,6 +27,8 @@ They are now in {ref}`content-default-types-representations`.
 | `POST` | `/@content-types` | Create a Dexterity content type, optionally copying another one. |
 | `PATCH` | `/@content-types/{type}` | Change some settings of a content type. |
 | `DELETE` | `/@content-types/{type}` | Delete a Dexterity content type that has no items. |
+| `GET` | `/@content-types/{type}/workflow` | The workflow of a content type. |
+| `POST` | `/@content-types/{type}/workflow` | Change the workflow of a content type. |
 
 Encode content type IDs in URLs, for example `News%20Item`.
 Unknown content types and extra path segments return `404 Not Found`.
@@ -72,6 +74,7 @@ Choice values have a `token` and a `title`, like in control panels and content.
 
 `workflow.id` is the first workflow of the type's chain, or `null` when the type has no workflow.
 `workflow.follows_default` is `true` when the type uses the site's default workflow, and `false` when a workflow, or no workflow, is assigned to it explicitly.
+It changes through `/@content-types/{type}/workflow`, described in {ref}`content-types-workflow`.
 
 ### Core settings
 
@@ -133,6 +136,81 @@ A choice value can be its token, or an object with a `token`, as returned in `da
 
 The service validates every change before it stores any of them.
 Invalid values, unknown fields, and read-only fields return `400 Bad Request` with the field names and messages.
+
+(content-types-workflow)=
+
+## Change the workflow
+
+Send a `GET` request to `/@content-types/{type}/workflow` to get the workflow of a content type.
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/content_types_get_workflow.req
+```
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/content_types_get_workflow.resp
+:language: http
+```
+
+It has the same `id` and `follows_default` as the `workflow` of the content type.
+
+Send a `POST` request to `/@content-types/{type}/workflow` to change it.
+The body has these properties:
+
+| Property | Description |
+| --- | --- |
+| `workflow` | ID of the new workflow, or `null` for no workflow. |
+| `follows_default` | When `true`, the type follows the default workflow again, and `workflow` is ignored. |
+| `state_map` | Maps the states of the current workflow to states of the new one. Use `""` for items of a type without a workflow. Optional. |
+| `dry_run` | When `true`, changes nothing, and returns the planned change. |
+
+The body needs `workflow` or `follows_default`.
+Unknown workflows and unknown target states return `400 Bad Request`.
+The service changes one content type at a time.
+Use the {doc}`workflows` service to list the workflows, their states and who can see items in them, and to change the default workflow.
+
+### Plan the change
+
+With `dry_run`, the service returns the number of items of the type in each state, and a suggested new state for each.
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/content_types_post_workflow_dry_run.req
+```
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/content_types_post_workflow_dry_run.resp
+:language: http
+```
+
+| Property | Description |
+| --- | --- |
+| `workflow` | ID of the new workflow, which is the default workflow with `follows_default`, or `null`. |
+| `current` | ID of the current workflow, or `null`. |
+| `states` | One entry per state of the current workflow, in its order, with the state `id`, the `count` of items in it, and the `suggested` new state. |
+| `unaffected` | Number of items that a placeful workflow policy gives another workflow, which the change doesn't affect. |
+
+Without a current workflow, `states` has a single entry with an empty `id`, counting every item of the type.
+The counts include items the current user cannot view.
+`suggested` is `null` when the new workflow is `null`.
+The suggested state keeps who can see the items, as described in {doc}`workflows`.
+
+### Apply the change
+
+Without `dry_run`, the service assigns the workflow, moves the items of the type to their new states, and updates their security, as the classic "Content Settings" control panel does.
+States left out of `state_map` get the suggested state.
+The change happens during the request, so it can take long for types with many items.
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/content_types_post_workflow.req
+```
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/content_types_post_workflow.resp
+:language: http
+```
+
+The response contains the new `workflow`, whether the type `follows_default`, and the number of `changed` items.
+When the workflow stays the same, for example when a type following the default gets the default workflow explicitly, only the assignment changes, and `changed` is `0`.
 
 ## Create a content type
 

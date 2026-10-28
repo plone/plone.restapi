@@ -2463,6 +2463,71 @@ class TestContentTypesDocumentation(TestDocumentationBase):
         self.assertEqual(200, response.status_code, response.text)
         save_request_for_docs("types_get_with_behaviors", response)
 
+    def create_events(self):
+        for id, transition in (("talk", None), ("keynote", "publish")):
+            response = self.api_session.post(
+                "/", json={"@type": "Event", "id": id, "title": id.title()}
+            )
+            self.assertEqual(201, response.status_code, response.text)
+            if transition:
+                response = self.api_session.post(f"/{id}/@workflow/{transition}")
+                self.assertEqual(200, response.status_code, response.text)
+
+    def test_workflows_get(self):
+        response = self.api_session.get("/@workflows")
+        self.assertEqual(200, response.status_code, response.text)
+        save_request_and_response_for_docs("workflows_get", response)
+
+    def test_workflows_get_item(self):
+        response = self.api_session.get("/@workflows/simple_publication_workflow")
+        self.assertEqual(200, response.status_code, response.text)
+        save_request_and_response_for_docs("workflows_get_item", response)
+
+    def test_workflows_post_dry_run(self):
+        self.create_events()
+        response = self.api_session.post(
+            "/@workflows", json={"default": "intranet_workflow", "dry_run": True}
+        )
+        self.assertEqual(200, response.status_code, response.text)
+        save_request_and_response_for_docs("workflows_post_dry_run", response)
+
+    def test_workflows_post(self):
+        self.create_events()
+        response = self.api_session.post(
+            "/@workflows",
+            json={"default": "intranet_workflow", "state_map": {"private": "internal"}},
+        )
+        self.assertEqual(200, response.status_code, response.text)
+        save_request_and_response_for_docs("workflows_post", response)
+
+    def test_content_types_get_workflow(self):
+        response = self.api_session.get("/@content-types/Event/workflow")
+        self.assertEqual(200, response.status_code, response.text)
+        save_request_and_response_for_docs("content_types_get_workflow", response)
+
+    def test_content_types_post_workflow_dry_run(self):
+        self.create_events()
+        response = self.api_session.post(
+            "/@content-types/Event/workflow",
+            json={"workflow": "intranet_workflow", "dry_run": True},
+        )
+        self.assertEqual(200, response.status_code, response.text)
+        save_request_and_response_for_docs(
+            "content_types_post_workflow_dry_run", response
+        )
+
+    def test_content_types_post_workflow(self):
+        self.create_events()
+        response = self.api_session.post(
+            "/@content-types/Event/workflow",
+            json={
+                "workflow": "intranet_workflow",
+                "state_map": {"private": "internal"},
+            },
+        )
+        self.assertEqual(200, response.status_code, response.text)
+        save_request_and_response_for_docs("content_types_post_workflow", response)
+
     def test_content_types_delete_nonempty(self):
         response = self.api_session.post(
             "/", json={"@type": "Document", "id": "example", "title": "Example"}

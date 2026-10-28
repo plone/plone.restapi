@@ -1,3 +1,4 @@
+from plone.app.testing import applyProfile
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -16,6 +17,7 @@ from plone.restapi.types.adapters import TextLineJsonSchemaProvider
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.typesettings.interfaces import ITypeSettings
 from plone.restapi.typesettings.settings import TypeSettings
+from Products.CMFPlacefulWorkflow.PlacefulWorkflowTool import WorkflowPolicyConfig_id
 from zope import schema
 from zope.component import getGlobalSiteManager
 from zope.component import queryUtility
@@ -850,6 +852,193 @@ class TestContentTypesAddOns(ContentTypesTestCase):
         self.assertEqual(self.portal.portal_types.Document.custom_setting, "new")
 
 
+class TestContentTypesWorkflow(ContentTypesTestCase):
+    def setUp(self):
+        super().setUp()
+        self.workflow_tool = self.portal.portal_workflow
+        for id, transition in (
+            ("private", None),
+            ("published", "publish"),
+            ("other", "publish"),
+        ):
+            response = self.api.post(
+                "/", json={"@type": "Event", "id": id, "title": id}
+            )
+            self.assertEqual(response.status_code, 201, response.text)
+            if transition:
+                response = self.api.post(f"/{id}/@workflow/{transition}")
+                self.assertEqual(response.status_code, 200, response.text)
+
+    def workflow(self, type_id="Event"):
+        return self.api.get(f"/@content-types/{type_id}/workflow")
+
+    def change(self, data, type_id="Event"):
+        return self.api.post(f"/@content-types/{type_id}/workflow", json=data)
+
+    def review_state(self, id):
+        transaction.begin()
+        return self.workflow_tool.getInfoFor(self.portal[id], "review_state", None)
+
+    def test_get(self):
+        response = self.workflow()
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(
+            response.json(),
+            {
+                "@id": self.portal.absolute_url() + "/@content-types/Event/workflow",
+                "id": "simple_publication_workflow",
+                "follows_default": True,
+            },
+        )
+        self.workflow_tool.setChainForPortalTypes(("Event",), ())
+        transaction.commit()
+        self.assertEqual(
+            self.workflow().json(),
+            {
+                "@id": self.portal.absolute_url() + "/@content-types/Event/workflow",
+                "id": None,
+                "follows_default": False,
+            },
+        )
+
+    def test_dry_run(self):
+        response = self.change({"workflow": "intranet_workflow", "dry_run": True})
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(
+            response.json(),
+            {
+                "workflow": "intranet_workflow",
+                "current": "simple_publication_workflow",
+                "states": [
+                    {"id": "pending", "count": 0, "suggested": "private"},
+                    {"id": "private", "count": 1, "suggested": "private"},
+                    # Keeps who can see the items.
+                    {"id": "published", "count": 2, "suggested": "external"},
+                ],
+                "unaffected": 0,
+            },
+        )
+        self.assertEqual(self.workflow().json()["follows_default"], True)
+        self.assertEqual(self.review_state("published"), "published")
+
+    def test_dry_run_without_workflows(self):
+        response = self.change({"workflow": None, "dry_run": True})
+        self.assertEqual(
+            [state["suggested"] for state in response.json()["states"]],
+            [None, None, None],
+        )
+        self.workflow_tool.setChainForPortalTypes(("Event",), ())
+        transaction.commit()
+        response = self.change({"follows_default": True, "dry_run": True})
+        self.assertEqual(
+            response.json(),
+            {
+                "workflow": "simple_publication_workflow",
+                "current": None,
+                "states": [{"id": "", "count": 3, "suggested": "private"}],
+                "unaffected": 0,
+            },
+        )
+
+    def test_change(self):
+        response = self.change(
+            {"workflow": "intranet_workflow", "state_map": {"published": "internal"}}
+        )
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(
+            response.json(),
+            {"workflow": "intranet_workflow", "follows_default": False, "changed": 3},
+        )
+        self.assertEqual(self.review_state("private"), "private")
+        self.assertEqual(self.review_state("published"), "internal")
+        self.assertEqual(
+            self.workflow().json()["id"],
+            "intranet_workflow",
+        )
+        # Security follows the new state.
+        self.api.auth = None
+        self.assertEqual(self.api.get("/published").status_code, 401)
+
+    def test_follows_default_again(self):
+        self.change({"workflow": "intranet_workflow"})
+        response = self.change({"follows_default": True})
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(
+            response.json(),
+            {
+                "workflow": "simple_publication_workflow",
+                "follows_default": True,
+                "changed": 3,
+            },
+        )
+        self.assertEqual(self.review_state("published"), "published")
+        self.assertNotIn("Event", dict(self.workflow_tool.listChainOverrides()))
+
+    def test_same_workflow_changes_only_the_assignment(self):
+        response = self.change({"workflow": "simple_publication_workflow"})
+        self.assertEqual(
+            response.json(),
+            {
+                "workflow": "simple_publication_workflow",
+                "follows_default": False,
+                "changed": 0,
+            },
+        )
+        self.assertEqual(self.workflow().json()["follows_default"], False)
+        self.assertEqual(self.review_state("published"), "published")
+
+    def test_no_workflow(self):
+        response = self.change({"workflow": None})
+        self.assertEqual(
+            response.json(), {"workflow": None, "follows_default": False, "changed": 3}
+        )
+        self.assertIsNone(self.review_state("published"))
+        response = self.change(
+            {"workflow": "simple_publication_workflow", "state_map": {"": "published"}}
+        )
+        self.assertEqual(response.json()["changed"], 3)
+        self.assertEqual(self.review_state("private"), "published")
+
+    def test_invalid_changes(self):
+        for body in (
+            {},
+            {"follows_default": False},
+            {"workflow": "missing"},
+            {"workflow": "intranet_workflow", "state_map": {"private": "published"}},
+            {"workflow": None, "state_map": {"private": "private"}},
+            {"workflow": "intranet_workflow", "state_map": ["private"]},
+        ):
+            response = self.change(body)
+            self.assertEqual(response.status_code, 400, body)
+        self.assertEqual(self.change([]).status_code, 400)
+        self.assertEqual(self.workflow().json()["follows_default"], True)
+        self.assertEqual(self.review_state("published"), "published")
+
+    def test_unaffected_items_under_a_placeful_policy(self):
+        transaction.begin()
+        applyProfile(self.portal, "Products.CMFPlacefulWorkflow:CMFPlacefulWorkflow")
+        placeful = self.portal.portal_placeful_workflow
+        placeful.manage_addWorkflowPolicy("intranet_policy")
+        policy = placeful.getWorkflowPolicyById("intranet_policy")
+        policy.setChainForPortalTypes(("Event",), ("intranet_workflow",))
+        self.portal.invokeFactory("Folder", "intranet")
+        folder = self.portal.intranet
+        folder.manage_addProduct["CMFPlacefulWorkflow"].manage_addWorkflowPolicyConfig()
+        config = folder[WorkflowPolicyConfig_id]
+        config.setPolicyIn("intranet_policy")
+        config.setPolicyBelow("intranet_policy")
+        folder.invokeFactory("Event", "event")
+        transaction.commit()
+        response = self.change({"workflow": "intranet_workflow", "dry_run": True})
+        self.assertEqual(response.json()["unaffected"], 1)
+
+    def test_unknown_types(self):
+        self.assertEqual(self.workflow("missing").status_code, 404)
+        self.assertEqual(self.change({"workflow": None}, "missing").status_code, 404)
+        response = self.api.get("/@content-types/Event/workflow/extra")
+        self.assertEqual(response.status_code, 404)
+
+
 class TestContentTypesPermissions(ContentTypesTestCase):
     REQUESTS = (
         ("get", "/@content-types"),
@@ -857,6 +1046,8 @@ class TestContentTypesPermissions(ContentTypesTestCase):
         ("post", "/@content-types"),
         ("patch", "/@content-types/Document"),
         ("delete", "/@content-types/Document"),
+        ("get", "/@content-types/Document/workflow"),
+        ("post", "/@content-types/Document/workflow"),
     )
 
     def assert_denied(self):
