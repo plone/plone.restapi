@@ -5,6 +5,7 @@
 ## What this project is
 
 `plone.restapi` is a Python add-on for the Plone CMS (built on Zope) that exposes a JSON/REST API: content CRUD (GET/POST/PATCH/DELETE on content URLs, reached via `++api++` or `Accept: application/json`), authentication, search, users/groups/roles, workflow, schema/types, vocabularies, registry and controlpanels, uploads (including TUS), copy/move, history, comments, navigation, add-on management, email sending, and many other `@`-prefixed endpoints ("services"). It is the backend of the Volto frontend and is used directly by third-party clients.
+Documentation for the project is available at https://6.docs.plone.org/plone.restapi/docs/source/index.html.
 
 ## Security model
 
