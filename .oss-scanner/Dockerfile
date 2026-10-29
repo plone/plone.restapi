@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libffi-dev libssl-dev libbz2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Plone 6.1 pinned versions set (official constraints).
+# Plone 6.2 pinned versions set (official constraints).
 ARG PLONE_CONSTRAINTS=https://dist.plone.org/release/6.2-latest/constraints.txt
 RUN curl -fsSL "$PLONE_CONSTRAINTS" -o /tmp/constraints.txt \
     # plone.restapi itself is installed from source below; drop its pin

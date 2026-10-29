@@ -46,7 +46,7 @@ Everything in an HTTP request is untrusted: URL path and traversal segments, que
 ## Out of scope / not a vulnerability by itself
 
 - Actions requiring Manager (or equivalent) rights that Plone already allows Managers to perform (e.g. changing site configuration, installing add-ons). Report only if the API grants such power to a lower role.
-- Issues that exist only in Plone core, Zope, or other dependencies and are not reachable or worsened through plone.restap (report upstream: Products.CMFPlone / Zope).
+- Issues that exist only in Plone core, Zope, or other dependencies and are not reachable or worsened through plone.restapi (report upstream: Products.CMFPlone / Zope).
 - Findings only reproducible with debug flags, test-only layers, demo fixtures, or intentionally insecure test configuration.
 - Missing rate limiting / brute-force protection at the application layer where deployment (proxy/WAF) is expected to handle it.
 - Content that is intentionally public (anonymous View on published content).
