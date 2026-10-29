@@ -100,6 +100,8 @@ class TypesInfoRoot(TypesInfo):
 
 @implementer(IPublishTraverse)
 class TypesGet(Service):
+    content_type = "application/json+schema"
+
     def __init__(self, context, request):
         super().__init__(context, request)
         self.params = []
@@ -122,6 +124,7 @@ class TypesGet(Service):
     def reply(self):
         if not self.params:
             # List type info, including addable_types
+            self.content_type = "application/json"
             info = TypesInfo(self.context, self.request)
             return info(expand=True)["types"]
 
