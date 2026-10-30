@@ -1,1 +1,0 @@
-Return the error instead of 204 No Content when the final `@tus-upload` PATCH fails to create the content. @ericof

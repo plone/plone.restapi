@@ -9,6 +9,46 @@
 
 <!-- towncrier release notes start -->
 
+## 10.1.0 (2026-10-29)
+
+
+### New features
+
+- Add support for `multipart/form-data` in POST and PATCH requests, allowing file uploads alongside JSON metadata. [mamico] #1953
+
+
+### Bug fixes
+
+- Fix `@controlpanels/content-rules` to read and write values for content rule action and condition fields that are declared in a non-default fieldset.
+  @ericof #2016
+- In the `@search` service, avoid passing `metadata_fields` from the request query to the catalog query. @kunalKumar-13 #2031
+- In the `@users` endpoint, fix parsing of the `limit` parameter when a non-integer is passed. @kunalKumar-13 #2046
+- Allow anonymous users to read the `@types` schema of the context's own content type, so Volto's default view works for them. Other types and the types list still require authentication. @ericof #2054
+- Fix two cases where REST API search and summary serialization could return HTTP 500 (`TypeError`) based on request parameters: a form or query string parameter named `summary_serializer_metadata`, and a `portal_type` value containing the substring "query" when `use_site_search_settings` is used. Also make the summary serializer's per-request metadata cache effective; it was recomputed for every item. @mliebischer #2060
+- Return the error instead of 204 No Content when the final `@tus-upload` PATCH fails to create the content. @ericof #2075
+- Content rules endpoints return 404 when content rules are not activated in the site, instead of failing with an error.
+  Preparation for PLIP https://github.com/plone/Products.CMFPlone/issues/4119.
+  @jensens 
+- ``POST``, ``PATCH`` and ``DELETE`` on ``@controlpanels`` with an unknown control panel name return 404 instead of 500.
+  @jensens 
+
+
+### Internal
+
+- Add files for Anthropic's oss-scanner programme to run their tests on the repo. @jackahl #2070
+
+
+### Documentation
+
+- Fix broken links and require linkcheck to pass. @stevepiercy 
+- Fix docs build on Read the Docs. @davisagli 
+
+
+### Tests
+
+- Add an acceptance test layer and `make acceptance-backend-start` target for frontend tests against a local REST API checkout.
+  [sneridagh] #2061
+
 ## 10.0.4 (2026-08-31)
 
 

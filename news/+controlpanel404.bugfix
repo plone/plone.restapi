@@ -1,2 +1,0 @@
-``POST``, ``PATCH`` and ``DELETE`` on ``@controlpanels`` with an unknown control panel name return 404 instead of 500.
-@jensens
