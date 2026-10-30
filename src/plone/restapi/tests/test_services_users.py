@@ -704,6 +704,14 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
 
     def test_delete_portrait(self):
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
+
+        user = self.api_session.get("/@users/noam").json()
+        self.assertTrue(user["portrait"].endswith("/@portrait/noam"))
+
         payload = {
             "portrait": None,
         }
@@ -715,9 +723,18 @@ class TestUsersEndpoint(unittest.TestCase):
 
         user = self.api_session.get("/@users/noam").json()
 
-        self.assertTrue(user.get("portrait") is None)
+        self.assertIsNone(user["portrait"])
+        self.assertEqual(self.api_session.get("/@portrait/noam").status_code, 404)
 
     def test_delete_portrait_by_manager(self):
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
+
+        user = self.api_session.get("/@users/noam").json()
+        self.assertTrue(user["portrait"].endswith("/@portrait/noam"))
+
         payload = {
             "portrait": None,
         }
@@ -728,7 +745,22 @@ class TestUsersEndpoint(unittest.TestCase):
 
         user = self.api_session.get("/@users/noam").json()
 
-        self.assertTrue(user.get("portrait") is None)
+        self.assertIsNone(user["portrait"])
+        self.assertEqual(self.api_session.get("/@portrait/noam").status_code, 404)
+
+    def test_delete_unset_portrait(self):
+        for auth in (("noam", "password"), (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)):
+            with self.subTest(auth=auth):
+                self.api_session.auth = auth
+                response = self.api_session.patch(
+                    "/@users/noam", json={"portrait": None}
+                )
+
+                self.assertEqual(response.status_code, 204)
+                transaction.commit()
+
+                user = self.api_session.get("/@users/noam").json()
+                self.assertIsNone(user["portrait"])
 
     def test_update_user_with_portrait_set_without_updating_portrait(self):
         payload = {
