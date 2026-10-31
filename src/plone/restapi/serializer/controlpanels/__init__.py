@@ -26,10 +26,9 @@ class ControlpanelSummarySerializeToJson:
 
     def __call__(self):
         result = {
-            "@id": "{}/{}/{}".format(
-                self.controlpanel.context.absolute_url(),
-                SERVICE_ID,
-                self.controlpanel.__name__,
+            "@id": (
+                f"{self.controlpanel.context.absolute_url()}/"
+                f"{SERVICE_ID}/{self.controlpanel.__name__}"
             ),
             "title": self.controlpanel.title,
             "description": getattr(self.controlpanel, "description", "") or "",
@@ -92,10 +91,9 @@ class ControlpanelSerializeToJson:
 
     def __call__(self):
         result = {
-            "@id": "{}/{}/{}".format(
-                self.controlpanel.context.absolute_url(),
-                SERVICE_ID,
-                self.controlpanel.__name__,
+            "@id": (
+                f"{self.controlpanel.context.absolute_url()}/"
+                f"{SERVICE_ID}/{self.controlpanel.__name__}"
             ),
             "title": self.controlpanel.title,
             "description": getattr(self.controlpanel, "description", "") or "",
