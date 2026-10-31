@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
+
+  <plone:service
+      method="GET"
+      factory=".get.ConstraintsGet"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@constraints"
+      />
+
+  <plone:service
+      method="GET"
+      factory=".get.ConstraintsGet"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@constraints"
+      />
+
+  <plone:service
+      method="PATCH"
+      factory=".update.ConstraintsPatch"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="cmf.ModifyPortalContent"
+      name="@constraints"
+      />
+
+  <plone:service
+      method="PATCH"
+      factory=".update.ConstraintsPatch"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="cmf.ModifyPortalContent"
+      name="@constraints"
+      />
+
+</configure>
