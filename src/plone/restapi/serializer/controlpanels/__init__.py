@@ -32,7 +32,10 @@ class ControlpanelSummarySerializeToJson:
                 self.controlpanel.__name__,
             ),
             "title": self.controlpanel.title,
+            "description": getattr(self.controlpanel, "description", "") or "",
             "group": self.controlpanel.group,
+            "group_id": getattr(self.controlpanel, "configlet_category_id", None),
+            "icon": getattr(self.controlpanel, "icon", "") or "",
         }
 
         if hasattr(self.controlpanel, "get_searchable_text"):
@@ -95,7 +98,10 @@ class ControlpanelSerializeToJson:
                 self.controlpanel.__name__,
             ),
             "title": self.controlpanel.title,
+            "description": getattr(self.controlpanel, "description", "") or "",
             "group": self.controlpanel.group,
+            "group_id": getattr(self.controlpanel, "configlet_category_id", None),
+            "icon": getattr(self.controlpanel, "icon", "") or "",
         }
 
         if self.schema is not None:
