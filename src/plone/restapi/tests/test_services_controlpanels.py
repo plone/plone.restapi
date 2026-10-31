@@ -1,3 +1,4 @@
+from importlib import import_module
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -8,6 +9,8 @@ from Products.CMFCore.utils import getToolByName
 
 import transaction
 import unittest
+
+PLONE6 = getattr(import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False)
 
 
 class TestControlpanelsEndpoint(unittest.TestCase):
@@ -42,9 +45,16 @@ class TestControlpanelsEndpoint(unittest.TestCase):
 
         self.assertEqual(panels["date-and-time"]["group"], "General")
         self.assertEqual(panels["date-and-time"]["group_id"], "plone-general")
-        self.assertEqual(panels["date-and-time"]["icon"], "clock")
+        self.assertTrue(panels["date-and-time"]["icon"])
         self.assertEqual(panels["date-and-time"]["description"], "")
         self.assertEqual(panels["security"]["group_id"], "plone-security")
+
+    @unittest.skipUnless(PLONE6, "Plone 5.2 configlets use image URLs as icons")
+    def test_get_listing_icon_names(self):
+        response = self.api_session.get("/@controlpanels")
+        panels = {item["@id"].split("/")[-1]: item for item in response.json()}
+
+        self.assertEqual(panels["date-and-time"]["icon"], "clock")
         self.assertEqual(panels["security"]["icon"], "shield-check")
 
     def test_get_listing_description(self):
@@ -62,16 +72,23 @@ class TestControlpanelsEndpoint(unittest.TestCase):
         )
 
     def test_get_listing_order(self):
-        # Groups come in Plone's order, panels by title within each group.
+        # The groups come in the order Plone defines for them.
+        plone_groups = [
+            "plone-general",
+            "plone-content",
+            "plone-users",
+            "plone-security",
+            "plone-advanced",
+            "Plone",
+            "Products",
+        ]
         response = self.api_session.get("/@controlpanels")
         group_ids = []
         for item in response.json():
             if item["group_id"] not in group_ids:
                 group_ids.append(item["group_id"])
-        self.assertEqual(
-            group_ids[:4],
-            ["plone-general", "plone-content", "plone-users", "plone-security"],
-        )
+        self.assertEqual(group_ids[:2], ["plone-general", "plone-content"])
+        self.assertEqual(group_ids, sorted(group_ids, key=plone_groups.index))
 
     def test_get_item_nonexisting(self):
         response = self.api_session.get("/@controlpanels/no-way-jose")

@@ -45,7 +45,7 @@ The following fields are returned:
 - `group`: the group in which the control panel should appear, for example, `General`, `Content`, `Users`, `Security`, `Advanced`, or `Add-on Configuration`.
 - `group_id`: the id of that group, which doesn't change with the language, for example, `plone-general`, `plone-content`, `plone-users`, `plone-security`, `plone-advanced`, or `Products`
 - `icon`: the icon of the control panel, as set by the `icon_expr` of its configlet, for example, `clock`, or an empty string if it has none.
-  Plone's configlets use the names of [Bootstrap Icons](https://icons.getbootstrap.com/).
+  Plone 6's configlets use the names of [Bootstrap Icons](https://icons.getbootstrap.com/), and Plone 5.2's use the URLs of images.
 
 The control panels come in the order that Plone shows them: by group, then by their translated title within each group.
 
