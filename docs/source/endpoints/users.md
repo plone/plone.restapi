@@ -291,6 +291,9 @@ If you still want Plone to take care of image scaling using the default Plone be
     :request: ../../../src/plone/restapi/tests/http-examples/users_update_portrait_scale.req
 ```
 
+To remove a user's portrait, send a `PATCH` request to `/@users/<id>` with `{"portrait": null}`.
+A successful response will be indicated by a {term}`204 No Content` response, and subsequent requests for the user will return `"portrait": null`.
+
 
 ## Delete User
 
