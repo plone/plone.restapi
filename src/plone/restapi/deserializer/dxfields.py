@@ -58,10 +58,7 @@ class DefaultFieldDeserializer:
 @implementer(IFieldDeserializer)
 @adapter(IBool, IDexterityContent, IBrowserRequest)
 class BoolFieldDeserializer(DefaultFieldDeserializer):
-    """Accept JSON booleans, and "true" or "false" from form-encoded input.
-
-    Other strings used to become False silently.
-    """
+    """Accept JSON booleans, and "true" or "false" from form-encoded input."""
 
     def __call__(self, value):
         if isinstance(value, str) and value.lower() in ("true", "false"):

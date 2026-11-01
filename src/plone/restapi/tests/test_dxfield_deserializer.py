@@ -67,21 +67,21 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertEqual("Foo", value)
 
     def test_bool_deserialization_returns_true(self):
-        value = self.deserialize("test_bool_field", True)
-        self.assertTrue(isinstance(value, bool), "Not a <bool>")
-        self.assertEqual(True, value)
+        for form_value in (True, "true", "True"):
+            with self.subTest(form_value=form_value):
+                value = self.deserialize("test_bool_field", form_value)
+                self.assertTrue(isinstance(value, bool), "Not a <bool>")
+                self.assertEqual(True, value)
 
     def test_bool_deserialization_returns_false(self):
-        value = self.deserialize("test_bool_field", False)
-        self.assertTrue(isinstance(value, bool), "Not a <bool>")
-        self.assertEqual(False, value)
-
-    def test_bool_deserialization_accepts_true_and_false_strings(self):
-        self.assertIs(self.deserialize("test_bool_field", "true"), True)
-        self.assertIs(self.deserialize("test_bool_field", "False"), False)
+        for form_value in (False, "false", "False"):
+            with self.subTest(form_value=form_value):
+                value = self.deserialize("test_bool_field", form_value)
+                self.assertTrue(isinstance(value, bool), "Not a <bool>")
+                self.assertEqual(False, value)
 
     def test_bool_deserialization_rejects_other_values(self):
-        for value in ("yes", "on", "", 1):
+        for value in ("yes", "on", "", 0, 1, "0", "1"):
             with self.assertRaises((ValueError, ValidationError)):
                 self.deserialize("test_bool_field", value)
 
