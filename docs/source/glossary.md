@@ -65,6 +65,6 @@ navigation root
     An object marked as a navigation root provides a way to root catalog queries, searches, breadcrumbs, and so on, into that object.
 
 JSON Schema
-    [JSON Schema]()https://json-schema.org/ is a declarative language for defining structure and constraints for JSON data.
+    [JSON Schema](https://json-schema.org/) is a declarative language for defining structure and constraints for JSON data.
 
 ```

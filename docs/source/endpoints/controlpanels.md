@@ -39,13 +39,24 @@ Response:
 
 The following fields are returned:
 
-- `@id`: hypermedia link to the control panel
-- `title`: the title of the control panel
-- `description`: the description of the control panel, as set on its configlet, or an empty string if it has none
-- `group`: the group in which the control panel should appear, for example, `General`, `Content`, `Users`, `Security`, `Advanced`, or `Add-on Configuration`.
-- `group_id`: the id of that group, which doesn't change with the language, for example, `plone-general`, `plone-content`, `plone-users`, `plone-security`, `plone-advanced`, or `Products`
-- `icon`: the icon of the control panel, as set by the `icon_expr` of its configlet, for example, `clock`, or an empty string if it has none.
-  Plone 6's configlets use the names of [Bootstrap Icons](https://icons.getbootstrap.com/), and Plone 5.2's use the URLs of images.
+`@id`
+:   Hypermedia link to the control panel.
+
+`title`
+:   The title of the control panel.
+
+`description`
+:   The description of the control panel, as set on its configlet, or an empty string if it has none.
+
+`group`
+:   The group in which the control panel should appear, for example, `General`, `Content`, `Users`, `Security`, `Advanced`, or `Add-on Configuration`.
+
+`group_id`
+:   The ID of that group, which doesn't change with the language, for example, `plone-general`, `plone-content`, `plone-users`, `plone-security`, `plone-advanced`, or `Products`.
+
+`icon`
+:   The icon of the control panel, as set by the `icon_expr` of its configlet, for example, `clock`, or an empty string if it has none.
+    Plone 6's configlets use the names of [Bootstrap Icons](https://icons.getbootstrap.com/), whereas Plone 5.2's use the URLs of images.
 
 The control panels come in the order that Plone shows them: by group, then by their translated title within each group.
 
@@ -67,14 +78,29 @@ Response:
 
 The following fields are returned:
 
-- `@id`: hypermedia link to the control panel
-- `title`: title of the control panel
-- `description`: description of the control panel
-- `group`: group name of the control panel
-- `group_id`: id of the group of the control panel
-- `icon`: icon of the control panel
-- `schema`: JSON Schema of the control panel
-- `data`: current values of the control panel
+`@id`
+:   Hypermedia link to the control panel.
+
+`title`
+:   Title of the control panel.
+
+`description`
+:   Description of the control panel.
+
+`group`
+:   Group name of the control panel.
+
+`group_id`
+:   ID of the group of the control panel.
+
+`icon`
+:   Icon of the control panel.
+
+`schema`
+:   {term}`JSON Schema` of the control panel.
+
+`data`
+:   Current values of the control panel.
 
 
 ## Updating a Control Panel with `PATCH`
