@@ -1,24 +1,24 @@
 ---
 myst:
   html_meta:
-    "description": "List the workflows that can be assigned to content types, and change the default workflow, with the Plone REST API."
-    "property=og:description": "List the workflows that can be assigned to content types, and change the default workflow, with the Plone REST API."
+    "description": "List the workflows that can be assigned to content types, and change the default workflow assignment, with the Plone REST API."
+    "property=og:description": "List the workflows that can be assigned to content types, and change the default workflow assignment, with the Plone REST API."
     "property=og:title": "Workflows"
     "keywords": "Plone, plone.restapi, REST, API, workflows, content types"
 ---
 
 # Workflows
 
-The `@workflows` service describes the workflows that can be assigned to content types, and changes the site's default workflow.
-It is available at the site root, and requires the `Plone Site Setup: Overview` permission, as well as permission to use the REST API.
+The `@workflows` service describes the workflows that can be assigned to content types, and changes which workflow the site assigns by default.
+It is available at the site root, and requires the `Plone Site Setup: Types` permission, as well as permission to use the REST API.
 
-Use the {doc}`content-types` service to change the workflow of a content type, and the {doc}`workflow` service to change the state of an item.
+Use the {doc}`content-types` service to change the workflow assignment of a content type, and the {doc}`workflow` service to change the state of an item.
 
 | Method | Path | Result |
 | --- | --- | --- |
 | `GET` | `/@workflows` | Every workflow, and the default workflow. |
 | `GET` | `/@workflows/{id}` | One workflow with its states and transitions. |
-| `POST` | `/@workflows` | Change the default workflow. |
+| `POST` | `/@workflows` | Change the default workflow assignment. |
 
 ## List workflows
 
@@ -78,9 +78,9 @@ The response has the properties of the listing, and these:
 | `restricted` | Only the roles listed, such as `Owner`, `Reviewer`, or `Manager`. |
 | `unknown` | The state doesn't manage `View`, or it acquires the permission, so it depends on the container. |
 
-## Change the default workflow
+## Change the default workflow assignment
 
-Send a `POST` request to `/@workflows` to change the default workflow.
+Send a `POST` request to `/@workflows` to assign another default workflow.
 It affects every content type that follows the default.
 The body has these properties:
 

@@ -7,7 +7,7 @@
       method="GET"
       factory=".get.WorkflowsGet"
       for="plone.restapi.bbb.IPloneSiteRoot"
-      permission="plone.app.controlpanel.Overview"
+      permission="plone.app.controlpanel.Types"
       name="@workflows"
       />
 
@@ -15,7 +15,7 @@
       method="POST"
       factory=".update.WorkflowsPost"
       for="plone.restapi.bbb.IPloneSiteRoot"
-      permission="plone.app.controlpanel.Overview"
+      permission="plone.app.controlpanel.Types"
       name="@workflows"
       />
 

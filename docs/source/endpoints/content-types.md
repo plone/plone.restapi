@@ -28,7 +28,7 @@ They are now in {ref}`content-default-types-representations`.
 | `PATCH` | `/@content-types/{type}` | Change some settings of a content type. |
 | `DELETE` | `/@content-types/{type}` | Delete a Dexterity content type that has no items. |
 | `GET` | `/@content-types/{type}/workflow` | The workflow of a content type. |
-| `POST` | `/@content-types/{type}/workflow` | Change the workflow of a content type. |
+| `POST` | `/@content-types/{type}/workflow` | Change the workflow assignment of a content type. |
 
 Encode content type IDs in URLs, for example `News%20Item`.
 Unknown content types and extra path segments return `404 Not Found`.
@@ -141,7 +141,7 @@ Invalid values, unknown fields, and read-only fields return `400 Bad Request` wi
 
 (content-types-workflow)=
 
-## Change the workflow
+## Change the workflow assignment
 
 Send a `GET` request to `/@content-types/{type}/workflow` to get the workflow of a content type.
 
@@ -169,7 +169,7 @@ The body has these properties:
 The body needs `workflow` or `follows_default`.
 Unknown workflows and unknown target states return `400 Bad Request`.
 The service changes one content type at a time.
-Use the {doc}`workflows` service to list the workflows, their states and who can see items in them, and to change the default workflow.
+Use the {doc}`workflows` service to list the workflows, their states and who can see items in them, and to change the default workflow assignment.
 
 ### Plan the change
 

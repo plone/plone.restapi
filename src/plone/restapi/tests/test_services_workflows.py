@@ -283,3 +283,11 @@ class TestWorkflowsPermissions(WorkflowsTestCase):
         transaction.commit()
         self.api.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
         self.assert_denied()
+
+    def test_needs_the_types_setup_permission(self):
+        # Like Plone's Content Settings control panel, not just the overview.
+        self.portal.manage_permission("Plone Site Setup: Types", ["Manager"])
+        setRoles(self.portal, TEST_USER_ID, ["Site Administrator"])
+        transaction.commit()
+        self.api.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
+        self.assert_denied()
