@@ -6,8 +6,8 @@ from zExceptions import BadRequest
 from zope import schema
 from zope.component import getUtility
 from zope.interface import Interface
+from zope.interface import Invalid
 from zope.interface import invariant
-from zope.interface.exceptions import Invalid
 
 import json
 import unittest
@@ -19,12 +19,16 @@ class ILimits(Interface):
 
 
 class IOrderedLimits(Interface):
-    lower = schema.Int(title="Lower")
-    upper = schema.Int(title="Upper")
+    lower = schema.Int(title="Lower", required=False)
+    upper = schema.Int(title="Upper", required=False)
 
     @invariant
     def ordered(data):
-        if data.lower > data.upper:
+        if (
+            data.lower is not None
+            and data.upper is not None
+            and data.lower > data.upper
+        ):
             raise Invalid("Lower must not exceed upper")
 
 
@@ -86,3 +90,18 @@ class TestControlpanelDeserializer(unittest.TestCase):
     def test_valid_values_pass_invariants(self):
         self.deserialize(IOrderedLimits, {"lower": 1, "upper": 5})
         self.assertEqual(self.stored(IOrderedLimits, "upper"), 5)
+
+    def test_partial_update_satisfying_invariant_keeps_stored_values(self):
+        self.deserialize(IOrderedLimits, {"lower": 1, "upper": 5})
+        self.deserialize(IOrderedLimits, {"lower": 3})
+        self.assertEqual(self.stored(IOrderedLimits, "lower"), 3)
+        self.assertEqual(self.stored(IOrderedLimits, "upper"), 5)
+
+    def test_partial_update_violating_invariant_against_stored_values(self):
+        self.deserialize(IOrderedLimits, {"lower": 1, "upper": 5})
+        with self.assertRaises(BadRequest) as cm:
+            self.deserialize(IOrderedLimits, {"lower": 10})
+        errors = cm.exception.args[0]
+        self.assertEqual(1, len(errors))
+        self.assertEqual("ValidationError", errors[0]["error"])
+        self.assertEqual("Lower must not exceed upper", errors[0]["message"])

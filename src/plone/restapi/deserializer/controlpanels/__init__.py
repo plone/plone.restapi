@@ -43,9 +43,10 @@ class ControlpanelDeserializeFromJson:
         for name, value in values.items():
             setattr(proxy, name, value)
 
-        # Validate schemata
+        # Validate schemata. The registry proxy is passed as context, so
+        # invariants read the stored values of fields the request omits.
         validator = queryMultiAdapter(
-            (self.context, self.request, None, self.schema, None), IManagerValidator
+            (proxy, self.request, None, self.schema, None), IManagerValidator
         )
         for error in validator.validate(values):
             errors.append({"error": error, "message": str(error)})

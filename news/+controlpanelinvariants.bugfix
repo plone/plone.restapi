@@ -1,0 +1,1 @@
+Fix partial updates to `@controlpanels/<name>` failing with a server error when the control panel schema has an invariant that reads a field omitted from the request. Invariants now see the stored registry values for omitted fields. @sneridagh
