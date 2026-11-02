@@ -1,1 +1,0 @@
-Schema serialization: Fix serialization of `schema.Object` fields that are not files or images. They use plain property names, list their required fields, and no longer claim a `File` factory. @sneridagh

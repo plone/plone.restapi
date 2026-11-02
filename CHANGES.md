@@ -9,6 +9,32 @@
 
 <!-- towncrier release notes start -->
 
+## 10.2.0 (2026-11-02)
+
+
+### New features
+
+- Controlpanel service: Added `description`, `group_id`, and `icon` to the control panels listed by `GET @controlpanels`, taken from their configlets. @sneridagh #2086
+
+
+### Bug fixes
+
+- Schema serialization: Fix serialization of `schema.Object` fields that are not files or images. They use plain property names, list their required fields, and no longer claim a `File` factory. @sneridagh #2061
+- Deserializing Boolean values: Reject values other than Booleans and the strings "true" and "false" for Boolean fields. Other strings used to become False silently. @sneridagh #2061
+- Remove an existing user portrait when `PATCH @users/<id>` receives `"portrait": null`. @davisagli #2079
+- Fix partial updates to `@controlpanels/<name>` failing with a server error when the control panel schema has an invariant that reads a field omitted from the request. Invariants now see the stored registry values for omitted fields. @sneridagh 
+
+
+### Internal
+
+- Share the code that builds JSON schemas and converts values for `zope.schema` interfaces between control panels, content rules and new services, in private helpers of `plone.restapi.types.utils`. The new `SchemaValues` context replaces the three `FakeDXContext` copies, and `FakeDXContext` remains as an alias. @sneridagh #2061
+
+
+### Tests
+
+- Add an acceptance test layer and `make acceptance-backend-start` target for running frontend tests against a local REST API checkout.
+  [sneridagh] #2061
+
 ## 10.1.0 (2026-10-29)
 
 
