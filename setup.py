@@ -31,6 +31,7 @@ TEST_REQUIRES = [
     "plone.app.upgrade",
     "plone.rest>=3.0.1",
     "plone.testing",
+    "pymemcache",
     "requests",
 ]
 
@@ -83,7 +84,7 @@ setup(
         "pytz",
         "Zope",
     ],
-    extras_require={"test": TEST_REQUIRES},
+    extras_require={"test": TEST_REQUIRES, "token": ["pymemcache"]},
     entry_points="""
       # -*- Entry points: -*-
       [console_scripts]

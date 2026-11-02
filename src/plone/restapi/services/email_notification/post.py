@@ -1,3 +1,4 @@
+from plone.restapi import form_token
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from zExceptions import BadRequest
@@ -18,6 +19,11 @@ class EmailNotificationPost(Service):
 
         if not sender_from_address or not message:
             raise BadRequest("Missing from or message parameters")
+
+        if form_token.is_enabled():
+            form_token.verify_token(
+                self.request, data.get("form_token"), "@email-notification"
+            )
 
         overview_controlpanel = getMultiAdapter(
             (self.context, self.request), name="overview-controlpanel"

@@ -29,6 +29,7 @@ copymove
 database
 email-notification
 email-send
+form-token
 groups
 history
 inherit

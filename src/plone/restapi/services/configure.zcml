@@ -60,6 +60,10 @@
       zcml:condition="have plone-5"
       />
   <include
+      package=".form_token"
+      zcml:condition="installed pymemcache"
+      />
+  <include
       package=".email_send"
       zcml:condition="have plone-5"
       />

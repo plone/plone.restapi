@@ -1,0 +1,1 @@
+Add single-use form tokens with a minimum age, kept in memcached: the `@form-token` endpoint issues them, and `@email-notification` checks them when `FORM_TOKEN_MEMCACHE` is set, so bots have to wait before they can send the contact form. @jladage

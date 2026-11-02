@@ -40,6 +40,9 @@ The server will respond with status {term}`204 No Content` when the email has be
 HTTP/1.1 204 No Content
 ```
 
+When form tokens are enabled, the request needs a `form_token` from the {doc}`form-token` endpoint, used after it is old enough.
+Without it, the server responds with status {term}`400 Bad Request`.
+
 ## Contact Portal Users
 
 ```{note}
