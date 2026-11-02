@@ -40,6 +40,11 @@ The server will respond with status {term}`204 No Content` when the email has be
 HTTP/1.1 204 No Content
 ```
 
+The `website` field is a honeypot against spam bots.
+A contact form should include it as a text field that is hidden with CSS, so that visitors leave it empty.
+When the `website` field is not empty, the server does not send the email, but still responds with status {term}`204 No Content`, so the bot does not notice.
+It logs `Spam blocked: reason=honeypot form=@email-notification` instead, without the message, so you can count them.
+
 ## Contact Portal Users
 
 ```{note}

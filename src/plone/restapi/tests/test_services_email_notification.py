@@ -88,3 +88,42 @@ class EmailNotificationEndpoint(unittest.TestCase):
         self.assertTrue("John Doe" in msg)
         self.assertTrue("Reply-To: john@doe.com" in msg)
         self.assertTrue("Just want to say hi." in msg)
+
+    def test_email_notification_honeypot(self):
+        with self.assertLogs(
+            "plone.restapi.services.email_notification.post", "INFO"
+        ) as logs:
+            response = self.anon_api_session.post(
+                "/@email-notification",
+                json={
+                    "from": "john@doe.com",
+                    "message": "Buy now!",
+                    "website": "https://spam.example.org",
+                },
+            )
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(self.mailhost.messages, [])
+        # Logged to count them, without the value or the message.
+        self.assertEqual(
+            logs.output,
+            [
+                "INFO:plone.restapi.services.email_notification.post:"
+                "Spam blocked: reason=honeypot form=@email-notification"
+            ],
+        )
+
+    def test_email_notification_empty_honeypot(self):
+        response = self.anon_api_session.post(
+            "/@email-notification",
+            json={
+                "from": "john@doe.com",
+                "message": "Just want to say hi.",
+                "website": "",
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(len(self.mailhost.messages), 1)
