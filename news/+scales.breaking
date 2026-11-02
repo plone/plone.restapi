@@ -1,0 +1,5 @@
+The serialization for image fields no longer includes scales with a width larger than the original.
+This means that the scales for an image may not include all of the scale sizes defined in the Imaging control panel.
+However, this makes them consistent with image scales returned for catalog results,
+and avoids unnecessary creation of large scales which add bloat to the database.
+@davisagli
