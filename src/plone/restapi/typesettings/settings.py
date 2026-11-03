@@ -17,6 +17,10 @@ from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema import getFieldNames
 
+DISCUSSION_RECORD = (
+    "plone.app.discussion.interfaces.IDiscussionSettings.globally_enabled"
+)
+
 # Repository policies for each versioning setting. Other policies are kept.
 POLICIES = {
     "off": (),
@@ -46,6 +50,9 @@ class TypeSettings:
     def __init__(self, context, request):
         self.context = context
         self.request = request
+
+    def enabled(self):
+        return True
 
     def read(self):
         return {
@@ -140,6 +147,11 @@ class CommentsSettings(TypeSettings):
     title = _("Comments")
     order = 40
     schema = ICommentsSettings
+
+    def enabled(self):
+        # Only when plone.app.discussion is installed.
+        registry = getUtility(IRegistry)
+        return DISCUSSION_RECORD in registry.records
 
     def read(self):
         return {"allow_discussion": bool(self.context.allow_discussion)}

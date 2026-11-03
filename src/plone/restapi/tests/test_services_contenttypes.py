@@ -99,6 +99,32 @@ class ContentTypesTestCase(unittest.TestCase):
 
 
 class TestContentTypesRead(ContentTypesTestCase):
+    def test_allowed_types_link_to_the_portal_types_vocabulary(self):
+        field = self.get().json()["schema"]["properties"]["allowed_content_types"]
+        vocabulary = field["items"]["vocabulary"]["@id"]
+        self.assertEqual(
+            vocabulary,
+            self.portal.absolute_url()
+            + "/@vocabularies/plone.app.vocabularies.PortalTypes",
+        )
+        response = self.api.get(vocabulary, params={"b_size": -1})
+        self.assertEqual(response.status_code, 200, response.text)
+        tokens = [term["token"] for term in response.json()["items"]]
+        self.assertIn("Document", tokens)
+
+    def test_comments_need_plone_app_discussion(self):
+        from plone.registry.interfaces import IRegistry
+        from plone.restapi.typesettings.settings import DISCUSSION_RECORD
+
+        registry = queryUtility(IRegistry)
+        del registry.records[DISCUSSION_RECORD]
+        transaction.commit()
+        result = self.get().json()
+        self.assertNotIn(
+            "comments", [fieldset["id"] for fieldset in result["schema"]["fieldsets"]]
+        )
+        self.assertNotIn("allow_discussion", result["data"])
+
     def test_listing_has_every_type_with_its_settings(self):
         response = self.api.get("/@content-types")
         self.assertEqual(response.status_code, 200, response.text)
@@ -806,3 +832,11 @@ class TestContentTypesPermissions(ContentTypesTestCase):
         transaction.commit()
         self.api.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
         self.assertEqual(self.get().status_code, 200)
+
+    def test_needs_the_types_setup_permission(self):
+        # Like the content settings control panel, not just the overview.
+        self.portal.manage_permission("Plone Site Setup: Types", ["Manager"])
+        setRoles(self.portal, TEST_USER_ID, ["Site Administrator"])
+        transaction.commit()
+        self.api.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
+        self.assert_denied()

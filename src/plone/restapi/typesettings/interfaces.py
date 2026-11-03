@@ -1,12 +1,9 @@
 from plone.restapi import _
-from Products.CMFCore.utils import getToolByName
 from zope import schema
 from zope.interface import Attribute
 from zope.interface import Interface
 from zope.interface import invariant
-from zope.interface import provider
 from zope.interface.exceptions import Invalid
-from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -27,6 +24,10 @@ class ITypeSettings(Interface):
         "or None to only require the permission of the service"
     )
 
+    def enabled():
+        """Return whether to show these settings, e.g. only when the add-on
+        that uses them is installed."""
+
     def read():
         """Return the stored values, keyed by field name, as Python values."""
 
@@ -45,17 +46,6 @@ class ITypeSettings(Interface):
 
         Called before the content type is removed.
         """
-
-
-@provider(IContextSourceBinder)
-def content_types(context):
-    types = getToolByName(context, "portal_types")
-    return SimpleVocabulary(
-        [
-            SimpleTerm(fti.getId(), fti.getId(), fti.Title())
-            for fti in types.listTypeInfo()
-        ]
-    )
 
 
 def titled_vocabulary(*terms):
@@ -89,7 +79,7 @@ class IContentsSettings(Interface):
     allowed_content_types = schema.List(
         title=_("Selected types"),
         description=_("Kept while all types are allowed"),
-        value_type=schema.Choice(source=content_types),
+        value_type=schema.Choice(vocabulary="plone.app.vocabularies.PortalTypes"),
         required=False,
         default=[],
         missing_value=[],

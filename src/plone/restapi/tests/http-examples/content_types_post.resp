@@ -78,108 +78,12 @@ Location: http://localhost:55001/plone/@content-types/conference_event
                 "description": "Kept while all types are allowed",
                 "factory": "Multiple Choice",
                 "items": {
-                    "choices": [
-                        [
-                            "TempFolder",
-                            "TempFolder"
-                        ],
-                        [
-                            "Plone Site",
-                            "Plone Site"
-                        ],
-                        [
-                            "Collection",
-                            "Collection"
-                        ],
-                        [
-                            "Document",
-                            "Page"
-                        ],
-                        [
-                            "Folder",
-                            "Folder"
-                        ],
-                        [
-                            "Link",
-                            "Link"
-                        ],
-                        [
-                            "File",
-                            "File"
-                        ],
-                        [
-                            "Image",
-                            "Image"
-                        ],
-                        [
-                            "News Item",
-                            "News Item"
-                        ],
-                        [
-                            "Event",
-                            "Event"
-                        ],
-                        [
-                            "Discussion Item",
-                            "Comment"
-                        ],
-                        [
-                            "ATTestDocument",
-                            "Test Document"
-                        ],
-                        [
-                            "ATTestFolder",
-                            "Test Folder"
-                        ],
-                        [
-                            "DXTestDocument",
-                            "DX Test Document"
-                        ],
-                        [
-                            "conference_event",
-                            "Conference event"
-                        ]
-                    ],
                     "description": "",
-                    "enum": [
-                        "TempFolder",
-                        "Plone Site",
-                        "Collection",
-                        "Document",
-                        "Folder",
-                        "Link",
-                        "File",
-                        "Image",
-                        "News Item",
-                        "Event",
-                        "Discussion Item",
-                        "ATTestDocument",
-                        "ATTestFolder",
-                        "DXTestDocument",
-                        "conference_event"
-                    ],
-                    "enumNames": [
-                        "TempFolder",
-                        "Plone Site",
-                        "Collection",
-                        "Page",
-                        "Folder",
-                        "Link",
-                        "File",
-                        "Image",
-                        "News Item",
-                        "Event",
-                        "Comment",
-                        "Test Document",
-                        "Test Folder",
-                        "DX Test Document",
-                        "Conference event"
-                    ],
                     "factory": "Choice",
                     "title": "",
                     "type": "string",
                     "vocabulary": {
-                        "@id": "http://localhost:55001/plone/portal_types/conference_event/@sources/"
+                        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
                     }
                 },
                 "title": "Selected types",
@@ -216,7 +120,7 @@ Location: http://localhost:55001/plone/@content-types/conference_event
                 "title": "Allowed content types",
                 "type": "string",
                 "vocabulary": {
-                    "@id": "http://localhost:55001/plone/portal_types/conference_event/@sources/allowed_content_types_mode"
+                    "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                 }
             },
             "default_page": {
@@ -282,7 +186,7 @@ Location: http://localhost:55001/plone/@content-types/conference_event
                 "title": "Versioning",
                 "type": "string",
                 "vocabulary": {
-                    "@id": "http://localhost:55001/plone/portal_types/conference_event/@sources/versioning"
+                    "@id": "http://localhost:55001/plone/@sources/versioning"
                 }
             }
         },

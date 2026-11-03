@@ -77,102 +77,12 @@ Content-Type: application/json
                 "description": "Kept while all types are allowed",
                 "factory": "Multiple Choice",
                 "items": {
-                    "choices": [
-                        [
-                            "TempFolder",
-                            "TempFolder"
-                        ],
-                        [
-                            "Plone Site",
-                            "Plone Site"
-                        ],
-                        [
-                            "Collection",
-                            "Collection"
-                        ],
-                        [
-                            "Document",
-                            "Page"
-                        ],
-                        [
-                            "Folder",
-                            "Folder"
-                        ],
-                        [
-                            "Link",
-                            "Link"
-                        ],
-                        [
-                            "File",
-                            "File"
-                        ],
-                        [
-                            "Image",
-                            "Image"
-                        ],
-                        [
-                            "News Item",
-                            "News Item"
-                        ],
-                        [
-                            "Event",
-                            "Event"
-                        ],
-                        [
-                            "Discussion Item",
-                            "Comment"
-                        ],
-                        [
-                            "ATTestDocument",
-                            "Test Document"
-                        ],
-                        [
-                            "ATTestFolder",
-                            "Test Folder"
-                        ],
-                        [
-                            "DXTestDocument",
-                            "DX Test Document"
-                        ]
-                    ],
                     "description": "",
-                    "enum": [
-                        "TempFolder",
-                        "Plone Site",
-                        "Collection",
-                        "Document",
-                        "Folder",
-                        "Link",
-                        "File",
-                        "Image",
-                        "News Item",
-                        "Event",
-                        "Discussion Item",
-                        "ATTestDocument",
-                        "ATTestFolder",
-                        "DXTestDocument"
-                    ],
-                    "enumNames": [
-                        "TempFolder",
-                        "Plone Site",
-                        "Collection",
-                        "Page",
-                        "Folder",
-                        "Link",
-                        "File",
-                        "Image",
-                        "News Item",
-                        "Event",
-                        "Comment",
-                        "Test Document",
-                        "Test Folder",
-                        "DX Test Document"
-                    ],
                     "factory": "Choice",
                     "title": "",
                     "type": "string",
                     "vocabulary": {
-                        "@id": "http://localhost:55001/plone/portal_types/Event/@sources/"
+                        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
                     }
                 },
                 "title": "Selected types",
@@ -209,7 +119,7 @@ Content-Type: application/json
                 "title": "Allowed content types",
                 "type": "string",
                 "vocabulary": {
-                    "@id": "http://localhost:55001/plone/portal_types/Event/@sources/allowed_content_types_mode"
+                    "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                 }
             },
             "default_page": {
@@ -275,7 +185,7 @@ Content-Type: application/json
                 "title": "Versioning",
                 "type": "string",
                 "vocabulary": {
-                    "@id": "http://localhost:55001/plone/portal_types/Event/@sources/versioning"
+                    "@id": "http://localhost:55001/plone/@sources/versioning"
                 }
             }
         },

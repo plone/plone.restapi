@@ -10,7 +10,7 @@ myst:
 # Content type management
 
 The `@content-types` service lists, configures, creates, copies, and deletes content types.
-It is available at the site root, and requires the `Plone Site Setup: Overview` permission, as well as permission to use the REST API.
+It is available at the site root, and requires the `Plone Site Setup: Types` permission, like the content settings control panel, as well as permission to use the REST API.
 
 Use the {doc}`types` service to edit the schema of a content type.
 The `dexterity-types` control panel of the {doc}`controlpanels` service remains available.
@@ -62,10 +62,11 @@ Send a `GET` request to `/@content-types/{type}` to get one content type.
 | `id` | Content type ID. |
 | `title` | Translated title. |
 | `items_total` | Number of items of this type, including those the current user cannot view. |
-| `schema` | JSON schema of the settings, with `properties`, `required`, and `fieldsets`, in the same format as the {doc}`controlpanels` service. |
+| `schema` | JSON schema of the settings, with `properties`, `required`, and `fieldsets` |
 | `data` | Current values of the settings, keyed by field name. |
 | `workflow` | Read-only summary of the assigned workflow. |
 
+The schema has the format described in {doc}`../usage/types-schema`.
 Each fieldset has an `id`, a `title`, and the names of its `fields`.
 Fields marked `readOnly` in the schema cannot be changed.
 Choice values have a `token` and a `title`, like in control panels and content.
@@ -79,12 +80,12 @@ Choice values have a `token` and a `title`, like in control panels and content.
 | --- | --- | --- |
 | `general` | `title` | Title, not empty. |
 | `general` | `description` | Description. |
-| `contents` | `global_allow` | Whether items of this type can be added in any folder. |
+| `contents` | `global_allow` | Whether items of this type can be added inside items of the types that allow every type, with `allowed_content_types_mode` set to `all`. |
 | `contents` | `allowed_content_types_mode` | Which types can be added inside items of this type: `all`, `selected`, or `none`. |
-| `contents` | `allowed_content_types` | IDs of the selected types. |
+| `contents` | `allowed_content_types` | IDs of the selected types, from the `plone.app.vocabularies.PortalTypes` vocabulary. |
 | `visibility` | `searchable` | Whether items of this type are shown in search results. |
 | `visibility` | `default_page` | Whether items of this type can be a folder's default page. |
-| `comments` | `allow_discussion` | Whether items of this type allow comments. |
+| `comments` | `allow_discussion` | Whether items of this type allow comments. Only when `plone.app.discussion` is installed. |
 | `versioning` | `versioning` | `off`, `manual`, or `automatic`. |
 
 `allowed_content_types_mode` and `allowed_content_types` work together:
@@ -148,6 +149,7 @@ Without a `description`, it also has the source's description.
     :request: ../../../src/plone/restapi/tests/http-examples/content_types_copy.req
 ```
 
+The response is the new content type, like the response to creating one.
 Changes to the copy, including to its schema, don't affect the source.
 
 ## Delete a content type
@@ -186,6 +188,7 @@ An adapter adapts the FTI and the request, and has these attributes and methods:
 | `order` | Sort order of the fieldset, lowest first. The core fieldsets use 10 to 50. |
 | `schema` | `zope.schema` interface declaring the fields. Field names must be unique across all fieldsets. |
 | `permission` | Permission ID needed to see and change the fieldset, or `None`. |
+| `enabled()` | Return whether to show the fieldset, for example only when the add-on that uses it is installed. The base class returns `True`. |
 | `read()` | Return the current values. |
 | `validate(data)` | Return a list of errors for the changed values, each with `field` and `message`. |
 | `write(data)` | Store the changed values. |

@@ -70,12 +70,16 @@ class ContentTypesService(Service):
         holding them, and its autoform fieldsets.
         """
         for name, settings in get_type_settings(fti, self.request):
+            if not settings.enabled():
+                continue
             if settings.permission and not checkPermission(
                 settings.permission, self.context
             ):
                 continue
             values = settings.read()
-            snapshot = SchemaValues(settings.schema, values).__of__(fti)
+            # Under the site, so links in the schema, such as to named
+            # vocabularies, point to services that exist.
+            snapshot = SchemaValues(settings.schema, values).__of__(self.context)
             fieldsets = get_fieldsets(snapshot, self.request, settings.schema)
             yield name, settings, values, snapshot, fieldsets
 
