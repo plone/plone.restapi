@@ -167,7 +167,7 @@ class TestContentTypesRead(ContentTypesTestCase):
         self.assertEqual(set(result["data"]), set(fields))
         self.assertEqual(
             result["workflow"],
-            {"id": "simple_publication_workflow", "follows_default": True},
+            {"chain": ["simple_publication_workflow"], "follows_default": True},
         )
 
     def test_choices_use_tokens_and_titles(self):
@@ -525,7 +525,8 @@ class TestContentTypesCreate(ContentTypesTestCase):
             {**source["data"], "title": "Copy", "description": "Copied"},
         )
         self.assertEqual(
-            result["workflow"], {"id": "one_state_workflow", "follows_default": False}
+            result["workflow"],
+            {"chain": ["one_state_workflow"], "follows_default": False},
         )
         transaction.begin()
         types = self.portal.portal_types
@@ -928,7 +929,7 @@ class TestContentTypesWorkflow(ContentTypesTestCase):
             response.json(),
             {
                 "@id": self.portal.absolute_url() + "/@content-types/Event/workflow",
-                "id": "simple_publication_workflow",
+                "chain": ["simple_publication_workflow"],
                 "follows_default": True,
             },
         )
@@ -938,10 +939,33 @@ class TestContentTypesWorkflow(ContentTypesTestCase):
             self.workflow().json(),
             {
                 "@id": self.portal.absolute_url() + "/@content-types/Event/workflow",
-                "id": None,
+                "chain": [],
                 "follows_default": False,
             },
         )
+
+    def test_get_a_chain_of_several_workflows(self):
+        self.workflow_tool.setChainForPortalTypes(
+            ("Event",), ("simple_publication_workflow", "one_state_workflow")
+        )
+        transaction.commit()
+        self.assertEqual(
+            self.workflow().json()["chain"],
+            ["simple_publication_workflow", "one_state_workflow"],
+        )
+        self.assertEqual(
+            self.api.get("/@content-types/Event").json()["workflow"]["chain"],
+            ["simple_publication_workflow", "one_state_workflow"],
+        )
+
+    def test_assigning_a_workflow_replaces_the_chain(self):
+        self.workflow_tool.setChainForPortalTypes(
+            ("Event",), ("simple_publication_workflow", "one_state_workflow")
+        )
+        transaction.commit()
+        response = self.change({"workflow": "intranet_workflow"})
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(self.workflow().json()["chain"], ["intranet_workflow"])
 
     def test_dry_run(self):
         response = self.change({"workflow": "intranet_workflow", "dry_run": True})
@@ -994,8 +1018,8 @@ class TestContentTypesWorkflow(ContentTypesTestCase):
         self.assertEqual(self.review_state("private"), "private")
         self.assertEqual(self.review_state("published"), "internal")
         self.assertEqual(
-            self.workflow().json()["id"],
-            "intranet_workflow",
+            self.workflow().json()["chain"],
+            ["intranet_workflow"],
         )
         # Security follows the new state.
         self.api.auth = None
