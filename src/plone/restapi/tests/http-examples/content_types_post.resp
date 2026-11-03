@@ -4,6 +4,7 @@ Location: http://localhost:55001/plone/@content-types/conference_event
 
 {
     "@id": "http://localhost:55001/plone/@content-types/conference_event",
+    "content_count": 0,
     "data": {
         "allow_discussion": false,
         "allowed_content_types": [],
@@ -11,9 +12,9 @@ Location: http://localhost:55001/plone/@content-types/conference_event
             "title": "No types",
             "token": "none"
         },
-        "default_page": false,
         "description": "An event at a conference.",
         "global_allow": true,
+        "in_navigation": false,
         "searchable": true,
         "title": "Conference event",
         "versioning": {
@@ -22,7 +23,6 @@ Location: http://localhost:55001/plone/@content-types/conference_event
         }
     },
     "id": "conference_event",
-    "items_total": 0,
     "schema": {
         "fieldsets": [
             {
@@ -45,7 +45,7 @@ Location: http://localhost:55001/plone/@content-types/conference_event
             {
                 "fields": [
                     "searchable",
-                    "default_page"
+                    "in_navigation"
                 ],
                 "id": "visibility",
                 "title": "Visibility"
@@ -123,12 +123,6 @@ Location: http://localhost:55001/plone/@content-types/conference_event
                     "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                 }
             },
-            "default_page": {
-                "description": "Content of this type can be a folder's default page",
-                "factory": "Yes/No",
-                "title": "Usable as a default page",
-                "type": "boolean"
-            },
             "description": {
                 "default": "",
                 "description": "",
@@ -141,6 +135,12 @@ Location: http://localhost:55001/plone/@content-types/conference_event
                 "description": "Allow adding content of this type in any folder",
                 "factory": "Yes/No",
                 "title": "Globally addable",
+                "type": "boolean"
+            },
+            "in_navigation": {
+                "description": "Items of this type are listed in the site's navigation",
+                "factory": "Yes/No",
+                "title": "Shown in navigation",
                 "type": "boolean"
             },
             "searchable": {
@@ -195,7 +195,7 @@ Location: http://localhost:55001/plone/@content-types/conference_event
             "global_allow",
             "allowed_content_types_mode",
             "searchable",
-            "default_page",
+            "in_navigation",
             "allow_discussion",
             "versioning"
         ],

@@ -13,15 +13,15 @@ class ContentTypesDelete(ContentTypesService):
             raise BadRequest("The site content type cannot be deleted")
         if not IDexterityFTI.providedBy(fti):
             raise BadRequest("Only Dexterity content types can be deleted")
-        items_total = count_items(self.context).get(type_id, 0)
-        if items_total:
+        content_count = count_items(self.context).get(type_id, 0)
+        if content_count:
             self.request.response.setStatus(409)
             return {
                 "error": {
                     "type": "Conflict",
                     "message": "The content type still has items",
                 },
-                "items_total": items_total,
+                "content_count": content_count,
             }
         remove_type(self.types_tool, type_id, self.request)
         return self.reply_no_content()

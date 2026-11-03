@@ -143,7 +143,7 @@ class TestContentTypesRead(ContentTypesTestCase):
             result["@id"], self.portal.absolute_url() + "/@content-types/Document"
         )
         self.assertEqual(result["title"], "Page")
-        self.assertEqual(result["items_total"], 0)
+        self.assertEqual(result["content_count"], 0)
         self.assertEqual(
             [fieldset["id"] for fieldset in result["schema"]["fieldsets"]],
             ["general", "contents", "visibility", "comments", "versioning"],
@@ -174,7 +174,7 @@ class TestContentTypesRead(ContentTypesTestCase):
             "/", json={"@type": "Document", "id": "private", "title": "Private"}
         )
         self.assertEqual(response.status_code, 201, response.text)
-        self.assertEqual(self.get().json()["items_total"], 1)
+        self.assertEqual(self.get().json()["content_count"], 1)
 
     def test_unknown_types_and_paths(self):
         for method in (self.api.get, self.api.patch, self.api.delete):
@@ -192,7 +192,7 @@ class TestContentTypesUpdate(ContentTypesTestCase):
                 "title": "Edited",
                 "global_allow": False,
                 "searchable": False,
-                "default_page": False,
+                "in_navigation": False,
                 "allow_discussion": True,
             }
         )
@@ -201,13 +201,16 @@ class TestContentTypesUpdate(ContentTypesTestCase):
         self.assertEqual(after["title"], "Edited")
         self.assertFalse(after["global_allow"])
         self.assertFalse(after["searchable"])
-        self.assertFalse(after["default_page"])
+        self.assertFalse(after["in_navigation"])
         self.assertTrue(after["allow_discussion"])
         self.assertEqual(after["description"], before["description"])
         transaction.begin()
         self.assertEqual(self.portal.portal_types.Document.title, "Edited")
         self.assertIn(
             "Document", self.portal.portal_registry["plone.types_not_searched"]
+        )
+        self.assertNotIn(
+            "Document", self.portal.portal_registry["plone.displayed_types"]
         )
 
     def allowed(self, mode, types, type_id="Folder"):
@@ -418,7 +421,7 @@ class TestContentTypesCreate(ContentTypesTestCase):
         response = self.patch(
             {
                 "searchable": False,
-                "default_page": True,
+                "in_navigation": True,
                 "allow_discussion": True,
                 "versioning": "automatic",
             }
@@ -503,7 +506,7 @@ class TestContentTypesDelete(ContentTypesTestCase):
         self.assertEqual(response.status_code, 201, response.text)
         response = self.api.delete("/@content-types/Document")
         self.assertEqual(response.status_code, 409, response.text)
-        self.assertEqual(response.json()["items_total"], 1)
+        self.assertEqual(response.json()["content_count"], 1)
         self.assertEqual(self.get().status_code, 200)
 
     def test_only_dexterity_types_can_be_deleted(self):
@@ -521,7 +524,7 @@ class TestContentTypesDelete(ContentTypesTestCase):
     def test_delete_cleans_up_so_a_new_type_starts_clean(self):
         self.assertEqual(self.create(id="Temporary").status_code, 201)
         response = self.patch(
-            {"searchable": False, "default_page": True, "versioning": "automatic"},
+            {"searchable": False, "in_navigation": True, "versioning": "automatic"},
             "Temporary",
         )
         self.assertEqual(response.status_code, 204, response.text)
@@ -546,7 +549,7 @@ class TestContentTypesDelete(ContentTypesTestCase):
         self.assertEqual(self.create(id="Temporary").status_code, 201)
         result = self.get("Temporary").json()
         self.assertTrue(result["data"]["searchable"])
-        self.assertFalse(result["data"]["default_page"])
+        self.assertFalse(result["data"]["in_navigation"])
         self.assertEqual(tokens(result["data"]["versioning"]), "off")
         self.assertTrue(result["workflow"]["follows_default"])
         self.assertEqual(

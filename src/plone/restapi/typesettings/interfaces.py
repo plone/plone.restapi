@@ -97,9 +97,9 @@ class IContentsSettings(Interface):
 
 class IVisibilitySettings(Interface):
     searchable = schema.Bool(title=_("Shown in search results"))
-    default_page = schema.Bool(
-        title=_("Usable as a default page"),
-        description=_("Content of this type can be a folder's default page"),
+    in_navigation = schema.Bool(
+        title=_("Shown in navigation"),
+        description=_("Items of this type are listed in the site's navigation"),
     )
 
 

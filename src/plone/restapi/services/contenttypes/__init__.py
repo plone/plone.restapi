@@ -121,7 +121,7 @@ class ContentTypesService(Service):
                 "@id": self.url(type_id),
                 "id": type_id,
                 "title": translate(fti.Title(), context=self.request),
-                "items_total": counts.get(type_id, 0),
+                "content_count": counts.get(type_id, 0),
                 "schema": {
                     "type": "object",
                     "properties": properties,

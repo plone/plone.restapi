@@ -112,7 +112,7 @@ class VisibilitySettings(TypeSettings):
     # Field name, registry record, and whether the record lists excluded types
     RECORDS = (
         ("searchable", "plone.types_not_searched", True),
-        ("default_page", "plone.default_page_types", False),
+        ("in_navigation", "plone.displayed_types", False),
     )
 
     def read(self):
