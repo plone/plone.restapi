@@ -10,7 +10,6 @@ from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.event.base import default_timezone
 from plone.app.iterate.interfaces import ICheckinCheckoutPolicy
-from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.locking.interfaces import ILockable
@@ -18,6 +17,7 @@ from plone.locking.interfaces import ITTWLockable
 from plone.registry.interfaces import IRegistry
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.working_copy import WorkingCopyInfo
+from plone.restapi.services.history.get import ContentHistory
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.tests.statictime import StaticTime
@@ -232,8 +232,11 @@ class TestStaticTime(unittest.TestCase):
         doc1 = self.create_document("doc1")
         doc1.setTitle("Current version")
         api.content.transition(doc1, "publish")
-        viewlet = ContentHistoryViewlet(doc1, doc1.REQUEST, None)
-        viewlet.update()
+        viewlet = ContentHistory(
+            doc1,
+            doc1.REQUEST,
+            self.portal.absolute_url(),
+        )
 
         history = viewlet.fullHistory()
 
@@ -251,8 +254,11 @@ class TestStaticTime(unittest.TestCase):
         doc2 = self.create_document("doc2")
         doc2.setTitle("Current version")
         api.content.transition(doc2, "publish")
-        viewlet = ContentHistoryViewlet(doc2, doc2.REQUEST, None)
-        viewlet.update()
+        viewlet = ContentHistory(
+            doc2,
+            doc2.REQUEST,
+            self.portal.absolute_url(),
+        )
 
         history = viewlet.fullHistory()
 
