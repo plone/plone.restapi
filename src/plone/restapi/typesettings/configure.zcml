@@ -25,4 +25,9 @@
       name="behaviors"
       />
 
+  <utility
+      name="plone.restapi.Behaviors"
+      component=".interfaces.behaviors_vocabulary"
+      />
+
 </configure>

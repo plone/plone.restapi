@@ -386,8 +386,13 @@ class TestContentTypesBehaviors(ContentTypesTestCase):
         field = self.get().json()["schema"]["properties"]["behaviors"]
         self.assertEqual(field["type"], "array")
         self.assertTrue(field["uniqueItems"])
-        choices = dict(field["items"]["choices"])
-        self.assertEqual(choices["plone.leadimage"], "Lead Image")
+        # The choices are in a vocabulary, by the names types list.
+        vocabulary = field["items"]["vocabulary"]["@id"]
+        self.assertTrue(vocabulary.endswith("/@vocabularies/plone.restapi.Behaviors"))
+        response = self.api.get(vocabulary, params={"b_size": -1})
+        self.assertEqual(response.status_code, 200, response.text)
+        titles = {term["token"]: term["title"] for term in response.json()["items"]}
+        self.assertEqual(titles["plone.leadimage"], "Lead Image")
 
     def test_patch_replaces_the_list_in_order(self):
         behaviors = ["plone.leadimage", "plone.dublincore", "plone.namefromtitle"]

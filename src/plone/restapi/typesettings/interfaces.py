@@ -7,7 +7,7 @@ from zope.interface import Interface
 from zope.interface import invariant
 from zope.interface import provider
 from zope.interface.exceptions import Invalid
-from zope.schema.interfaces import IContextSourceBinder
+from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -65,8 +65,14 @@ def behavior_registrations():
     return registrations
 
 
-@provider(IContextSourceBinder)
-def available_behaviors(context):
+# plone.behavior's ``Behaviors`` vocabulary has the behaviors' interface
+# identifiers, but types list their behaviors by name.
+BEHAVIORS_VOCABULARY = "plone.restapi.Behaviors"
+
+
+@provider(IVocabularyFactory)
+def behaviors_vocabulary(context):
+    """Every registered behavior, by the name types list it with."""
     return SimpleVocabulary(
         [
             SimpleTerm(name, name, registration.title)
@@ -160,7 +166,7 @@ class IBehaviorsSettings(Interface):
             "The complete list of the type's behaviors. Their order sets "
             "where their fields appear in the edit form."
         ),
-        value_type=schema.Choice(source=available_behaviors),
+        value_type=schema.Choice(vocabulary=BEHAVIORS_VOCABULARY),
         required=False,
         default=[],
         missing_value=[],

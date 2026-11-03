@@ -7,7 +7,7 @@
       method="GET"
       factory=".get.BehaviorsGet"
       for="plone.restapi.bbb.IPloneSiteRoot"
-      permission="plone.app.controlpanel.Overview"
+      permission="plone.app.controlpanel.Types"
       name="@behaviors"
       />
 

@@ -10,7 +10,7 @@ myst:
 # Behaviors
 
 The `@behaviors` service lists the behaviors that can be enabled on Dexterity content types.
-It is available at the site root, and requires the `Plone Site Setup: Overview` permission, as well as permission to use the REST API.
+It is available at the site root, and requires the `Plone Site Setup: Types` permission, as well as permission to use the REST API.
 
 Use the {doc}`content-types` service to enable behaviors on a content type, and to change their order.
 
