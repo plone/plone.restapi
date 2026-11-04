@@ -15,6 +15,7 @@
   <include package=".aliases" />
   <include package=".breadcrumbs" />
   <include package=".content" />
+  <include package=".constraints" />
   <include package=".controlpanels" />
   <include package=".copymove" />
   <include package=".database" />
