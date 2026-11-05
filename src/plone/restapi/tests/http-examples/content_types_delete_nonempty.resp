@@ -1,0 +1,10 @@
+HTTP/1.1 409 Conflict
+Content-Type: application/json
+
+{
+    "content_count": 1,
+    "error": {
+        "message": "The content type still has items",
+        "type": "Conflict"
+    }
+}
