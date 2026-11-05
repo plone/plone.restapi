@@ -2188,7 +2188,7 @@ Content-Type: application/json
                     "token": "none"
                 },
                 "default_page": false,
-                "description": "Discussion Items are documents which reply to other content.\nThey should *not* be addable through the standard 'folder_factories' interface.",
+                "description": "Discussion Items are documents which reply to other content.",
                 "global_allow": false,
                 "in_navigation": false,
                 "searchable": true,
