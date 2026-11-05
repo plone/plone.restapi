@@ -1,0 +1,9 @@
+POST /plone/@workflows HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "default": "intranet_workflow",
+    "dry_run": true
+}
