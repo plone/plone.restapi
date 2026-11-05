@@ -192,6 +192,7 @@ class TestContentTypesUpdate(ContentTypesTestCase):
                 "title": "Edited",
                 "global_allow": False,
                 "searchable": False,
+                "default_page": False,
                 "in_navigation": False,
                 "allow_discussion": True,
             }
@@ -201,6 +202,7 @@ class TestContentTypesUpdate(ContentTypesTestCase):
         self.assertEqual(after["title"], "Edited")
         self.assertFalse(after["global_allow"])
         self.assertFalse(after["searchable"])
+        self.assertFalse(after["default_page"])
         self.assertFalse(after["in_navigation"])
         self.assertTrue(after["allow_discussion"])
         self.assertEqual(after["description"], before["description"])
@@ -524,7 +526,12 @@ class TestContentTypesDelete(ContentTypesTestCase):
     def test_delete_cleans_up_so_a_new_type_starts_clean(self):
         self.assertEqual(self.create(id="Temporary").status_code, 201)
         response = self.patch(
-            {"searchable": False, "in_navigation": True, "versioning": "automatic"},
+            {
+                "searchable": False,
+                "default_page": True,
+                "in_navigation": True,
+                "versioning": "automatic",
+            },
             "Temporary",
         )
         self.assertEqual(response.status_code, 204, response.text)
@@ -549,6 +556,7 @@ class TestContentTypesDelete(ContentTypesTestCase):
         self.assertEqual(self.create(id="Temporary").status_code, 201)
         result = self.get("Temporary").json()
         self.assertTrue(result["data"]["searchable"])
+        self.assertFalse(result["data"]["default_page"])
         self.assertFalse(result["data"]["in_navigation"])
         self.assertEqual(tokens(result["data"]["versioning"]), "off")
         self.assertTrue(result["workflow"]["follows_default"])

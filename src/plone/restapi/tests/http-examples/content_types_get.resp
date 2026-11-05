@@ -1,0 +1,3047 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@content-types",
+    "items": [
+        {
+            "@id": "http://localhost:55001/plone/@content-types/TempFolder",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [
+                    {
+                        "title": "Page",
+                        "token": "Document"
+                    },
+                    {
+                        "title": "Event",
+                        "token": "Event"
+                    },
+                    {
+                        "title": "File",
+                        "token": "File"
+                    },
+                    {
+                        "title": "Folder",
+                        "token": "Folder"
+                    },
+                    {
+                        "title": "Image",
+                        "token": "Image"
+                    },
+                    {
+                        "title": "Link",
+                        "token": "Link"
+                    },
+                    {
+                        "title": "News Item",
+                        "token": "News Item"
+                    },
+                    {
+                        "title": "TempFolder",
+                        "token": "TempFolder"
+                    }
+                ],
+                "allowed_content_types_mode": {
+                    "title": "All types",
+                    "token": "all"
+                },
+                "default_page": false,
+                "description": "Specialized folder for temporary data.",
+                "global_allow": false,
+                "in_navigation": false,
+                "searchable": false,
+                "title": "",
+                "versioning": {
+                    "title": "Off",
+                    "token": "off"
+                }
+            },
+            "id": "TempFolder",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "TempFolder",
+            "workflow": {
+                "follows_default": true,
+                "id": "simple_publication_workflow"
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/Plone%20Site",
+            "content_count": 1,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "All types",
+                    "token": "all"
+                },
+                "default_page": false,
+                "description": "",
+                "global_allow": false,
+                "in_navigation": false,
+                "searchable": false,
+                "title": "Plone Site",
+                "versioning": {
+                    "title": "Off",
+                    "token": "off"
+                }
+            },
+            "id": "Plone Site",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "Plone Site",
+            "workflow": {
+                "follows_default": false,
+                "id": null
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/Collection",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "All types",
+                    "token": "all"
+                },
+                "default_page": true,
+                "description": "",
+                "global_allow": true,
+                "in_navigation": true,
+                "searchable": true,
+                "title": "Collection",
+                "versioning": {
+                    "title": "Off",
+                    "token": "off"
+                }
+            },
+            "id": "Collection",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "Collection",
+            "workflow": {
+                "follows_default": true,
+                "id": "simple_publication_workflow"
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/Document",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "No types",
+                    "token": "none"
+                },
+                "default_page": true,
+                "description": "",
+                "global_allow": true,
+                "in_navigation": true,
+                "searchable": true,
+                "title": "Page",
+                "versioning": {
+                    "title": "Automatic",
+                    "token": "automatic"
+                }
+            },
+            "id": "Document",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "Page",
+            "workflow": {
+                "follows_default": true,
+                "id": "simple_publication_workflow"
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/Folder",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "All types",
+                    "token": "all"
+                },
+                "default_page": false,
+                "description": "",
+                "global_allow": true,
+                "in_navigation": true,
+                "searchable": true,
+                "title": "Folder",
+                "versioning": {
+                    "title": "Off",
+                    "token": "off"
+                }
+            },
+            "id": "Folder",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "Folder",
+            "workflow": {
+                "follows_default": true,
+                "id": "simple_publication_workflow"
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/Link",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "No types",
+                    "token": "none"
+                },
+                "default_page": false,
+                "description": "",
+                "global_allow": true,
+                "in_navigation": true,
+                "searchable": true,
+                "title": "Link",
+                "versioning": {
+                    "title": "Automatic",
+                    "token": "automatic"
+                }
+            },
+            "id": "Link",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "Link",
+            "workflow": {
+                "follows_default": true,
+                "id": "simple_publication_workflow"
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/File",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "No types",
+                    "token": "none"
+                },
+                "default_page": false,
+                "description": "Lets you upload a file to the site.",
+                "global_allow": true,
+                "in_navigation": false,
+                "searchable": true,
+                "title": "File",
+                "versioning": {
+                    "title": "Off",
+                    "token": "off"
+                }
+            },
+            "id": "File",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "File",
+            "workflow": {
+                "follows_default": false,
+                "id": null
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/Image",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "No types",
+                    "token": "none"
+                },
+                "default_page": false,
+                "description": "Images can be referenced in pages or displayed in an album.",
+                "global_allow": true,
+                "in_navigation": false,
+                "searchable": true,
+                "title": "Image",
+                "versioning": {
+                    "title": "Off",
+                    "token": "off"
+                }
+            },
+            "id": "Image",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "Image",
+            "workflow": {
+                "follows_default": false,
+                "id": null
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/News%20Item",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "No types",
+                    "token": "none"
+                },
+                "default_page": true,
+                "description": "",
+                "global_allow": true,
+                "in_navigation": true,
+                "searchable": true,
+                "title": "News Item",
+                "versioning": {
+                    "title": "Automatic",
+                    "token": "automatic"
+                }
+            },
+            "id": "News Item",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "News Item",
+            "workflow": {
+                "follows_default": true,
+                "id": "simple_publication_workflow"
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/Event",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "No types",
+                    "token": "none"
+                },
+                "default_page": true,
+                "description": "Events can be shown in calendars.",
+                "global_allow": true,
+                "in_navigation": true,
+                "searchable": true,
+                "title": "Event",
+                "versioning": {
+                    "title": "Automatic",
+                    "token": "automatic"
+                }
+            },
+            "id": "Event",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "Event",
+            "workflow": {
+                "follows_default": true,
+                "id": "simple_publication_workflow"
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/Discussion%20Item",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "No types",
+                    "token": "none"
+                },
+                "default_page": false,
+                "description": "Discussion Items are documents which reply to other content.\nThey should *not* be addable through the standard 'folder_factories' interface.",
+                "global_allow": false,
+                "in_navigation": false,
+                "searchable": true,
+                "title": "Comment",
+                "versioning": {
+                    "title": "Off",
+                    "token": "off"
+                }
+            },
+            "id": "Discussion Item",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "Comment",
+            "workflow": {
+                "follows_default": false,
+                "id": "comment_one_state_workflow"
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/ATTestDocument",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "No types",
+                    "token": "none"
+                },
+                "default_page": false,
+                "description": "",
+                "global_allow": true,
+                "in_navigation": false,
+                "searchable": true,
+                "title": "Test Document",
+                "versioning": {
+                    "title": "Off",
+                    "token": "off"
+                }
+            },
+            "id": "ATTestDocument",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "Test Document",
+            "workflow": {
+                "follows_default": true,
+                "id": "simple_publication_workflow"
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/ATTestFolder",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [
+                    {
+                        "title": "Test Document",
+                        "token": "ATTestDocument"
+                    },
+                    {
+                        "title": "Test Folder",
+                        "token": "ATTestFolder"
+                    }
+                ],
+                "allowed_content_types_mode": {
+                    "title": "All types",
+                    "token": "all"
+                },
+                "default_page": false,
+                "description": "",
+                "global_allow": true,
+                "in_navigation": false,
+                "searchable": true,
+                "title": "Test Folder",
+                "versioning": {
+                    "title": "Off",
+                    "token": "off"
+                }
+            },
+            "id": "ATTestFolder",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "Test Folder",
+            "workflow": {
+                "follows_default": true,
+                "id": "simple_publication_workflow"
+            }
+        },
+        {
+            "@id": "http://localhost:55001/plone/@content-types/DXTestDocument",
+            "content_count": 0,
+            "data": {
+                "allow_discussion": false,
+                "allowed_content_types": [],
+                "allowed_content_types_mode": {
+                    "title": "All types",
+                    "token": "all"
+                },
+                "default_page": false,
+                "description": "",
+                "global_allow": true,
+                "in_navigation": false,
+                "searchable": true,
+                "title": "DX Test Document",
+                "versioning": {
+                    "title": "Off",
+                    "token": "off"
+                }
+            },
+            "id": "DXTestDocument",
+            "schema": {
+                "fieldsets": [
+                    {
+                        "fields": [
+                            "title",
+                            "description"
+                        ],
+                        "id": "general",
+                        "title": "General"
+                    },
+                    {
+                        "fields": [
+                            "global_allow",
+                            "allowed_content_types_mode",
+                            "allowed_content_types"
+                        ],
+                        "id": "contents",
+                        "title": "Contents"
+                    },
+                    {
+                        "fields": [
+                            "searchable",
+                            "default_page",
+                            "in_navigation"
+                        ],
+                        "id": "visibility",
+                        "title": "Visibility"
+                    },
+                    {
+                        "fields": [
+                            "allow_discussion"
+                        ],
+                        "id": "comments",
+                        "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "versioning"
+                        ],
+                        "id": "versioning",
+                        "title": "Versioning"
+                    }
+                ],
+                "properties": {
+                    "allow_discussion": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Allow comments",
+                        "type": "boolean"
+                    },
+                    "allowed_content_types": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "Kept while all types are allowed",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes"
+                            }
+                        },
+                        "title": "Selected types",
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "allowed_content_types_mode": {
+                        "choices": [
+                            [
+                                "all",
+                                "All types"
+                            ],
+                            [
+                                "selected",
+                                "Selected types"
+                            ],
+                            [
+                                "none",
+                                "No types"
+                            ]
+                        ],
+                        "description": "Whether all types, only the selected types, or no types can be added inside content of this type",
+                        "enum": [
+                            "all",
+                            "selected",
+                            "none"
+                        ],
+                        "enumNames": [
+                            "All types",
+                            "Selected types",
+                            "No types"
+                        ],
+                        "factory": "Choice",
+                        "title": "Allowed content types",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
+                        }
+                    },
+                    "default_page": {
+                        "description": "Content of this type can be a folder's default page",
+                        "factory": "Yes/No",
+                        "title": "Usable as a default page",
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "default": "",
+                        "description": "",
+                        "factory": "Text",
+                        "title": "Description",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "global_allow": {
+                        "description": "Allow adding content of this type in any folder",
+                        "factory": "Yes/No",
+                        "title": "Globally addable",
+                        "type": "boolean"
+                    },
+                    "in_navigation": {
+                        "description": "Items of this type are listed in the site's navigation",
+                        "factory": "Yes/No",
+                        "title": "Shown in navigation",
+                        "type": "boolean"
+                    },
+                    "searchable": {
+                        "description": "",
+                        "factory": "Yes/No",
+                        "title": "Shown in search results",
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "minLength": 1,
+                        "title": "Title",
+                        "type": "string"
+                    },
+                    "versioning": {
+                        "choices": [
+                            [
+                                "off",
+                                "Off"
+                            ],
+                            [
+                                "manual",
+                                "Manual"
+                            ],
+                            [
+                                "automatic",
+                                "Automatic"
+                            ]
+                        ],
+                        "description": "Manual versioning saves a version on request, automatic versioning also on every edit",
+                        "enum": [
+                            "off",
+                            "manual",
+                            "automatic"
+                        ],
+                        "enumNames": [
+                            "Off",
+                            "Manual",
+                            "Automatic"
+                        ],
+                        "factory": "Choice",
+                        "title": "Versioning",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/versioning"
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "global_allow",
+                    "allowed_content_types_mode",
+                    "searchable",
+                    "default_page",
+                    "in_navigation",
+                    "allow_discussion",
+                    "versioning"
+                ],
+                "type": "object"
+            },
+            "title": "DX Test Document",
+            "workflow": {
+                "follows_default": true,
+                "id": "simple_publication_workflow"
+            }
+        }
+    ],
+    "items_total": 14
+}

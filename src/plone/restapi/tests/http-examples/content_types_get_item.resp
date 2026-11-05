@@ -11,6 +11,7 @@ Content-Type: application/json
             "title": "No types",
             "token": "none"
         },
+        "default_page": true,
         "description": "Events can be shown in calendars.",
         "global_allow": true,
         "in_navigation": true,
@@ -44,6 +45,7 @@ Content-Type: application/json
             {
                 "fields": [
                     "searchable",
+                    "default_page",
                     "in_navigation"
                 ],
                 "id": "visibility",
@@ -122,6 +124,12 @@ Content-Type: application/json
                     "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                 }
             },
+            "default_page": {
+                "description": "Content of this type can be a folder's default page",
+                "factory": "Yes/No",
+                "title": "Usable as a default page",
+                "type": "boolean"
+            },
             "description": {
                 "default": "",
                 "description": "",
@@ -194,6 +202,7 @@ Content-Type: application/json
             "global_allow",
             "allowed_content_types_mode",
             "searchable",
+            "default_page",
             "in_navigation",
             "allow_discussion",
             "versioning"

@@ -2388,8 +2388,9 @@ class TestContentTypesDocumentation(TestDocumentationBase):
     def test_content_types_get_listing(self):
         response = self.api_session.get("/@content-types")
         self.assertEqual(200, response.status_code, response.text)
-        # The response lists every type, see the item example for its shape.
-        save_request_for_docs("content_types_get", response)
+        # The docs only show the request: the response lists every type, see
+        # the item example for its shape. It's saved to review changes.
+        save_request_and_response_for_docs("content_types_get", response)
 
     def test_content_types_get_item(self):
         response = self.api_session.get("/@content-types/Event")
@@ -2412,7 +2413,9 @@ class TestContentTypesDocumentation(TestDocumentationBase):
             },
         )
         self.assertEqual(201, response.status_code, response.text)
-        save_request_for_docs("content_types_copy", response)
+        # The docs only show the request: the response is like creating one.
+        # It's saved to review changes.
+        save_request_and_response_for_docs("content_types_copy", response)
 
     def test_content_types_patch(self):
         self.create_type()

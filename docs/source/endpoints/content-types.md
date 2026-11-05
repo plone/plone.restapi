@@ -84,6 +84,7 @@ Choice values have a `token` and a `title`, like in control panels and content.
 | `contents` | `allowed_content_types_mode` | Which types can be added inside items of this type: `all`, `selected`, or `none`. |
 | `contents` | `allowed_content_types` | IDs of the selected types, from the `plone.app.vocabularies.PortalTypes` vocabulary. |
 | `visibility` | `searchable` | Whether items of this type are shown in search results. |
+| `visibility` | `default_page` | Whether items of this type can be a folder's default page. |
 | `visibility` | `in_navigation` | Whether items of this type are shown in the site's navigation. |
 | `comments` | `allow_discussion` | Whether items of this type allow comments. Only when `plone.app.discussion` is installed. |
 | `versioning` | `versioning` | `off`, `manual`, or `automatic`. |
