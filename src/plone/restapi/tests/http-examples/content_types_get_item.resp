@@ -298,7 +298,9 @@ Content-Type: application/json
     },
     "title": "Event",
     "workflow": {
-        "follows_default": true,
-        "id": "simple_publication_workflow"
+        "chain": [
+            "simple_publication_workflow"
+        ],
+        "follows_default": true
     }
 }

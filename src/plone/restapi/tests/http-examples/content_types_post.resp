@@ -247,7 +247,9 @@ Location: http://localhost:55001/plone/@content-types/conference_event
     },
     "title": "Conference event",
     "workflow": {
-        "follows_default": true,
-        "id": "simple_publication_workflow"
+        "chain": [
+            "simple_publication_workflow"
+        ],
+        "follows_default": true
     }
 }
