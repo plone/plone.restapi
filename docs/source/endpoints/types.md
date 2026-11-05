@@ -122,6 +122,25 @@ See {ref}`vocabularies` for details on these endpoints.
 
 See {ref}`types-schema` for a detailed documentation about the available field types.
 
+(types-preview-behaviors)=
+
+### Preview the schema with other behaviors
+
+Add a `behaviors` parameter with the comma-separated IDs of behaviors to get the schema the content type would have with these behaviors, in this order:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/types_get_with_behaviors.req
+```
+
+The content type doesn't change.
+Like the `behaviors` setting of the {doc}`content-types` service, the list is complete: behaviors left out are disabled in the preview.
+The fields of the content type itself are kept.
+An empty value previews the schema without any behavior.
+Unknown behaviors return `400 Bad Request`, and content types that aren't Dexterity types return `404 Not Found`.
+
+The preview comes from the backend because the order of the fields doesn't only follow the order of the behaviors: some fields carry their own ordering directives.
+
 To get one schema **fieldset** properties, access `@types/Document/{fieldset}` endpoint:
 
 ```{eval-rst}
