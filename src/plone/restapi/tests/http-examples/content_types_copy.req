@@ -1,0 +1,11 @@
+POST /plone/@content-types HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "copy_from": "Event",
+    "description": "An event at a conference.",
+    "id": "ConferenceEvent",
+    "title": "Conference event"
+}
