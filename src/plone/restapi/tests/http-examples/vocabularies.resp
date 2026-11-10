@@ -203,6 +203,10 @@ Content-Type: application/json
         "title": "plone.app.multilingual.RootCatalog"
     },
     {
+        "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors",
+        "title": "plone.restapi.Behaviors"
+    },
+    {
         "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.testing.context_vocabulary",
         "title": "plone.restapi.testing.context_vocabulary"
     }
