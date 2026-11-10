@@ -59,5 +59,6 @@ users
 userschema
 vocabularies
 workflow
+workflows
 workingcopy
 ```

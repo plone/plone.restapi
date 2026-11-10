@@ -31,6 +31,7 @@ TEST_REQUIRES = [
     "plone.app.upgrade",
     "plone.rest>=3.0.1",
     "plone.testing",
+    "Products.CMFPlacefulWorkflow",
     "requests",
 ]
 
