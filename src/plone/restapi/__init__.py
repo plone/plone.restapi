@@ -1,5 +1,4 @@
 from . import patches  # noqa: ignore=F401
-from AccessControl import allow_module
 from AccessControl.Permissions import add_user_folders
 from importlib import import_module
 from importlib.metadata import distribution
@@ -18,8 +17,6 @@ except PackageNotFoundError:
 _ = MessageFactory("plone.restapi")
 PROJECT_NAME = "plone.restapi"
 
-
-allow_module("json")
 
 # BBB: Plone 5.2
 HAS_PLONE_6 = getattr(

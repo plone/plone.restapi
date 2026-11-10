@@ -1,0 +1,4 @@
+Security: no longer allow importing the `json` module in restricted code.
+Some functions could be used to call protected methods on any object.
+See https://github.com/plone/plone.restapi/security/advisories/GHSA-vgxm-pwch-89q6
+@mauritsvanrees
