@@ -59,13 +59,13 @@ class ContentTypesService(Service):
         return url if type_id is None else f"{url}/{quote(type_id, safe='')}"
 
     def workflow(self, type_id, chains=None):
-        """Return the type's workflow, and whether it follows the default."""
+        """Return the type's workflow chain, and whether it follows the default."""
         workflow = getToolByName(self.context, "portal_workflow")
         if chains is None:
             chains = dict(workflow.listChainOverrides())
         chain = workflow.getChainFor(type_id)
         return {
-            "id": chain[0] if chain else None,
+            "chain": list(chain),
             "follows_default": chains.get(type_id) is None,
         }
 
