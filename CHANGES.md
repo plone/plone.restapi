@@ -9,6 +9,17 @@
 
 <!-- towncrier release notes start -->
 
+## 9.15.8 (2026-11-10)
+
+
+### Bug fixes:
+
+- Fix two cases where REST API search and summary serialization could return HTTP 500 (`TypeError`) based on request parameters: a form or query string parameter named `summary_serializer_metadata`, and a `portal_type` value containing the substring "query" when `use_site_search_settings` is used. Also make the summary serializer's per-request metadata cache effective; it was recomputed for every item. @mliebischer #2060
+- Security: no longer allow importing the `json` module in restricted code.
+  Some functions could be used to call protected methods on any object.
+  See https://github.com/plone/plone.restapi/security/advisories/GHSA-vgxm-pwch-89q6
+  @mauritsvanrees 
+
 ## 9.15.7 (2026-08-31)
 
 
