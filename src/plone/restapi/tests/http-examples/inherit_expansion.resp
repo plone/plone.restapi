@@ -1,0 +1,85 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@components": {
+        "actions": {
+            "@id": "http://localhost:55001/plone/document/@actions"
+        },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/document/@aliases"
+        },
+        "breadcrumbs": {
+            "@id": "http://localhost:55001/plone/document/@breadcrumbs"
+        },
+        "contextnavigation": {
+            "@id": "http://localhost:55001/plone/document/@contextnavigation"
+        },
+        "inherit": {
+            "@id": "http://localhost:55001/plone/document/@inherit?expand.inherit.behaviors=plone.navigationroot",
+            "plone.navigationroot": {
+                "data": {},
+                "from": {
+                    "@id": "http://localhost:55001/plone",
+                    "title": "Plone site"
+                }
+            }
+        },
+        "navigation": {
+            "@id": "http://localhost:55001/plone/document/@navigation"
+        },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/document/@navroot"
+        },
+        "types": {
+            "@id": "http://localhost:55001/plone/document/@types"
+        },
+        "workflow": {
+            "@id": "http://localhost:55001/plone/document/@workflow"
+        }
+    },
+    "@id": "http://localhost:55001/plone/document",
+    "@type": "Document",
+    "UID": "SomeUUID000000000000000000000002",
+    "allow_discussion": false,
+    "changeNote": "",
+    "contributors": [],
+    "created": "1995-07-31T13:45:00+00:00",
+    "creators": [
+        "test_user_1_"
+    ],
+    "description": "",
+    "effective": null,
+    "exclude_from_nav": false,
+    "expires": null,
+    "id": "document",
+    "is_folderish": false,
+    "language": "",
+    "layout": "document_view",
+    "lock": {
+        "locked": false,
+        "stealable": true
+    },
+    "modified": "1995-07-31T17:30:00+00:00",
+    "next_item": {},
+    "parent": {
+        "@id": "http://localhost:55001/plone",
+        "@type": "Plone Site",
+        "description": "",
+        "title": "Plone site",
+        "type_title": "Plone Site"
+    },
+    "previous_item": {},
+    "relatedItems": [],
+    "review_state": "private",
+    "rights": "",
+    "subjects": [],
+    "table_of_contents": null,
+    "text": null,
+    "title": "Test document",
+    "type_title": "Page",
+    "version": "current",
+    "versioning_enabled": true,
+    "working_copy": null,
+    "working_copy_of": null
+}

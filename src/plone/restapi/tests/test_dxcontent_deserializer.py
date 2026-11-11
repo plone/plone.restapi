@@ -181,6 +181,9 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         self.deserialize(body='{"test_required_field": "My Value"}', validate_all=True)
         self.assertEqual("Default", self.portal.doc1.test_default_value_field)
         self.assertEqual("DefaultFactory", self.portal.doc1.test_default_factory_field)
+        self.assertEqual(
+            "DefaultFactory", self.portal.doc1.test_context_aware_default_factory_field
+        )
 
     def test_deserializer_sets_missing_value_when_receiving_null(self):
         self.deserialize(body='{"test_missing_value_field": null}')
@@ -233,10 +236,7 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
             "valid value", self.portal.doc1.test_missing_value_required_field
         )
         self.assertEqual(
-            (
-                "test_missing_value_required_field is a required field.",
-                "Setting it to null is not allowed.",
-            ),
+            "test_missing_value_required_field is a required field. Setting it to null is not allowed.",
             cm.exception.args[0][0]["message"],
         )
         self.assertEqual(
@@ -259,12 +259,20 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         )
         context = self.portal.doc_default_value
         default_value = "DefaultFactory"
-        body = {"test_default_factory_field": default_value}
+        body = {
+            "test_default_factory_field": default_value,
+            "test_context_aware_default_factory_field": default_value,
+        }
         self.deserialize(body=json.dumps(body), context=context, create=True)
         self.assertIn(
             "test_default_factory_field",
             dir(context),
-            "Default value still available.",
+            "Default value not stored.",
+        )
+        self.assertIn(
+            "test_context_aware_default_factory_field",
+            dir(context),
+            "Default value not stored.",
         )
 
 

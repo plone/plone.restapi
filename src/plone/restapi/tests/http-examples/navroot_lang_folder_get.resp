@@ -1,0 +1,50 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/en/@navroot",
+    "navroot": {
+        "@id": "http://localhost:55001/plone/en",
+        "@type": "LRF",
+        "UID": "00000000000000000000000000000001",
+        "allow_discussion": false,
+        "contributors": [],
+        "created": "1995-07-31T13:45:00+00:00",
+        "creators": [
+            "admin"
+        ],
+        "description": "",
+        "effective": null,
+        "exclude_from_nav": true,
+        "expires": null,
+        "id": "en",
+        "is_folderish": true,
+        "language": {
+            "title": "English",
+            "token": "en"
+        },
+        "layout": "folder_listing",
+        "lock": {
+            "locked": false,
+            "stealable": true
+        },
+        "modified": "1995-07-31T17:30:00+00:00",
+        "next_item": {},
+        "parent": {
+            "@id": "http://localhost:55001/plone",
+            "@type": "Plone Site",
+            "description": "",
+            "title": "Plone site",
+            "type_title": "Plone Site"
+        },
+        "previous_item": {},
+        "review_state": "published",
+        "rights": "",
+        "subjects": [],
+        "title": "English",
+        "type_title": "Language Root Folder",
+        "version": "current",
+        "working_copy": null,
+        "working_copy_of": null
+    }
+}

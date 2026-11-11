@@ -1,14 +1,30 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:cache="http://namespaces.zope.org/cache"
     xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     >
 
   <plone:service
       method="GET"
       factory=".get.QuerystringGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       name="@querystring"
+      />
+
+  <plone:service
+      method="GET"
+      factory=".get.QuerystringGet"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@querystring"
+      />
+
+  <cache:ruleset
+      for=".get.QuerystringGet"
+      ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
       />
 
 </configure>

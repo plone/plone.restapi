@@ -6,6 +6,8 @@ class IControlpanel(Interface):
     __name__ = Attribute("Name of the controlpanel in the URL")
     title = Attribute("Title of this controlpanel")
     group = Attribute("Group name of this controlpanel")
+    description = Attribute("Description of this controlpanel")
+    icon = Attribute("Icon of this controlpanel, as its configlet sets it, e.g. clock")
     schema = Attribute("Registry schema of this controlpanel")
 
     configlet_id = Attribute("Id of the configlet, e.g. MailHost")
@@ -25,6 +27,17 @@ class IControlpanel(Interface):
     def delete(names):
         """Remove controlpanel children by names"""
 
+    def get_searchable_text():
+        """Return searchable text for this control panel.
+
+        Schema-based control panels return text from field titles and descriptions.
+        Other control panels can return custom text.
+        """
+
 
 class IDexterityTypesControlpanel(IControlpanel):
     """Dexterity Types Control panel"""
+
+
+class IContentRulesControlpanel(IControlpanel):
+    """Content Rules Control panel"""

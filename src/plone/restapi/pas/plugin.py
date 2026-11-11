@@ -4,10 +4,11 @@ from BTrees.OIBTree import OIBTree
 from BTrees.OOBTree import OOBTree
 from datetime import datetime
 from datetime import timedelta
+from datetime import timezone
 from plone.keyring.interfaces import IKeyManager
 from plone.keyring.keyring import GenerateSecret
-from plone.restapi import exceptions
 from plone.restapi import deserializer
+from plone.restapi import exceptions
 from Products.CMFCore.permissions import ManagePortal
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
@@ -20,6 +21,15 @@ from zope.interface import implementer
 import jwt
 import time
 
+try:
+    from importlib.metadata import version
+except ImportError:
+    from importlib_metadata import version
+
+if version("pyjwt")[0] == "1":
+    OLD_JWT = True
+else:
+    OLD_JWT = False
 
 manage_addJWTAuthenticationPlugin = PageTemplateFile(
     "add_plugin", globals(), __name__="manage_addJWTAuthenticationPlugin"
@@ -86,13 +96,14 @@ class JWTAuthenticationPlugin(BasePlugin):
         # Prefer any credentials in a JSON POST request under the assumption that any
         # such requested sent when a JWT token is already in the `Authorization` header
         # is intended to change or update the logged in user.
-        try:
-            creds = deserializer.json_body(request)
-        except exceptions.DeserializationError:
-            pass
-        else:
-            if "login" in creds and "password" in creds:
-                return creds
+        if request.getHeader("Content-Type") == "application/json":
+            try:
+                creds = deserializer.json_body(request)
+            except exceptions.DeserializationError:
+                pass
+            else:
+                if "login" in creds and "password" in creds:
+                    return creds
 
         creds = {}
         auth = request._auth
@@ -160,7 +171,14 @@ class JWTAuthenticationPlugin(BasePlugin):
         if isinstance(token, str):
             token = token.encode("utf-8")
         try:
-            return jwt.decode(token, secret, verify=verify, algorithms=["HS256"])
+            if OLD_JWT:
+                return jwt.decode(token, secret, verify=verify, algorithms=["HS256"])
+            return jwt.decode(
+                token,
+                secret,
+                options={"verify_signature": verify},
+                algorithms=["HS256"],
+            )
         except jwt.InvalidTokenError:
             pass
 
@@ -190,11 +208,12 @@ class JWTAuthenticationPlugin(BasePlugin):
         if timeout is None:
             timeout = self.token_timeout
         if timeout:
-            payload["exp"] = datetime.utcnow() + timedelta(seconds=timeout)
+            payload["exp"] = datetime.now(timezone.utc) + timedelta(seconds=timeout)
         if data is not None:
             payload.update(data)
         token = jwt.encode(payload, self._signing_secret(), algorithm="HS256")
-        token = token.decode("utf-8")
+        if OLD_JWT:
+            token = token.decode("utf-8")
         if self.store_tokens:
             if self._tokens is None:
                 self._tokens = OOBTree()

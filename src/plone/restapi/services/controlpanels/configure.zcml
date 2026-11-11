@@ -19,7 +19,7 @@
   <plone:service
       method="POST"
       factory=".add.ControlpanelsAdd"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="plone.app.controlpanel.Overview"
       name="@controlpanels"
       />
@@ -27,7 +27,7 @@
   <plone:service
       method="GET"
       factory=".get.ControlpanelsGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="plone.app.controlpanel.Overview"
       name="@controlpanels"
       />
@@ -35,7 +35,7 @@
   <plone:service
       method="PATCH"
       factory=".update.ControlpanelsUpdate"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="plone.app.controlpanel.Overview"
       name="@controlpanels"
       />
@@ -43,7 +43,7 @@
   <plone:service
       method="DELETE"
       factory=".delete.ControlpanelsDelete"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="plone.app.controlpanel.Overview"
       name="@controlpanels"
       />
@@ -53,6 +53,14 @@
       factory="plone.restapi.controlpanels.types.DexterityTypesControlpanel"
       provides="plone.restapi.controlpanels.interfaces.IDexterityTypesControlpanel"
       name="dexterity-types"
+      />
+
+  <!-- Rules Controlpanel -->
+  <adapter
+      factory="plone.restapi.controlpanels.rules.content_rules_controlpanel"
+      provides="plone.restapi.controlpanels.interfaces.IContentRulesControlpanel"
+      name="content-rules"
+      zcml:condition="installed plone.app.contentrules"
       />
 
   <configure zcml:condition="have plone-5">
@@ -114,6 +122,13 @@
     <adapter
         factory="plone.restapi.controlpanels.registry.SecurityControlpanel"
         name="security"
+        />
+
+
+    <!-- Users and Groups -->
+    <adapter
+        factory="plone.restapi.controlpanels.registry.UserGroupControlpanel"
+        name="usergroup"
         />
 
   </configure>

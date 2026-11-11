@@ -1,6 +1,8 @@
+from AccessControl import getSecurityManager
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
@@ -13,6 +15,10 @@ import plone.protect.interfaces
 class GroupsPost(Service):
     """Creates a new group."""
 
+    @property
+    def is_zope_manager(self):
+        return getSecurityManager().checkPermission(ManagePortal, self.context)
+
     def reply(self):
         portal = getSite()
         data = json_body(self.request)
@@ -22,10 +28,16 @@ class GroupsPost(Service):
         if not groupname:
             raise BadRequest("Property 'groupname' is required")
 
+        roles = data.get("roles", [])
+
+        if not self.is_zope_manager and "Manager" in roles:
+            raise BadRequest(
+                "You don't have permission to create a group with the 'Manager' role"
+            )
+
         email = data.get("email", None)
         title = data.get("title", None)
         description = data.get("description", None)
-        roles = data.get("roles", None)
         groups = data.get("groups", None)
         users = data.get("users", [])
 
@@ -59,7 +71,7 @@ class GroupsPost(Service):
         # Add members
         group = gtool.getGroupById(groupname)
         for userid in users:
-            group.addMember(userid)
+            gtool.addPrincipalToGroup(userid, groupname)
 
         self.request.response.setStatus(201)
         self.request.response.setHeader(

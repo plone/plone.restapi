@@ -6,6 +6,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
+from plone.restapi.testing import normalize_html
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from Products.CMFCore.utils import getToolByName
 from zope.component import getGlobalSiteManager
@@ -13,9 +14,11 @@ from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
+import json
 import requests
 import transaction
 import unittest
+import uuid
 
 
 class TestFolderCreate(unittest.TestCase):
@@ -67,12 +70,43 @@ class TestFolderCreate(unittest.TestCase):
         expected_url = self.portal_url + "/folder1/myfolder"
         self.assertEqual(expected_url, response.json().get("@id"))
 
-    def test_post_without_type_returns_400(self):
+    def test_post_without_type_returns_validation_error(self):
         response = requests.post(
             self.portal.folder1.absolute_url(),
             headers={"Accept": "application/json"},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
             json={"id": "mydocument", "title": "My Document"},
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertIn("Property '@type' is required", response.text)
+
+    def test_post_with_invalid_type_returns_validation_error(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "NonExistentType",
+                "id": "mydocument",
+                "title": "My Document",
+            },
+        )
+        self.assertEqual(403, response.status_code)
+        self.assertEqual(
+            "Invalid '@type' parameter. No content type with the name 'NonExistentType' found",
+            response.json().get("error").get("message"),
+        )
+
+    def test_post_with_empty_type_returns_validation_error(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "",
+                "id": "mydocument",
+                "title": "My Document",
+            },
         )
         self.assertEqual(400, response.status_code)
         self.assertIn("Property '@type' is required", response.text)
@@ -106,6 +140,61 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(201, response.status_code)
         transaction.begin()
         self.assertIn("test.txt", self.portal.folder1)
+
+    def test_post_with_multipart_path_dispatcher(self):
+        multipart_ref = uuid.uuid4().hex
+        response = requests.post(
+            f"{self.portal.absolute_url()}/++api++/folder1",
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            files={
+                "data": json.dumps(
+                    {
+                        "@type": "File",
+                        "title": "My File",
+                        "file": {
+                            "part": multipart_ref,
+                        },
+                    }
+                ),
+                multipart_ref: (
+                    "test.txt",
+                    "Spam and Eggs",
+                    "text/plain",
+                ),
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        self.assertIn("test.txt", self.portal.folder1)
+        self.assertEqual(self.portal.folder1["test.txt"].file.data, b"Spam and Eggs")
+
+    def test_post_with_multipart_accept_header_dispatcher(self):
+        multipart_ref = uuid.uuid4().hex
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            files={
+                "data": json.dumps(
+                    {
+                        "@type": "File",
+                        "title": "My File",
+                        "file": {
+                            "part": multipart_ref,
+                        },
+                    }
+                ),
+                multipart_ref: (
+                    "test.txt",
+                    "Spam and Eggs",
+                    "text/plain",
+                ),
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        self.assertIn("test.txt", self.portal.folder1)
+        self.assertEqual(self.portal.folder1["test.txt"].file.data, b"Spam and Eggs")
 
     def test_post_with_id_already_in_use_returns_400(self):
         self.portal.folder1.invokeFactory("Document", "mydocument")
@@ -200,7 +289,10 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(
             "<p>example with '</p>", self.portal.folder1.mydocument2.text.raw
         )
-        self.assertEqual("<p>example with '</p>", response.json()["text"]["data"])
+        self.assertEqual(
+            "<p>example with '</p>",
+            normalize_html(response.json()["text"]["data"]),
+        )
 
     def test_post_with_uid_with_manage_portal_permission(self):
         response = requests.post(
@@ -218,7 +310,7 @@ class TestFolderCreate(unittest.TestCase):
 
     def test_post_with_uid_without_manage_portal_permission(self):
         user = "test-user-2"
-        password = "secret"
+        password = TEST_USER_PASSWORD
         self.portal.acl_users.userFolderAddUser(user, password, ["Contributor"], [])
         transaction.commit()
 

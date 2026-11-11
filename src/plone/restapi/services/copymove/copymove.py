@@ -7,7 +7,7 @@ from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
 from zope.security import checkPermission
 
-import plone
+import plone.protect
 
 
 class BaseCopyMove(Service):

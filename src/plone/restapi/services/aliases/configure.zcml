@@ -1,0 +1,70 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
+
+  <plone:service
+      method="GET"
+      accept="application/json,application/schema+json"
+      factory=".get.AliasesGet"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="Products.CMFPlone.ManagePortalAliases"
+      name="@aliases"
+      />
+
+  <plone:service
+      method="GET"
+      accept="text/csv"
+      factory=".get.AliasesGet"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="Products.CMFPlone.ManagePortalAliases"
+      name="@aliases"
+      />
+
+  <plone:service
+      method="GET"
+      accept="application/json,application/schema+json"
+      factory=".get.AliasesGet"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="Products.CMFPlone.ManageContextAliases"
+      name="@aliases"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".add.AliasesPost"
+      for="*"
+      permission="Products.CMFPlone.ManageContextAliases"
+      name="@aliases"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".add.AliasesRootPost"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="Products.CMFPlone.ManagePortalAliases"
+      name="@aliases"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".delete.AliasesDelete"
+      for="*"
+      permission="Products.CMFPlone.ManageContextAliases"
+      name="@aliases"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".delete.AliasesDelete"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="Products.CMFPlone.ManagePortalAliases"
+      name="@aliases"
+      />
+
+  <adapter
+      factory=".get.Aliases"
+      name="aliases"
+      />
+
+</configure>

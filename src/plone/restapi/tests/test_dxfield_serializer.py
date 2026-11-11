@@ -3,24 +3,30 @@ from datetime import datetime
 from datetime import time
 from datetime import timedelta
 from decimal import Decimal
+from importlib import import_module
 from plone.app.textfield.value import RichTextValue
+from plone.dexterity.schema import SCHEMA_CACHE
 from plone.dexterity.utils import iterSchemata
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.namedfile.file import NamedImage
+from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from plone.scale import storage
+from plone.restapi.tests.helpers import patch_scale_uuid
 from plone.uuid.interfaces import IUUID
 from unittest import TestCase
-from unittest.mock import patch
 from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
 
 import os
+
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 
 
 class TestDexterityFieldSerializing(TestCase):
@@ -99,10 +105,10 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertTrue(isinstance(value, str), "Not an <unicode>")
         self.assertEqual("2015-06-20T13:22:04", value)
 
-    def test_decimal_field_serialization_returns_unicode(self):
-        value = self.serialize("test_decimal_field", Decimal("1.1"))
-        self.assertTrue(isinstance(value, str), "Not an <unicode>")
-        self.assertEqual("1.1", value)
+    def test_decimal_field_serialization_returns_str(self):
+        value = self.serialize("test_decimal_field", Decimal("1.111"))
+        self.assertTrue(isinstance(value, str), "Not an <str>")
+        self.assertEqual("1.111", value)
 
     def test_dict_field_serialization_returns_dict(self):
         value = self.serialize(
@@ -268,7 +274,9 @@ class TestDexterityFieldSerializing(TestCase):
             {
                 "@id": "http://nohost/plone/doc2",
                 "@type": "DXTestDocument",
+                "UID": doc2.UID(),
                 "title": "Referenceable Document",
+                "type_title": "DX Test Document",
                 "description": "Description 2",
                 "review_state": "private",
             },
@@ -299,20 +307,37 @@ class TestDexterityFieldSerializing(TestCase):
                 {
                     "@id": "http://nohost/plone/doc2",
                     "@type": "DXTestDocument",
+                    "UID": doc2.UID(),
                     "title": "Referenceable Document",
                     "description": "Description 2",
+                    "type_title": "DX Test Document",
                     "review_state": "private",
                 },
                 {
                     "@id": "http://nohost/plone/doc3",
                     "@type": "DXTestDocument",
+                    "UID": doc3.UID(),
                     "title": "Referenceable Document",
+                    "type_title": "DX Test Document",
                     "description": "Description 3",
                     "review_state": "private",
                 },
             ],
             value,
         )
+
+    def test_relation_field_serialization_do_not_change_request(self):
+        self.request.form["metadata_fields"] = ["foo", "bar"]
+        doc2 = self.portal[
+            self.portal.invokeFactory(
+                "DXTestDocument",
+                id="doc2",
+                title="Referenceable Document",
+                description="Description 2",
+            )
+        ]
+        self.serialize("test_relationchoice_field", doc2)
+        self.assertEqual(self.request.form["metadata_fields"], ["foo", "bar"])
 
     def test_remoteurl_field_in_links_get_converted(self):
         link = self.portal[
@@ -348,6 +373,22 @@ class TestDexterityFieldSerializing(TestCase):
         dm.set("/doc2")
         self.assertEqual(serializer(), "/doc2")
 
+    def test_json_field_serializer_converts_uids_to_urls(self):
+        value = self.serialize(
+            "test_json_field", {"@id": f"../resolveuid/{self.portal.doc1.UID()}"}
+        )
+        self.assertEqual(value["@id"], self.portal.doc1.absolute_url())
+
+    def test_json_field_serializer_with_blocks(self):
+        fti = self.portal.portal_types.DXTestDocument
+        fti.behaviors = ("volto.blocks",)
+        SCHEMA_CACHE.invalidate("DXTestDocument")
+        assert IBlocks.providedBy(self.portal.doc1)
+        value = self.serialize(
+            "test_json_field", {"@id": f"../resolveuid/{self.portal.doc1.UID()}"}
+        )
+        self.assertEqual(value["@id"], self.portal.doc1.absolute_url())
+
 
 class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -381,7 +422,8 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "test_namedimage_field"
-        with patch.object(storage, "uuid4", return_value="uuid_1"):
+        scale_url_uuid = "uuid_1"
+        with patch_scale_uuid(scale_url_uuid):
             value = self.serialize(
                 fn,
                 NamedImage(
@@ -390,7 +432,6 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
 
-            scale_url_uuid = "uuid_1"
             obj_url = self.doc1.absolute_url()
 
             # Original image is still a "scale"
@@ -400,7 +441,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
 
             scale_download_url = "{}/@@images/{}.{}".format(
-                obj_url, scale_url_uuid, "png"
+                obj_url, scale_url_uuid, "gif" if HAS_PLONE_6 else "png"
             )
             scales = {
                 "listing": {
@@ -431,6 +472,34 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
                     "height": 576,
                 },
             }
+            if HAS_PLONE_6:
+                # PLIP #3279 amended the image scales
+                # https://github.com/plone/Products.CMFPlone/pull/3450
+                scales["great"] = {
+                    "download": scale_download_url,
+                    "height": 768,
+                    "width": 1024,
+                }
+                scales["huge"] = {
+                    "download": scale_download_url,
+                    "height": 768,
+                    "width": 1024,
+                }
+                scales["larger"] = {
+                    "download": scale_download_url,
+                    "height": 750,
+                    "width": 1000,
+                }
+                scales["large"] = {
+                    "download": scale_download_url,
+                    "height": 600,
+                    "width": 800,
+                }
+                scales["teaser"] = {
+                    "download": scale_download_url,
+                    "height": 450,
+                    "width": 600,
+                }
             self.assertEqual(
                 {
                     "filename": "1024x768.gif",
@@ -449,7 +518,8 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
         is returned as is and we need to check it, but the scales should be empty"""
         image_data = b"INVALID IMAGE DATA"
         fn = "test_namedimage_field"
-        with patch.object(storage, "uuid4", return_value="uuid_1"):
+        scale_url_uuid = "uuid_1"
+        with patch_scale_uuid(scale_url_uuid):
             value = self.serialize(
                 fn,
                 NamedImage(
@@ -458,7 +528,6 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
 
         obj_url = self.doc1.absolute_url()
-        scale_url_uuid = "uuid_1"
         self.assertEqual(
             {
                 "content-type": "image/gif",
@@ -480,7 +549,8 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "test_namedblobimage_field"
-        with patch.object(storage, "uuid4", return_value="uuid_1"):
+        scale_url_uuid = "uuid_1"
+        with patch_scale_uuid(scale_url_uuid):
             value = self.serialize(
                 fn,
                 NamedBlobImage(
@@ -489,7 +559,6 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
 
-            scale_url_uuid = "uuid_1"
             obj_url = self.doc1.absolute_url()
 
             # Original image is still a "scale"
@@ -499,7 +568,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
 
             scale_download_url = "{}/@@images/{}.{}".format(
-                obj_url, scale_url_uuid, "png"
+                obj_url, scale_url_uuid, "gif" if HAS_PLONE_6 else "png"
             )
             scales = {
                 "listing": {
@@ -530,6 +599,34 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
                     "height": 576,
                 },
             }
+            if HAS_PLONE_6:
+                # PLIP #3279 amended the image scales
+                # https://github.com/plone/Products.CMFPlone/pull/3450
+                scales["great"] = {
+                    "download": scale_download_url,
+                    "height": 768,
+                    "width": 1024,
+                }
+                scales["huge"] = {
+                    "download": scale_download_url,
+                    "height": 768,
+                    "width": 1024,
+                }
+                scales["larger"] = {
+                    "download": scale_download_url,
+                    "height": 750,
+                    "width": 1000,
+                }
+                scales["large"] = {
+                    "download": scale_download_url,
+                    "height": 600,
+                    "width": 800,
+                }
+                scales["teaser"] = {
+                    "download": scale_download_url,
+                    "height": 450,
+                    "width": 600,
+                }
             self.assertEqual(
                 {
                     "filename": "1024x768.gif",
@@ -548,7 +645,8 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
         is returned as is and we need to check it, but the scales should be empty"""
         image_data = b"INVALID IMAGE DATA"
         fn = "test_namedblobimage_field"
-        with patch.object(storage, "uuid4", return_value="uuid_1"):
+        scale_url_uuid = "uuid_1"
+        with patch_scale_uuid(scale_url_uuid):
             value = self.serialize(
                 fn,
                 NamedBlobImage(
@@ -557,7 +655,6 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
 
         obj_url = self.doc1.absolute_url()
-        scale_url_uuid = "uuid_1"
         self.assertEqual(
             {
                 "content-type": "image/gif",

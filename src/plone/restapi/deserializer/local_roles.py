@@ -1,14 +1,13 @@
 from AccessControl.interfaces import IRoleManager
+from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from Products.CMFCore.interfaces import ICatalogAware
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.event import notify
 from zope.interface import implementer
 from zope.interface import Interface
-
 
 try:
     from plone.app.workflow.events import LocalrolesModifiedEvent

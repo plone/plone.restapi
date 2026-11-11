@@ -9,7 +9,7 @@ Content-Type: application/json
             "actor": "test_user_1_",
             "comments": "",
             "review_state": "private",
-            "time": "1995-07-31T17:30:00",
+            "time": "1995-07-31T17:30:00+00:00",
             "title": "Privado"
         }
     ],

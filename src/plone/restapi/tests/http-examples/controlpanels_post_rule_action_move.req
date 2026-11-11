@@ -1,0 +1,9 @@
+POST /plone/@controlpanels/content-rules/rule-3/action HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "target_folder": "SomeUUID000000000000000000000001",
+    "type": "plone.actions.Move"
+}

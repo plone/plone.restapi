@@ -1,2 +1,0 @@
-sphinxcontrib.httpdomain
-sphinxcontrib.httpexample

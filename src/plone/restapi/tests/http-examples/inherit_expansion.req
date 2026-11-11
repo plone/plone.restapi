@@ -1,0 +1,3 @@
+GET /plone/document/?expand=inherit&expand.inherit.behaviors=plone.navigationroot HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0

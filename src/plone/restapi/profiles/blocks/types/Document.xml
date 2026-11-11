@@ -1,8 +1,13 @@
-<?xml version="1.0"?>
-<object name="Document" meta_type="Dexterity FTI" i18n:domain="plone"
-   xmlns:i18n="http://xml.zope.org/namespaces/i18n">
- <property name="behaviors" purge="false">
-  <element value="volto.blocks" />
- </property>
+<?xml version="1.0" encoding="utf-8"?>
+<object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        meta_type="Dexterity FTI"
+        name="Document"
+        i18n:domain="plone"
+>
+  <property name="behaviors"
+            purge="false"
+  >
+    <element value="volto.blocks" />
+  </property>
 
 </object>

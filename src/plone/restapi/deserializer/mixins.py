@@ -1,6 +1,6 @@
 from plone.folder.interfaces import IExplicitOrdering
+from plone.restapi.bbb import IPloneSiteRoot
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
 from zExceptions import BadRequest
 
 

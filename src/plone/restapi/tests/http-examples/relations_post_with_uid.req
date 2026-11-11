@@ -1,0 +1,19 @@
+POST /plone/@relations HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "items": [
+        {
+            "relation": "comprisesComponentPart",
+            "source": "SomeUUID000000000000000000000001",
+            "target": "SomeUUID000000000000000000000002"
+        },
+        {
+            "relation": "comprisesComponentPart",
+            "source": "SomeUUID000000000000000000000003",
+            "target": "SomeUUID000000000000000000000002"
+        }
+    ]
+}

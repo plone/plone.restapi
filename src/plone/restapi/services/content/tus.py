@@ -5,6 +5,8 @@ from base64 import b64decode
 from email.utils import formatdate
 from fnmatch import fnmatch
 from plone.rest.interfaces import ICORSPolicy
+from plone.restapi.bbb import base_hasattr
+from plone.restapi.bbb import safe_hasattr
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.services import Service
@@ -12,8 +14,6 @@ from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import base_hasattr
-from Products.CMFPlone.utils import safe_hasattr
 from uuid import uuid4
 from zExceptions import Unauthorized
 from zope.component import queryMultiAdapter
@@ -26,7 +26,6 @@ from zope.publisher.interfaces import NotFound
 import json
 import os
 import time
-
 
 TUS_OPTIONS_RESPONSE_HEADERS = {
     "Tus-Resumable": "1.0.0",
@@ -117,9 +116,14 @@ class UploadPost(TUSBaseService):
         tus_upload = TUSUpload(uuid4().hex, metadata=metadata)
 
         self.request.response.setStatus(201)
+        url = self.request.getURL()
+        # Regardless of @tus-upload or @tus-replace the response should return
+        # a Location of @tus-upload
+        if url.endswith("@tus-replace"):
+            url = url.replace("@tus-replace", "@tus-upload")
         self.request.response.setHeader(
             "Location",
-            f"{self.context.absolute_url()}/@tus-upload/{tus_upload.uid}",
+            f"{url}/{tus_upload.uid}",
         )
         self.request.response.setHeader("Upload-Expires", tus_upload.expires())
         self.request.response.setHeader("Tus-Resumable", "1.0.0")
@@ -216,7 +220,9 @@ class UploadPatch(UploadFileBase):
         offset = tus_upload.offset()
 
         if tus_upload.finished:
-            self.create_or_modify_content(tus_upload)
+            error = self.create_or_modify_content(tus_upload)
+            if error is not None:
+                return error
         else:
             self.request.response.setHeader("Upload-Expires", tus_upload.expires())
 
@@ -242,7 +248,11 @@ class UploadPatch(UploadFileBase):
             obj = self.context
 
         if not fieldname:
-            info = IPrimaryFieldInfo(obj, None)
+            try:
+                info = IPrimaryFieldInfo(obj, None)
+            except TypeError:
+                # No primary field present (older plone.dexterity raises)
+                info = None
             if info is not None:
                 fieldname = info.fieldname
             elif base_hasattr(obj, "getPrimaryField"):
@@ -305,11 +315,11 @@ class TUSUpload:
         self._metadata = None
 
         if metadata is not None:
-            self.initalize(metadata)
+            self.initialize(metadata)
 
         self._file = None
 
-    def initalize(self, metadata):
+    def initialize(self, metadata):
         """Initialize a new TUS upload by writing its metadata to disk."""
         self.cleanup_expired()
         with open(self.metadata_path, "w") as f:

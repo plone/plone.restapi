@@ -25,7 +25,12 @@ def unflatten_dotted_dict(dct):
     """
 
     def create_or_get(dct, key):
-        return dct.setdefault(key, {})
+        value = dct.get(key)
+        if value is None:
+            value = dct[key] = {}
+        elif not isinstance(value, dict):
+            value = dct[key] = {"query": value}
+        return value
 
     result = {}
 

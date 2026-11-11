@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@upgrade",
+  "dry_run": true,
+  "report": "Dry run selected.\nStarting the migration from version: 6006\nRole / permission map imported.\nActions tool imported.\nRan upgrade step: Run to6007 upgrade profile.\nRan upgrade step: Add a timezone property to portal memberdata if it is missing.\nRan upgrade step: Fix the portal action icons.\nRan upgrade step: Rename the behavior collective.dexteritytextindexer to plone.textindexer\nRan upgrade step: Update plonetheme.barceloneta registry\nEnd of upgrade path, main migration has finished.\nStarting upgrade of core addons.\nControl panel imported.\nDone upgrading core addons.\nYour Plone instance is now up-to-date.\nDry run selected, transaction aborted\n",
+  "upgraded": false,
+  "versions": {
+    "fs": "6008",
+    "instance": "6006"
+  }
+}

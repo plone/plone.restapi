@@ -1,9 +1,11 @@
 <!doctype html>
-<html ng-app="myApp">
-<head>
-  <meta charset="utf-8" />
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
-  <script type="text/javascript">
+<html ng-app="myApp"
+      i18n:ignore=""
+>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+    <script type="text/javascript">
 
 (function() {
   'use strict';
@@ -94,17 +96,17 @@
 
 })();
 
-  </script>
-</head>
-<body ng-controller="TextController">
-  <p>{{someText.message}}</p>
-  <h4>GET /front-page</h4>
-  <pre ng-bind="get_successful"></pre>
-  <h4>GET /non-existing-resource</h4>
-  <pre ng-bind="get"></pre>
-  <h4>GET /private</h4>
-  <pre ng-bind="get_unauthorized"></pre>
-  <h4>GET /500-internal-server-error</h4>
-  <pre ng-bind="get_internal_server_error"></pre>
-</body>
+    </script>
+  </head>
+  <body ng-controller="TextController">
+    <p>{{someText.message}}</p>
+    <h4>GET /front-page</h4>
+    <pre ng-bind="get_successful"></pre>
+    <h4>GET /non-existing-resource</h4>
+    <pre ng-bind="get"></pre>
+    <h4>GET /private</h4>
+    <pre ng-bind="get_unauthorized"></pre>
+    <h4>GET /500-internal-server-error</h4>
+    <pre ng-bind="get_internal_server_error"></pre>
+  </body>
 </html>

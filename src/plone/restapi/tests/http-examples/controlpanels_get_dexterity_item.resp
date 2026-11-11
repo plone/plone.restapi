@@ -29,16 +29,18 @@ Content-Type: application/json
         "plone.ownership": false,
         "plone.publication": false,
         "plone.relateditems": false,
-        "plone.restapi.tests.dxtypes.ITestAnnotationsBehavior": false,
-        "plone.restapi.tests.dxtypes.ITestBehavior": false,
         "plone.richtext": false,
         "plone.shortname": false,
         "plone.tableofcontents": false,
+        "plone.textindexer": false,
         "plone.thumb_icon": false,
         "plone.translatable": false,
         "plone.versioning": false,
+        "tests.restapi.test_annotations_behavior": false,
+        "tests.restapi.test_behavior": false,
         "title": "My Custom Content Type",
-        "volto.blocks": false
+        "volto.blocks": false,
+        "volto.blocks.editable.layout": false
     },
     "description": "A custom content-type",
     "group": "Content",
@@ -62,6 +64,7 @@ Content-Type: application/json
                     "plone.allowdiscussion",
                     "plone.basic",
                     "volto.blocks",
+                    "volto.blocks.editable.layout",
                     "plone.categorization",
                     "plone.collection",
                     "plone.publication",
@@ -73,6 +76,7 @@ Content-Type: application/json
                     "plone.eventrecurrence",
                     "plone.excludefromnavigation",
                     "plone.constraintypes",
+                    "plone.textindexer",
                     "plone.leadimage",
                     "plone.locking",
                     "plone.translatable",
@@ -86,8 +90,8 @@ Content-Type: application/json
                     "plone.richtext",
                     "plone.shortname",
                     "plone.tableofcontents",
-                    "plone.restapi.tests.dxtypes.ITestAnnotationsBehavior",
-                    "plone.restapi.tests.dxtypes.ITestBehavior",
+                    "tests.restapi.test_annotations_behavior",
+                    "tests.restapi.test_behavior",
                     "plone.thumb_icon",
                     "plone.versioning"
                 ],
@@ -286,18 +290,6 @@ Content-Type: application/json
                 "title": "Related items",
                 "type": "boolean"
             },
-            "plone.restapi.tests.dxtypes.ITestAnnotationsBehavior": {
-                "description": "Schema-only behavior using annotations",
-                "factory": "Yes/No",
-                "title": "Test Annotations Behavior",
-                "type": "boolean"
-            },
-            "plone.restapi.tests.dxtypes.ITestBehavior": {
-                "description": "Schema-only behavior using attributes",
-                "factory": "Yes/No",
-                "title": "Test Behavior",
-                "type": "boolean"
-            },
             "plone.richtext": {
                 "description": "Adds richtext behavior",
                 "factory": "Yes/No",
@@ -314,6 +306,12 @@ Content-Type: application/json
                 "description": "Adds a table of contents",
                 "factory": "Yes/No",
                 "title": "Table of contents",
+                "type": "boolean"
+            },
+            "plone.textindexer": {
+                "description": "Enables the enhanced full-text indexing for a content type ('plone.textindexer'). If a field is marked 'searchable', its content gets added to the 'SearchableText' index in the catalog.",
+                "factory": "Yes/No",
+                "title": "Full-Text Indexing",
                 "type": "boolean"
             },
             "plone.thumb_icon": {
@@ -334,6 +332,18 @@ Content-Type: application/json
                 "title": "Versioning",
                 "type": "boolean"
             },
+            "tests.restapi.test_annotations_behavior": {
+                "description": "Schema-only behavior using annotations",
+                "factory": "Yes/No",
+                "title": "Test Annotations Behavior",
+                "type": "boolean"
+            },
+            "tests.restapi.test_behavior": {
+                "description": "Schema-only behavior using attributes",
+                "factory": "Yes/No",
+                "title": "Test Behavior",
+                "type": "boolean"
+            },
             "title": {
                 "description": "",
                 "factory": "Text line (String)",
@@ -344,6 +354,12 @@ Content-Type: application/json
                 "description": "Enables Volto Blocks support",
                 "factory": "Yes/No",
                 "title": "Blocks",
+                "type": "boolean"
+            },
+            "volto.blocks.editable.layout": {
+                "description": "Enables Volto Blocks (editable layout) support",
+                "factory": "Yes/No",
+                "title": "Blocks (Editable Layout)",
                 "type": "boolean"
             }
         },

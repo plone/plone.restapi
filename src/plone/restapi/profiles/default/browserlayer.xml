@@ -1,7 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <layers>
-  <layer
-    name="plone.restapi"
-    interface="plone.restapi.interfaces.IPloneRestapiLayer"
+  <layer interface="plone.restapi.interfaces.IPloneRestapiLayer"
+         name="plone.restapi"
   />
 </layers>

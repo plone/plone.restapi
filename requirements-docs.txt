@@ -1,0 +1,9 @@
+linkify-it-py
+myst-parser
+plone-sphinx-theme<2
+sphinx-autobuild
+sphinx-copybutton
+sphinxcontrib.httpdomain
+sphinxcontrib.httpexample
+sphinxext-opengraph
+vale

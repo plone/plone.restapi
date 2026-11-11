@@ -39,4 +39,37 @@
       name="@workingcopy"
       />
 
+  <plone:service
+      method="GET"
+      factory=".get.GetWorkingCopy"
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      permission="zope2.View"
+      name="@workingcopy"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".create.CreateWorkingCopy"
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      permission="plone.app.iterate.CheckOutContent"
+      name="@workingcopy"
+      />
+
+
+  <plone:service
+      method="PATCH"
+      factory=".update.UpdateWorkingCopy"
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      permission="plone.app.iterate.CheckInContent"
+      name="@workingcopy"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".delete.DeleteWorkingCopy"
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      permission="zope2.DeleteObjects"
+      name="@workingcopy"
+      />
+
 </configure>

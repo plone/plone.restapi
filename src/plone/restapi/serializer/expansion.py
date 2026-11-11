@@ -4,7 +4,16 @@ from zope.component import getAdapters
 
 def expandable_elements(context, request):
     """Returns a dict containing all expandable elements."""
-    expands = request.form.get("expand", "").split(",")
+    expands = request.form.get("expand", [])
+    if isinstance(expands, str):
+        if "," in expands:
+            # use of expands (with commas) was deprecated in plone.restapi 8
+            # undeprecated with plone.restapi 9
+            expands = expands.split(",")
+        else:
+            # allow still the use of non marked :list parameters present
+            expands = [expands]
+
     elements = getAdapters((context, request), IExpandableElement)
     res = {}
     for element in elements:

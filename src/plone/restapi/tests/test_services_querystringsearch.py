@@ -4,6 +4,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from unittest import mock
 
 import transaction
 import unittest
@@ -19,7 +20,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -52,29 +53,61 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(len(response.json()["items"]), 1)
         self.assertNotIn("effective", response.json()["items"][0])
 
-    def test_querystringsearch_fullobjects(self):
-        response = self.api_session.post(
-            "/@querystring-search",
-            json={
-                "query": [
-                    {
-                        "i": "portal_type",
-                        "o": "plone.app.querystring.operation.selection.is",
-                        "v": ["Document"],
-                    }
-                ],
-                "fullobjects": True,
-            },
+    def test_querystringsearch_basic_get(self):
+        self.portal.invokeFactory("Document", "doc2", title="Test Document 2")
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/@querystring-search?query=%7B%22query%22%3A%20%5B%7B%22i%22%3A%20%22portal_type%22%2C%20%22o%22%3A%20%22plone.app.querystring.operation.selection.any%22%2C%20%22v%22%3A%20%5B%22Document%22%5D%7D%5D%2C%20%22b_size%22%3A%201%7D"
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("items", response.json())
         self.assertIn("items_total", response.json())
-        self.assertIn("effective", response.json()["items"][0])
-        self.assertEqual(response.json()["items_total"], 1)
+        self.assertEqual(response.json()["items_total"], 2)
         self.assertEqual(len(response.json()["items"]), 1)
+        self.assertNotIn("effective", response.json()["items"][0])
 
-    def test_querystringsearch_metadata_fields(self):
+    def test_querystringsearch_fullobjects(self):
+        query = {
+            "query": [
+                {
+                    "i": "portal_type",
+                    "o": "plone.app.querystring.operation.selection.is",
+                    "v": ["Document"],
+                }
+            ],
+            "fullobjects": True,
+        }
+
+        # test True values
+        for value in [True, "True", "true", "t", "1", 1, "yes", "y", "on"]:
+            query["fullobjects"] = value
+            response = self.api_session.post("/@querystring-search", json=query)
+
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("items", response.json())
+            self.assertIn("items_total", response.json())
+            self.assertIn("effective", response.json()["items"][0])
+            self.assertEqual(response.json()["items_total"], 1)
+            self.assertEqual(len(response.json()["items"]), 1)
+
+    def test_querystringsearch_fullobjects_raise_error_if_invalid_value(self):
+        query = {
+            "query": [
+                {
+                    "i": "portal_type",
+                    "o": "plone.app.querystring.operation.selection.is",
+                    "v": ["Document"],
+                }
+            ],
+            "fullobjects": "foo",
+        }
+
+        response = self.api_session.post("/@querystring-search", json=query)
+        self.assertEqual(response.status_code, 400)
+
+    def test_querystringsearch_metadata_fields_post(self):
         response = self.api_session.post(
             "/@querystring-search",
             json={
@@ -105,6 +138,24 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
                 ],
                 "metadata_fields": ["effective"],
             },
+        )
+
+        self.assertIn("effective", response.json()["items"][0])
+
+    def test_querystringsearch_metadata_fields_get(self):
+
+        response = self.api_session.get(
+            "/@querystring-search?query=%7B%22query%22%3A%20%5B%7B%22i%22%3A%20%22portal_type%22%2C%20%22o%22%3A%20%22plone.app.querystring.operation.selection.is%22%2C%20%22v%22%3A%20%5B%22Document%22%5D%7D%5D%7D"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("items", response.json())
+        self.assertIn("items_total", response.json())
+        self.assertNotIn("effective", response.json()["items"][0])
+
+        # request with metadata_fields
+        response = self.api_session.get(
+            "/@querystring-search?query=%7B%22query%22%3A%20%5B%7B%22i%22%3A%20%22portal_type%22%2C%20%22o%22%3A%20%22plone.app.querystring.operation.selection.is%22%2C%20%22v%22%3A%20%5B%22Document%22%5D%7D%5D%2C%20%22metadata_fields%22%3A%20%5B%22effective%22%5D%7D"
         )
 
         self.assertIn("effective", response.json()["items"][0])
@@ -286,3 +337,97 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
             response.json()["items"][-1]["@id"],
             f"{self.portal.absolute_url()}/testdocument9",
         )
+
+    def test_querystringsearch__bad_json(self):
+        response = self.api_session.get("/@querystring-search?query={")
+        self.assertEqual(response.status_code, 400)
+
+    def test_querystringsearch__empty_query(self):
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={"query": []},
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_querystringsearch__bad_b_size(self):
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.is",
+                        "v": ["Document"],
+                    }
+                ],
+                "b_size": "x",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_querystringsearch__bad_operation(self):
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "BOGUS",
+                        "v": ["Document"],
+                    }
+                ],
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_querystringsearch_should_return_all_results_without_limit(self):
+        """Test that all results are returned when user doesn't specify limit.
+
+        Mocks Catalog._search_index to return 1001 items.
+        """
+        from BTrees.IIBTree import IISet
+        from plone.restapi.serializer.summary import DefaultJSONSummarySerializer
+        from Products.ZCatalog.Catalog import Catalog
+
+        num_results = 1001
+        mock_rs = IISet(range(num_results))
+        mock_brain = object()
+
+        def mock_search_index(catalog_self, cr, index_id, query, rs):
+            return mock_rs
+
+        def mock_getitem(catalog_self, index):
+            return mock_brain
+
+        original_serializer = DefaultJSONSummarySerializer.__call__
+
+        def mock_serializer(self):
+            if self.context is mock_brain:
+                return {}
+            return original_serializer(self)
+
+        with mock.patch.object(Catalog, "_search_index", mock_search_index):
+            with mock.patch.object(Catalog, "__getitem__", mock_getitem):
+                with mock.patch.object(
+                    DefaultJSONSummarySerializer, "__call__", mock_serializer
+                ):
+                    response = self.api_session.post(
+                        "/@querystring-search",
+                        json={
+                            "query": [
+                                {
+                                    "i": "portal_type",
+                                    "o": "plone.app.querystring.operation.selection.is",
+                                    "v": ["Document"],
+                                }
+                            ]
+                        },
+                    )
+
+                    self.assertEqual(response.status_code, 200)
+                    self.assertEqual(
+                        response.json()["items_total"],
+                        num_results,
+                        f"Expected {num_results} results, got {response.json()['items_total']}. "
+                        "QuerystringSearch should not impose a default limit.",
+                    )

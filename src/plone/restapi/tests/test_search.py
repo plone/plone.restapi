@@ -1,17 +1,20 @@
 from datetime import date
 from DateTime import DateTime
-from pkg_resources import get_distribution
-from pkg_resources import parse_version
+from importlib.metadata import distribution
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
-from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import INavigationRoot
+from plone.restapi.search.handler import SearchHandler
+from plone.restapi.search.query import ZCatalogCompatibleQueryAdapter
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from plone.restapi.tests import PY3_10
 from plone.restapi.tests.helpers import result_paths
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
@@ -19,13 +22,13 @@ from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.interface import noLongerProvides
 
+import packaging.version
 import transaction
 import unittest
 
-
-HAS_PLONE_6 = parse_version(
-    get_distribution("Products.CMFPlone").version
-) >= parse_version("6.0.0a1")
+HAS_PLONE_6 = packaging.version.parse(
+    distribution("Products.CMFPlone").version
+) >= packaging.version.parse("6.0.0a1")
 
 
 class TestSearchFunctional(unittest.TestCase):
@@ -39,19 +42,19 @@ class TestSearchFunctional(unittest.TestCase):
         self.request = self.portal.REQUEST
         self.catalog = getToolByName(self.portal, "portal_catalog")
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         api.user.create(
             email="editor@example.com",
             username="editoruser",
-            password="secret",
+            password=TEST_USER_PASSWORD,
         )
         api.user.create(
             email="editor@example.com",
             username="localeditor",
-            password="secret",
+            password=TEST_USER_PASSWORD,
         )
 
         # /plone/folder
@@ -146,6 +149,29 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertSetEqual(
             {"/plone/folder", "/plone/folder/doc", "/plone/folder/other-document"},
             set(result_paths(response.json())),
+        )
+
+    def test_search_with_parentheses(self):
+        query = {"SearchableText": "("}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), [], "Expected no items for query with only parentheses"
+        )
+
+        query = {"SearchableText": ")"}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), [], "Expected no items for query with only parentheses"
+        )
+
+        query = {"SearchableText": "lorem(ipsum)"}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200)
+        items = [item["title"] for item in response.json().get("items", [])]
+        self.assertIn(
+            "Lorem Ipsum", items, "Expected 'Lorem Ipsum' to be found in search results"
         )
 
     def test_search_in_vhm(self):
@@ -244,15 +270,11 @@ class TestSearchFunctional(unittest.TestCase):
         }
         response = self.api_session.get("/@search", params=query)
 
-        self.assertDictContainsSubset(
-            {
-                "@id": self.portal_url + "/folder/doc",
-                "title": "Lorem Ipsum",
-                "portal_type": "DXTestDocument",
-                "review_state": "private",
-            },
-            response.json()["items"][0],
-        )
+        item = response.json()["items"][0]
+        self.assertEqual(item["@id"], self.portal_url + "/folder/doc")
+        self.assertEqual(item["title"], "Lorem Ipsum")
+        self.assertEqual(item["portal_type"], "DXTestDocument")
+        self.assertEqual(item["review_state"], "private")
 
     def test_full_metadata_retrieval(self):
         query = {"SearchableText": "lorem", "metadata_fields": "_all"}
@@ -419,15 +441,87 @@ class TestSearchFunctional(unittest.TestCase):
 
     # BooleanIndex
 
-    def test_boolean_index_query(self):
+    def test_boolean_index_true_query(self):
+
         query = {"test_bool_field": True, "portal_type": "DXTestDocument"}
         response = self.api_session.get("/folder/@search", params=query)
         self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": "true", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": "True", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": "t", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": "y", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": "yes", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+        query = {"test_bool_field": 1, "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
+
+    def test_boolean_index_false_query(self):
 
         query = {"test_bool_field": False, "portal_type": "DXTestDocument"}
         response = self.api_session.get("/folder/@search", params=query)
         self.assertEqual(
             ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": "false", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": "False", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": "f", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": "n", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": "no", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+        query = {"test_bool_field": 0, "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(
+            ["/plone/folder/other-document"], result_paths(response.json())
+        )
+
+    def test_boolean_index_query_return_error_if_invalid_value(self):
+        query = {"test_bool_field": "foo", "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.json()["message"], "Could not parse value 'foo' as boolean"
+        )
+
+        query = {"test_bool_field": 2, "portal_type": "DXTestDocument"}
+        response = self.api_session.get("/folder/@search", params=query)
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.json()["message"], "Could not parse value '2' as boolean"
         )
 
     # FieldIndex
@@ -639,7 +733,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(response["items_total"], 1)
 
         # not admin users can't see expired items
-        self.api_session.auth = ("editoruser", "secret")
+        self.api_session.auth = ("editoruser", TEST_USER_PASSWORD)
 
         response = self.api_session.get("/@search", params={}).json()
         if HAS_PLONE_6:
@@ -673,7 +767,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(response["items_total"], 1)
 
         # local-enabled Editor can only access expired contents inside folder
-        self.api_session.auth = ("localeditor", "secret")
+        self.api_session.auth = ("localeditor", TEST_USER_PASSWORD)
         response = self.api_session.get("/@search", params={}).json()
         if HAS_PLONE_6:
             # Since Plone 6 the Plone site is indexed ...
@@ -696,6 +790,17 @@ class TestSearchFunctional(unittest.TestCase):
         ).json()
         self.assertEqual(response["items_total"], 1)
 
+    def test_search_use_site_search_settings_with_portal_type_containing_query(self):
+        # A portal_type string that happens to contain the substring "query"
+        # must not be mistaken for a {"query": ...} dict, which raised a
+        # TypeError (HTTP 500) in filter_query.
+        response = self.api_session.get(
+            "/@search",
+            params={"use_site_search_settings": 1, "portal_type": "Subquery"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["items_total"], 0)
+
     def test_search_use_site_search_settings_for_types(self):
         response = self.api_session.get(
             "/@search", params={"use_site_search_settings": 1}
@@ -705,7 +810,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(set(types), {"Folder", "DXTestDocument"})
 
         registry = getUtility(IRegistry)
-        from Products.CMFPlone.interfaces import ISearchSchema
+        from plone.restapi.bbb import ISearchSchema
 
         search_settings = registry.forInterface(ISearchSchema, prefix="plone")
         old = search_settings.types_not_searched
@@ -737,6 +842,19 @@ class TestSearchFunctional(unittest.TestCase):
 
         response = self.api_session.get(
             "/@search", params={"use_site_search_settings": 1, "sort_on": "effective"}
+        ).json()
+        self.assertEqual(
+            [item["title"] for item in response["items"]][0],
+            "Other Document",
+        )
+
+        response = self.api_session.get(
+            "/@search",
+            params={
+                "use_site_search_settings": 1,
+                "sort_on": "effective",
+                "sort_order": "reverse",
+            },
         ).json()
         self.assertEqual(
             [item["title"] for item in response["items"]][0],
@@ -816,3 +934,65 @@ class TestSearchFunctional(unittest.TestCase):
 
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()
+
+    # BBB: Remove condition when drop Python 3.9 support.
+    @unittest.skipUnless(PY3_10, "assertNoLogs is only in Python >= 3.10")
+    def test_zcatalogcompatiblequeryadapter_log(self):
+        """When we have sort_on or sort_order in the query passed to
+        ZCatalogCompatibleQueryAdapter, warnings should not be issued in the
+        log.
+        """
+        query_adapter = ZCatalogCompatibleQueryAdapter(self.portal, self.request)
+        with self.assertNoLogs("plone.restapi.search.query", level="WARN"):
+            query_adapter(
+                {
+                    "b_size": "50",
+                    "metadata_fields": "_all",
+                    "path": {"depth": "1", "query": "/Plone"},
+                    "sort_on": "getObjPositionInParent",
+                    "sort_order": "ascending",
+                },
+            )
+
+    def test_zcatalogcompatiblequeryadapter_drops_metadata_fields(self):
+        """metadata_fields is a control parameter, not a catalog index.
+
+        It is read from the request by the summary serializer, and must not
+        be handed to catalog.searchResults(): a catalog that validates its
+        query -- rather than silently ignoring unknown keys the way ZCatalog
+        does -- rejects it.
+        """
+        query_adapter = ZCatalogCompatibleQueryAdapter(self.portal, self.request)
+        parsed = query_adapter(
+            {
+                "SearchableText": "lorem",
+                "metadata_fields": ["portal_type", "review_state"],
+            }
+        )
+        self.assertNotIn("metadata_fields", parsed)
+        self.assertIn("SearchableText", parsed)
+
+    def test_search_handler_does_not_pass_metadata_fields_to_catalog(self):
+        class RecordingCatalog:
+            def __init__(self, catalog):
+                self._catalog_tool = catalog
+                self.last_query = None
+
+            def searchResults(self, **query):
+                self.last_query = query
+                return self._catalog_tool.searchResults(**query)
+
+            def __getattr__(self, name):
+                return getattr(self._catalog_tool, name)
+
+        handler = SearchHandler(self.portal, self.request)
+        recorder = RecordingCatalog(handler.catalog)
+        handler.catalog = recorder
+        handler.search(
+            {
+                "SearchableText": "lorem",
+                "metadata_fields": ["portal_type", "review_state"],
+            }
+        )
+        self.assertIsNotNone(recorder.last_query)
+        self.assertNotIn("metadata_fields", recorder.last_query)

@@ -1,9 +1,12 @@
-# keep in sync with: https://github.com/kitconcept/buildout/edit/master/Makefile
-# update by running 'make update'
-SHELL := /bin/bash
-CURRENT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-
-version = 3
+### Defensive settings for make:
+#     https://tech.davis-hansson.com/p/make/
+SHELL:=bash
+.ONESHELL:
+.SHELLFLAGS:=-xeu -o pipefail -O inherit_errexit -c
+.SILENT:
+.DELETE_ON_ERROR:
+MAKEFLAGS+=--warn-undefined-variables
+MAKEFLAGS+=--no-builtin-rules
 
 # We like colors
 # From: https://coderwall.com/p/izxssa/colored-makefile-for-golang-projects
@@ -12,102 +15,172 @@ GREEN=`tput setaf 2`
 RESET=`tput sgr0`
 YELLOW=`tput setaf 3`
 
-all: .installed.cfg
+# Python checks
+PYTHON?=python3
+
+# installed?
+ifeq (, $(shell which $(PYTHON) ))
+  $(error "PYTHON=$(PYTHON) not found in $(PATH)")
+endif
+
+# version ok?
+PYTHON_VERSION_MIN=3.10
+PYTHON_VERSION_OK=$(shell $(PYTHON) -c "import sys; print((int(sys.version_info[0]), int(sys.version_info[1])) >= tuple(map(int, '$(PYTHON_VERSION_MIN)'.split('.'))))")
+ifeq ($(PYTHON_VERSION_OK),0)
+  $(error "Need python $(PYTHON_VERSION) >= $(PYTHON_VERSION_MIN)")
+endif
+
+BACKEND_FOLDER=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+
+GIT_FOLDER=$(BACKEND_FOLDER)/.git
+VENV_FOLDER=$(BACKEND_FOLDER)/.venv
+BIN_FOLDER=$(VENV_FOLDER)/bin
+
+# Sphinx variables
+# You can set these variables from the command line.
+SPHINXOPTS      ?=
+# Internal variables.
+SPHINXBUILD     = "$(realpath bin/sphinx-build)"
+SPHINXAUTOBUILD = "$(realpath bin/sphinx-autobuild)"
+DOCS_DIR        = ./docs/source/
+BUILDDIR        = ../_build/
+ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(SPHINXOPTS) .
+VALEFILES       := $(shell find $(DOCS_DIR) -type f -name "*.md" -print)
+
+all: help
 
 # Add the following 'help' target to your Makefile
-# And add help text after each target name starting with '\#\#'
+# And add help text after each target name starting with '##'
 .PHONY: help
 help: ## This help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: Update Makefile and Buildout
-update: ## Update Make and Buildout
-	wget -O Makefile https://raw.githubusercontent.com/kitconcept/buildout/5.2/Makefile
-	wget -O requirements.txt https://raw.githubusercontent.com/kitconcept/buildout/5.2/requirements.txt
-	wget -O plone-5.2.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/5.2/plone-5.2.x.cfg
-	wget -O ci.cfg https://raw.githubusercontent.com/kitconcept/buildout/5.2/ci.cfg
-	wget -O versions.cfg https://raw.githubusercontent.com/kitconcept/buildout/5.2/versions.cfg
-
-.installed.cfg: bin/buildout *.cfg
-	bin/buildout
-
-bin/buildout: bin/pip
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
-	bin/pip install black || true
-	@touch -c $@
-
-bin/python bin/pip:
-	python$(version) -m venv . || virtualenv --python=python$(version) .
-
-.PHONY: Build Plone 5.2
-build-plone-5.2: .installed.cfg  ## Build Plone 5.2
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
-	bin/buildout -c plone-5.2.x.cfg
-
-.PHONY: Build Plone 5.2 Performance
-build-plone-5.2-performance: .installed.cfg  ## Build Plone 5.2
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
-	bin/buildout -c plone-5.2.x-performance.cfg
-
-.PHONY: Build Plone 6.0
-build-plone-6.0: .installed.cfg  ## Build Plone 6.0
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
-	bin/buildout -c plone-6.0.x.cfg
-
-.PHONY: Build Plone 6.0 Performance
-build-plone-6.0-performance: .installed.cfg  ## Build Plone 6.0
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
-	bin/buildout -c plone-6.0.x-performance.cfg
-
-.PHONY: Test
-test:  ## Test
-	bin/test
-
-.PHONY: Test Performance
-test-performance:
-	jmeter -n -t performance.jmx -l jmeter.jtl
-
-.PHONY: Test Performance Locust Querystring Search
-test-performance-locust-querystring-search:
-	bin/locust -f performance/querystring-search.py --host http://localhost:12345/Plone --users 100 --spawn-rate 5 --run-time 5m --autostart
-
-.PHONY: Test Performance Locust Querystring Search CI
-test-performance-locust-querystring-search-ci:
-	bin/locust -f performance/querystring-search.py --host http://localhost:12345/Plone --users 100 --spawn-rate 5 --run-time 5m --headless --csv=example
-
-.PHONY: Code Analysis
-code-analysis:  ## Code Analysis
-	bin/code-analysis
-	if [ -f "bin/black" ]; then bin/black src/ --check ; fi
-
-.PHONY: Black
-black:  ## Black
-	bin/code-analysis
-	if [ -f "bin/black" ]; then bin/black src/ ; fi
-
-.PHONY: zpretty
-zpretty:  ## zpretty
-	if [ -f "bin/zpretty" ]; then zpretty -i ./**/*.zcml; fi
-
-.PHONY: Build Docs
-docs:  ## Build Docs
-	bin/sphinxbuilder
-
-.PHONY: Test Release
-test-release:  ## Run Pyroma and Check Manifest
-	bin/pyroma -n 10 -d .
-
-.PHONY: Release
-release:  ## Release
-	bin/fullrelease
-
-.PHONY: Clean
-clean:  ## Clean
+.PHONY: clean
+clean: ## Clean environment
+	@echo "$(RED)==> Cleaning environment and build$(RESET)"
 	git clean -Xdf
 
-.PHONY: all clean
+.PHONY: clean-instance
+clean-instance: ## remove existing instance
+	rm -fr instance etc inituser var
+
+.PHONY: clean-venv
+clean-venv: ## remove virtual environment
+	rm -fr $(VENV_FOLDER) env pyvenv.cfg .tox .pytest_cache requirements-mxdev.txt
+
+.PHONY: clean-build
+clean-build: ## remove build artifacts
+	rm -fr build/
+	rm -fr dist/
+	rm -fr .eggs/
+	find . -name '*.egg-info' -exec rm -fr {} +
+	find . -name '*.egg' -exec rm -rf {} +
+
+.PHONY: clean-pyc
+clean-pyc: ## remove Python file artifacts
+	find . -name '*.pyc' -exec rm -f {} +
+	find . -name '*.pyo' -exec rm -f {} +
+	find . -name '*~' -exec rm -f {} +
+	find . -name '__pycache__' -exec rm -fr {} +
+
+.PHONY: clean-test
+clean-test: ## remove test and coverage artifacts
+	rm -f .coverage
+	rm -fr htmlcov/
+
+$(BIN_FOLDER)/pip $(BIN_FOLDER)/tox $(BIN_FOLDER)/mxdev: ## Set up Python virtual environment
+	@echo "$(GREEN)==> Setup Python virtual environment$(RESET)"
+	uv venv --python=3.13 --seed $(VENV_FOLDER) || $(PYTHON) -m venv $(VENV_FOLDER)
+	$(BIN_FOLDER)/pip install -U "pip" "pipx" "wheel" "cookiecutter" "mxdev" "tox" "pre-commit" -c constraints.txt
+	$(BIN_FOLDER)/pre-commit install
+
+instance/etc/zope.ini: $(BIN_FOLDER)/pipx  ## Create instance configuration
+	@echo "$(GREEN)==> Create instance configuration$(RESET)"
+	$(BIN_FOLDER)/pipx run cookiecutter -f --no-input --config-file instance.yaml gh:plone/cookiecutter-zope-instance
+
+$(BIN_FOLDER)/runwsgi $(BIN_FOLDER)/zope-testrunner $(BIN_FOLDER)/robot-server $(BIN_FOLDER)/update_restapi_locales: $(BIN_FOLDER)/pip ## Install Plone
+	@echo "$(GREEN)==> Install Plone$(RESET)"
+	$(BIN_FOLDER)/mxdev -c mx.ini
+	$(BIN_FOLDER)/pip install -r requirements-mxdev.txt
+
+.PHONY: install
+install: $(BIN_FOLDER)/runwsgi  # Install instance
+
+.PHONY: start
+start: $(BIN_FOLDER)/runwsgi instance/etc/zope.ini  ## Start a Zope instance on localhost:8080
+	$(BIN_FOLDER)/runwsgi instance/etc/zope.ini
+
+## Dev tools
+
+.PHONY: check
+check: $(BIN_FOLDER)/tox ## Check and fix code base according to Plone standards
+	@echo "$(GREEN)==> Format codebase$(RESET)"
+	$(BIN_FOLDER)/tox -e lint
+
+.PHONY: test
+test: $(BIN_FOLDER)/zope-testrunner ## Run tests
+	zope_i18n_compile_mo_files=True $(BIN_FOLDER)/zope-testrunner --all --test-path=src -s plone.restapi
+
+.PHONY: acceptance-backend-start
+acceptance-backend-start: $(BIN_FOLDER)/robot-server ## Start the acceptance test server on localhost:55001
+	WSGI_SERVER_PORT=55001 zope_i18n_compile_mo_files=True $(BIN_FOLDER)/robot-server plone.restapi.testing.PLONE_RESTAPI_DX_ACCEPTANCE_TESTING
+
+.PHONY: i18n
+i18n: $(BIN_FOLDER)/update_restapi_locales ## Update locales
+	@echo "$(GREEN)==> Updating locales$(RESET)"
+	$(BIN_FOLDER)/update_restapi_locales
+
+## Performance tests (need to be updated)
+
+# .PHONY: Test Performance
+# test-performance:
+# 	jmeter -n -t performance.jmx -l jmeter.jtl
+
+# .PHONY: Test Performance Locust Querystring Search
+# test-performance-locust-querystring-search:
+# 	bin/locust -f performance/querystring-search.py --host http://localhost:12345/Plone --users 100 --spawn-rate 5 --run-time 5m --autostart
+
+# .PHONY: Test Performance Locust Querystring Search CI
+# test-performance-locust-querystring-search-ci:
+# 	bin/locust -f performance/querystring-search.py --host http://localhost:12345/Plone --users 100 --spawn-rate 5 --run-time 5m --headless --csv=example
+
+## Documentation
+
+.PHONY: docs-clean
+docs-clean:  ## Clean current and legacy docs build directories
+	cd $(DOCS_DIR) && rm -rf $(BUILDDIR)/
+	rm -rf docs/build
+
+$(BIN_FOLDER)/sphinx-autobuild $(BIN_FOLDER)/sphinx-build: $(BIN_FOLDER)/pip  ## Install dependencies for building docs
+	$(BIN_FOLDER)/pip install -r requirements-docs.txt -r requirements.txt
+
+.PHONY: docs-livehtml
+docs-livehtml: $(BIN_FOLDER)/sphinx-autobuild  ## Rebuild Sphinx documentation on changes, with live-reload in the browser
+	cd "$(DOCS_DIR)" && $(BIN_FOLDER)/sphinx-autobuild \
+		--ignore "*.swp" \
+		-b html . "$(BUILDDIR)/html" $(SPHINXOPTS)
+
+.PHONY: docs-linkcheck
+docs-linkcheck: $(BIN_FOLDER)/sphinx-build  ## Run linkcheck
+	cd $(DOCS_DIR) && $(BIN_FOLDER)/sphinx-build -b linkcheck -W $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
+	@echo "Link check complete; look for any errors in the above output " \
+		"or in $(BUILDDIR)/linkcheck/ ."
+	@echo
+
+.PHONY: docs-linkcheckbroken
+docs-linkcheckbroken: $(BIN_FOLDER)/sphinx-build  ## Run linkcheck and show only broken links
+	cd $(DOCS_DIR) && $(BIN_FOLDER)/sphinx-build -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck | GREP_COLORS='0;31' grep -wi "broken\|redirect" --color=auto  && if test $$? = 0; then exit 1; fi || test $$? = 1
+	@echo
+	@echo "Link check complete; look for any errors in the above output " \
+		"or in $(BUILDDIR)/linkcheck/ ."
+
+.PHONY: docs-vale
+docs-vale:  ## Run Vale style, grammar, and spell checks
+	$(BIN_FOLDER)/vale sync
+	$(BIN_FOLDER)/vale --no-wrap $(VALEFILES)
+	@echo
+	@echo "Vale is finished; look for any errors in the above output."
+
+.PHONY: rtd-pr-preview
+rtd-pr-preview: $(BIN_FOLDER)/sphinx-build  ## Build pull request preview on Read the Docs
+	cd $(DOCS_DIR) && $(BIN_FOLDER)/sphinx-build -b html $(ALLSPHINXOPTS) ${READTHEDOCS_OUTPUT}/html/

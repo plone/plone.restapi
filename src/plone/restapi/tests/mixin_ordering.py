@@ -7,7 +7,7 @@ class OrderingMixin:
     # This assumes there is a self.folder with 9 documents in it.
 
     def test_reorder(self):
-        # We run all this in one test, because of dependend ordering.
+        # We run all this in one test, because of dependent ordering.
         # initial situation
         self.assertEqual(
             [

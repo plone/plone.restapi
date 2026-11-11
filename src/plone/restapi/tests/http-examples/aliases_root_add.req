@@ -1,0 +1,19 @@
+POST /plone/@aliases HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "items": [
+        {
+            "datetime": "2022-05-05",
+            "path": "/old-page",
+            "redirect-to": "/front-page"
+        },
+        {
+            "datetime": "2022-05-05",
+            "path": "/fizzbuzz",
+            "redirect-to": "/front-page"
+        }
+    ]
+}

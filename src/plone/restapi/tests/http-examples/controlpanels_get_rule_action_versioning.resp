@@ -1,0 +1,29 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@controlpanels/content-rules/rule-3/action/7",
+    "@schema": {
+        "fieldsets": [
+            {
+                "behavior": "plone",
+                "fields": [
+                    "comment"
+                ],
+                "id": "default",
+                "title": "Default"
+            }
+        ],
+        "properties": {
+            "comment": {
+                "description": "The comment added to the history while versioning the content.",
+                "factory": "Text line (String)",
+                "title": "Comment",
+                "type": "string"
+            }
+        },
+        "required": [],
+        "type": "object"
+    },
+    "comment": "Some comment"
+}

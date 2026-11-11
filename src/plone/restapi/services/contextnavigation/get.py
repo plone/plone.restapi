@@ -1,28 +1,30 @@
-""" A flexible navigation service that uses class navigation portlet semantics
-"""
+"""A flexible navigation service that uses class navigation portlet semantics"""
 
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from collections import UserDict
 from plone import api
-from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.layout.navigation.navtree import buildFolderTree
-from plone.app.layout.navigation.root import getNavigationRoot
 from plone.i18n.normalizer.interfaces import IIDNormalizer
 from plone.memoize.instance import memoize
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import get_navigation_root
+from plone.restapi.bbb import INavigationRoot
+from plone.restapi.bbb import INavigationSchema
+from plone.restapi.bbb import INonStructuralFolder
+from plone.restapi.bbb import is_default_page
+from plone.restapi.bbb import ISiteSchema
+from plone.restapi.bbb import safe_callable
+from plone.restapi.bbb import safe_hasattr
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.utils import getToolByName
 from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
-from Products.CMFPlone import utils
 from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
-from Products.CMFPlone.defaultpage import is_default_page
-from Products.CMFPlone.interfaces import INavigationSchema
-from Products.CMFPlone.interfaces import INonStructuralFolder
-from Products.CMFPlone.interfaces import ISiteSchema
+from Products.CMFPlone.utils import normalizeString
+from Products.CMFPlone.utils import typesToList
 from Products.MimetypesRegistry.MimeTypeItem import guess_icon_path
 from zExceptions import NotFound
 from zope import schema
@@ -36,7 +38,6 @@ from zope.interface import Interface
 from zope.schema.interfaces import IFromUnicode
 
 import os
-
 
 _ = MessageFactory("plone.restapi")
 
@@ -185,7 +186,6 @@ class ContextNavigation:
 
 class NavigationPortletRenderer:
     def __init__(self, context, request, data):
-
         self.context = context
         self.request = request
         self.data = data
@@ -351,11 +351,12 @@ class NavigationPortletRenderer:
             if not node["normalized_portal_type"] == "file":
                 return
             fileo = node["item"].getObject().file
-            portal_url = getNavigationRoot(self.context)
+            portal_url = get_navigation_root(self.context)
             mtt = getToolByName(self.context, "mimetypes_registry")
             if fileo.contentType:
                 ctype = mtt.lookup(fileo.contentType)
-                return os.path.join(portal_url, guess_icon_path(ctype[0]))
+                if ctype:
+                    return os.path.join(portal_url, guess_icon_path(ctype[0]))
         except AttributeError:
             pass
 
@@ -378,7 +379,7 @@ class NavigationPortletRenderer:
                 root = self.urltool.getPortalObject()
                 root_is_portal = True
 
-            if utils.safe_hasattr(self.context, "getRemoteUrl"):
+            if safe_hasattr(self.context, "getRemoteUrl"):
                 root_url = root.getRemoteUrl()
             else:
                 # cid, root_url = get_view_url(root)
@@ -389,9 +390,9 @@ class NavigationPortletRenderer:
             root_type = (
                 "plone-site"
                 if root_is_portal
-                else utils.normalizeString(root.portal_type, context=root)
+                else normalizeString(root.portal_type, context=root)
             )
-            normalized_id = utils.normalizeString(root.Title(), context=root)
+            normalized_id = normalizeString(root.Title(), context=root)
 
             if root_is_portal:
                 state = ""
@@ -505,7 +506,7 @@ def get_id(item):
         return
     getId = getattr(item, "getId")
 
-    if not utils.safe_callable(getId):
+    if not safe_callable(getId):
         # Looks like a brain
 
         return getId
@@ -560,7 +561,7 @@ def getRootPath(context, currentFolderOnly, topLevel, root_path):
     if root is not None:
         rootPath = "/".join(root.getPhysicalPath())
     else:
-        rootPath = getNavigationRoot(context)
+        rootPath = get_navigation_root(context)
 
     # Adjust for topLevel
     if topLevel > 0:
@@ -623,12 +624,9 @@ class QueryBuilder:
         self.context = context
         self.data = data
 
-        portal_properties = getToolByName(context, "portal_properties")
-        navtree_properties = getattr(portal_properties, "navtree_properties")
-
         # Acquire a custom nav query if available
         customQuery = getattr(context, "getCustomNavQuery", None)
-        if customQuery is not None and utils.safe_callable(customQuery):
+        if customQuery is not None and safe_callable(customQuery):
             query = customQuery()
         else:
             query = {}
@@ -638,7 +636,7 @@ class QueryBuilder:
         if root is not None:
             rootPath = "/".join(root.getPhysicalPath())
         else:
-            rootPath = getNavigationRoot(context)
+            rootPath = get_navigation_root(context)
 
         currentPath = "/".join(context.getPhysicalPath())
 
@@ -646,10 +644,15 @@ class QueryBuilder:
         # nothing (since we explicitly start from the root always). Hence,
         # use a regular depth-1 query in this case.
 
+        depth = data.bottomLevel
+
+        if depth == 0:
+            depth = 999
+
         if currentPath != rootPath and not currentPath.startswith(rootPath + "/"):
-            query["path"] = {"query": rootPath, "depth": 1}
+            query["path"] = {"query": rootPath, "depth": depth}
         else:
-            query["path"] = {"query": currentPath, "navtree": 1}
+            query["path"] = {"query": currentPath, "depth": depth, "navtree": 1}
 
         topLevel = data.topLevel
         if topLevel and topLevel > 0:
@@ -659,15 +662,7 @@ class QueryBuilder:
         # seem to work with EPI.
 
         # Only list the applicable types
-        query["portal_type"] = utils.typesToList(context)
-
-        # Apply the desired sort
-        sortAttribute = navtree_properties.getProperty("sortAttribute", None)
-        if sortAttribute is not None:
-            query["sort_on"] = sortAttribute
-            sortOrder = navtree_properties.getProperty("sortOrder", None)
-            if sortOrder is not None:
-                query["sort_order"] = sortOrder
+        query["portal_type"] = typesToList(context)
 
         # Filter on workflow states, if enabled
         registry = getUtility(IRegistry)

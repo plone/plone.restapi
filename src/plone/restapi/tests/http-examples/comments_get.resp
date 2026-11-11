@@ -11,12 +11,13 @@ Content-Type: application/json
             "author_image": null,
             "author_name": null,
             "author_username": null,
+            "can_reply": true,
             "comment_id": "1400000000000000",
-            "creation_date": "1995-07-31T13:45:00",
+            "creation_date": "1995-07-31T13:45:00+00:00",
             "in_reply_to": null,
             "is_deletable": true,
             "is_editable": true,
-            "modification_date": "1995-07-31T17:30:00",
+            "modification_date": "1995-07-31T17:30:00+00:00",
             "text": {
                 "data": "Comment 1",
                 "mime-type": "text/plain"
@@ -30,12 +31,13 @@ Content-Type: application/json
             "author_image": null,
             "author_name": null,
             "author_username": null,
+            "can_reply": true,
             "comment_id": "1400000000000001",
-            "creation_date": "1995-07-31T13:45:00",
+            "creation_date": "1995-07-31T13:45:00+00:00",
             "in_reply_to": "1400000000000000",
             "is_deletable": true,
             "is_editable": true,
-            "modification_date": "1995-07-31T17:30:00",
+            "modification_date": "1995-07-31T17:30:00+00:00",
             "text": {
                 "data": "Comment 1.1",
                 "mime-type": "text/plain"
@@ -43,5 +45,9 @@ Content-Type: application/json
             "user_notification": null
         }
     ],
-    "items_total": 2
+    "items_total": 2,
+    "permissions": {
+        "can_reply": true,
+        "view_comments": true
+    }
 }

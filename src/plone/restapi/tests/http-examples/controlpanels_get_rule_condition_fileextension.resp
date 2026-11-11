@@ -1,0 +1,31 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@controlpanels/content-rules/rule-3/condition/1",
+    "@schema": {
+        "fieldsets": [
+            {
+                "behavior": "plone",
+                "fields": [
+                    "file_extension"
+                ],
+                "id": "default",
+                "title": "Default"
+            }
+        ],
+        "properties": {
+            "file_extension": {
+                "description": "The file extension to check for",
+                "factory": "Text line (String)",
+                "title": "File extension",
+                "type": "string"
+            }
+        },
+        "required": [
+            "file_extension"
+        ],
+        "type": "object"
+    },
+    "file_extension": "JPG"
+}

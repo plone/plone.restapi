@@ -1,45 +1,61 @@
-/develop-eggs
-/eggs
-/fake-eggs
-/bin
-/parts
-/downloads
-/var
-/build
-/share
-/dist
-/local.cfg
-/extras
-/pyvenv.cfg
-.coverage
-.flake8
-docs/.DS_Store
+# Generated from:
+# https://github.com/plone/meta/tree/main/src/plone/meta/default
+# See the inline comments on how to expand/tweak this configuration file
+# python related
 *.egg-info
-*.eggs
-/.installed.cfg
 *.pyc
-/.Python
-/include
-/lib
-/lib64
-/local
-/.mr.developer.cfg
+*.pyo
+
+# translation related
 *.mo
-docs/Makefile
-docs/make.bat
-docs/doctrees
-docs/html
-sphinx_build.log
-htmlcov
-npm-debug.log
-*.hprof
-.DS_Store
-jmeter.log
-pip-selfcheck.json
-/.idea
-/.vscode
-/.ipython
-/.mypy_cache/
+
+# tools related
+build/
+.coverage
 .*project
-.settings/
-*~
+coverage.xml
+dist/
+docs/_build
+__pycache__/
+.tox
+.vscode/
+node_modules/
+forest.dot
+forest.json
+
+# venv / buildout related
+bin/
+develop-eggs/
+eggs/
+.eggs/
+etc/
+.installed.cfg
+include/
+lib/
+lib64
+.mr.developer.cfg
+parts/
+pyvenv.cfg
+var/
+local.cfg
+
+# mxdev
+/instance/
+/.make-sentinels/
+/*-mxdev.txt
+/.mxdev_cache
+/reports/
+/sources/
+/venv/
+/.venv/
+.installed.txt
+
+/docs/styles/Microsoft/
+
+##
+# Add extra configuration options in .meta.toml:
+#  [gitignore]
+#  extra_lines = """
+#  _your own configuration lines_
+#  """
+##

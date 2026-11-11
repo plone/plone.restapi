@@ -8,7 +8,7 @@
       method="GET"
       factory=".get.GroupsGet"
       for="Products.CMFCore.interfaces.ISiteRoot"
-      permission="cmf.ManagePortal"
+      permission="plone.app.controlpanel.UsersAndGroups"
       name="@groups"
       />
 
@@ -16,7 +16,7 @@
       method="PATCH"
       factory=".update.GroupsPatch"
       for="Products.CMFCore.interfaces.ISiteRoot"
-      permission="cmf.ManagePortal"
+      permission="plone.app.controlpanel.UsersAndGroups"
       name="@groups"
       />
 
@@ -24,7 +24,7 @@
       method="POST"
       factory=".add.GroupsPost"
       for="Products.CMFCore.interfaces.ISiteRoot"
-      permission="cmf.ManagePortal"
+      permission="plone.app.controlpanel.UsersAndGroups"
       name="@groups"
       />
 
@@ -32,7 +32,7 @@
       method="DELETE"
       factory=".delete.GroupsDelete"
       for="Products.CMFCore.interfaces.ISiteRoot"
-      permission="cmf.ManagePortal"
+      permission="plone.app.controlpanel.UsersAndGroups"
       name="@groups"
       />
 

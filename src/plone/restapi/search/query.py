@@ -16,7 +16,7 @@ Index types used in a default Plone 4.3:
 - DateRangeIndex
 - ExtendedPathIndex
 - FieldIndex
-- GopipIndex (not queriable)
+- GopipIndex (not queryable)
 - KeywordIndex
 - UUIDIndex
 - ZCTextIndex
@@ -31,6 +31,7 @@ conditionally in order to avoid breaking compatibility with vanilla Plone 4.3.
 
 from DateTime import DateTime
 from DateTime.interfaces import SyntaxError as DTSyntaxError
+from plone.restapi.bbb import boolean_value
 from plone.restapi.exceptions import QueryParsingError
 from plone.restapi.interfaces import IIndexQueryParser
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
@@ -50,7 +51,6 @@ from zope.interface import Interface
 
 import logging
 
-
 log = logging.getLogger(__name__)
 
 # Marker value to signal that query values may be of an arbitrary type
@@ -68,13 +68,20 @@ class ZCatalogCompatibleQueryAdapter:
     """
 
     global_query_params = {
-        "sort_on": str,
-        "sort_order": str,
         "sort_limit": int,
         "b_start": int,
         "b_size": int,
     }
 
+    multiple_types_global_query_params = {
+        "sort_on": {list: list, tuple: list, str: str},
+        "sort_order": {list: list, tuple: list, str: str},
+    }
+
+    # Control parameters that are not catalog indexes. They are read from
+    # the request where they are needed -- ``metadata_fields`` is read from
+    # ``request.form`` (or the JSON body) by the summary serializer -- and
+    # are dropped here so they never reach ``catalog.searchResults()``.
     ignore_query_params = ["metadata_fields"]
 
     def __init__(self, context, request):
@@ -89,11 +96,25 @@ class ZCatalogCompatibleQueryAdapter:
         _type = self.global_query_params[idx_name]
         return _type(idx_query)
 
+    def parse_multiple_types_param(self, idx_name, idx_query):
+        """these indexes can contain single str values or a list of strings"""
+        possible_values = self.multiple_types_global_query_params[idx_name]
+        for current_value, future_value in possible_values.items():
+            if isinstance(idx_query, current_value):
+                return future_value(idx_query)
+
     def __call__(self, query):
+        for param in self.ignore_query_params:
+            query.pop(param, None)
+
         for idx_name, idx_query in query.items():
             if idx_name in self.global_query_params:
-                # It's a query-wide parameter like 'sort_on'
+                # It's a query-wide parameter like 'sort_limit'
                 query[idx_name] = self.parse_query_param(idx_name, idx_query)
+                continue
+
+            if idx_name in self.multiple_types_global_query_params:
+                query[idx_name] = self.parse_multiple_types_param(idx_name, idx_query)
                 continue
 
             # Then check for each index present in the query if there is an
@@ -101,8 +122,7 @@ class ZCatalogCompatibleQueryAdapter:
             # that could not be serialized in a query string or JSON
             index = self.get_index(idx_name)
             if index is None:
-                if idx_name not in self.ignore_query_params:
-                    log.warning("No such index: %r" % idx_name)
+                log.warning("No such index: %r" % idx_name)
                 continue
 
             query_opts_parser = getMultiAdapter(
@@ -209,11 +229,10 @@ class BooleanIndexQueryParser(BaseIndexQueryParser):
     query_options = {}
 
     def parse_query_value(self, query_value):
-        if not str(query_value).lower() in ("true", "false", "1", "0"):
-            raise QueryParsingError(
-                "Could not parse query value %r as boolean" % query_value
-            )
-        return str(query_value).lower() in ("true", "1")
+        try:
+            return boolean_value(query_value)
+        except ValueError as e:
+            raise QueryParsingError(str(e))
 
 
 @implementer(IIndexQueryParser)

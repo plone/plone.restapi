@@ -28,10 +28,24 @@ def permission_exists(permission_id):
     return permission is not None
 
 
+def can_view(context):
+    """Returns true if current user has the 'View comments' permission."""
+    if not permission_exists("plone.app.discussion.ViewComments"):
+        return bool(getSecurityManager().checkPermission("View", context))
+    return bool(getSecurityManager().checkPermission("View comments", context))
+
+
 def can_review(comment):
     """Returns true if current user has the 'Review comments' permission."""
     return bool(
         getSecurityManager().checkPermission("Review comments", aq_inner(comment))
+    )
+
+
+def can_reply(comment):
+    """Returns true if current user has the 'Reply to item' permission."""
+    return bool(
+        getSecurityManager().checkPermission("Reply to item", aq_inner(comment))
     )
 
 

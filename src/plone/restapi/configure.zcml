@@ -22,6 +22,13 @@
   <include package="plone.behavior" />
   <include package="plone.rest" />
   <include package="plone.schema" />
+  <include package="Products.CMFPlone" />
+
+  <include
+      package="plone.app.caching"
+      zcml:condition="installed plone.app.caching"
+      />
+
   <include file="indexers.zcml" />
 
   <five:registerPackage
@@ -45,7 +52,7 @@
       title="plone.restapi testing"
       description="Adds sample content types for testing"
       provides="Products.GenericSetup.interfaces.EXTENSION"
-      for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
+      for="plone.restapi.bbb.ITestCasePloneSiteRoot"
       directory="profiles/testing"
       />
 
@@ -54,7 +61,7 @@
       title="plone.restapi testing-workflows"
       description="Adds sample workflows for testing"
       provides="Products.GenericSetup.interfaces.EXTENSION"
-      for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
+      for="plone.restapi.bbb.ITestCasePloneSiteRoot"
       directory="profiles/testing-workflows"
       />
 
@@ -91,6 +98,7 @@
   <include package=".deserializer" />
   <include package=".types" />
   <include package=".search" />
+  <include package=".cache" />
 
   <include package=".upgrades" />
 
@@ -108,12 +116,44 @@
         provides=".behaviors.IBlocks"
         />
 
+    <plone:behavior
+        name="volto.blocks.editable.layout"
+        title="Blocks (Editable Layout)"
+        description="Enables Volto Blocks (editable layout) support"
+        provides=".behaviors.IBlocksEditableLayout"
+        />
+
   </configure>
 
   <utility
       factory=".setuphandlers.HiddenProfiles"
-      provides="Products.CMFPlone.interfaces.INonInstallable"
+      provides="plone.restapi.bbb.INonInstallable"
       name="plone.restapi"
+      />
+
+  <subscriber
+      factory=".blocks.NestedBlocksVisitor"
+      provides="plone.restapi.interfaces.IBlockVisitor"
+      />
+
+  <!-- blocks link integrity -->
+  <adapter factory=".blocks_linkintegrity.BlocksRetriever" />
+
+  <subscriber
+      factory=".blocks_linkintegrity.TextBlockLinksRetriever"
+      provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
+      />
+  <subscriber
+      factory=".blocks_linkintegrity.GenericBlockLinksRetriever"
+      provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
+      />
+  <subscriber
+      factory=".blocks_linkintegrity.SlateBlockLinksRetriever"
+      provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
+      />
+  <subscriber
+      factory=".blocks_linkintegrity.PlateBlockLinksRetriever"
+      provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
       />
 
 </configure>

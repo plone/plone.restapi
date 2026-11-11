@@ -1,27 +1,35 @@
 from plone.app.contentlisting.interfaces import IContentListingObject
+from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
-from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.interfaces import IJSONSummarySerializerMetadata
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.serializer.utils import get_portal_type_title
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
+from zope.component import getAllUtilitiesRegisteredFor
 from zope.interface import implementer
 from zope.interface import Interface
-from zope.component import getAllUtilitiesRegisteredFor
+
+import logging
+import os
+
+logger = logging.getLogger(__name__)
+
+ADDITIONAL_NON_METADATA_ATTRIBUTES = {
+    attr.strip()
+    for attr in os.environ.get("RESTAPI_ADDITIONAL_NON_METADATA_ATTRIBUTES", "").split(
+        ","
+    )
+    if attr.strip()
+}
 
 
 @implementer(IJSONSummarySerializerMetadata)
 class JSONSummarySerializerMetadata:
     def default_metadata_fields(self):
-        return {
-            "@id",
-            "@type",
-            "description",
-            "review_state",
-            "title",
-        }
+        return {"@id", "@type", "description", "review_state", "title", "type_title"}
 
     def field_accessors(self):
         return {
@@ -35,7 +43,7 @@ class JSONSummarySerializerMetadata:
         return {
             "getPath",
             "getURL",
-        }
+        } | ADDITIONAL_NON_METADATA_ATTRIBUTES
 
     def blocklisted_attributes(self):
         return {
@@ -76,9 +84,10 @@ class DefaultJSONSummarySerializer:
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        # Cache summary_serializer_metadata on request
-        metadata = self.request.form.get("summary_serializer_metadata", None)
-        if not metadata:
+        # Cache on the request: read via request.get() so the value stored by
+        # request.set() is reused; isinstance() ignores a same-named parameter.
+        metadata = self.request.get("summary_serializer_metadata", None)
+        if not isinstance(metadata, dict):
             metadata = merge_serializer_metadata_utilities_data()
             self.request.set("summary_serializer_metadata", metadata)
 
@@ -95,7 +104,10 @@ class DefaultJSONSummarySerializer:
             if field.startswith("_") or field in self.blocklisted_attributes:
                 continue
             accessor = self.field_accessors.get(field, field)
-            value = getattr(obj, accessor, None)
+            if field == "type_title":
+                value = get_portal_type_title(self.context.portal_type)
+            else:
+                value = getattr(obj, accessor, None)
             try:
                 if callable(value):
                     value = value()
@@ -114,14 +126,26 @@ class DefaultJSONSummarySerializer:
         if not isinstance(additional_metadata_fields, list):
             additional_metadata_fields = [additional_metadata_fields]
         additional_metadata_fields = set(additional_metadata_fields)
+        if not additional_metadata_fields:
+            return self.default_metadata_fields
 
+        fields_cache = self.request.get("_summary_fields_cache", None)
+        if fields_cache is None:
+            catalog = getToolByName(self.context, "portal_catalog")
+            fields_cache = set(catalog.schema()) | self.non_metadata_attributes
+            self.request.set("_summary_fields_cache", fields_cache)
         if "_all" in additional_metadata_fields:
-            fields_cache = self.request.get("_summary_fields_cache", None)
-            if fields_cache is None:
-                catalog = getToolByName(self.context, "portal_catalog")
-                fields_cache = set(catalog.schema()) | self.non_metadata_attributes
-                self.request.set("_summary_fields_cache", fields_cache)
             additional_metadata_fields = fields_cache
+        else:
+            rejected_metadata_fields = additional_metadata_fields - fields_cache
+            if rejected_metadata_fields:
+                logger.debug(
+                    "Rejected metadata_fields %s requested for %s: not available "
+                    "in the catalog schema or non_metadata_attributes.",
+                    sorted(rejected_metadata_fields),
+                    self.context,
+                )
+            additional_metadata_fields = additional_metadata_fields & fields_cache
 
         return self.default_metadata_fields | additional_metadata_fields
 
@@ -140,6 +164,7 @@ class SiteRootJSONSummarySerializer:
             {
                 "@id": self.context.absolute_url(),
                 "@type": self.context.portal_type,
+                "type_title": get_portal_type_title(self.context.portal_type),
                 "title": self.context.title,
                 "description": self.context.description,
             }

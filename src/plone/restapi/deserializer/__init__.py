@@ -1,11 +1,33 @@
 from plone.restapi.exceptions import DeserializationError
+from zExceptions import BadRequest
+from zope.deferredimport import deprecated
 
 import json
 
+deprecated(
+    "Import from plone.restapi.bbb instead",
+    boolean_value="plone.restapi:bbb.boolean_value",
+)
+
 
 def json_body(request):
+    # TODO We should not read the complete request BODY in memory.
+    # Once we have fixed this, we can remove the temporary patches.py.
+    # See there for background information.
     try:
-        data = json.loads(request.get("BODY") or "{}")
+        if request.method in ("POST", "PATCH", "PUT") and request.getHeader(
+            "content-type", ""
+        ).startswith("multipart/form-data"):
+            # multipart/form-data
+            # Not all multipart requests carry a JSON "data" field (e.g. CSV
+            # file uploads use a "file" field). Return an empty dict so callers
+            # like HypermediaBatch treat the request as having no JSON body.
+            if "data" not in request.form:
+                return {}
+            request.form["data"].seek(0)
+            data = json.load(request.form["data"])
+        else:
+            data = json.loads(request.get("BODY") or "{}")
     except ValueError:
         raise DeserializationError("No JSON object could be decoded")
     if not isinstance(data, dict):
@@ -13,15 +35,17 @@ def json_body(request):
     return data
 
 
-def boolean_value(value):
+def parse_int(data, prop, default):
     """
-
     Args:
-        value: a value representing a boolean which can be
-               a string, a boolean or an integer
-                   (usually a string from a GET parameter).
+        data: dict from a request
+        prop: name of a integer parameter in the dict
+        default: default if not found
 
-    Returns: a boolean
-
+    Returns: an integer
+    Raises: BadRequest if not an int
     """
-    return value not in {False, "false", "False", "0", 0}
+    try:
+        return int(data.get(prop, default))
+    except (ValueError, TypeError):
+        raise BadRequest(f"Invalid {prop}: Not an integer")

@@ -1,0 +1,19 @@
+HTTP/1.1 422 Unprocessable Entity
+Content-Type: application/json
+
+{
+    "error": {
+        "failed": [
+            [
+                {
+                    "relation": "comprisesComponentPart",
+                    "source": "/document",
+                    "target": "/document-does-not-exist"
+                },
+                "Failed on creating a relation. Target not found."
+            ]
+        ],
+        "message": "Failed on creating relations",
+        "type": "Unprocessable Content"
+    }
+}

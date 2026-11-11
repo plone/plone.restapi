@@ -8,6 +8,7 @@ from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import noLongerProvides
 from zope.publisher.interfaces import IPublishTraverse
+
 import plone.protect.interfaces
 
 

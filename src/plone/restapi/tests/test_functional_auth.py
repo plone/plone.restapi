@@ -1,6 +1,6 @@
-from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
@@ -13,14 +13,12 @@ import unittest
 
 
 class TestFunctionalAuth(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        login(self.portal, SITE_OWNER_NAME)
         self.private_document = self.portal[
             self.portal.invokeFactory("Document", id="doc1", title="My Document")
         ]
@@ -67,11 +65,21 @@ class TestFunctionalAuth(unittest.TestCase):
         """
         Logging in via the API also grants access to the Zope root ZMI.
         """
+        app = self.layer["app"]
+        app.acl_users.plugins.users.addUser(
+            "zopeuser",
+            "zopeuser",
+            TEST_USER_PASSWORD,
+        )
+        app.acl_users.plugins.roles.assignRoleToPrincipal("Manager", "zopeuser")
+        transaction.commit()
+
         session = requests.Session()
+        self.addCleanup(session.close)
         login_resp = session.post(
             self.portal_url + "/@login",
             headers={"Accept": "application/json"},
-            json={"login": SITE_OWNER_NAME, "password": TEST_USER_PASSWORD},
+            json={"login": "zopeuser", "password": TEST_USER_PASSWORD},
         )
         self.assertIn(
             "__ac",
@@ -92,11 +100,6 @@ class TestFunctionalAuth(unittest.TestCase):
         zmi_resp = session.get(
             self.layer["app"].absolute_url() + "/manage_workspace",
         )
-        # Works in the browser when running `$ bin/instance fg` in a `plone.restapi`
-        # checkout against `http://localhost:8080/manage_main` but doesn't work in the
-        # browser against the test fixture at `http://localhost:55001/manage_main`.  My
-        # guess is that there's some subtle difference in the PAS plugin configuration.
-        self.skipTest("FIXME: Works in real instance but not test fixture")
         self.assertEqual(
             zmi_resp.status_code,
             200,
@@ -112,10 +115,11 @@ class TestFunctionalAuth(unittest.TestCase):
         Logging in via the Zope root ZMI also grants access to the API.
         """
         session = requests.Session()
+        self.addCleanup(session.close)
         basic_auth_headers = {
             "Authorization": "Basic {}".format(
                 base64.b64encode(
-                    f"{SITE_OWNER_NAME}:{TEST_USER_PASSWORD}".encode(),
+                    f"{SITE_OWNER_NAME}:{SITE_OWNER_PASSWORD}".encode(),
                 ).decode()
             )
         }
@@ -161,21 +165,31 @@ class TestFunctionalAuth(unittest.TestCase):
         Logging in via the Plone login form also grants access to the API.
         """
         session = requests.Session()
+        self.addCleanup(session.close)
         challenge_resp = session.get(self.private_document_url)
         self.assertEqual(
             challenge_resp.status_code,
             200,
             "Wrong Plone login challenge status code",
         )
+        # The input differs slightly per Plone version.
         self.assertTrue(
-            '<input id="__ac_password" name="__ac_password"' in challenge_resp.text,
+            "<input" in challenge_resp.text,
+            "Plone login challenge response content missing input",
+        )
+        self.assertTrue(
+            'id="__ac_password"' in challenge_resp.text,
+            "Plone login challenge response content missing password field",
+        )
+        self.assertTrue(
+            'name="__ac_password"' in challenge_resp.text,
             "Plone login challenge response content missing password field",
         )
         login_resp = session.post(
             self.portal_url + "/login",
             data={
                 "__ac_name": SITE_OWNER_NAME,
-                "__ac_password": TEST_USER_PASSWORD,
+                "__ac_password": SITE_OWNER_PASSWORD,
                 "came_from": "/".join(self.private_document.getPhysicalPath()),
                 "buttons.login": "Log in",
             },

@@ -1,0 +1,15 @@
+POST /plone/@users HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="users.csv"
+Content-Type: text/csv
+
+username,email,fullname,description,roles,home_page,password
+jdoe,jdoe@example.com,John Doe,Software developer from Berlin,"Member, Contributor",https://jdoe.dev,pass1234
+asmith,asmith@example.com,Alice Smith,Frontend engineer and designer,Member,https://alice.design,alicePwd!
+bwayne,bwayne@example.com,Bruce Wayne,Tech entrepreneur,,https://wayneenterprises.com,batman42
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

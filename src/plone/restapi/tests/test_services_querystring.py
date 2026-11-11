@@ -18,7 +18,7 @@ class TestQuerystringEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -64,7 +64,14 @@ class TestQuerystringEndpoint(unittest.TestCase):
             "values": {},
             "vocabulary": None,
         }
-        self.assertEqual(expected_field_config, idx)
+        # Be permissive with the check and only check the existing
+        # attributes. (This gives plone.app.querystring to extend its schema
+        # when that becomes necessary, while making sure that all code depending
+        # on any existing attributes continues to work.)
+        filtered_idx = {}
+        for key in expected_field_config:
+            filtered_idx[key] = idx.get(key, "NOT-FOUND")
+        self.assertEqual(expected_field_config, filtered_idx)
 
     def test_endpoint_inlines_vocabularies(self):
         response = self.api_session.get("/@querystring")
@@ -73,13 +80,8 @@ class TestQuerystringEndpoint(unittest.TestCase):
         indexes = response.json()["indexes"]
         idx = indexes["review_state"]
 
-        self.assertDictContainsSubset(
-            {
-                "title": "Review state",
-                "vocabulary": "plone.app.vocabularies.WorkflowStates",
-            },
-            idx,
-        )
+        self.assertEqual(idx["title"], "Review state")
+        self.assertEqual(idx["vocabulary"], "plone.app.vocabularies.WorkflowStates")
 
         expected_vocab_values = {
             "external": {"title": "Externally visible [external]"},
@@ -103,15 +105,13 @@ class TestQuerystringEndpoint(unittest.TestCase):
         indexes = response.json()["indexes"]
         idx = indexes["isDefaultPage"]
 
-        self.assertDictContainsSubset(
-            {
-                "title": "Default Page",
-                "operations": [
-                    "plone.app.querystring.operation.boolean.isTrue",
-                    "plone.app.querystring.operation.boolean.isFalse",
-                ],
-            },
-            idx,
+        self.assertEqual(idx["title"], "Default Page")
+        self.assertEqual(
+            idx["operations"],
+            [
+                "plone.app.querystring.operation.boolean.isTrue",
+                "plone.app.querystring.operation.boolean.isFalse",
+            ],
         )
 
         expected_operators = {
@@ -137,16 +137,14 @@ class TestQuerystringEndpoint(unittest.TestCase):
         indexes = response.json()["indexes"]
         idx = indexes["getObjPositionInParent"]
 
-        self.assertDictContainsSubset(
-            {
-                "title": "Order in folder",
-                "operations": [
-                    "plone.app.querystring.operation.int.is",
-                    "plone.app.querystring.operation.int.lessThan",
-                    "plone.app.querystring.operation.int.largerThan",
-                ],
-            },
-            idx,
+        self.assertEqual(idx["title"], "Order in folder")
+        self.assertEqual(
+            idx["operations"],
+            [
+                "plone.app.querystring.operation.int.is",
+                "plone.app.querystring.operation.int.lessThan",
+                "plone.app.querystring.operation.int.largerThan",
+            ],
         )
 
         ops = idx["operators"]

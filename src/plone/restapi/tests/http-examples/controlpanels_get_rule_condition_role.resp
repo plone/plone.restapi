@@ -1,0 +1,45 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@controlpanels/content-rules/rule-3/condition/4",
+    "@schema": {
+        "fieldsets": [
+            {
+                "behavior": "plone",
+                "fields": [
+                    "role_names"
+                ],
+                "id": "default",
+                "title": "Default"
+            }
+        ],
+        "properties": {
+            "role_names": {
+                "additionalItems": true,
+                "description": "The roles to check for.",
+                "factory": "Multiple Choice",
+                "items": {
+                    "description": "",
+                    "factory": "Choice",
+                    "title": "",
+                    "type": "string",
+                    "vocabulary": {
+                        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Roles"
+                    }
+                },
+                "title": "Roles",
+                "type": "array",
+                "uniqueItems": true
+            }
+        },
+        "required": [
+            "role_names"
+        ],
+        "type": "object"
+    },
+    "role_names": [
+        "Anonymous",
+        "Authenticated"
+    ]
+}

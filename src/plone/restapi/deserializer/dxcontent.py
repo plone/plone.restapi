@@ -3,24 +3,26 @@ from AccessControl import getSecurityManager
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
+from plone.restapi import _
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import IFieldDeserializer
+from plone.restapi.serializer.schema import _check_permission
 from plone.supermodel.utils import mergedTaggedValueDict
 from z3c.form.interfaces import IDataManager
 from z3c.form.interfaces import IManagerValidator
 from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import queryMultiAdapter
-from zope.component import queryUtility
 from zope.event import notify
+from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.lifecycleevent import Attributes
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFields
+from zope.schema.interfaces import IContextAwareDefaultFactory
 from zope.schema.interfaces import ValidationError
-from zope.security.interfaces import IPermission
 
 
 @implementer(IDeserializeFromJson)
@@ -49,7 +51,7 @@ class DeserializeFromJson(OrderingMixin):
                 (self.context, self.request, None, schema, None), IManagerValidator
             )
             for error in validator.validate(field_data):
-                errors.append({"error": error, "message": str(error)})
+                errors.append({"error": error, "message": error.args[0]})
 
         if errors:
             if mask_validation_errors:
@@ -57,6 +59,8 @@ class DeserializeFromJson(OrderingMixin):
                 # errors on front-end
                 for error in errors:
                     error["error"] = "ValidationError"
+            for error in errors:
+                error["message"] = translate(error["message"], context=self.request)
             raise BadRequest(errors)
 
         # We'll set the layout after the validation and even if there
@@ -109,11 +113,10 @@ class DeserializeFromJson(OrderingMixin):
                             errors.append(
                                 {
                                     "field": field.__name__,
-                                    "message": (
-                                        "{} is a required field.".format(
-                                            field.__name__
-                                        ),
-                                        "Setting it to null is not allowed.",
+                                    "message": _(
+                                        "${field_name} is a required field."
+                                        " Setting it to null is not allowed.",
+                                        mapping={"field_name": field.__name__},
                                     ),
                                 }
                             )
@@ -141,9 +144,14 @@ class DeserializeFromJson(OrderingMixin):
                             # During content creation we should set the value even if
                             # it is the same from the dm if the current_value was
                             # returned from a default_factory method
-                            should_change = (
-                                dm.field.defaultFactory(self.context) == current_value
+                            default_value = (
+                                dm.field.defaultFactory(self.context)
+                                if IContextAwareDefaultFactory.providedBy(
+                                    dm.field.defaultFactory
+                                )
+                                else dm.field.defaultFactory()
                             )
+                            should_change = default_value == current_value
                         else:
                             should_change = False
 
@@ -213,15 +221,5 @@ class DeserializeFromJson(OrderingMixin):
         self.modified.setdefault(schema, []).append(prefixed_name)
 
     def check_permission(self, permission_name):
-        if permission_name is None:
-            return True
-
-        if permission_name not in self.permission_cache:
-            permission = queryUtility(IPermission, name=permission_name)
-            if permission is None:
-                self.permission_cache[permission_name] = True
-            else:
-                self.permission_cache[permission_name] = bool(
-                    self.sm.checkPermission(permission.title, self.context)
-                )
-        return self.permission_cache[permission_name]
+        # Here for backwards-compatibility
+        return _check_permission(permission_name, self)

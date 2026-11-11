@@ -1,0 +1,13 @@
+POST /plone/@aliases HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="test_file.csv"
+Content-Type: text/csv
+
+old path,new path,datetime,manual
+/old-page,/front-page,2022/01/01 00:00:00 GMT+0,True
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

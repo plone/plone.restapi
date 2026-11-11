@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:cache="http://namespaces.zope.org/cache"
     xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:zcml="http://namespaces.zope.org/zcml"
     >
@@ -7,7 +8,7 @@
   <plone:service
       method="GET"
       factory=".get.ContentGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       />
 
@@ -17,11 +18,16 @@
       for="Products.CMFCore.interfaces.IContentish"
       permission="zope2.View"
       />
+  <cache:ruleset
+      for=".get.ContentGet"
+      ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
+      />
 
   <plone:service
       method="PATCH"
       factory=".update.ContentPatch"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       />
 
@@ -49,7 +55,7 @@
   <plone:service
       method="GET"
       factory=".sharing.SharingGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       name="@sharing"
       />
@@ -65,7 +71,7 @@
   <plone:service
       method="POST"
       factory=".sharing.SharingPost"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="zope2.View"
       name="@sharing"
       />
@@ -113,7 +119,7 @@
   <plone:service
       method="HEAD"
       factory=".tus.UploadHead"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.AddPortalContent"
       name="@tus-upload"
       />
@@ -129,7 +135,7 @@
   <plone:service
       method="PATCH"
       factory=".tus.UploadPatch"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.restapi.bbb.IPloneSiteRoot"
       permission="cmf.AddPortalContent"
       name="@tus-upload"
       />

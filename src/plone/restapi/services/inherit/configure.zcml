@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:cache="http://namespaces.zope.org/cache"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <plone:service
+      method="GET"
+      factory=".get.InheritedBehaviorGet"
+      for="zope.interface.Interface"
+      permission="zope2.View"
+      name="@inherit"
+      />
+
+  <adapter
+      factory=".get.InheritedBehaviorExpander"
+      name="inherit"
+      />
+
+  <cache:ruleset
+      for=".get.InheritedBehaviorGet"
+      ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
+      />
+
+</configure>

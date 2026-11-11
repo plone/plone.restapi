@@ -1,8 +1,12 @@
 """JsonSchema providers."""
+
 from plone.app.textfield.interfaces import IRichText
+from plone.namedfile.interfaces import INamedFile
+from plone.namedfile.interfaces import INamedImage
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.restapi.types.utils import get_multilingual_directives
 from plone.restapi.types.utils import get_querysource_url
 from plone.restapi.types.utils import get_source_url
 from plone.restapi.types.utils import get_vocabulary_url
@@ -15,6 +19,7 @@ from zope.component import getMultiAdapter
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.schema import getFieldsInOrder
 from zope.schema.interfaces import IASCII
 from zope.schema.interfaces import IASCIILine
 from zope.schema.interfaces import IBool
@@ -32,11 +37,11 @@ from zope.schema.interfaces import IInt
 from zope.schema.interfaces import IList
 from zope.schema.interfaces import IObject
 from zope.schema.interfaces import IPassword
-from zope.schema.interfaces import IURI
 from zope.schema.interfaces import ISet
 from zope.schema.interfaces import IText
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITuple
+from zope.schema.interfaces import IURI
 
 
 @adapter(IField, Interface, Interface)
@@ -66,12 +71,16 @@ class DefaultJsonSchemaProvider:
         You should override `additional` method to provide more properties
         about the field."""
         schema = {
-            "type": self.get_type(),
             "title": self.get_title(),
             "description": self.get_description(),
         }
 
+        field_type = self.get_type()
+        if field_type:
+            schema["type"] = field_type
+
         widget = self.get_widget()
+
         if widget:
             schema["widget"] = widget
 
@@ -83,6 +92,10 @@ class DefaultJsonSchemaProvider:
         if widget_options:
             schema["widgetOptions"] = widget_options
 
+        multilingual_options = self.get_multilingual_directives()
+        if multilingual_options:
+            schema["multilingual_options"] = multilingual_options
+
         if self.field.default is not None:
             schema["default"] = self.field.default
 
@@ -90,7 +103,7 @@ class DefaultJsonSchemaProvider:
         return schema
 
     def get_type(self):
-        raise NotImplementedError
+        return None
 
     def get_factory(self):
         pass
@@ -106,6 +119,11 @@ class DefaultJsonSchemaProvider:
             params["vocabulary"] = {
                 "@id": get_vocabulary_url(vocab_name, self.context, self.request)
             }
+        return params
+
+    def get_multilingual_directives(self):
+        all_params = get_multilingual_directives([self.field.interface])
+        params = all_params.get(self.field.getName(), {})
         return params
 
 
@@ -259,11 +277,14 @@ class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
 
     def get_items(self):
         """Get items properties."""
-        value_type_adapter = getMultiAdapter(
-            (self.field.value_type, self.context, self.request), IJsonSchemaProvider
-        )
+        if self.field.value_type:
+            value_type_adapter = getMultiAdapter(
+                (self.field.value_type, self.context, self.request), IJsonSchemaProvider
+            )
 
-        return value_type_adapter.get_schema()
+            return value_type_adapter.get_schema()
+
+        return {}
 
     def additional(self):
         info = {}
@@ -349,7 +370,7 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
                 }
             }
 
-        # Unamed ISource or vocabulary - render link addressing it via field
+        # Unnamed ISource or vocabulary - render link addressing it via field
         #
         # Even though the URL will point to the @sources endpoint, we also
         # list it under the 'vocabulary' key, because the semantics for an
@@ -393,25 +414,34 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
         return "object"
 
     def get_factory(self):
-        if self.field.schema.__name__ == "INamedBlobImage":
+        if self.field.schema.isOrExtends(INamedImage):
             return "Image"
-        else:
+        if self.field.schema.isOrExtends(INamedFile):
             return "File"
+        return None
 
     def get_properties(self):
+        context = self.context
+        request = self.request
+        fieldsets = get_fieldsets(context, request, self.field.schema)
+        if not self.get_factory():
+            return get_jsonschema_properties(context, request, fieldsets)
+        # BBB: file and image properties keep their dotted names.
         if self.prefix:
             prefix = ".".join([self.prefix, self.field.__name__])
         else:
             prefix = self.field.__name__
-
-        context = self.context
-        request = self.request
-        fieldsets = get_fieldsets(context, request, self.field.schema)
         return get_jsonschema_properties(context, request, fieldsets, prefix)
 
     def additional(self):
         info = super().additional()
         info["properties"] = self.get_properties()
+        if not self.get_factory():
+            info["required"] = [
+                name
+                for name, field in getFieldsInOrder(self.field.schema)
+                if name in info["properties"] and field.required and not field.readonly
+            ]
         return info
 
 
@@ -423,20 +453,25 @@ class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
 
     def additional(self):
         info = {}
-        key_type = getMultiAdapter(
-            (self.field.key_type, self.context, self.request), IJsonSchemaProvider
-        )
-        info["key_type"] = {
-            "schema": key_type.get_schema(),
-            "additional": key_type.additional(),
-        }
-        value_type = getMultiAdapter(
-            (self.field.value_type, self.context, self.request), IJsonSchemaProvider
-        )
-        info["value_type"] = {
-            "schema": value_type.get_schema(),
-            "additional": value_type.additional(),
-        }
+        if self.field.key_type:
+            key_type = getMultiAdapter(
+                (self.field.key_type, self.context, self.request), IJsonSchemaProvider
+            )
+            info["key_type"] = {
+                "schema": key_type.get_schema(),
+                "additional": key_type.additional(),
+            }
+
+        if self.field.value_type:
+            value_type = getMultiAdapter(
+                (self.field.value_type, self.context, self.request), IJsonSchemaProvider
+            )
+
+            info["value_type"] = {
+                "schema": value_type.get_schema(),
+                "additional": value_type.additional(),
+            }
+
         return info
 
 

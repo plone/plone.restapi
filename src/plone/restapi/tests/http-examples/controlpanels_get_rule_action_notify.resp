@@ -1,0 +1,68 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@controlpanels/content-rules/rule-3/action/1",
+    "@schema": {
+        "fieldsets": [
+            {
+                "behavior": "plone",
+                "fields": [
+                    "message",
+                    "message_type"
+                ],
+                "id": "default",
+                "title": "Default"
+            }
+        ],
+        "properties": {
+            "message": {
+                "description": "The message to send to the user.",
+                "factory": "Text line (String)",
+                "title": "Message",
+                "type": "string"
+            },
+            "message_type": {
+                "choices": [
+                    [
+                        "info",
+                        null
+                    ],
+                    [
+                        "warning",
+                        null
+                    ],
+                    [
+                        "error",
+                        null
+                    ]
+                ],
+                "default": "info",
+                "description": "Select the type of message to display.",
+                "enum": [
+                    "info",
+                    "warning",
+                    "error"
+                ],
+                "enumNames": [
+                    null,
+                    null,
+                    null
+                ],
+                "factory": "Choice",
+                "title": "Message type",
+                "type": "string",
+                "vocabulary": {
+                    "@id": "http://localhost:55001/plone/@sources/message_type"
+                }
+            }
+        },
+        "required": [
+            "message",
+            "message_type"
+        ],
+        "type": "object"
+    },
+    "message": "Information",
+    "message_type": "info"
+}

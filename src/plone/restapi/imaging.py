@@ -1,6 +1,14 @@
+from plone.restapi import HAS_PLONE_6
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.globalrequest import getRequest
+
+if HAS_PLONE_6:
+    # In Plone 6.0+, we must use the mode parameter
+    scale_parameter = {"mode": "scale"}
+else:
+    # BBB: In Plone 5.2, it is necessary to use the direction parameter.
+    scale_parameter = {"direction": "thumbnail"}
 
 
 def get_scales(context, field, width, height):
@@ -12,13 +20,20 @@ def get_scales(context, field, width, height):
     images_view = getMultiAdapter((context, request), name="images")
 
     for name, actual_width, actual_height in get_scale_infos():
-        # Try first with scale name
-        scale = images_view.scale(field.__name__, scale=name)
+        # Recent versions of plone.namedfile support getting scale
+        # metadata without actually generating the image scale.
+        # This was added in the same version as the `picture` method,
+        # so we can use that to check whether the `scale` method
+        # accepts the `pre` flag.
+        scale_flags = {}
+        if hasattr(images_view, "picture"):
+            scale_flags["pre"] = True
+        scale = images_view.scale(field.__name__, scale=name, **scale_flags)
         if scale is None:
             # Sometimes it fails, but we can create it
             # using scale sizes
             scale = images_view.scale(
-                field.__name__, width=actual_width, height=actual_height
+                field.__name__, width=actual_width, height=actual_height, **scale_flags
             )
 
         if scale is None:
@@ -41,9 +56,11 @@ def get_scales(context, field, width, height):
 def get_original_image_url(context, fieldname, width, height):
     request = getRequest()
     images_view = getMultiAdapter((context, request), name="images")
-    scale = images_view.scale(
-        fieldname, width=width, height=height, direction="thumbnail"
-    )
+    scale_flags = {}
+    if hasattr(images_view, "picture"):
+        scale_flags["pre"] = True
+    parameters = {**scale_flags, **scale_parameter}
+    scale = images_view.scale(fieldname, width=width, height=height, **parameters)
     if scale:
         return scale.url
     # Corrupt images may not have a scale.
@@ -79,7 +96,7 @@ def get_scale_infos():
     from plone.registry.interfaces import IRegistry
 
     registry = getUtility(IRegistry)
-    from Products.CMFPlone.interfaces import IImagingSchema
+    from plone.restapi.bbb import IImagingSchema
 
     imaging_settings = registry.forInterface(IImagingSchema, prefix="plone")
     allowed_sizes = imaging_settings.allowed_sizes

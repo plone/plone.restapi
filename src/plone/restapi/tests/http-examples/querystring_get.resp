@@ -7,16 +7,24 @@ Content-Type: application/json
         "Creator": {
             "description": "The person that created an item",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.currentUser",
-                "plone.app.querystring.operation.selection.any"
+                "plone.app.querystring.operation.selection.any",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.any": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
+                    "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
                     "widget": "MultipleSelectionWidget"
                 },
                 "plone.app.querystring.operation.string.currentUser": {
@@ -34,6 +42,7 @@ Content-Type: application/json
         "Description": {
             "description": "An item's description",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains"
@@ -54,6 +63,7 @@ Content-Type: application/json
         "SearchableText": {
             "description": "Text search of an item's contents",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains"
@@ -74,10 +84,12 @@ Content-Type: application/json
         "Subject": {
             "description": "Tags are used for organization of content",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.selection.any",
-                "plone.app.querystring.operation.selection.all"
+                "plone.app.querystring.operation.selection.all",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.all": {
@@ -91,6 +103,12 @@ Content-Type: application/json
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
                     "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
+                    "widget": "MultipleSelectionWidget"
                 }
             },
             "sortable": false,
@@ -101,6 +119,7 @@ Content-Type: application/json
         "Title": {
             "description": "Text search of an item's title",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains"
@@ -121,6 +140,7 @@ Content-Type: application/json
         "created": {
             "description": "The date an item was created",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -161,13 +181,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -179,7 +199,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -204,6 +224,7 @@ Content-Type: application/json
         "effective": {
             "description": "The time and date an item was first published",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -244,13 +265,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -262,7 +283,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -287,6 +308,7 @@ Content-Type: application/json
         "effectiveRange": {
             "description": "Querying this is undefined",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [],
             "operators": {},
@@ -298,6 +320,7 @@ Content-Type: application/json
         "end": {
             "description": "The end date and time of an event",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -338,13 +361,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -356,7 +379,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -381,6 +404,7 @@ Content-Type: application/json
         "expires": {
             "description": "The time and date an item was expired",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -421,13 +445,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -439,7 +463,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -464,15 +488,23 @@ Content-Type: application/json
         "getId": {
             "description": "The short name of an item (used in the url)",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
-                "plone.app.querystring.operation.string.is"
+                "plone.app.querystring.operation.string.is",
+                "plone.app.querystring.operation.string.isNot"
             ],
             "operators": {
                 "plone.app.querystring.operation.string.is": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._equal",
                     "title": "Is",
+                    "widget": "StringWidget"
+                },
+                "plone.app.querystring.operation.string.isNot": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Is not",
                     "widget": "StringWidget"
                 }
             },
@@ -484,6 +516,7 @@ Content-Type: application/json
         "getObjPositionInParent": {
             "description": "The order of an item in its parent folder",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.int.is",
@@ -518,6 +551,7 @@ Content-Type: application/json
         "getRawRelatedItems": {
             "description": "Find items related to the selected items",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.reference.is"
@@ -538,6 +572,7 @@ Content-Type: application/json
         "isDefaultPage": {
             "description": "Find items that are the default view for their containing folder.",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.boolean.isTrue",
@@ -565,6 +600,7 @@ Content-Type: application/json
         "isFolderish": {
             "description": "Find items that can contain other objects",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.boolean.isTrue",
@@ -592,6 +628,7 @@ Content-Type: application/json
         "modified": {
             "description": "The time and date an item was last modified",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -632,13 +669,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -650,7 +687,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -675,6 +712,7 @@ Content-Type: application/json
         "path": {
             "description": "The location of an item ",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.absolutePath",
@@ -709,15 +747,23 @@ Content-Type: application/json
         "portal_type": {
             "description": "An item's type (e.g. Event)",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
-                "plone.app.querystring.operation.selection.any"
+                "plone.app.querystring.operation.selection.any",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.any": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
+                    "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
                     "widget": "MultipleSelectionWidget"
                 }
             },
@@ -766,15 +812,23 @@ Content-Type: application/json
         "review_state": {
             "description": "An item's workflow state (e.g.published)",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
-                "plone.app.querystring.operation.selection.any"
+                "plone.app.querystring.operation.selection.any",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.any": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
+                    "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
                     "widget": "MultipleSelectionWidget"
                 }
             },
@@ -814,6 +868,7 @@ Content-Type: application/json
         "show_inactive": {
             "description": "Select which roles have the permission to view inactive objects",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.showInactive"
@@ -865,10 +920,12 @@ Content-Type: application/json
         "sortable_title": {
             "description": "The item's title, transformed for sorting",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains",
-                "plone.app.querystring.operation.string.is"
+                "plone.app.querystring.operation.string.is",
+                "plone.app.querystring.operation.string.isNot"
             ],
             "operators": {
                 "plone.app.querystring.operation.string.contains": {
@@ -882,6 +939,12 @@ Content-Type: application/json
                     "operation": "plone.app.querystring.queryparser._equal",
                     "title": "Is",
                     "widget": "StringWidget"
+                },
+                "plone.app.querystring.operation.string.isNot": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Is not",
+                    "widget": "StringWidget"
                 }
             },
             "sortable": true,
@@ -892,6 +955,7 @@ Content-Type: application/json
         "start": {
             "description": "The start date and time of an event",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -932,13 +996,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -950,7 +1014,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -977,16 +1041,24 @@ Content-Type: application/json
         "Creator": {
             "description": "The person that created an item",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.currentUser",
-                "plone.app.querystring.operation.selection.any"
+                "plone.app.querystring.operation.selection.any",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.any": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
+                    "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
                     "widget": "MultipleSelectionWidget"
                 },
                 "plone.app.querystring.operation.string.currentUser": {
@@ -1004,6 +1076,7 @@ Content-Type: application/json
         "created": {
             "description": "The date an item was created",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -1044,13 +1117,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1062,7 +1135,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -1087,6 +1160,7 @@ Content-Type: application/json
         "effective": {
             "description": "The time and date an item was first published",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -1127,13 +1201,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1145,7 +1219,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -1170,6 +1244,7 @@ Content-Type: application/json
         "end": {
             "description": "The end date and time of an event",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -1210,13 +1285,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1228,7 +1303,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -1253,6 +1328,7 @@ Content-Type: application/json
         "expires": {
             "description": "The time and date an item was expired",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -1293,13 +1369,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1311,7 +1387,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -1336,15 +1412,23 @@ Content-Type: application/json
         "getId": {
             "description": "The short name of an item (used in the url)",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
-                "plone.app.querystring.operation.string.is"
+                "plone.app.querystring.operation.string.is",
+                "plone.app.querystring.operation.string.isNot"
             ],
             "operators": {
                 "plone.app.querystring.operation.string.is": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._equal",
                     "title": "Is",
+                    "widget": "StringWidget"
+                },
+                "plone.app.querystring.operation.string.isNot": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Is not",
                     "widget": "StringWidget"
                 }
             },
@@ -1356,6 +1440,7 @@ Content-Type: application/json
         "getObjPositionInParent": {
             "description": "The order of an item in its parent folder",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.int.is",
@@ -1390,6 +1475,7 @@ Content-Type: application/json
         "modified": {
             "description": "The time and date an item was last modified",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -1430,13 +1516,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1448,7 +1534,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },
@@ -1473,15 +1559,23 @@ Content-Type: application/json
         "review_state": {
             "description": "An item's workflow state (e.g.published)",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
-                "plone.app.querystring.operation.selection.any"
+                "plone.app.querystring.operation.selection.any",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.any": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
+                    "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
                     "widget": "MultipleSelectionWidget"
                 }
             },
@@ -1521,10 +1615,12 @@ Content-Type: application/json
         "sortable_title": {
             "description": "The item's title, transformed for sorting",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains",
-                "plone.app.querystring.operation.string.is"
+                "plone.app.querystring.operation.string.is",
+                "plone.app.querystring.operation.string.isNot"
             ],
             "operators": {
                 "plone.app.querystring.operation.string.contains": {
@@ -1538,6 +1634,12 @@ Content-Type: application/json
                     "operation": "plone.app.querystring.queryparser._equal",
                     "title": "Is",
                     "widget": "StringWidget"
+                },
+                "plone.app.querystring.operation.string.isNot": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Is not",
+                    "widget": "StringWidget"
                 }
             },
             "sortable": true,
@@ -1548,6 +1650,7 @@ Content-Type: application/json
         "start": {
             "description": "The start date and time of an event",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -1588,13 +1691,13 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.between": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._between",
+                    "operation": "plone.app.querystring.queryparser._dateBetween",
                     "title": "Between dates",
                     "widget": "DateRangeWidget"
                 },
                 "plone.app.querystring.operation.date.largerThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._largerThan",
+                    "operation": "plone.app.querystring.queryparser._dateLargerThan",
                     "title": "After date",
                     "widget": "DateWidget"
                 },
@@ -1606,7 +1709,7 @@ Content-Type: application/json
                 },
                 "plone.app.querystring.operation.date.lessThan": {
                     "description": "Please use YYYY/MM/DD.",
-                    "operation": "plone.app.querystring.queryparser._lessThan",
+                    "operation": "plone.app.querystring.queryparser._dateLessThan",
                     "title": "Before date",
                     "widget": "DateWidget"
                 },

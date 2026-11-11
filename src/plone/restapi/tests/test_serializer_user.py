@@ -1,4 +1,8 @@
+from DateTime import DateTime
 from plone import api
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
+from plone.app.users.browser.schemaeditor import applySchema
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
@@ -47,7 +51,6 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         self.assertNotIn("Anonymous", user["roles"])
 
     def test_serialize_custom_member_schema(self):
-        from plone.app.users.browser.schemaeditor import applySchema
 
         member_schema = """
             <model xmlns="http://namespaces.plone.org/supermodel/schema"
@@ -76,3 +79,87 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         res = self.serialize(user)
         self.assertIn("twitter", res)
         self.assertEqual(res["twitter"], "TheRealDuck")
+
+    def test_serialize_user_with_member(self):
+        setRoles(self.portal, TEST_USER_ID, ["Member"])
+        user = self.serialize(self.user)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/@users/noam",
+                "id": "noam",
+                "username": "noam",
+                "roles": ["Member"],
+                "fullname": "Noam Avram Chomsky",
+                "email": "noam.chomsky@example.com",
+                "home_page": "web.mit.edu/chomsky",
+                "description": "Professor of Linguistics",
+                "location": "Cambridge, MA",
+                "portrait": None,
+                "groups": {
+                    "@id": "http://nohost",
+                    "items_total": 1,
+                    "items": [
+                        {"id": "AuthenticatedUsers", "title": "AuthenticatedUsers"}
+                    ],
+                },
+            },
+            user,
+        )
+
+
+class TestSerializeUserCustomSchemaToJsonAdapter(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
+        member_schema = """
+            <model xmlns="http://namespaces.plone.org/supermodel/schema"
+                xmlns:form="http://namespaces.plone.org/supermodel/form"
+                xmlns:users="http://namespaces.plone.org/supermodel/users"
+                xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+                i18n:domain="plone">
+              <schema name="member-fields">
+                <field name="birthdate" type="zope.schema.Date"
+                         users:forms="In User Profile">
+                  <description i18n:translate="help_birthdate">
+                    Birthdate
+                  </description>
+                  <required>False</required>
+                  <title i18n:translate="label_birthdate">Birthdate</title>
+                </field>
+                <field name="registration_datetime" type="zope.schema.Datetime"
+                         users:forms="In User Profile">
+                  <description i18n:translate="help_registration_datetime">
+                    Registration datetime
+                  </description>
+                  <required>False</required>
+                  <title i18n:translate="label_registration_datetime">Registration datetime</title>
+                </field>
+              </schema>
+            </model>
+        """
+        applySchema(member_schema)
+        self.user = api.user.create(
+            email="donald.duck@example.com",
+            username="donald",
+            properties={
+                "birthdate": DateTime("2022-01-10"),
+                "registration_datetime": DateTime("2022-01-10 14:00:00"),
+            },
+        )
+
+    def serialize(self, user):
+        serializer = getMultiAdapter((user, self.request), ISerializeToJson)
+        return serializer()
+
+    def test_serialize_with_datetime(self):
+        """test that when we have a datetime field in user schema, the response is serialized correctly"""
+
+        res = self.serialize(self.user)
+
+        self.assertIn("birthdate", res)
+        self.assertEqual(res["birthdate"], "2022-01-10T00:00:00")
+        self.assertEqual(res["registration_datetime"], "2022-01-10T14:00:00")

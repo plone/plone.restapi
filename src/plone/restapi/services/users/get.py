@@ -1,27 +1,103 @@
 from AccessControl import getSecurityManager
+from Acquisition import aq_inner
+from csv import writer
+from itertools import chain
+from plone.app.workflow.browser.sharing import merge_search_results
+from plone.namedfile.browser import ALLOWED_INLINE_MIMETYPES
+from plone.namedfile.browser import DISALLOWED_INLINE_MIMETYPES
+from plone.namedfile.browser import USE_DENYLIST
+from plone.namedfile.utils import stream_data
+from plone.restapi.deserializer import parse_int
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.permissions import PloneManageUsers
+from plone.restapi.services import _no_content_marker
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
+from Products.PlonePAS.tools.memberdata import MemberData
+from Products.PlonePAS.tools.membership import default_portrait
+from Products.PlonePAS.utils import decleanId
+from typing import Iterable
+from typing import Sequence
+from urllib.parse import parse_qs
+from urllib.parse import quote
 from zExceptions import BadRequest
+from zExceptions import NotFound
+from zExceptions import Unauthorized
+from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
+import io
+import json
 
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
+
+try:
+    # Zope 5.8.4+
+    from OFS.Image import extract_media_type as _extract_media_type
+except ImportError:
+    try:
+        from plone.namedfile.utils import extract_media_type as _extract_media_type
+    except ImportError:
+        # Note that we start the method with an underscore, to signal that this
+        # is a private implementation detail and no one should be importing this.
+
+        def _extract_media_type(content_type):
+            """extract the proper media type from *content_type*.
+
+            Ignore parameters and whitespace and normalize to lower case.
+            See https://github.com/zopefoundation/Zope/pull/1167
+            """
+            if not content_type:
+                return content_type
+            # ignore parameters
+            content_type = content_type.split(";", 1)[0]
+            # ignore whitespace
+            content_type = "".join(content_type.split())
+            # normalize to lowercase
+            return content_type.lower()
+
+
+def getPortraitUrl(user):
+    if not user:
+        return
+    portal = getSite()
+    portal_membership = getToolByName(portal, "portal_membership")
+    portrait = portal_membership.getPersonalPortrait(user.id)
+    if portrait and not isDefaultPortrait(portrait):
+        safe_id = portal_membership._getSafeMemberId(user.id)
+        return f"{portal.absolute_url()}/@portrait/{safe_id}"
+    return
+
+
+def isDefaultPortrait(value):
+    portal = getSite()
+    default_portrait_value = portal.restrictedTraverse(default_portrait, None)
+    if default_portrait_value is None:
+        return False
+    return (
+        aq_inner(value).getPhysicalPath()
+        == aq_inner(default_portrait_value).getPhysicalPath()
+    )
 
 
 @implementer(IPublishTraverse)
 class UsersGet(Service):
+    """Get users."""
+
     def __init__(self, context, request):
         super().__init__(context, request)
+        self.context = context
+        self.request = request
         self.params = []
         portal = getSite()
         self.portal_membership = getToolByName(portal, "portal_membership")
         self.acl_users = getToolByName(portal, "acl_users")
-        self.query = self.request.form.copy()
+        self.query = parse_qs(self.request["QUERY_STRING"])
+        self.search_term = self.query.get("search", [""])[0]
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
@@ -38,32 +114,91 @@ class UsersGet(Service):
         return self.portal_membership.getMemberById(user_id)
 
     @staticmethod
-    def _sort_users(users):
-        users.sort(
-            key=lambda x: x is not None
-            and normalizeString(x.getProperty("fullname", ""))
+    def _sort_users(users: Iterable[MemberData]) -> Sequence[MemberData]:
+        """users is an iterable of MemberData objects, None is not accepted"""
+        return sorted(
+            users,
+            key=lambda x: normalizeString(x.getProperty("fullname") or x.getUserName()),
         )
-        return users
 
-    def _get_users(self):
-        results = {user["userid"] for user in self.acl_users.searchUsers()}
-        users = [self.portal_membership.getMemberById(userid) for userid in results]
+    def _principal_search_results(
+        self, search_for_principal, get_principal_by_id, principal_type, id_key
+    ):
+        hunter = getMultiAdapter((self.context, self.request), name="pas_search")
+
+        principals = []
+        for principal_info in search_for_principal(hunter, self.search_term):
+            principal_id = principal_info[id_key]
+            principal = get_principal_by_id(principal_id)
+            if principal is not None:
+                principals.append(principal)
+
+        return principals
+
+    def _get_users(self, **kw):
+        results = {user["userid"] for user in self.acl_users.searchUsers(**kw)}
+        users = (self.portal_membership.getMemberById(userid) for userid in results)
+        # Filtering for None which might happen due to some unknown condition
+        users = filter(lambda x: x is not None, users)
         return self._sort_users(users)
 
-    def _get_filtered_users(self, query, limit):
-        results = self.acl_users.searchUsers(id=query, max_results=limit)
-        users = [
-            self.portal_membership.getMemberById(user["userid"]) for user in results
-        ]
+    def _user_search_results(self):
+        def search_for_principal(hunter, search_term):
+            return merge_search_results(
+                chain(
+                    *(
+                        hunter.searchUsers(**{field: search_term})
+                        for field in ["name", "fullname", "email"]
+                    )
+                ),
+                "userid",
+            )
+
+        def get_principal_by_id(user_id):
+            mtool = getToolByName(self.context, "portal_membership")
+            return mtool.getMemberById(user_id)
+
+        return self._principal_search_results(
+            search_for_principal, get_principal_by_id, "user", "userid"
+        )
+
+    def _get_filtered_users(self, query, groups_filter, search_term, limit):
+        """Filter or search users by id, fullname, email and/or groups.
+
+        Args:
+            query (str): filter by query
+            groups_filter (list of str): list of groups
+            search_term (str): search by id, fullname, email
+            limit (integer): limit result
+
+        Returns:
+            list: list of users sorted by fullname
+        """
+        if search_term:
+            users = self._user_search_results()
+        else:
+            kw = {}
+            if query:
+                kw["id"] = query
+                # No max_results if groups_filter
+                if limit:
+                    kw["max_results"] = limit
+            users = self._get_users(**kw)
+
+        if groups_filter:
+            users = [
+                user for user in users if set(user.getGroups()) & set(groups_filter)
+            ]
+        users = limit and users[:limit] or users
         return self._sort_users(users)
 
     def has_permission_to_query(self):
         sm = getSecurityManager()
-        return sm.checkPermission("Manage portal", self.context)
+        return sm.checkPermission(PloneManageUsers, self.context)
 
     def has_permission_to_enumerate(self):
         sm = getSecurityManager()
-        return sm.checkPermission("Manage portal", self.context)
+        return sm.checkPermission(PloneManageUsers, self.context)
 
     def has_permission_to_access_user_info(self):
         sm = getSecurityManager()
@@ -72,39 +207,89 @@ class UsersGet(Service):
         )
 
     def reply(self):
+        result = {"@id": f"{self.context.absolute_url()}/@users"}
+        self.request.response.setStatus(200)
+        self.request.response.setHeader("Content-Type", "application/json")
+
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
-            limit = self.query.get("limit", DEFAULT_SEARCH_RESULTS_LIMIT)
-            if query:
-                # Someone is searching users, check if they are authorized
+            groups_filter = self.query.get("groups-filter:list", [])
+            # parse_qs gives every value as a list, so the parameter has to be
+            # unwrapped before parse_int sees it. Going through parse_int keeps
+            # a bad limit a 400 here, as it already is on the other services.
+            limit = parse_int(
+                {"limit": self.query.get("limit", [DEFAULT_SEARCH_RESULTS_LIMIT])[0]},
+                "limit",
+                DEFAULT_SEARCH_RESULTS_LIMIT,
+            )
+            if query or groups_filter or self.search_term or limit:
                 if self.has_permission_to_query():
-                    users = self._get_filtered_users(query, limit)
-                    result = []
+                    users = self._get_filtered_users(
+                        query, groups_filter, self.search_term, limit
+                    )
+                    items = []
                     for user in users:
                         serializer = queryMultiAdapter(
                             (user, self.request), ISerializeToJson
                         )
-                        result.append(serializer())
+                        items.append(serializer())
+
+                    result["items"] = items
+                    result["items_total"] = len(items)
                     return result
                 else:
-                    self.request.response.setStatus(401)
-                    return
+                    raise Unauthorized(
+                        "You are not authorized to access this resource."
+                    )
             else:
-                raise BadRequest("Query string supplied is not valid")
+                raise BadRequest("Parameters supplied are not valid")
 
         if len(self.params) == 0:
             # Someone is asking for all users, check if they are authorized
             if self.has_permission_to_enumerate():
-                result = []
+                items = []
                 for user in self._get_users():
                     serializer = queryMultiAdapter(
                         (user, self.request), ISerializeToJson
                     )
-                    result.append(serializer())
-                return result
+                    items.append(serializer())
+
+                if self.request.getHeader("Accept") == "text/csv":
+                    buffer = io.BytesIO()
+                    stream = io.TextIOWrapper(buffer, encoding="utf-8", newline="")
+                    csv_writer = writer(stream)
+                    csv_writer.writerow(
+                        ["id", "username", "fullname", "email", "roles", "groups"]
+                    )
+
+                    for user in items:
+                        csv_writer.writerow(
+                            [
+                                user["id"],
+                                user["username"],
+                                user["fullname"],
+                                user["email"],
+                                ", ".join(user["roles"]),
+                                ", ".join(g["id"] for g in user["groups"]["items"]),
+                            ]
+                        )
+                    stream.flush()
+                    stream.detach()
+                    content = buffer.getvalue()
+
+                    response = self.request.response
+                    response.setHeader("Content-Type", "text/csv")
+                    response.setHeader("Content-Length", len(content))
+                    response.setHeader(
+                        "Content-Disposition", "attachment; filename=users.csv"
+                    )
+                    return content
+                else:
+                    result["items"] = items
+                    result["items_total"] = len(items)
+                    return result
             else:
-                self.request.response.setStatus(401)
-                return
+                raise Unauthorized("You are not authorized to access this resource.")
 
         # Some is asking one user, check if the logged in user is asking
         # their own information or if they are a Manager
@@ -113,14 +298,92 @@ class UsersGet(Service):
         if self.has_permission_to_access_user_info() or (
             current_user_id and current_user_id == self._get_user_id
         ):
-
             # we retrieve the user on the user id not the username
             user = self._get_user(self._get_user_id)
             if not user:
-                self.request.response.setStatus(404)
-                return
+                raise NotFound(f"User ${self._get_user_id} does not exist.")
             serializer = queryMultiAdapter((user, self.request), ISerializeToJson)
             return serializer()
         else:
-            self.request.response.setStatus(401)
-            return
+            raise Unauthorized("You are not authorized to access this resource.")
+
+    def render(self):
+        self.check_permission()
+        content = self.reply()
+        if self.request.getHeader("Accept") == "text/csv":
+            return content
+        if content is not _no_content_marker:
+            return json.dumps(
+                content, indent=2, sort_keys=True, separators=(", ", ": ")
+            )
+
+
+@implementer(IPublishTraverse)
+class PortraitGet(Service):
+    # You can control which mimetypes may be shown inline
+    # and which must always be downloaded, for security reasons.
+    # Make the configuration available on the class.
+    # Then subclasses can override this.
+    allowed_inline_mimetypes = ALLOWED_INLINE_MIMETYPES
+    disallowed_inline_mimetypes = DISALLOWED_INLINE_MIMETYPES
+    use_denylist = USE_DENYLIST
+
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
+        self.portal = getSite()
+        self.portal_membership = getToolByName(self.portal, "portal_membership")
+
+    def publishTraverse(self, request, name):
+        # Consume any path segments after /@users as parameters
+        self.params.append(name)
+        return self
+
+    @property
+    def _get_user_id(self):
+        if len(self.params) != 1:
+            raise Exception("Must supply exactly one parameter (user id)")
+        return self.params[0]
+
+    def _should_force_download(self, portrait):
+        # If this returns True, the caller should set the Content-Disposition header.
+        mimetype = _extract_media_type(portrait.content_type)
+        if not mimetype:
+            return False
+        if self.use_denylist:
+            # We explicitly deny a few mimetypes, and allow the rest.
+            return mimetype in self.disallowed_inline_mimetypes
+        # Use the allowlist.
+        # We only explicitly allow a few mimetypes, and deny the rest.
+        return mimetype not in self.allowed_inline_mimetypes
+
+    def render(self):
+        if len(self.params) == 1:
+            # Retrieve the user portrait
+            user = decleanId(self.params[0])
+            portrait = self.portal_membership.getPersonalPortrait(user)
+        elif len(self.params) == 0:
+            current_user_id = self.portal_membership.getAuthenticatedMember().getId()
+            portrait = self.portal_membership.getPersonalPortrait(current_user_id)
+        else:
+            raise Exception(
+                "Must supply exactly zero (own portrait) or one parameter (user id)"
+            )
+        # User uploaded portraits have a meta_type of "Image"
+        if not portrait or isDefaultPortrait(portrait):
+            self.request.response.setStatus(404)
+            return None
+
+        if self._should_force_download(portrait):
+            # We need a filename, even a dummy one if needed.
+            ext = portrait.content_type.split("/")[-1].split("+")[0]
+            filename = f"{portrait.getId()}.{ext}"
+            filename = quote(filename.encode("utf8"))
+            self.request.response.setHeader(
+                "Content-Disposition", f"attachment; filename*=UTF-8''{filename}"
+            )
+
+        self.request.response.setStatus(200)
+        self.request.response.setHeader("Content-Type", portrait.content_type)
+
+        return stream_data(portrait)

@@ -1,0 +1,3 @@
+GET /plone/@aliases HTTP/1.1
+Accept: text/csv
+Authorization: Basic YWRtaW46c2VjcmV0

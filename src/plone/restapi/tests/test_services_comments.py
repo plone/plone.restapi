@@ -2,6 +2,7 @@ from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -38,17 +39,19 @@ class TestCommentsEndpoint(unittest.TestCase):
         )
         api.content.transition(self.doc, "publish")
 
-        api.user.create(username="jos", password="josjos", email="jos@plone.org")
+        api.user.create(
+            username="jos", password=TEST_USER_PASSWORD, email="jos@plone.org"
+        )
 
         # Admin session
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         # User session
-        self.user_session = RelativeSession(self.portal_url)
+        self.user_session = RelativeSession(self.portal_url, test=self)
         self.user_session.headers.update({"Accept": "application/json"})
-        self.user_session.auth = ("jos", "jos")
+        self.user_session.auth = ("jos", TEST_USER_PASSWORD)
 
         transaction.commit()
 
@@ -62,7 +65,7 @@ class TestCommentsEndpoint(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         data = response.json()
-        self.assertEqual({"items_total", "items", "@id"}, set(data))
+        self.assertEqual({"items_total", "items", "permissions", "@id"}, set(data))
 
     def test_list_batching(self):
         url = f"{self.doc.absolute_url()}/@comments"

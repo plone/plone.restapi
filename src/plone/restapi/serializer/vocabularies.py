@@ -1,6 +1,6 @@
 from plone.restapi.batching import HypermediaBatch
+from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import ISerializeToJson
-from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.i18n import translate
@@ -25,27 +25,37 @@ class SerializeVocabLikeToJson:
 
     def __call__(self, vocabulary_id):
         vocabulary = self.context
-        title = safe_unicode(self.request.form.get("title", ""))
+        title = safe_text(self.request.form.get("title", ""))
         token = self.request.form.get("token", "")
+        tokens = self.request.form.get("tokens", [])
         b_size = self.request.form.get("b_size", "")
+
+        if title and token:
+            self.request.response.setStatus(400)
+            return dict(
+                error=dict(
+                    type="Invalid parameters",
+                    message="You can not filter by title and token at the same time.",
+                )  # noqa
+            )
 
         terms = []
         for term in vocabulary:
-            if title and token:
-                self.request.response.setStatus(400)
-                return dict(
-                    error=dict(
-                        type="Invalid parameters",
-                        message="You can not filter by title and token at the same time.",
-                    )  # noqa
-                )
-
             if token:
+                # the token parameter was deprecated in plone.restapi 8
+                # undeprecated in plone.restapi 9
                 if token.lower() != term.token.lower():
                     continue
                 terms.append(term)
+            elif tokens:
+                if isinstance(tokens, str):
+                    tokens = [tokens]
+                for item in tokens:
+                    if item.lower() != term.token.lower():
+                        continue
+                    terms.append(term)
             else:
-                term_title = safe_unicode(getattr(term, "title", None) or "")
+                term_title = safe_text(getattr(term, "title", None) or "")
                 if (
                     title.lower()
                     not in translate(term_title, context=self.request).lower()
@@ -53,6 +63,15 @@ class SerializeVocabLikeToJson:
                     continue
                 terms.append(term)
 
+        # Optional sorting by title (before batching)
+        sort_on = self.request.form.get("sort_on")
+        if vocabulary_id and sort_on == "title":
+
+            def sort_key(term):
+                title = getattr(term, "title", None) or term.token
+                return translate(title, context=self.request).lower()
+
+            terms.sort(key=sort_key)
         serialized_terms = []
 
         # Do not batch parameter is set

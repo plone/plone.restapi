@@ -6,6 +6,6 @@ Content-Type: application/json
     "actor": "admin",
     "comments": "",
     "review_state": "published",
-    "time": "1995-07-31T18:30:00",
+    "time": "1995-07-31T18:30:00+00:00",
     "title": "Published with accent \u00e9"
 }

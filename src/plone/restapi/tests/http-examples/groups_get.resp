@@ -7,13 +7,15 @@ Content-Type: application/json
     "email": "ploneteam@plone.org",
     "groupname": "ploneteam",
     "id": "ploneteam",
+    "members": {
+        "@id": "http://localhost:55001/plone/@groups/ploneteam",
+        "items": [
+            "noam"
+        ],
+        "items_total": 1
+    },
     "roles": [
         "Authenticated"
     ],
-    "title": "Plone Team",
-    "users": {
-        "@id": "http://localhost:55001/plone/@groups/ploneteam",
-        "items": [],
-        "items_total": 0
-    }
+    "title": "Plone Team"
 }

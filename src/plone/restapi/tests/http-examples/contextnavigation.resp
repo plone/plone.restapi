@@ -14,7 +14,39 @@ Content-Type: application/json
             "is_current": false,
             "is_folderish": true,
             "is_in_path": false,
-            "items": [],
+            "items": [
+                {
+                    "@id": "http://localhost:55001/plone/folder/subfolder1/thirdlevelfolder",
+                    "description": "",
+                    "href": "http://localhost:55001/plone/folder/subfolder1/thirdlevelfolder",
+                    "icon": "",
+                    "is_current": false,
+                    "is_folderish": true,
+                    "is_in_path": false,
+                    "items": [
+                        {
+                            "@id": "http://localhost:55001/plone/folder/subfolder1/thirdlevelfolder/fourthlevelfolder",
+                            "description": "",
+                            "href": "http://localhost:55001/plone/folder/subfolder1/thirdlevelfolder/fourthlevelfolder",
+                            "icon": "",
+                            "is_current": false,
+                            "is_folderish": true,
+                            "is_in_path": false,
+                            "items": [],
+                            "normalized_id": "fourthlevelfolder",
+                            "review_state": "private",
+                            "thumb": "",
+                            "title": "Fourth Level Folder",
+                            "type": "folder"
+                        }
+                    ],
+                    "normalized_id": "thirdlevelfolder",
+                    "review_state": "private",
+                    "thumb": "",
+                    "title": "Third Level Folder",
+                    "type": "folder"
+                }
+            ],
             "normalized_id": "subfolder1",
             "review_state": "private",
             "thumb": "",

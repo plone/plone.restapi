@@ -8,7 +8,6 @@ from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
 
 
@@ -65,9 +64,7 @@ class GroupsGet(Service):
         if len(self.params) == 0:
             result = []
             for group in self._get_groups():
-                serializer = queryMultiAdapter(
-                    (group, self.request), ISerializeToJsonSummary
-                )
+                serializer = queryMultiAdapter((group, self.request), ISerializeToJson)
                 result.append(serializer())
             return result
         # we retrieve the user on the user id not the username

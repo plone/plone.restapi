@@ -9,6 +9,7 @@ from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
 from plone.restapi.tests.helpers import ascii_token
+from plone.schema import JSONField
 from plone.supermodel import model
 from plone.supermodel.directives import primary
 from Products.CMFCore.utils import getToolByName
@@ -28,7 +29,6 @@ from zope.schema.interfaces import IIterableSource
 from zope.schema.interfaces import ISource
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
-
 
 INDEXES = (
     ("test_int_field", "FieldIndex"),
@@ -144,7 +144,6 @@ def vocabularyRequireingContextFactory(context):
 
 
 class IDXTestDocumentSchema(model.Schema):
-
     # zope.schema fields
     test_ascii_field = schema.ASCII(required=False)
     test_asciiline_field = schema.ASCIILine(required=False)
@@ -187,6 +186,7 @@ class IDXTestDocumentSchema(model.Schema):
     test_float_field = schema.Float(required=False)
     test_frozenset_field = schema.FrozenSet(required=False)
     test_int_field = schema.Int(required=False)
+    test_json_field = JSONField(required=False)
     test_list_field = schema.List(required=False)
     test_list_field_with_choice_with_vocabulary = schema.List(
         value_type=schema.Choice(
@@ -258,7 +258,9 @@ class IDXTestDocumentSchema(model.Schema):
     test_constraint_field = schema.TextLine(
         required=False, constraint=lambda x: "00" in x
     )
-    test_datetime_min_field = schema.Datetime(required=False, min=datetime(2000, 1, 1))
+    test_datetime_min_field = schema.Datetime(
+        required=False, min=timezone("UTC").localize(datetime(2000, 1, 1))
+    )
     test_time_min_field = schema.Time(required=False, min=time(1))
     test_timedelta_min_field = schema.Timedelta(required=False, min=timedelta(100))
     test_list_value_type_field = schema.List(required=False, value_type=schema.Int())
@@ -300,6 +302,9 @@ class IDXTestDocumentSchema(model.Schema):
         return "DefaultFactory"
 
     test_default_factory_field = schema.TextLine(
+        required=True, defaultFactory=lambda: "DefaultFactory"
+    )
+    test_context_aware_default_factory_field = schema.TextLine(
         required=True, defaultFactory=default_factory
     )
 
@@ -314,13 +319,14 @@ class DXTestDocument(Item):
 
 @provider(IFormFieldProvider)
 class ITestBehavior(model.Schema):
-
     test_behavior_field = schema.TextLine(required=False)
     # Add nav_title to test if it gets substituted in Navigation service
     nav_title = schema.TextLine(required=False)
+    # Add a field with read permission set
+    test_secure_field = schema.TextLine(required=False)
+    read_permission(test_secure_field="cmf.ManagePortal")
 
 
 @provider(IFormFieldProvider)
 class ITestAnnotationsBehavior(model.Schema):
-
     test_annotations_behavior_field = schema.TextLine(required=False)

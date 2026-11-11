@@ -1,0 +1,19 @@
+DELETE /plone/@relations HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "items": [
+        {
+            "relation": "comprisesComponentPart",
+            "source": "/document",
+            "target": "/dont-know-this-doc"
+        },
+        {
+            "relation": "comprisesComponentPart",
+            "source": "/doc-does-not-exist",
+            "target": "/document"
+        }
+    ]
+}

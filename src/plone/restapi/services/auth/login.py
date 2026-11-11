@@ -4,8 +4,8 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
-from zope.interface import alsoProvides
 from zope import component
+from zope.interface import alsoProvides
 
 import plone.protect.interfaces
 
@@ -31,6 +31,11 @@ class Login(Service):
         userid = data["login"]
         password = data["password"]
         uf = self._find_userfolder(userid)
+
+        # Also put the password in __ac_password on the request.
+        # The post-login code in PlonePAS expects to find it there
+        # when it calls the PAS updateCredentials plugin.
+        self.request.form["__ac_password"] = data["password"]
 
         if uf is not None:
             plugins = uf._getOb("plugins")
@@ -65,7 +70,7 @@ class Login(Service):
         # Perform the same post-login actions as would happen when logging in through
         # the Plone classic HTML login form.  There is a trade-off here, we either
         # violate DRY and duplicate the code from the classic HTML Plone view that will
-        # then become out of date all the time, or we re-use the code from the core
+        # then become out of date all the time, or we reuse the code from the core
         # Plone view and introduce a dependency we may have to update over time.  After
         # [discussion](https://github.com/plone/plone.restapi/pull/1141#discussion_r648843942)
         # we opt for the latter.

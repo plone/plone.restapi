@@ -17,7 +17,6 @@ from zope.schema.vocabulary import SimpleVocabulary
 import transaction
 import unittest
 
-
 TEST_TERM_1 = SimpleTerm(42, token="token1", title="Title 1")
 TEST_TERM_2 = SimpleTerm(43, token="token2", title="Title 2")
 TEST_TERM_3 = SimpleTerm(44, token="token3")
@@ -75,7 +74,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         provideUtility(
@@ -139,10 +138,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
         # test Anonymous
         setRoles(self.portal, TEST_USER_ID, ["Anonymous"])
         transaction.commit()
+
+        self.api_session.auth = ()
         response = self.api_session.get(
             "/@vocabularies/plone.app.vocabularies.Keywords"
         )
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(401, response.status_code)
 
     def test_get_vocabulary_batched(self):
         response = self.api_session.get(
@@ -304,6 +305,84 @@ class TestVocabularyEndpoint(unittest.TestCase):
             },
         )
 
+    def test_get_vocabulary_filtered_by_token_list_one_item_list_zope_ish(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens:list=token1"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens%3Alist=token1",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                ],
+                "items_total": 1,
+            },
+        )
+
+    def test_get_vocabulary_filtered_by_token_list_two_item_list_zope_ish(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens:list=token1&tokens:list=token2"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens%3Alist=token1&tokens%3Alist=token2",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                    {"title": "Title 2", "token": "token2"},
+                ],
+                "items_total": 2,
+            },
+        )
+
+    def test_get_vocabulary_filtered_by_token_list_one_item(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                ],
+                "items_total": 1,
+            },
+        )
+
+    def test_get_vocabulary_filtered_by_token_list_two_items(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1&tokens=token2"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1&tokens=token2",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                    {"title": "Title 2", "token": "token2"},
+                ],
+                "items_total": 2,
+            },
+        )
+
     def test_get_unknown_vocabulary(self):
         response = self.api_session.get("/@vocabularies/unknown.vocabulary")
 
@@ -387,6 +466,27 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         response = response.json()
         self.assertEqual(len(response["items"]), 100)
+
+    def test_get_vocabulary_sorted_by_title(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?sort_on=title&b_size=-1"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+
+        self.assertEqual(
+            [item["title"] for item in response["items"]],
+            [
+                "This is a title for the seventh term",
+                "Title 1",
+                "Title 2",
+                "token3",
+                "token4",
+                "Tötle 5",
+                "Tötle 6",
+            ],
+        )
 
     def tearDown(self):
         self.api_session.close()

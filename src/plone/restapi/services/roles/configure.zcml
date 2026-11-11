@@ -6,8 +6,8 @@
   <plone:service
       method="GET"
       factory=".get.RolesGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      permission="cmf.ManagePortal"
+      for="plone.restapi.bbb.IPloneSiteRoot"
+      permission="plone.app.controlpanel.UsersAndGroups"
       name="@roles"
       />
 

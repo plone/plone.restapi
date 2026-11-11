@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:cache="http://namespaces.zope.org/cache"
     xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:zcml="http://namespaces.zope.org/zcml"
     >
@@ -19,7 +20,13 @@
       factory=".pam.TranslationInfo"
       for="Products.CMFCore.interfaces.IContentish"
       permission="zope2.View"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       name="@translations"
+      />
+  <cache:ruleset
+      for=".pam.TranslationInfo"
+      ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
       />
 
   <plone:service
@@ -27,6 +34,7 @@
       factory=".pam.LinkTranslations"
       for="Products.CMFCore.interfaces.IContentish"
       permission="plone.app.multilingual.ManageTranslations"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       name="@translations"
       />
 
@@ -35,6 +43,7 @@
       factory=".pam.UnlinkTranslations"
       for="Products.CMFCore.interfaces.IContentish"
       permission="plone.app.multilingual.ManageTranslations"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       name="@translations"
       />
 
@@ -43,6 +52,7 @@
       factory=".locator.TranslationLocator"
       for="Products.CMFCore.interfaces.IContentish"
       permission="plone.app.multilingual.ManageTranslations"
+      layer="plone.app.multilingual.interfaces.IPloneAppMultilingualInstalled"
       name="@translation-locator"
       />
 

@@ -1,9 +1,9 @@
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import get_navigation_root
+from plone.restapi.bbb import ISearchSchema
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.browser.navtree import getNavigationRoot
-from Products.CMFPlone.interfaces import ISearchSchema
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 
@@ -68,6 +68,10 @@ class SearchHandler:
             path = "/".join(self.context.getPhysicalPath())
             query["path"]["query"] = path
 
+    def quote_chars(self, query):
+        # Remove parentheses from the query
+        return query.replace("(", " ").replace(")", " ").strip()
+
     def search(self, query=None):
         if query is None:
             query = {}
@@ -86,6 +90,12 @@ class SearchHandler:
         if use_site_search_settings:
             query = self.filter_query(query)
 
+        if "SearchableText" in query:
+            # Sanitize SearchableText by removing parentheses
+            query["SearchableText"] = self.quote_chars(query["SearchableText"])
+            if not query["SearchableText"] or query["SearchableText"] == "*":
+                return []
+
         self._constrain_query_by_path(query)
         query = self._parse_query(query)
 
@@ -93,7 +103,6 @@ class SearchHandler:
         results = getMultiAdapter((lazy_resultset, self.request), ISerializeToJson)(
             fullobjects=fullobjects
         )
-
         return results
 
     def filter_types(self, types):
@@ -107,16 +116,13 @@ class SearchHandler:
         search_settings = registry.forInterface(ISearchSchema, prefix="plone")
 
         types = query.get("portal_type", [])
-        if "query" in types:
+        if isinstance(types, dict) and "query" in types:
             types = types["query"]
         query["portal_type"] = self.filter_types(types)
 
-        # respect effective/expiration date
-        query["show_inactive"] = False
-
         # respect navigation root
         if "path" not in query:
-            query["path"] = {"query": getNavigationRoot(self.context)}
+            query["path"] = {"query": get_navigation_root(self.context)}
 
             vhm_physical_path = self.request.get("VirtualRootPhysicalPath")
             # if vhm trick is applied, we should present a stripped path, as it will be
@@ -125,23 +131,19 @@ class SearchHandler:
                 bits = query["path"]["query"].split("/")[len(vhm_physical_path) :]
                 query["path"]["query"] = "/".join(bits) or "/"
 
-        default_sort_on = search_settings.sort_on
-
+        # Get default sort_on from registry if not specified in query
         if "sort_on" not in query:
-            if default_sort_on != "relevance":
-                query["sort_on"] = self.default_sort_on
-        elif query["sort_on"] == "relevance":
-            del query["sort_on"]
+            query["sort_on"] = search_settings.sort_on
+            # To rank by relevance, sort_on must be omitted
+            if query["sort_on"] == "relevance":
+                del query["sort_on"]
 
-        if not query.get("sort_order") and (
-            query.get("sort_on", "") == "Date"
-            or query.get("sort_on", "") == "effective"  # compatibility with Volto
-        ):
+        sort_on = query.get("sort_on")
+        # Remove sort_order if sort_on is not set
+        if not sort_on and "sort_order" in query:
+            del query["sort_order"]
+        # Default to reverse sort_order if sort_on is a date
+        elif sort_on in ("Date", "effective") and not query.get("sort_order"):
             query["sort_order"] = "reverse"
-        elif "sort_order" in query:
-            del query["sort_order"]
-
-        if "sort_order" in query and not query["sort_order"]:
-            del query["sort_order"]
 
         return query

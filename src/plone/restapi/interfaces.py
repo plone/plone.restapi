@@ -11,6 +11,12 @@ class IPloneRestapiLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
+class IControlpanelLayer(IPloneRestapiLayer):
+    """Marker interface for REST API controlpanel requests.
+    This is used to isolate controlpanel adapters from normal traversal.
+    """
+
+
 class ISerializeToJson(Interface):
     """Adapter to serialize a Dexterity object into a JSON object."""
 
@@ -32,6 +38,17 @@ class IContextawareJsonCompatible(IJsonCompatible):
         """Adapts value and a context"""
 
 
+class ISchemaSerializer(Interface):
+    """The schema serializer serializes all field values from a schema
+    into JSON-compatible Python data."""
+
+    def __init__(schema, context, request):
+        """Adapts schema, context, and request."""
+
+    def __call__():
+        """Returns JSON-compatible Python data."""
+
+
 class IFieldSerializer(Interface):
     """The field serializer multi adapter serializes the field value into
     JSON compatible python data.
@@ -41,7 +58,7 @@ class IFieldSerializer(Interface):
         """Adapts field, context and request."""
 
     def __call__():
-        """Returns JSON compatible python data."""
+        """Returns JSON-compatible Python data."""
 
 
 class IPrimaryFieldTarget(Interface):
@@ -83,41 +100,47 @@ class IFieldDeserializer(Interface):
         """Convert the provided JSON value to a field value."""
 
 
-class IBlockFieldDeserializationTransformer(Interface):
+class IBlockTransformer(Interface):
+    """Transform a block value.
+
+    Meant to be looked up as an adapter of context and request.
+    The list of transformers is filtered by block_type and sorted by order.
+    Disabled transformers are ignored.
+
+    Block transformers for specific use cases extend this interface.
+    """
+
+    block_type = Attribute(
+        "A string with the type of block, the @type from the block value"
+    )
+    order = Attribute(
+        "A number used in sorting value transformers. Smaller is executed first"
+    )
+    disabled = Attribute("Boolean that disables the transformer if required")
+
+    def __call__(value):
+        """Do the transform."""
+
+
+class IBlockFieldDeserializationTransformer(IBlockTransformer):
     """Convert/adjust raw block deserialized value into block value."""
 
-    block_type = Attribute(
-        "A string with the type of block, the @type from " "the block value"
-    )
-    order = Attribute(
-        "A number used in sorting value transformers. " "Smaller is executed first"
-    )
-    disabled = Attribute("Boolean that disables the transformer if required")
-
-    def __init__(field, context, request):
-        """Adapts context and the request."""
-
     def __call__(value):
         """Convert the provided raw Python value to a block value."""
 
 
-class IBlockFieldSerializationTransformer(Interface):
+class IBlockFieldSerializationTransformer(IBlockTransformer):
     """Transform block value before final JSON serialization"""
 
-    block_type = Attribute(
-        "A string with the type of block, the @type from " "the block value"
-    )
-    order = Attribute(
-        "A number used in sorting value transformers for the "
-        "same block. Smaller is executed first"
-    )
-    disabled = Attribute("Boolean that disables the transformer if required")
-
-    def __init__(field, context, request):
-        """Adapts context and the request."""
-
     def __call__(value):
         """Convert the provided raw Python value to a block value."""
+
+
+class IBlockFieldLinkIntegrityRetriever(Interface):
+    """Retrieve internal links set in current block."""
+
+    def __call__(value):
+        """Return a list of internal links set in this block."""
 
 
 class IExpandableElement(Interface):
@@ -224,3 +247,31 @@ class IJSONSummarySerializerMetadata(Interface):
 
     def blocklisted_attributes():
         """Returns a set with attributes blocked during serialization."""
+
+
+class IBlockVisitor(Interface):
+    """Find sub-blocks
+
+    Used by the visit_blocks utility.
+    """
+
+    def __call__(self, block):
+        """Return an iterable of sub-blocks found inside `block`."""
+
+
+class ILoginProviders(Interface):
+    """An interface needed to be implemented by providers that want to be listed
+    in the @login endpoint
+    """
+
+    def get_providers():
+        """
+        return a list of login providers, with its id, title, plugin and url
+        """
+
+
+class ISiteEndpointExpander(Interface):
+    """An adapter which adds additional data to the @site endpoint."""
+
+    def __call__(data):
+        """Add additional key/values to data"""

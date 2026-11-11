@@ -23,7 +23,7 @@ class TestHistoryEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -119,6 +119,15 @@ class TestHistoryEndpoint(unittest.TestCase):
         response = self.api_session.get(url)
         self.assertEqual(response.json()["title"], "My Document")
 
+    def test_previous_version_of_renamed_item(self):
+        api.content.move(source=self.doc, id="renamed-doc")
+        transaction.commit()
+
+        url = self.doc.absolute_url() + "/@history/0"
+        response = self.api_session.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["id"], "doc_with_history")
+
     def test_no_sharing(self):
         url = self.doc.absolute_url() + "/@history/0"
         response = self.api_session.get(url)
@@ -153,7 +162,7 @@ class TestHistoryEndpointEmptyOrInacessibleHistory(unittest.TestCase):
         api.content.transition(self.doc, "publish")
         self.endpoint_url = f"{self.doc.absolute_url()}/@history"
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
         # forbid access to `workflowHistory`
@@ -178,7 +187,7 @@ class TestHistoryEndpointTranslatedMessages(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.headers.update({"Accept-Language": "es"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)

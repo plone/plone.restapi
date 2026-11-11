@@ -1,9 +1,13 @@
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_PASSWORD
+from plone.restapi.bbb import IPloneSiteRoot
+from plone.restapi.interfaces import ILoginProviders
 from plone.restapi.permissions import UseRESTAPI
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest import TestCase
 from zExceptions import Unauthorized
+from zope.component import provideAdapter
 from zope.event import notify
 from ZPublisher.pubevents import PubStart
 
@@ -78,10 +82,12 @@ class TestLogin(TestCase):
 
     def test_login_with_zope_user_fails_without_pas_plugin(self):
         uf = self.layer["app"].acl_users
-        uf.plugins.users.addUser("zopeuser", "zopeuser", "secret")
+        uf.plugins.users.addUser("zopeuser", "zopeuser", TEST_USER_PASSWORD)
         if "jwt_auth" in uf:
             uf["jwt_auth"].manage_activateInterfaces([])
-        self.request["BODY"] = '{"login": "zopeuser", "password": "secret"}'
+        self.request["BODY"] = (
+            '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}'
+        )
         service = self.traverse()
         res = service.reply()
         self.assertIn("error", res)
@@ -92,9 +98,11 @@ class TestLogin(TestCase):
 
     def test_login_with_zope_user(self):
         self.layer["app"].acl_users.plugins.users.addUser(
-            "zopeuser", "zopeuser", "secret"
+            "zopeuser", "zopeuser", TEST_USER_PASSWORD
         )
-        self.request["BODY"] = '{"login": "zopeuser", "password": "secret"}'
+        self.request["BODY"] = (
+            '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}'
+        )
         service = self.traverse()
         res = service.reply()
         self.assertEqual(200, self.request.response.getStatus())
@@ -203,3 +211,57 @@ class TestRenew(TestCase):
         self.assertEqual(
             res["error"]["type"], "Invalid or expired authentication token"
         )
+
+
+class MyExternalLinks:
+    def __init__(self, context):
+        self.context = context
+
+    def get_providers(self):
+        return [
+            {
+                "id": "myprovider",
+                "title": "Provider",
+                "plugin": "myprovider",
+                "url": "https://some.example.com/login-url",
+            },
+            {
+                "id": "github",
+                "title": "GitHub",
+                "plugin": "github",
+                "url": "https://some.example.com/login-authomatic/github",
+            },
+        ]
+
+
+class TestExternalLoginServices(TestCase):
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
+
+        provideAdapter(
+            MyExternalLinks,
+            adapts=(IPloneSiteRoot,),
+            provides=ILoginProviders,
+            name="test-external-links",
+        )
+
+    def traverse(self, path="/plone/@login", accept="application/json", method="GET"):
+        request = self.layer["request"]
+        request.environ["PATH_INFO"] = path
+        request.environ["PATH_TRANSLATED"] = path
+        request.environ["HTTP_ACCEPT"] = accept
+        request.environ["REQUEST_METHOD"] = method
+        notify(PubStart(request))
+        return request.traverse(path)
+
+    def test_provider_returns_list(self):
+        service = self.traverse()
+        res = service.reply()
+        self.assertEqual(service.request.response.status, 200)
+        self.assertTrue(isinstance(res, dict))
+        self.assertIn("options", res)
+        self.assertTrue(isinstance(res.get("options"), list))
+        self.assertTrue(len(res.get("options")), 2)

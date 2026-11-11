@@ -5,7 +5,9 @@ from datetime import timedelta
 from decimal import Decimal
 from plone import namedfile
 from plone.app.textfield.value import RichTextValue
+from plone.dexterity.schema import SCHEMA_CACHE
 from plone.dexterity.utils import iterSchemata
+from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import IDXTestDocumentSchema
@@ -65,14 +67,23 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertEqual("Foo", value)
 
     def test_bool_deserialization_returns_true(self):
-        value = self.deserialize("test_bool_field", True)
-        self.assertTrue(isinstance(value, bool), "Not a <bool>")
-        self.assertEqual(True, value)
+        for form_value in (True, "true", "True"):
+            with self.subTest(form_value=form_value):
+                value = self.deserialize("test_bool_field", form_value)
+                self.assertTrue(isinstance(value, bool), "Not a <bool>")
+                self.assertEqual(True, value)
 
     def test_bool_deserialization_returns_false(self):
-        value = self.deserialize("test_bool_field", False)
-        self.assertTrue(isinstance(value, bool), "Not a <bool>")
-        self.assertEqual(False, value)
+        for form_value in (False, "false", "False"):
+            with self.subTest(form_value=form_value):
+                value = self.deserialize("test_bool_field", form_value)
+                self.assertTrue(isinstance(value, bool), "Not a <bool>")
+                self.assertEqual(False, value)
+
+    def test_bool_deserialization_rejects_other_values(self):
+        for value in ("yes", "on", "", 0, 1, "0", "1"):
+            with self.assertRaises((ValueError, ValidationError)):
+                self.deserialize("test_bool_field", value)
 
     def test_bytes_deserialization_returns_bytestring(self):
         value = self.deserialize("test_bytes_field", "Foo")
@@ -112,16 +123,27 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertTrue(isinstance(value, date))
         self.assertEqual(date(2015, 12, 20), value)
 
-    def test_datetime_deserialization_returns_datetime(self):
-        value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361Z")
-        self.assertTrue(isinstance(value, datetime), "Not a <datetime>")
-        self.assertEqual(datetime(2015, 12, 20, 10, 39, 54, 361000), value)
-
-    def test_datetime_deserialization_handles_timezone(self):
+    def test_datetime_deserialization_defaults_to_timezone_from_request(self):
+        self.portal.doc1.test_datetime_field = None
         value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361+01")
-        self.assertEqual(datetime(2015, 12, 20, 9, 39, 54, 361000), value)
+        self.assertEqual(
+            timezone("Europe/Zurich").localize(
+                datetime(2015, 12, 20, 10, 39, 54, 361000)
+            ),
+            value,
+        )
 
-    def test_datetime_with_tz_deserialization_keeps_timezone(self):
+    def test_datetime_deserialization_defaults_to_utc(self):
+        self.portal.doc1.test_datetime_field = None
+        value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361")
+        self.assertEqual(
+            datetime(2015, 12, 20, 10, 39, 54, 361000, timezone("UTC")), value
+        )
+
+    def test_datetime_deserialization_converts_to_existing_timezone(self):
+        self.portal.doc1.test_datetime_field = timezone("Europe/Zurich").localize(
+            datetime.now()
+        )
         value = self.deserialize("test_datetime_tz_field", "2015-12-20T10:39:54.361+01")
         self.assertEqual(
             timezone("Europe/Zurich").localize(
@@ -130,25 +152,25 @@ class TestDXFieldDeserializer(unittest.TestCase):
             value,
         )
 
-    def test_datetime_with_tz_deserialization_converts_timezone(self):
-        value = self.deserialize("test_datetime_tz_field", "2015-12-20T10:39:54.361-04")
+    def test_datetime_deserialization_adds_existing_timezone(self):
+        self.portal.doc1.test_datetime_field = timezone("Europe/Zurich").localize(
+            datetime.now()
+        )
+        value = self.deserialize("test_datetime_tz_field", "2015-12-20T9:39:54.361")
         self.assertEqual(
             timezone("Europe/Zurich").localize(
-                datetime(2015, 12, 20, 15, 39, 54, 361000)
+                datetime(2015, 12, 20, 10, 39, 54, 361000)
             ),
             value,
         )
 
-    def test_datetime_with_tz_deserialization_adds_timezone(self):
-        value = self.deserialize("test_datetime_tz_field", "2015-12-20T10:39:54.361")
-        self.assertEqual(
-            timezone("Europe/Zurich").localize(
-                datetime(2015, 12, 20, 11, 39, 54, 361000)
-            ),
-            value,
-        )
+    def test_datetime_deserialization_converts_to_stored_tznaive(self):
+        self.portal.doc1.test_datetime_field = datetime.now()
+        value = self.deserialize("test_datetime_field", "2015-12-20T10:39:54.361Z")
+        self.assertEqual(datetime(2015, 12, 20, 10, 39, 54, 361000), value)
 
     def test_datetime_with_tz_deserialization_handles_dst(self):
+        self.portal.doc1.test_datetime_field = None
         value = self.deserialize("test_datetime_tz_field", "2015-05-20T10:39:54.361+02")
         self.assertEqual(
             timezone("Europe/Zurich").localize(
@@ -183,6 +205,16 @@ class TestDXFieldDeserializer(unittest.TestCase):
         value = self.deserialize("test_float_field", 1.0)
         self.assertTrue(isinstance(value, float), "Not a <float>")
         self.assertEqual(1.0, value)
+
+    def test_float_deserialization_returns_decimal(self):
+        value = self.deserialize("test_decimal_field", 1.111)
+        self.assertTrue(isinstance(value, Decimal), "Not a <Decimal>")
+        # a float from JSON to decimal can not work properly, so you would get
+        # real floating point precision only
+        self.assertEqual(
+            Decimal("1.1109999999999999875655021241982467472553253173828125"),
+            value,
+        )
 
     def test_frozenset_deserialization_returns_frozenset(self):
         value = self.deserialize("test_frozenset_field", ["foo", "bar"])
@@ -292,6 +324,23 @@ class TestDXFieldDeserializer(unittest.TestCase):
             "test_richtext_field", {"data": "Some text", "encoding": "latin1"}
         )
         self.assertEqual("latin1", value.encoding)
+
+    def test_richtext_deserialization_rejects_spoofed_safe_mime_type(self):
+        # Defense-in-depth: a client must not be able to claim its payload
+        # is already sanitized by setting the content-type to safe html.
+        from plone.app.textfield import RichText
+
+        field = RichText()
+        deserializer = getMultiAdapter(
+            (field, self.portal.doc1, self.request), IFieldDeserializer
+        )
+        with self.assertRaises(ValueError):
+            deserializer(
+                {
+                    "data": "<img src=x onerror=alert(1)>",
+                    "content-type": "text/x-html-safe",
+                }
+            )
 
     def test_richtext_deserialization_fix_apostrophe(self):
         value = self.deserialize("test_richtext_field", "<p>char with &#x27;</p>")
@@ -411,7 +460,8 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.deserialize("test_relationchoice_field", 123456789)
         self.assertEqual(
-            str(cm.exception), "Could not resolve object for intid=123456789"
+            str(cm.exception),
+            "Could not resolve object for 123456789 (resolved by intid)",
         )
         self.assertEqual(400, self.request.response.getStatus())
 
@@ -423,7 +473,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             )
         self.assertEqual(
             str(cm.exception),
-            "Could not resolve object for UID=ac12b24913cf45c6863937367aacc263",
+            "Could not resolve object for ac12b24913cf45c6863937367aacc263 (resolved by UID)",
         )
         self.assertEqual(400, self.request.response.getStatus())
 
@@ -435,7 +485,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             )
         self.assertEqual(
             str(cm.exception),
-            "Could not resolve object for URL=http://nohost/plone/doesnotexist",
+            "Could not resolve object for http://nohost/plone/doesnotexist (resolved by URL)",
         )
         self.assertEqual(400, self.request.response.getStatus())
 
@@ -443,8 +493,15 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.deserialize("test_relationchoice_field", "/doesnotexist")
         self.assertEqual(
-            str(cm.exception), "Could not resolve object for path=/doesnotexist"
+            str(cm.exception),
+            "Could not resolve object for /doesnotexist (resolved by path)",
         )
+        self.assertEqual(400, self.request.response.getStatus())
+
+    def test_relationchoice_deserialization_from_wrong_type_raises(self):
+        with self.assertRaises(ValueError) as cm:
+            self.deserialize("test_relationchoice_field", None)
+        self.assertEqual(str(cm.exception), "Could not resolve object for None")
         self.assertEqual(400, self.request.response.getStatus())
 
     def test_relationlist_deserialization_returns_list_of_documents(self):
@@ -487,7 +544,12 @@ class TestDXFieldDeserializer(unittest.TestCase):
         # DefaultFieldDeserializer that the CollectionFieldDeserializer will
         # delegate to for deserializing collection items.
         self.assertEqual("Object is of wrong type.", cm.exception.doc())
-        self.assertEqual((b"2", (int,), ""), cm.exception.args)
+        exception_args = list(cm.exception.args)
+        if isinstance(exception_args[1], tuple):
+            # BBB: since zope.schema >= 7.0.0 the Int field changed its validation `_type`
+            # from (int, ) to int ... we adjust that to work with both versions
+            exception_args[1] = exception_args[1][0]
+        self.assertEqual([b"2", int, ""], exception_args)
 
     def test_dict_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
@@ -622,3 +684,19 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertEqual("http://www.plone.com", value)
         value = self.deserialize("test_textline_field", "http://nohost/plone/doc1")
         self.assertEqual(self.portal.doc1.absolute_url(), value)
+
+    def test_json_field_deserializer_converts_internal_links_to_uid(self):
+        value = self.deserialize(
+            "test_json_field", {"@id": self.portal.doc1.absolute_url()}
+        )
+        self.assertEqual(value["@id"], f"../resolveuid/{self.portal.doc1.UID()}")
+
+    def test_json_field_deserializer_with_blocks(self):
+        fti = self.portal.portal_types.DXTestDocument
+        fti.behaviors = ("volto.blocks",)
+        SCHEMA_CACHE.invalidate("DXTestDocument")
+        assert IBlocks.providedBy(self.portal.doc1)
+        value = self.deserialize(
+            "test_json_field", {"@id": self.portal.doc1.absolute_url()}
+        )
+        self.assertEqual(value["@id"], f"../resolveuid/{self.portal.doc1.UID()}")

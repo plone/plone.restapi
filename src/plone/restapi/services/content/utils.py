@@ -2,9 +2,9 @@ from Acquisition import aq_base
 from DateTime import DateTime
 from plone.app.content.interfaces import INameFromTitle
 from plone.app.uuid.utils import uuidToObject
+from plone.restapi.bbb import base_hasattr
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import base_hasattr
 from random import randint
 from zExceptions import Unauthorized
 from zope.component import getUtility
@@ -32,6 +32,12 @@ def create(container, type_, id_=None, title=None):
 
     portal_types = getToolByName(container, "portal_types")
     type_info = portal_types.getTypeInfo(type_)
+
+    if not type_info:
+        raise Unauthorized(
+            "Invalid '@type' parameter. No content type with the name '%s' found"
+            % type_
+        )
 
     # Check for add permission
     if not type_info.isConstructionAllowed(container):

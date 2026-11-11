@@ -1,17 +1,19 @@
 from plone.dexterity.interfaces import IDexterityContent
+from plone.restapi.bbb import IConstrainTypes
+from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
-from plone.restapi.types.utils import get_info_for_type
 from plone.restapi.types.utils import get_info_for_field
 from plone.restapi.types.utils import get_info_for_fieldset
+from plone.restapi.types.utils import get_info_for_type
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import IConstrainTypes
 from zExceptions import Unauthorized
 from zope.component import adapter
-from zope.component import getMultiAdapter, queryMultiAdapter
+from zope.component import getMultiAdapter
 from zope.component import getUtility
+from zope.component import queryMultiAdapter
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
@@ -20,7 +22,13 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
 
 
-def check_security(context):
+def check_security(context, portal_type: str = ""):
+    # Issue 2054: Only expose type information to Anonymous users
+    # if they are trying to access information about the current context portal type
+    context_portal_type = getattr(context, "portal_type", None)
+    if portal_type and (context_portal_type == portal_type):
+        return
+
     # Only expose type information to authenticated users
     portal_membership = getToolByName(context, "portal_membership")
     if portal_membership.isAnonymousUser():
@@ -71,16 +79,23 @@ class TypesInfo:
         result["types"] = [
             {
                 "@id": f"{portal_url}/@types/{fti.getId()}",
+                "id": fti.getId(),
                 "title": translate(fti.Title(), context=self.request),
                 "addable": fti.getId() in allowed_types if can_add else False,
-                "immediately_addable": fti.getId() in immediately_types
-                if can_add
-                else False,
+                "immediately_addable": (
+                    fti.getId() in immediately_types if can_add else False
+                ),
             }
             for fti in ftis
         ]
 
         return result
+
+
+@implementer(IExpandableElement)
+@adapter(IPloneSiteRoot, Interface)
+class TypesInfoRoot(TypesInfo):
+    pass
 
 
 @implementer(IPublishTraverse)
@@ -117,8 +132,8 @@ class TypesGet(Service):
             return self.reply_for_field()
 
     def reply_for_type(self):
-        check_security(self.context)
         portal_type = self.params.pop()
+        check_security(self.context, portal_type)
 
         # Make sure we get the right dexterity-types adapter
         if IPloneRestapiLayer.providedBy(self.request):

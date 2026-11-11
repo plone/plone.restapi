@@ -1,22 +1,32 @@
-""" Locking
-"""
-from plone import api
+"""Locking"""
+
 from datetime import datetime
+from datetime import timezone
+from plone import api
 from plone.locking.interfaces import ILockable
 
 
-def creator_name(username):
-    user = api.user.get(username=username)
-    return user.getProperty("fullname") or username
+def creator_name(userid):
+    user = api.user.get(userid=userid)
+    if user:
+        return user.getProperty("fullname") or userid
+    else:
+        return userid
 
 
-def creator_url(username):
+def creator_url(userid):
     url = api.portal.get().absolute_url()
-    return f"{url}/author/{username}"
+    return f"{url}/author/{userid}"
 
 
 def creation_date(timestamp):
-    return datetime.fromtimestamp(timestamp).isoformat()
+    # Note that isoformat does not add the Z at the end of the string, The lack of the
+    # timezone specifier causes Intl (and derivative libraries) in the browser not to
+    # use local time, which is considered a bug in applications. Therefore we add the Z
+    # to the end to make sure that the date will be interpreted properly by the client.
+    return datetime.fromtimestamp(timestamp, tz=timezone.utc).isoformat(
+        timespec="seconds"
+    )
 
 
 def lock_info(obj):

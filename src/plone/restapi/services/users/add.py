@@ -1,22 +1,40 @@
 from AccessControl import getSecurityManager
+from plone.app.users.schema import ICombinedRegisterSchema
+
+try:
+    from plone.app.users.utils import generate_login_name
+    from plone.app.users.utils import generate_user_id
+
+    HAS_STANDALONE_GENERATORS = True
+except ImportError:
+    # BBB: plone.app.users without standalone generators (Plone < 6.2)
+    HAS_STANDALONE_GENERATORS = False
+from plone.registry.interfaces import IRegistry
+from plone.restapi import _
+from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.permissions import PloneManageUsers
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.CMFPlone.PasswordResetTool import ExpiredRequestError
 from Products.CMFPlone.PasswordResetTool import InvalidRequestError
 from Products.CMFPlone.RegistrationTool import get_member_by_login_name
-from zope.component import getAdapter
+from zExceptions import BadRequest
+from zExceptions import Forbidden
 from zope.component import getMultiAdapter
+from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
+from zope.i18n import translate
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
+import csv
+import io
 import plone.protect.interfaces
 
 
@@ -27,15 +45,33 @@ class UsersPost(Service):
     def __init__(self, context, request):
         super().__init__(context, request)
         self.params = []
+        self.errors = []
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
         self.params.append(name)
         return self
 
+    def translate(self, msgid):
+        return translate(
+            msgid,
+            context=self.request,
+        )
+
+    def translate_fieldname(self, fieldname):
+        """Not all fields that appear on Add User Form in Volto match in Plone."""
+        if fieldname == "roles":
+            msgid = _("Roles")
+        elif fieldname == "sendPasswordReset":
+            msgid = ICombinedRegisterSchema["mail_me"].title
+        else:
+            msgid = ICombinedRegisterSchema[fieldname].title
+        return self.translate(msgid)
+
     def validate_input_data(self, portal, original_data):
         """Returns a tuple of (required_fields, allowed_fields)"""
-        security = getAdapter(portal, ISecuritySchema)
+        registry = getUtility(IRegistry)
+        security = registry.forInterface(ISecuritySchema, prefix="plone")
 
         # remove data we don't want to check for
         data = {}
@@ -50,6 +86,9 @@ class UsersPost(Service):
             required.append("username")
             allowed.append("username")
 
+        if security.enable_self_reg:
+            allowed.append("sendPasswordReset")
+
         if self.can_manage_users:
             allowed.append("password")
             allowed.append("sendPasswordReset")
@@ -62,11 +101,23 @@ class UsersPost(Service):
         # check input data
         for fieldname in required:
             if not data.get(fieldname, None):
-                self.add_field_error(fieldname, f"Property '{fieldname}' is required.")
+                translated_fieldname = self.translate_fieldname(fieldname)
+                self.add_field_error(
+                    fieldname,
+                    _(
+                        "Property '${fieldname}' is required.",
+                        mapping={"fieldname": translated_fieldname},
+                    ),
+                )
         for fieldname in data:
             if fieldname not in allowed:
+                translated_fieldname = self.translate_fieldname(fieldname)
                 self.add_field_error(
-                    fieldname, f"Property '{fieldname}' is not allowed."
+                    fieldname,
+                    _(
+                        "Property '${fieldname}' is not allowed.",
+                        mapping={"fieldname": translated_fieldname},
+                    ),
                 )
 
         password = data.get("password")
@@ -75,16 +126,16 @@ class UsersPost(Service):
             if password is None and send_password_reset is None:
                 self.add_field_error(
                     "sendPasswordReset",
-                    "You have to either send a password or sendPasswordReset.",
+                    _("You have to either send a password or sendPasswordReset."),
                 )
             if password and send_password_reset:
                 self.add_field_error(
                     "sendPasswordReset",
-                    "You can't send both password and sendPasswordReset.",
+                    _("You can't send both password and sendPasswordReset."),
                 )
 
-    def add_field_error(self, field, message):
-        self.errors.append({"field": field, "message": message})
+    def add_field_error(self, field, msgid):
+        self.errors.append({"field": field, "message": self.translate(msgid)})
 
     def errors_to_string(self):
         return " ".join([error["message"] for error in self.errors])
@@ -96,12 +147,45 @@ class UsersPost(Service):
 
         portal = getSite()
 
-        # validate important data
-        data = json_body(self.request)
-        self.errors = []
-        self.validate_input_data(portal, data)
-        security = getAdapter(self.context, ISecuritySchema)
-        registration = getToolByName(self.context, "portal_registration")
+        if form := self.request.form:
+            if not form.get("file"):
+                raise BadRequest("No file uploaded")
+
+            file = form["file"]
+            if file.headers.get("Content-Type") not in ("text/csv", "application/csv"):
+                raise BadRequest("Uploaded file is not a valid CSV file")
+            if len(self.params) > 0:
+                raise BadRequest(f"Unexpected path element '{'/'.join(self.params)}'")
+
+            data = []
+            stream = io.TextIOWrapper(
+                file,
+                encoding="utf-8",
+                newline="",
+            )
+            try:
+                reader = csv.DictReader(stream)
+                for row in reader:
+                    # convert to lists
+                    for key in ("roles", "groups"):
+                        if row.get(key):
+                            row[key] = [r.strip() for r in row[key].split(",")]
+                    # remove empty values
+                    for key in list(row.keys()):
+                        if not row[key]:
+                            del row[key]
+                    # validate important data
+                    self.validate_input_data(portal, row)
+                    data.append(row)
+            finally:
+                # Flush the text wrapper & disconnect it from the underlying buffer.
+                # Prevents the buffer from being closed too early.
+                # The TextIOWrapper (`stream`) is unusable after being detached.
+                stream.detach()
+        else:
+            # validate important data
+            data = json_body(self.request)
+            self.validate_input_data(portal, data)
 
         general_usage_error = (
             "Either post to @users to create a user or use "
@@ -117,17 +201,37 @@ class UsersPost(Service):
 
         # Add a portal member
         if not self.can_add_member:
-            return self._error(403, "Forbidden", "You need AddPortalMember permission.")
+            raise Forbidden(_("You need AddPortalMember permission."))
 
         if self.errors:
             self.request.response.setStatus(400)
             return dict(
                 error=dict(
                     type="WrongParameterError",
-                    message=f"Error in fields. {self.errors_to_string()}",
+                    message=self.translate(
+                        _(
+                            "Error in fields. ${errors_to_string}",
+                            mapping={"errors_to_string": self.errors_to_string()},
+                        )
+                    ),
                     errors=self.errors,
                 )
             )
+
+        self.request.response.setStatus(201)
+        if isinstance(data, list):
+            result = []
+            for i in data:
+                user = self._add_user(i, location=False)
+                result.append(user)
+            return {"items": result, "items_total": len(result)}
+        return self._add_user(data)
+
+    def _add_user(self, data, location=True):
+        portal = getSite()
+        registry = getUtility(IRegistry)
+        security = registry.forInterface(ISecuritySchema, prefix="plone")
+        registration = getToolByName(portal, "portal_registration")
 
         username = data.pop("username", None)
         email = data.pop("email", None)
@@ -142,13 +246,19 @@ class UsersPost(Service):
             "fullname": data.get("fullname", ""),
         }
 
-        register_view = getMultiAdapter((self.context, self.request), name="register")
+        if HAS_STANDALONE_GENERATORS:
+            user_id = generate_user_id(self.context, user_id_login_name_data)
+            login_name = generate_login_name(self.context, user_id_login_name_data)
+        else:
+            # BBB: plone.app.users without standalone generators (Plone < 6.2)
+            register_view = getMultiAdapter(
+                (self.context, self.request), name="register"
+            )
+            user_id = register_view.generate_user_id(user_id_login_name_data)
+            login_name = register_view.generate_login_name(user_id_login_name_data)
 
-        register_view.generate_user_id(user_id_login_name_data)
-        register_view.generate_login_name(user_id_login_name_data)
-
-        user_id = user_id_login_name_data.get("user_id", data.get("username"))
-        login_name = user_id_login_name_data.get("login_name", data.get("username"))
+        user_id = user_id or username or email
+        login_name = login_name or username or email
 
         username = user_id
         properties["username"] = user_id
@@ -161,26 +271,30 @@ class UsersPost(Service):
             password = registration.generatePassword()
         # Create user
         try:
-            registration = getToolByName(portal, "portal_registration")
             user = registration.addMember(
                 username, password, roles, properties=properties
             )
         except ValueError as e:
             self.request.response.setStatus(400)
-            return dict(error=dict(type="MissingParameterError", message=str(e)))
+            return dict(
+                error=dict(
+                    type="MissingParameterError",
+                    message=self.translate(e.args[0]),
+                )
+            )
 
         if user_id != login_name:
-            # The user id differs from the login name.  Set the login
-            # name correctly.
+            # The user id differs from the login name. Set the login name correctly.
             pas = getToolByName(self.context, "acl_users")
             pas.updateLoginName(user_id, login_name)
 
         if send_password_reset:
             registration.registeredNotify(username)
         self.request.response.setStatus(201)
-        self.request.response.setHeader(
-            "Location", portal.absolute_url() + "/@users/" + username
-        )
+        if location:
+            self.request.response.setHeader(
+                "Location", portal.absolute_url() + "/@users/" + username
+            )
         serializer = queryMultiAdapter((user, self.request), ISerializeToJson)
         return serializer()
 
@@ -192,14 +306,14 @@ class UsersPost(Service):
     def _get_user_by_login_name(self, user_id):
         return get_member_by_login_name(self.context, user_id, raise_exceptions=False)
 
-    def _error(self, status, type, message):
+    def _error(self, status, _type, msgid):
         self.request.response.setStatus(status)
-        return {"error": {"type": type, "message": message}}
+        return {"error": {"type": _type, "message": self.translate(msgid)}}
 
     @property
     def can_manage_users(self):
         sm = getSecurityManager()
-        return sm.checkPermission("plone.app.controlpanel.UsersAndGroups", self.context)
+        return sm.checkPermission(PloneManageUsers, self.context)
 
     @property
     def can_set_own_password(self):
@@ -221,6 +335,7 @@ class UsersPost(Service):
         pas = getToolByName(self.context, "acl_users")
         mt = getToolByName(self.context, "portal_membership")
         pwt = getToolByName(self.context, "portal_password_reset")
+        registration_tool = getToolByName(self.context, "portal_registration")
 
         if target_user is None:
             self.request.response.setStatus(404)
@@ -228,7 +343,6 @@ class UsersPost(Service):
 
         # Send password reset mail
         if list(data) == []:
-            registration_tool = getToolByName(self.context, "portal_registration")
             registration_tool.mailPassword(username, self.request)
             return
 
@@ -236,31 +350,44 @@ class UsersPost(Service):
             return self._error(
                 400,
                 "Invalid parameters",
-                "You can't use 'reset_token' and 'old_password' together.",
+                _("You can't use 'reset_token' and 'old_password' together."),
             )
         if reset_token and not new_password:
             return self._error(
                 400,
                 "Invalid parameters",
-                "If you pass 'reset_token' you have to pass 'new_password'",
+                _("If you pass 'reset_token' you have to pass 'new_password'"),
             )
         if old_password and not new_password:
             return self._error(
                 400,
                 "Invalid parameters",
-                "If you pass 'old_password' you have to pass 'new_password'",
+                _("If you pass 'old_password' you have to pass 'new_password'"),
             )
 
         # Reset the password with a reset token
         if reset_token:
             try:
+                err = registration_tool.testPasswordValidity(new_password)
+                if err is not None:
+                    return self._error(
+                        400,
+                        "Invalid password",
+                        _(err),
+                    )
                 pwt.resetPassword(username, reset_token, new_password)
             except InvalidRequestError:
                 return self._error(
-                    403, "Unknown Token", "The reset_token is unknown/not valid."
+                    403,
+                    "Unknown Token",
+                    _("The reset_token is unknown/not valid."),
                 )
             except ExpiredRequestError:
-                return self._error(403, "Expired Token", "The reset_token is expired.")
+                return self._error(
+                    403,
+                    "Expired Token",
+                    _("The reset_token is expired."),
+                )
             return
 
         # set the new password by giving the old password
@@ -269,28 +396,29 @@ class UsersPost(Service):
                 return self._error(
                     403,
                     "Not allowed",
-                    "You can't set a password without " "a password reset token.",
+                    _("You can't set a password without a password reset token."),
                 )
             authenticated_user_id = mt.getAuthenticatedMember().getId()
             if username != authenticated_user_id:
                 return self._error(
                     403,
                     "Wrong user",
-                    (
-                        "You need to be logged in as the user '%s' to set "
-                        "the password."
-                    )
-                    % username,
+                    _(
+                        "You need to be logged in as the user '${username}' to set the password.",
+                        mapping={"username": username},
+                    ),
                 )
 
             check_password_auth = pas.authenticate(
-                username, old_password.encode("utf-8"), self.request
+                target_user.getUser().getUserName(),
+                old_password.encode("utf-8"),
+                self.request,
             )
             if not check_password_auth:
                 return self._error(
                     403,
                     "Wrong password",
-                    "The password passed as 'old_password' " "is wrong.",
+                    _("The password passed as 'old_password' is wrong."),
                 )
             mt.setPassword(new_password)
             return
@@ -298,5 +426,5 @@ class UsersPost(Service):
         return self._error(
             400,
             "Invalid parameters",
-            "See the user endpoint documentation for the " "valid parameters.",
+            _("See the user endpoint documentation for the valid parameters."),
         )

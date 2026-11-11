@@ -24,7 +24,7 @@ class TestBatchingDXBase(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         self.request = self.portal.REQUEST
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -184,6 +184,15 @@ class TestBatchingCollections(TestBatchingDXBase):
     def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
         response = self.api_session.get("/collection?b_size=100")
         self.assertNotIn("batching", list(response.json()))
+
+    def test_batching_badrequests(self):
+        response = self.api_session.get("/collection?b_size=php")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Invalid b_size", response.json()["message"])
+
+        response = self.api_session.get("/collection?b_size:list=1")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Invalid b_size", response.json()["message"])
 
 
 class TestBatchingDXFolders(TestBatchingDXBase):
@@ -455,7 +464,7 @@ class TestHypermediaBatch(unittest.TestCase):
 
         self.request.form["b_size"] = 10
         batch = HypermediaBatch(self.request, items)
-        self.assertDictContainsSubset({"first": "http://nohost?b_start=0"}, batch.links)
+        self.assertEqual(batch.links["first"], "http://nohost?b_start=0")
 
     def test_first_link_preserves_list_like_querystring_params(self):
         items = list(range(1, 26))
@@ -478,14 +487,14 @@ class TestHypermediaBatch(unittest.TestCase):
 
         self.request.form["b_size"] = 10
         batch = HypermediaBatch(self.request, items)
-        self.assertDictContainsSubset({"last": "http://nohost?b_start=20"}, batch.links)
+        self.assertEqual(batch.links["last"], "http://nohost?b_start=20")
 
     def test_next_link_contained_if_necessary(self):
         items = list(range(1, 26))
 
         self.request.form["b_size"] = 10
         batch = HypermediaBatch(self.request, items)
-        self.assertDictContainsSubset({"next": "http://nohost?b_start=10"}, batch.links)
+        self.assertEqual(batch.links["next"], "http://nohost?b_start=10")
 
     def test_next_link_omitted_on_last_page(self):
         items = list(range(1, 26))
@@ -503,7 +512,7 @@ class TestHypermediaBatch(unittest.TestCase):
         self.request.form["b_size"] = 10
         self.request.form["b_start"] = 20
         batch = HypermediaBatch(self.request, items)
-        self.assertDictContainsSubset({"prev": "http://nohost?b_start=10"}, batch.links)
+        self.assertEqual(batch.links["prev"], "http://nohost?b_start=10")
 
     def test_prev_link_omitted_on_first_page(self):
         items = list(range(1, 26))

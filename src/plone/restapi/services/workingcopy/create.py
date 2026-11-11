@@ -1,11 +1,11 @@
-from plone.restapi.services import Service
-from zope.interface import alsoProvides
+from Acquisition import aq_inner
 from plone.app.iterate.interfaces import ICheckinCheckoutPolicy
 from plone.app.iterate.interfaces import IWCContainerLocator
-from Acquisition import aq_inner
+from plone.restapi.services import Service
+from Products.CMFCore.utils import getToolByName
 from zope.component import getAdapters
 from zope.component import getMultiAdapter
-from Products.CMFCore.utils import getToolByName
+from zope.interface import alsoProvides
 
 import plone.protect.interfaces
 

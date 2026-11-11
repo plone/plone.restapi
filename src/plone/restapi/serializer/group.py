@@ -42,13 +42,13 @@ class SerializeGroupToJson(BaseSerializer):
         group = self.context
         members = group.getGroupMemberIds()
         batch = HypermediaBatch(self.request, members)
-        users_data = {
+        members_data = {
             "@id": batch.canonical_url,
             "items_total": batch.items_total,
             "items": sorted(batch),
         }
         if batch.links:
-            users_data["batching"] = batch.links
+            members_data["batching"] = batch.links
 
-        data["users"] = users_data
+        data["members"] = members_data
         return data

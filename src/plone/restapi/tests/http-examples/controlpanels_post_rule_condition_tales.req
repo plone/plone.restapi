@@ -1,0 +1,9 @@
+POST /plone/@controlpanels/content-rules/rule-3/condition HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "tales_expression": "<tal:block content='string:' />",
+    "type": "plone.conditions.TalesExpression"
+}

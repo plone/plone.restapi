@@ -1,5 +1,7 @@
 from datetime import timedelta
+from decimal import Decimal
 from plone.app.contenttypes.interfaces import ILink
+from plone.app.dexterity.behaviors.metadata import IPublication
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
@@ -15,9 +17,11 @@ from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.schema.interfaces import IBool
 from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDatetime
+from zope.schema.interfaces import IDecimal
 from zope.schema.interfaces import IDict
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
@@ -48,6 +52,20 @@ class DefaultFieldDeserializer:
 
         value = IFromUnicode(self.field).fromUnicode(value)
         # IFromUnicode.fromUnicode() will validate, no need to do it twice
+        return value
+
+
+@implementer(IFieldDeserializer)
+@adapter(IBool, IDexterityContent, IBrowserRequest)
+class BoolFieldDeserializer(DefaultFieldDeserializer):
+    """Accept JSON booleans, and "true" or "false" from form-encoded input."""
+
+    def __call__(self, value):
+        if isinstance(value, str) and value.lower() in ("true", "false"):
+            value = value.lower() == "true"
+        if value is not None and not isinstance(value, bool):
+            raise ValueError(f"Expected a boolean, got {value!r}")
+        self.field.validate(value)
         return value
 
 
@@ -87,21 +105,6 @@ class LinkTextLineFieldDeserializer(TextLineFieldDeserializer):
 @adapter(IDatetime, IDexterityContent, IBrowserRequest)
 class DatetimeFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
-        # Datetime fields may contain timezone naive or timezone aware
-        # objects. Unfortunately the zope.schema.Datetime field does not
-        # contain any information if the field value should be timezone naive
-        # or timezone aware. While some fields (start, end) store timezone
-        # aware objects others (effective, expires) store timezone naive
-        # objects.
-        # We try to guess the correct deserialization from the current field
-        # value.
-        dm = queryMultiAdapter((self.context, self.field), IDataManager)
-        current = dm.get()
-        if current is not None:
-            tzinfo = current.tzinfo
-        else:
-            tzinfo = None
-
         # This happens when a 'null' is posted for a non-required field.
         if value is None:
             self.field.validate(value)
@@ -119,12 +122,34 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
         else:
             dt = utc.localize(dt)
 
-        # Convert to local TZ aware or naive UTC
-        if tzinfo is not None:
-            tz = timezone(tzinfo.zone)
-            value = tz.normalize(dt.astimezone(tz))
+        # Datetime fields may contain timezone naive or timezone aware
+        # objects. Unfortunately the zope.schema.Datetime field does not
+        # contain any information if the field value should be timezone naive
+        # or timezone aware. While some fields (start, end) store timezone
+        # aware objects others (effective, expires) store timezone naive
+        # objects.
+        # We try to guess the correct deserialization from the current field
+        # value.
+        if self.field.interface == IPublication:
+            # The IPublication adapter is a special case that expects
+            # a timezone-naive local datetime
+            value = dt.astimezone().replace(tzinfo=None)
         else:
-            value = utc.normalize(dt.astimezone(utc)).replace(tzinfo=None)
+            # Otherwise let's check what is currently stored.
+            dm = queryMultiAdapter((self.context, self.field), IDataManager)
+            current = dm.get()
+            if current is not None:
+                # There's an existing value. Let's match it.
+                if current.tzinfo is not None:
+                    # Timezone-aware. Convert to the same timezone.
+                    tz = timezone(current.tzinfo.zone)
+                    value = tz.normalize(dt.astimezone(tz))
+                else:
+                    # Timezone-naive. Convert to UTC and remove the tzinfo.
+                    value = utc.normalize(dt.astimezone(utc)).replace(tzinfo=None)
+            else:
+                # No current value. Store as timezone-aware.
+                value = dt
 
         self.field.validate(value)
         return value
@@ -237,7 +262,12 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
         content_type = "application/octet-stream"
         filename = None
         if isinstance(value, dict):
-            if "data" not in value:
+            is_multipart = self.request.getHeader("content-type", "").startswith(
+                "multipart/form-data"
+            )
+            if is_multipart and "part" in value:
+                pass
+            elif "data" not in value:
                 # We are probably pushing the contents of a previous GET
                 # That contain the read representation of the file
                 # with the 'download' key so we return the same stored file
@@ -245,7 +275,16 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
 
             content_type = value.get("content-type", content_type)
             filename = value.get("filename", filename)
-            data = value.get("data", "")
+            if is_multipart:
+                data = self.request.form[value["part"]]
+                if not filename and data.filename:
+                    filename = data.filename
+                if content_type == "application/octet-stream" and data.headers.get(
+                    "Content-Type"
+                ):
+                    content_type = data.headers.get("Content-Type")
+            else:
+                data = value.get("data", "")
             if isinstance(data, str):
                 data = data.encode("utf-8")
             if "encoding" in value:
@@ -276,7 +315,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
 @adapter(IRichText, IDexterityContent, IBrowserRequest)
 class RichTextFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
-        content_type = self.field.default_mime_type
+        content_type = orig_content_type = self.field.default_mime_type
         encoding = "utf8"
         if isinstance(value, dict):
             content_type = value.get("content-type", content_type)
@@ -288,11 +327,25 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
                 data = f.read().decode("utf8")
         else:
             data = value
+        # Defense-in-depth: a client must not be able to claim its payload
+        # is already sanitized by setting the content-type to safe html.
+        if content_type == "text/x-html-safe" and content_type != orig_content_type:
+            raise ValueError("Not allowed to set content-type text/x-html-safe")
         value = RichTextValue(
             raw=html_parser.unescape(data),
             mimeType=content_type,
             outputMimeType=self.field.output_mime_type,
             encoding=encoding,
         )
+        self.field.validate(value)
+        return value
+
+
+@implementer(IFieldDeserializer)
+@adapter(IDecimal, IDexterityContent, IBrowserRequest)
+class DecimalFieldDeserializer(DefaultFieldDeserializer):
+    def __call__(self, value):
+        if not isinstance(value, Decimal):
+            value = Decimal(value)
         self.field.validate(value)
         return value

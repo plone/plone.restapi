@@ -1,21 +1,34 @@
+from datetime import datetime
+from datetime import timedelta
 from DateTime import DateTime
 from plone.app.contentlisting.interfaces import IContentListingObject
+from plone.app.event.dx.traverser import OccurrenceTraverser
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.dexterity.utils import createContentInContainer
+from plone.event.interfaces import IEvent
+from plone.event.interfaces import IEventRecurrence
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.serializer.summary import JSONSummarySerializerMetadata
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 from zope.component.hooks import getSite
+from zope.interface import alsoProvides
 
 import Missing
+import pytz
 import unittest
+import unittest.mock as mock
+
+try:
+    from plone.app.event.adapters import OccurrenceContentListingObject
+except ImportError:
+    OccurrenceContentListingObject = None
 
 
 class TestSummarySerializers(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -51,6 +64,7 @@ class TestSummarySerializers(unittest.TestCase):
             {
                 "@id": "http://nohost/plone",
                 "@type": "Plone Site",
+                "type_title": "Plone Site",
                 "title": "Plone site",
                 "description": "",
             },
@@ -66,6 +80,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "title": "Lorem Ipsum",
+                "type_title": "DX Test Document",
                 "description": "Description",
                 "review_state": "private",
             },
@@ -85,6 +100,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "title": "Lorem Ipsum",
+                "type_title": "DX Test Document",
                 "description": "Description",
                 "review_state": "private",
             },
@@ -102,6 +118,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "title": "Lorem Ipsum",
+                "type_title": "DX Test Document",
                 "description": None,
                 "review_state": "private",
             },
@@ -120,6 +137,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "UID": "c6dcbd55ab2746e199cd4ed458000001",
                 "Creator": "test_user_1_",
                 "title": "Lorem Ipsum",
+                "type_title": "DX Test Document",
                 "description": "Description",
                 "review_state": "private",
             },
@@ -185,6 +203,52 @@ class TestSummarySerializers(unittest.TestCase):
             summary.items(),
         )
 
+    def test_extra_non_metadata_attributes_env_var(self):
+        with mock.patch(
+            "plone.restapi.serializer.summary.ADDITIONAL_NON_METADATA_ATTRIBUTES",
+            {"customAttribute", "anotherCustomAttribute"},
+        ):
+            non_metadata_attributes = (
+                JSONSummarySerializerMetadata().non_metadata_attributes()
+            )
+        self.assertIn("customAttribute", non_metadata_attributes)
+        self.assertIn("anotherCustomAttribute", non_metadata_attributes)
+        self.assertIn("getPath", non_metadata_attributes)
+        self.assertIn("getURL", non_metadata_attributes)
+
+    def test_request_metadata_cache_is_reused(self):
+        # The per-request metadata cache must take effect, so the metadata is
+        # only computed once even when many items are serialized in the same
+        # request (e.g. a search result or folder listing with many items).
+        from plone.restapi.serializer import summary as summary_module
+
+        self.request.other.pop("summary_serializer_metadata", None)
+
+        with mock.patch.object(
+            summary_module,
+            "merge_serializer_metadata_utilities_data",
+            wraps=summary_module.merge_serializer_metadata_utilities_data,
+        ) as merge_mock:
+            getMultiAdapter((self.doc1, self.request), ISerializeToJsonSummary)()
+            getMultiAdapter((self.doc1, self.request), ISerializeToJsonSummary)()
+
+        self.assertEqual(merge_mock.call_count, 1)
+
+    def test_request_parameter_does_not_break_serialization(self):
+        # A client-supplied form or query string parameter that happens to use
+        # the same name as the internal per-request cache must not break
+        # serialization with a TypeError.
+        self.request.other.pop("summary_serializer_metadata", None)
+        self.request.form["summary_serializer_metadata"] = "injected"
+        try:
+            summary = getMultiAdapter(
+                (self.doc1, self.request), ISerializeToJsonSummary
+            )()
+        finally:
+            del self.request.form["summary_serializer_metadata"]
+
+        self.assertEqual(summary["@type"], "DXTestDocument")
+
     def test_dx_type_summary(self):
         summary = getMultiAdapter((self.doc1, self.request), ISerializeToJsonSummary)()
 
@@ -193,8 +257,75 @@ class TestSummarySerializers(unittest.TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "title": "Lorem Ipsum",
+                "type_title": "DX Test Document",
                 "description": "Description",
                 "review_state": "private",
             },
             summary,
         )
+
+
+class TestSummarySerializerswithRecurrenceObjects(unittest.TestCase):
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
+
+        pushGlobalRegistry(getSite())
+        register_static_uuid_utility(prefix="c6dcbd55ab2746e199cd4ed458")
+
+        behaviors = self.portal.portal_types.DXTestDocument.behaviors
+        behaviors = behaviors + (
+            "plone.eventbasic",
+            "plone.eventrecurrence",
+        )
+        self.portal.portal_types.DXTestDocument.behaviors = behaviors
+
+        self.start = datetime(1995, 7, 31, 13, 45, tzinfo=pytz.timezone("UTC"))
+        self.event = createContentInContainer(
+            self.portal,
+            "DXTestDocument",
+            id="doc1",
+            title="Lorem Ipsum event",
+            description="Description event",
+            start=self.start,
+            end=self.start + timedelta(hours=1),
+            recurrence="RRULE:FREQ=DAILY;COUNT=3",  # see https://github.com/plone/plone.app.event/blob/master/plone/app/event/tests/base_setup.py
+        )
+
+        alsoProvides(self.event, IEvent)
+        alsoProvides(self.event, IEventRecurrence)
+
+    def tearDown(self):
+        popGlobalRegistry(getSite())
+
+    @unittest.skipIf(
+        OccurrenceContentListingObject is not None,
+        "this test needs a plone.app.event version that does not include a IContentListingObject adapter",
+    )
+    def test_dx_event_with_recurrence_old_version(self):
+        tomorrow = self.start + timedelta(days=1)
+        tomorrow_str = tomorrow.strftime("%Y-%m-%d")
+        traverser = OccurrenceTraverser(self.event, self.request)
+        occurrence = traverser.publishTraverse(self.request, tomorrow_str)
+
+        with self.assertRaises(TypeError):
+            getMultiAdapter((occurrence, self.request), ISerializeToJsonSummary)()
+
+    @unittest.skipIf(
+        OccurrenceContentListingObject is None,
+        "this test needs a plone.app.event version that includes a IContentListingObject adapter",
+    )
+    def test_dx_event_with_recurrence_new_version(self):
+        tomorrow = self.start + timedelta(days=1)
+        tomorrow_str = tomorrow.strftime("%Y-%m-%d")
+        traverser = OccurrenceTraverser(self.event, self.request)
+        occurrence = traverser.publishTraverse(self.request, tomorrow_str)
+        self.request.form["metadata_fields"] = ["start"]
+        summary = getMultiAdapter((occurrence, self.request), ISerializeToJsonSummary)()
+        self.assertEqual(
+            datetime.fromisoformat(summary["start"]).date().isoformat(),
+            tomorrow.date().isoformat(),
+        )
+        self.assertEqual(summary["title"], occurrence.Title())
