@@ -28,6 +28,11 @@
       />
   <adapter
       factory=".indexers.PlateTextIndexer"
+      name="plate"
+      />
+  <!-- Deprecated: legacy `__somersault__` Plate type, to be removed in the next major version. -->
+  <adapter
+      factory=".indexers.PlateTextIndexer"
       name="__somersault__"
       />
 

@@ -28,6 +28,14 @@ HAS_PLONE_6 = getattr(
 IMAGE_PATH = (pathlib.Path(__file__).parent / "image.png").resolve()
 IMAGE_DATA = IMAGE_PATH.read_bytes()
 
+# (key, @type) pairs of Plate regions. Regions are found by ``@type``, not key.
+# ``__somersault__`` is the deprecated legacy name.
+PLATE_REGIONS = (
+    ("main", "plate"),
+    ("aboveContent", "plate"),
+    ("__somersault__", "__somersault__"),
+)
+
 
 class TestBlocksSerializer(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -639,36 +647,38 @@ class TestBlocksSerializer(unittest.TestCase):
         self.assertEqual(href["@id"], doc.absolute_url())
 
     def test_plate_internal_link_serializer(self):
-        target_item = self.image
-        resolveuid_link = f"../resolveuid/{target_item.UID()}"
-        blocks = {
-            "__somersault__": {
-                "@type": "__somersault__",
-                "value": [
-                    {
-                        "blockWidth": "default",
-                        "children": [
-                            {"text": ""},
+        for key, block_type in PLATE_REGIONS:
+            with self.subTest(key=key, block_type=block_type):
+                target_item = self.image
+                resolveuid_link = f"../resolveuid/{target_item.UID()}"
+                blocks = {
+                    key: {
+                        "@type": block_type,
+                        "value": [
                             {
                                 "blockWidth": "default",
-                                "children": [{"text": "This is a link"}],
-                                "id": "LR0yRMwNPU",
-                                "type": "a",
-                                "url": resolveuid_link,
+                                "children": [
+                                    {"text": ""},
+                                    {
+                                        "blockWidth": "default",
+                                        "children": [{"text": "This is a link"}],
+                                        "id": "LR0yRMwNPU",
+                                        "type": "a",
+                                        "url": resolveuid_link,
+                                    },
+                                    {"text": ""},
+                                ],
+                                "id": "IR4xX0-rK0",
+                                "type": "p",
                             },
-                            {"text": ""},
                         ],
-                        "id": "IR4xX0-rK0",
-                        "type": "p",
                     },
-                ],
-            },
-        }
+                }
 
-        res = self.serialize(
-            context=self.portal["doc1"],
-            blocks=blocks,
-        )
-        value = res["__somersault__"]["value"]
-        link = value[0]["children"][1]["url"]
-        self.assertTrue(link == target_item.absolute_url())
+                res = self.serialize(
+                    context=self.portal["doc1"],
+                    blocks=blocks,
+                )
+                value = res[key]["value"]
+                link = value[0]["children"][1]["url"]
+                self.assertTrue(link == target_item.absolute_url())

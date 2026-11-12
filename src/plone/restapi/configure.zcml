@@ -155,5 +155,10 @@
       factory=".blocks_linkintegrity.PlateBlockLinksRetriever"
       provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
       />
+  <!-- Deprecated: legacy `__somersault__` Plate type, to be removed in the next major version. -->
+  <subscriber
+      factory=".blocks_linkintegrity.LegacyPlateBlockLinksRetriever"
+      provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"
+      />
 
 </configure>

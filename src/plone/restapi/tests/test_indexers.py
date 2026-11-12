@@ -85,8 +85,16 @@ TABLE_BLOCK = {
     },
 }
 
+# (key, @type) pairs of Plate regions. Regions are found by ``@type``, not key.
+# ``__somersault__`` is the deprecated legacy name.
+PLATE_REGIONS = (
+    ("main", "plate"),
+    ("aboveContent", "plate"),
+    ("__somersault__", "__somersault__"),
+)
+
 PLATE_BLOCK = {
-    "@type": "__somersault__",
+    "@type": "plate",
     "value": [
         {
             "blockWidth": "default",
@@ -850,13 +858,15 @@ class TestSearchableTextIndexer(unittest.TestCase):
         self.assertIn("my data", result)
 
     def test_indexer_block_plate(self):
-        document = self.document
-        document.blocks = {
-            "__somersault__": PLATE_BLOCK,
-        }
-        document.reindexObject()
-        result = self._extract_searchable_text(document)
-        self.assertIn(
-            "wiki page lorem ipsum dolor sit amet odio tortor in sollicitudin phasellus interdum justo arcu hendrerit pretium nisi praesent tempus netus non neque blandit vel augue molestie cras fames vestibulum convallis facilisi hac imperdiet fermentum blandit phasellus nullam auctor elit enim eu mollis aliquet adipiscing feugiat dui lacus luctus mauris hendrerit facilisis est nunc turpis pharetra eleifend duis porta platea nulla tortor aliquam est quam luctus pulvinar urna egestas cras nisi eget sollicitudin aliquet sodales do iaculis lobortis viverra lacus sagittis mauris leo porttitor platea fames maecenas posuere sapien interdum a do senectus adipiscing senectus aliqua porta nec quam non tempor adipiscing suspendisse tristique gravida congue molestie mollis bibendum est ac proin lacinia elephant images lorem ipsum dolor sit amet odio tortor in sollicitudin phasellus interdum justo arcu hendrerit pretium nisi praesent tempus netus non neque blandit vel augue molestie cras fames vestibulum convallis facilisi hac imperdiet fermentum blandit phasellus nullam auctor elit enim eu mollis aliquet adipiscing feugiat dui lacus luctus mauris hendrerit facilisis est nunc turpis pharetra eleifend duis porta platea nulla tortor aliquam est quam luctus pulvinar urna egestas cras nisi eget sollicitudin aliquet sodales do iaculis lobortis viverra lacus sagittis mauris leo porttitor platea fames maecenas posuere sapien interdum a do senectus adipiscing senectus aliqua porta nec quam non tempor adipiscing suspendisse tristique gravida congue molestie mollis bibendum est ac proin lacinia heading 3 lorem ipsum dolor sit amet odio tortor in sollicitudin phasellus interdum justo arcu hendrerit pretium nisi praesent tempus netus non neque blandit vel augue molestie cras fames vestibulum convallis facilisi hac imperdiet fermentum blandit phasellus nullam auctor elit enim eu mollis aliquet adipiscing feugiat dui lacus luctus mauris hendrerit facilisis est nunc turpis pharetra eleifend duis porta platea nulla tortor aliquam est heading 4 lorem ipsum dolor sit amet odio tortor in sollicitudin phasellus interdum justo arcu hendrerit pretium nisi praesent tempus netus non neque blandit vel augue molestie cras fames vestibulum convallis facilisi hac imperdiet fermentum blandit phasellus nullam auctor elit enim eu mollis aliquet adipiscing feugiat dui lacus luctus mauris hendrerit facilisis est nunc turpis pharetra eleifend duis porta platea nulla tortor aliquam est links this is a link bulleted lists item 1 item 2 item nested 1 numbered lists item 1 item 2 item nested 1 todo list todo list item 1 todo list item 2 toggle items collapsibles this is a toggle item with collapsible text inside code from plone import api brains api content find portal_type wikipage for brain in brains print brain title tables header 1 header 2 different widths and borders merged cells and backgrounds blockquote this is a blockquote callouts this is a callout table of contents",
-            result,
-        )
+        for key, block_type in PLATE_REGIONS:
+            with self.subTest(key=key, block_type=block_type):
+                document = self.document
+                document.blocks = {
+                    key: {**PLATE_BLOCK, "@type": block_type},
+                }
+                document.reindexObject()
+                result = self._extract_searchable_text(document)
+                self.assertIn(
+                    "wiki page lorem ipsum dolor sit amet odio tortor in sollicitudin phasellus interdum justo arcu hendrerit pretium nisi praesent tempus netus non neque blandit vel augue molestie cras fames vestibulum convallis facilisi hac imperdiet fermentum blandit phasellus nullam auctor elit enim eu mollis aliquet adipiscing feugiat dui lacus luctus mauris hendrerit facilisis est nunc turpis pharetra eleifend duis porta platea nulla tortor aliquam est quam luctus pulvinar urna egestas cras nisi eget sollicitudin aliquet sodales do iaculis lobortis viverra lacus sagittis mauris leo porttitor platea fames maecenas posuere sapien interdum a do senectus adipiscing senectus aliqua porta nec quam non tempor adipiscing suspendisse tristique gravida congue molestie mollis bibendum est ac proin lacinia elephant images lorem ipsum dolor sit amet odio tortor in sollicitudin phasellus interdum justo arcu hendrerit pretium nisi praesent tempus netus non neque blandit vel augue molestie cras fames vestibulum convallis facilisi hac imperdiet fermentum blandit phasellus nullam auctor elit enim eu mollis aliquet adipiscing feugiat dui lacus luctus mauris hendrerit facilisis est nunc turpis pharetra eleifend duis porta platea nulla tortor aliquam est quam luctus pulvinar urna egestas cras nisi eget sollicitudin aliquet sodales do iaculis lobortis viverra lacus sagittis mauris leo porttitor platea fames maecenas posuere sapien interdum a do senectus adipiscing senectus aliqua porta nec quam non tempor adipiscing suspendisse tristique gravida congue molestie mollis bibendum est ac proin lacinia heading 3 lorem ipsum dolor sit amet odio tortor in sollicitudin phasellus interdum justo arcu hendrerit pretium nisi praesent tempus netus non neque blandit vel augue molestie cras fames vestibulum convallis facilisi hac imperdiet fermentum blandit phasellus nullam auctor elit enim eu mollis aliquet adipiscing feugiat dui lacus luctus mauris hendrerit facilisis est nunc turpis pharetra eleifend duis porta platea nulla tortor aliquam est heading 4 lorem ipsum dolor sit amet odio tortor in sollicitudin phasellus interdum justo arcu hendrerit pretium nisi praesent tempus netus non neque blandit vel augue molestie cras fames vestibulum convallis facilisi hac imperdiet fermentum blandit phasellus nullam auctor elit enim eu mollis aliquet adipiscing feugiat dui lacus luctus mauris hendrerit facilisis est nunc turpis pharetra eleifend duis porta platea nulla tortor aliquam est links this is a link bulleted lists item 1 item 2 item nested 1 numbered lists item 1 item 2 item nested 1 todo list todo list item 1 todo list item 2 toggle items collapsibles this is a toggle item with collapsible text inside code from plone import api brains api content find portal_type wikipage for brain in brains print brain title tables header 1 header 2 different widths and borders merged cells and backgrounds blockquote this is a blockquote callouts this is a callout table of contents",
+                    result,
+                )
