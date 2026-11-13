@@ -3,7 +3,7 @@ myst-parser
 plone-sphinx-theme<2
 sphinx-autobuild
 sphinx-copybutton
-sphinxcontrib.httpdomain
-sphinxcontrib.httpexample
+sphinxcontrib-httpdomain>=2.1.0
+sphinxcontrib-httpexample>=2.0
 sphinxext-opengraph
 vale
