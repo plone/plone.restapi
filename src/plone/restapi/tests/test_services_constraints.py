@@ -135,6 +135,40 @@ class TestServicesConstraints(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_get_requires_add_permission(self):
+        api.user.create(
+            email="viewer@example.com",
+            username="viewer",
+            password="password",
+        )
+        transaction.commit()
+        session = RelativeSession(self.portal_url, test=self)
+        session.headers.update({"Accept": "application/json"})
+        session.auth = ("viewer", "password")
+        try:
+            response = session.get("/folder/@constraints")
+            self.assertIn(response.status_code, (401, 403))
+        finally:
+            session.close()
+
+    def test_get_allowed_for_contributor(self):
+        api.user.create(
+            email="contributor@example.com",
+            username="contributor",
+            password="password",
+        )
+        api.user.grant_roles(username="contributor", roles=["Contributor"])
+        transaction.commit()
+        session = RelativeSession(self.portal_url, test=self)
+        session.headers.update({"Accept": "application/json"})
+        session.auth = ("contributor", "password")
+        try:
+            response = session.get("/folder/@constraints")
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.json()["configurable"])
+        finally:
+            session.close()
+
     def test_patch_requires_modify_permission(self):
         api.user.create(
             email="member@example.com",

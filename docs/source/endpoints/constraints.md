@@ -24,7 +24,7 @@ Use `@constraints` to configure the policy.
 | `GET`   | `/@constraints` | Read constraint settings for this context   |
 | `PATCH` | `/@constraints` | Update constraint settings for this context |
 
-`GET` requires the `View` permission.
+`GET` requires the `Add portal content` permission.
 `PATCH` requires `Modify portal content` and the `Modify constrain types` permission.
 
 

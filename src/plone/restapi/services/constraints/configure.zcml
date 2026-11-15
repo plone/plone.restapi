@@ -7,7 +7,7 @@
       method="GET"
       factory=".get.ConstraintsGet"
       for="Products.CMFCore.interfaces.IContentish"
-      permission="zope2.View"
+      permission="cmf.AddPortalContent"
       name="@constraints"
       />
 
@@ -15,7 +15,7 @@
       method="GET"
       factory=".get.ConstraintsGet"
       for="plone.restapi.bbb.IPloneSiteRoot"
-      permission="zope2.View"
+      permission="cmf.AddPortalContent"
       name="@constraints"
       />
 
