@@ -1,4 +1,5 @@
 from plone.restapi.services import Service
+from plone.restapi.services.rules import ensure_rules_activated
 from zope.component import queryMultiAdapter
 
 
@@ -15,6 +16,7 @@ class ContentRulesGet(Service):
         return self
 
     def reply(self):
+        ensure_rules_activated(self.context, self.request)
         manage_assignments = queryMultiAdapter(
             (self.context, self.request), name="manage-content-rules"
         )

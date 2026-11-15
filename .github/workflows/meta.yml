@@ -5,6 +5,10 @@ name: Meta
 
 on:
   push:
+    branches:
+      - master
+      - main
+  pull_request:
   workflow_dispatch:
 
 ##
@@ -47,7 +51,6 @@ jobs:
 # [github]
 # os_dependencies = "git libxml2 libxslt"
 ##
-
 
 ##
 # Specify additional jobs in .meta.toml:

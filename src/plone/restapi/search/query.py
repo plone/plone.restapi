@@ -78,6 +78,10 @@ class ZCatalogCompatibleQueryAdapter:
         "sort_order": {list: list, tuple: list, str: str},
     }
 
+    # Control parameters that are not catalog indexes. They are read from
+    # the request where they are needed -- ``metadata_fields`` is read from
+    # ``request.form`` (or the JSON body) by the summary serializer -- and
+    # are dropped here so they never reach ``catalog.searchResults()``.
     ignore_query_params = ["metadata_fields"]
 
     def __init__(self, context, request):
@@ -100,6 +104,9 @@ class ZCatalogCompatibleQueryAdapter:
                 return future_value(idx_query)
 
     def __call__(self, query):
+        for param in self.ignore_query_params:
+            query.pop(param, None)
+
         for idx_name, idx_query in query.items():
             if idx_name in self.global_query_params:
                 # It's a query-wide parameter like 'sort_limit'
@@ -115,8 +122,7 @@ class ZCatalogCompatibleQueryAdapter:
             # that could not be serialized in a query string or JSON
             index = self.get_index(idx_name)
             if index is None:
-                if idx_name not in self.ignore_query_params:
-                    log.warning("No such index: %r" % idx_name)
+                log.warning("No such index: %r" % idx_name)
                 continue
 
             query_opts_parser = getMultiAdapter(

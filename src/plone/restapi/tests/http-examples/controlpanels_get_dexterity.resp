@@ -3,7 +3,10 @@ Content-Type: application/json
 
 {
     "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types",
+    "description": "",
     "group": "Content",
+    "group_id": "plone-content",
+    "icon": "gem",
     "items": [
         {
             "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Plone Site",

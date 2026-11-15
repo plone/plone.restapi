@@ -2,6 +2,7 @@ from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.interfaces import IControlpanelLayer
 from plone.restapi.services import Service
 from zExceptions import BadRequest
+from zExceptions import NotFound
 from zope.component import getAdapters
 from zope.interface import alsoProvides
 from zope.interface import implementer
@@ -35,6 +36,8 @@ class ControlpanelsAdd(Service):
             raise BadRequest("Missing parameter controlpanelname")
 
         panel = self.panel_by_name(self.params[0])
+        if panel is None:
+            raise NotFound(self.context, self.params[0], self.request)
         res = panel.add(self.params[1:])
 
         self.request.response.setStatus(201)

@@ -22,7 +22,13 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
 
 
-def check_security(context):
+def check_security(context, portal_type: str = ""):
+    # Issue 2054: Only expose type information to Anonymous users
+    # if they are trying to access information about the current context portal type
+    context_portal_type = getattr(context, "portal_type", None)
+    if portal_type and (context_portal_type == portal_type):
+        return
+
     # Only expose type information to authenticated users
     portal_membership = getToolByName(context, "portal_membership")
     if portal_membership.isAnonymousUser():
@@ -126,8 +132,8 @@ class TypesGet(Service):
             return self.reply_for_field()
 
     def reply_for_type(self):
-        check_security(self.context)
         portal_type = self.params.pop()
+        check_security(self.context, portal_type)
 
         # Make sure we get the right dexterity-types adapter
         if IPloneRestapiLayer.providedBy(self.request):

@@ -98,7 +98,7 @@ instance/etc/zope.ini: $(BIN_FOLDER)/pipx  ## Create instance configuration
 	@echo "$(GREEN)==> Create instance configuration$(RESET)"
 	$(BIN_FOLDER)/pipx run cookiecutter -f --no-input --config-file instance.yaml gh:plone/cookiecutter-zope-instance
 
-$(BIN_FOLDER)/runwsgi $(BIN_FOLDER)/zope-testrunner $(BIN_FOLDER)/update_restapi_locales: $(BIN_FOLDER)/pip ## Install Plone
+$(BIN_FOLDER)/runwsgi $(BIN_FOLDER)/zope-testrunner $(BIN_FOLDER)/robot-server $(BIN_FOLDER)/update_restapi_locales: $(BIN_FOLDER)/pip ## Install Plone
 	@echo "$(GREEN)==> Install Plone$(RESET)"
 	$(BIN_FOLDER)/mxdev -c mx.ini
 	$(BIN_FOLDER)/pip install -r requirements-mxdev.txt
@@ -120,6 +120,10 @@ check: $(BIN_FOLDER)/tox ## Check and fix code base according to Plone standards
 .PHONY: test
 test: $(BIN_FOLDER)/zope-testrunner ## Run tests
 	zope_i18n_compile_mo_files=True $(BIN_FOLDER)/zope-testrunner --all --test-path=src -s plone.restapi
+
+.PHONY: acceptance-backend-start
+acceptance-backend-start: $(BIN_FOLDER)/robot-server ## Start the acceptance test server on localhost:55001
+	WSGI_SERVER_PORT=55001 zope_i18n_compile_mo_files=True $(BIN_FOLDER)/robot-server plone.restapi.testing.PLONE_RESTAPI_DX_ACCEPTANCE_TESTING
 
 .PHONY: i18n
 i18n: $(BIN_FOLDER)/update_restapi_locales ## Update locales

@@ -24,6 +24,7 @@ prune docs/_build
 prune docs/styles/Microsoft
 prune src/plone/restapi/tests/images
 prune news
+prune .oss-scanner
 global-exclude *.pyc
 include pyproject.toml
 include netlify.toml

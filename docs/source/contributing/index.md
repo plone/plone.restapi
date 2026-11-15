@@ -41,6 +41,30 @@ make start
 ```
 
 
+## Run frontend tests against the acceptance server
+
+To test a frontend against your local `plone.restapi` checkout, install the development environment with `make install`, then start the acceptance server.
+Use Plone 6 with `plone.app.robotframework` 2 or later for this server.
+
+```shell
+make acceptance-backend-start
+```
+
+Wait for `Started Zope robot server`, then configure your frontend tests to use `http://localhost:55001/plone` as their API URL.
+The server uses the REST API Dexterity test fixture and a single WSGI worker thread.
+Authenticate as `admin` with the password `secret` to manage the test site.
+
+To check that the API responds, run the following command in another terminal.
+
+```shell
+curl --fail --user admin:secret --header 'Accept: application/json' \
+  http://localhost:55001/plone/@types
+```
+
+Stop the server with {kbd}`Control+C` when you finish.
+Restart it to recreate the site and discard all changes.
+
+
 ## Generate documentation examples
 
 This documentation includes examples of requests and responses, using each of http, curl, httpie, and python-requests.

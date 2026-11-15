@@ -68,6 +68,14 @@ RichTextValue(
 
 ## File / Image Fields
 
+(serialization-file-image-fields-label)=
+
+## File and image fields
+
+File and image fields can be serialized for downloads or deserialized for uploads.
+
+
+(download-serialization-label)=
 
 ### Download (serialization)
 
@@ -109,7 +117,62 @@ Image URLs are created using the UID-based URL that changes each time the image 
 }
 ```
 
+
+(upload-deserialization-label)=
+
 ### Upload (deserialization)
+
+For upload, either {ref}`multipart/form-data <upload-multipart-form-data-label>` or {ref}`base64-encoded data <upload-base64-encoded-data-label>` may be used.
+
+
+(upload-multipart-form-data-label)=
+
+#### Upload using multipart/form-data
+
+```{versionadded} Plone 6.2
+Multipart PATCH requests require Zope >= 6 (Plone >= 6.2).
+```
+
+It's possible to upload one or multiple files or images using `multipart/form-data` in a single POST or PATCH request.
+In the request body, the part named `data` must be present and should contain the JSON data for the REST API request.
+Fields that contain an uploaded file should be an object with a `part` key referring to the name of the multipart part which contains the file's name, content type and data.
+
+Example:
+
+```http
+POST /++api++/folder1 HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="data"
+Content-Type: application/json
+
+{
+  "@type": "File",
+  "title": "Hello, Plone",
+  "file": {
+    "part": "attachment_001"
+  },
+  "leadimage": {
+    "part": "attachment_002"
+  }
+}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="attachment_001"; filename="hello_plone.odt"
+Content-Type: application/vnd.oasis.opendocument.text
+
+[Binary data of hello_plone.odt]
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="attachment_002"; filename="logo.svg"
+Content-Type: image/svg+xml
+
+[Binary data of logo.svg]
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+```
+
+(upload-base64-encoded-data-label)=
+
+#### Upload as base64-encoded data
 
 For file or image fields, the client must provide the file's data as a mapping containing the file data and some additional metadata:
 

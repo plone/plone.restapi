@@ -3,7 +3,7 @@ from setuptools import setup
 import pathlib
 import sys
 
-version = "10.0.5.dev0"
+version = "10.2.2.dev0"
 
 if getattr(sys.version_info, "major") == 2:
     raise ValueError(
@@ -21,10 +21,12 @@ long_description = "\n".join(
 TEST_REQUIRES = [
     "collective.MockMailHost",
     "plone.app.caching",
+    "plone.app.contentrules",
     "plone.app.contenttypes[test]",
     "plone.app.iterate",
     "plone.app.discussion[test]",
     "plone.app.multilingual",
+    "plone.app.robotframework",
     "plone.app.testing",
     "plone.app.upgrade",
     "plone.rest>=3.0.1",
