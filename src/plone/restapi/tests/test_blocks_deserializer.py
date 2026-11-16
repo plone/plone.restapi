@@ -17,6 +17,14 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 import json
 import unittest
 
+# (key, @type) pairs of Plate regions. Regions are found by ``@type``, not key.
+# ``__somersault__`` is the deprecated legacy name.
+PLATE_REGIONS = (
+    ("main", "plate"),
+    ("aboveContent", "plate"),
+    ("__somersault__", "__somersault__"),
+)
+
 
 class TestBlocksDeserializer(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -740,31 +748,33 @@ class TestBlocksDeserializer(unittest.TestCase):
         self.assertEqual(link, f"../resolveuid/{self.portal['renamed-doc'].UID()}")
 
     def test_plate_internal_link_deserializer(self):
-        target_url = self.image.absolute_url()
-        blocks = {
-            "__somersault__": {
-                "@type": "__somersault__",
-                "value": [
-                    {
-                        "blockWidth": "default",
-                        "children": [
-                            {"text": ""},
+        for key, block_type in PLATE_REGIONS:
+            with self.subTest(key=key, block_type=block_type):
+                target_url = self.image.absolute_url()
+                blocks = {
+                    key: {
+                        "@type": block_type,
+                        "value": [
                             {
                                 "blockWidth": "default",
-                                "children": [{"text": "This is a link"}],
-                                "id": "LR0yRMwNPU",
-                                "type": "a",
-                                "url": target_url,
+                                "children": [
+                                    {"text": ""},
+                                    {
+                                        "blockWidth": "default",
+                                        "children": [{"text": "This is a link"}],
+                                        "id": "LR0yRMwNPU",
+                                        "type": "a",
+                                        "url": target_url,
+                                    },
+                                    {"text": ""},
+                                ],
+                                "id": "IR4xX0-rK0",
+                                "type": "p",
                             },
-                            {"text": ""},
                         ],
-                        "id": "IR4xX0-rK0",
-                        "type": "p",
                     },
-                ],
-            },
-        }
-        res = self.deserialize(blocks=blocks)
-        value = res.blocks["__somersault__"]["value"]
-        link = value[0]["children"][1]["url"]
-        self.assertTrue(link.startswith("../resolveuid/"))
+                }
+                res = self.deserialize(blocks=blocks)
+                value = res.blocks[key]["value"]
+                link = value[0]["children"][1]["url"]
+                self.assertTrue(link.startswith("../resolveuid/"))

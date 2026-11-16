@@ -5,6 +5,14 @@ from zope.component import queryUtility
 
 import unittest
 
+# (key, @type) pairs of Plate regions. Regions are found by ``@type``, not key.
+# ``__somersault__`` is the deprecated legacy name.
+PLATE_REGIONS = (
+    ("main", "plate"),
+    ("aboveContent", "plate"),
+    ("__somersault__", "__somersault__"),
+)
+
 
 class TestBlocksVisitor(unittest.TestCase):
 
@@ -40,19 +48,21 @@ class TestBlocksVisitor(unittest.TestCase):
         self.assertEqual(visited, ["block2", "block1"])
 
     def test_visit_blocks_in_plate_value(self):
-        visited = []
-        blocks = {
-            "__somersault__": {
-                "@type": "__somersault__",
-                "value": [
-                    {
-                        "type": "p",
-                        "children": [{"@type": "image"}],
+        for key, block_type in PLATE_REGIONS:
+            with self.subTest(key=key, block_type=block_type):
+                visited = []
+                blocks = {
+                    key: {
+                        "@type": block_type,
+                        "value": [
+                            {
+                                "type": "p",
+                                "children": [{"@type": "image"}],
+                            }
+                        ],
                     }
-                ],
-            }
-        }
-        for block in visit_blocks(self.doc, blocks):
-            visited.append(block["@type"])
-        # depth-first traversal
-        self.assertEqual(visited, ["image", "__somersault__"])
+                }
+                for block in visit_blocks(self.doc, blocks):
+                    visited.append(block["@type"])
+                # depth-first traversal
+                self.assertEqual(visited, ["image", block_type])
