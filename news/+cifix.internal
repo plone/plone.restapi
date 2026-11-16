@@ -1,2 +1,0 @@
-Update CI configuration to test Python 3.11 as the minimum version for Plone
-6, and run Plone 5 tests using the ubuntu-24 runner. @davisagli
