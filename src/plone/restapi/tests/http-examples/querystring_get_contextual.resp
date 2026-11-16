@@ -739,7 +739,7 @@ Content-Type: application/json
                     "widget": "RelativePathWidget"
                 }
             },
-            "sortable": false,
+            "sortable": true,
             "title": "Location",
             "values": {},
             "vocabulary": null
@@ -1553,6 +1553,41 @@ Content-Type: application/json
             },
             "sortable": true,
             "title": "Modification date",
+            "values": {},
+            "vocabulary": null
+        },
+        "path": {
+            "description": "The location of an item ",
+            "enabled": true,
+            "fetch_vocabulary": true,
+            "group": "Metadata",
+            "operations": [
+                "plone.app.querystring.operation.string.absolutePath",
+                "plone.app.querystring.operation.string.path",
+                "plone.app.querystring.operation.string.relativePath"
+            ],
+            "operators": {
+                "plone.app.querystring.operation.string.absolutePath": {
+                    "description": "Location in the site structure",
+                    "operation": "plone.app.querystring.queryparser._absolutePath",
+                    "title": "Absolute path",
+                    "widget": "ReferenceWidget"
+                },
+                "plone.app.querystring.operation.string.path": {
+                    "description": "Location in the navigation structure",
+                    "operation": "plone.app.querystring.queryparser._navigationPath",
+                    "title": "Navigation path",
+                    "widget": "ReferenceWidget"
+                },
+                "plone.app.querystring.operation.string.relativePath": {
+                    "description": "Use '../' to navigate to parent objects.",
+                    "operation": "plone.app.querystring.queryparser._relativePath",
+                    "title": "Relative path",
+                    "widget": "RelativePathWidget"
+                }
+            },
+            "sortable": true,
+            "title": "Location",
             "values": {},
             "vocabulary": null
         },
