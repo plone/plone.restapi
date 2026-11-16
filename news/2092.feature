@@ -1,1 +1,1 @@
-Added support for Plate regions stored with the `plate` block type, keyed by region name, to the block visitor, the `SearchableText` indexer, and link integrity, and deprecated the legacy `__somersault__` type. @sneridagh
+Added support for Plate regions stored with the `plate` block type, keyed by region name, to the block visitor, the `SearchableText` indexer, and link integrity, and deprecated the legacy `__somersault__` type. Add-ons can check for the new `plonerestapi-plate-regions` ZCML feature. @sneridagh
