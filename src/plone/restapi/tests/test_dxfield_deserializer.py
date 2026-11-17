@@ -367,6 +367,22 @@ class TestDXFieldDeserializer(unittest.TestCase):
         )
         self.assertEqual("doc.txt", value.filename)
 
+    def test_namedfield_deserialization_multipart_request_with_inline_data(self):
+        # A multipart request can still send a file inline, without "part".
+        self.request.environ["CONTENT_TYPE"] = "multipart/form-data; boundary=foo"
+        value = self.deserialize(
+            "test_namedfile_field",
+            {
+                "data": "U3BhbSBhbmQgZWdncyE=",
+                "encoding": "base64",
+                "filename": "doc.txt",
+                "content-type": "text/plain",
+            },
+        )
+        self.assertEqual(b"Spam and eggs!", value.data)
+        self.assertEqual("doc.txt", value.filename)
+        self.assertEqual("text/plain", value.contentType)
+
     def test_namedfile_deserialization_returns_namedfile(self):
         value = self.deserialize("test_namedfile_field", {"data": "Spam and eggs!"})
         self.assertTrue(isinstance(value, namedfile.NamedFile), "Not a <NamedFile>")
