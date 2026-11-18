@@ -61,7 +61,7 @@ class TypesPut(Service):
 
     def remove_fields(self, ctype, data):
         fields = data.get("properties", {})
-        existing = {name for name in ctype.schema}
+        existing = {*ctype.schema}
         for name in existing:
             if name not in fields:
                 delete_field(ctype, self.request, name)
