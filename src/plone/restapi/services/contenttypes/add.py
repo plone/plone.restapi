@@ -1,15 +1,27 @@
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.i18n.normalizer import idnormalizer
 from plone.restapi.services.contenttypes import ContentTypesService
+from plone.restapi.services.contenttypes import WORKFLOW
 from plone.restapi.types.utils import _deserialize_schema_values
 from plone.restapi.typesettings.interfaces import ITypeCreation
 from plone.restapi.typesettings.manage import copy_type
 from plone.restapi.typesettings.manage import create_type
+from plone.restapi.typesettings.workflows import apply_change
+from plone.restapi.typesettings.workflows import check_state_map
+from plone.restapi.typesettings.workflows import DEFAULT_CHAIN
+from plone.restapi.typesettings.workflows import get_workflow
+from plone.restapi.typesettings.workflows import plan_change
+from plone.restapi.typesettings.workflows import workflow_id
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.controlpanel.events import ConfigurationChangedEvent
 from zExceptions import BadRequest
+from zope.event import notify
 
 
 class ContentTypesPost(ContentTypesService):
     def reply(self):
+        if self.params[1:] == [WORKFLOW]:
+            return self.change_workflow(self.get_fti(WORKFLOW))
         if self.params:
             raise BadRequest(f"Create content types at {self.url()}")
         body, errors = _deserialize_schema_values(
@@ -75,3 +87,59 @@ class ContentTypesPost(ContentTypesService):
                 error = str(exc)
         if error:
             self.raise_errors([{"field": "id", "message": error, "error": None}])
+
+    def change_workflow(self, fti):
+        """Assign a workflow to the type, or plan it with ``dry_run``."""
+        body = self.json_body()
+        if not isinstance(body, dict):
+            self.raise_errors([{"message": "Expected an object", "error": None}])
+        workflow_tool = getToolByName(self.context, "portal_workflow")
+        if body.get("follows_default"):
+            chain = DEFAULT_CHAIN
+            target_chain = workflow_tool.getDefaultChain()
+        elif "workflow" in body:
+            new_id = body["workflow"]
+            if new_id is not None and (
+                not isinstance(new_id, str)
+                or workflow_tool.getWorkflowById(new_id) is None
+            ):
+                self.raise_errors(
+                    [
+                        {
+                            "field": "workflow",
+                            "message": "Unknown workflow",
+                            "error": None,
+                        }
+                    ]
+                )
+            chain = target_chain = (new_id,) if new_id else ()
+        else:
+            self.raise_errors(
+                [
+                    {
+                        "message": "Expected a workflow or follows_default",
+                        "error": None,
+                    }
+                ]
+            )
+        type_id = fti.getId()
+        current = get_workflow(self.context, workflow_tool.getChainFor(type_id))
+        target = get_workflow(self.context, target_chain)
+        errors = check_state_map(body.get("state_map"), target)
+        if errors:
+            self.raise_errors(errors)
+        if body.get("dry_run"):
+            return {
+                "workflow": workflow_id(target),
+                "current": workflow_id(current),
+                **plan_change(self.context, [type_id], current, target),
+            }
+        changed = apply_change(
+            self.context, [type_id], chain, current, target, body.get("state_map")
+        )
+        notify(ConfigurationChangedEvent(self, {"workflow": workflow_id(target)}))
+        return {
+            "workflow": workflow_id(target),
+            "follows_default": chain == DEFAULT_CHAIN,
+            "changed": changed,
+        }
