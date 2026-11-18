@@ -22,9 +22,9 @@ jobs:
           # [Python version, visual name, tox env]
           - ["3.14", "6.2 on py3.14", "py314-plone62"]
           - ["3.11", "6.2 on py3.11", "py311-plone62"]
-          - ["3.14", "6.1 on py3.14", "py314-plone61"]
+          - ["3.13", "6.1 on py3.13", "py313-plone61"]
           - ["3.11", "6.1 on py3.11", "py311-plone61"]
-          - ["3.14", "6.0 on py3.14", "py314-plone60"]
+          - ["3.13", "6.0 on py3.13", "py313-plone60"]
           - ["3.11", "6.0 on py3.11", "py311-plone60"]
 
     runs-on: ${{ matrix.os[1] }}
