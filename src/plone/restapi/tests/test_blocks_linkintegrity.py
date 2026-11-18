@@ -17,6 +17,14 @@ from zope.intid.interfaces import IIntIds
 
 import transaction
 
+# (key, @type) pairs of Plate regions. Regions are found by ``@type``, not key.
+# ``__somersault__`` is the deprecated legacy name.
+PLATE_REGIONS = (
+    ("main", "plate"),
+    ("aboveContent", "plate"),
+    ("__somersault__", "__somersault__"),
+)
+
 
 class TestBlocksLinkintegrity(TestCase):
     layer = PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
@@ -249,37 +257,39 @@ class TestBlocksLinkintegrity(TestCase):
         self.assertEqual(len(value), 0)
 
     def test_links_retriever_return_internal_links_type_a_in_plate_block(self):
-        uid = IUUID(self.doc2)
-        resolve_uid_link = f"../resolveuid/{uid}"
-        blocks = {
-            "__somersault__": {
-                "@type": "__somersault__",
-                "value": [
-                    {
-                        "blockWidth": "default",
-                        "children": [
-                            {"text": ""},
+        for key, block_type in PLATE_REGIONS:
+            with self.subTest(key=key, block_type=block_type):
+                uid = IUUID(self.doc2)
+                resolve_uid_link = f"../resolveuid/{uid}"
+                blocks = {
+                    key: {
+                        "@type": block_type,
+                        "value": [
                             {
                                 "blockWidth": "default",
-                                "children": [{"text": "This is a link"}],
-                                "id": "LR0yRMwNPU",
-                                "type": "a",
-                                "url": resolve_uid_link,
+                                "children": [
+                                    {"text": ""},
+                                    {
+                                        "blockWidth": "default",
+                                        "children": [{"text": "This is a link"}],
+                                        "id": "LR0yRMwNPU",
+                                        "type": "a",
+                                        "url": resolve_uid_link,
+                                    },
+                                    {"text": ""},
+                                ],
+                                "id": "IR4xX0-rK0",
+                                "type": "p",
                             },
-                            {"text": ""},
                         ],
-                        "id": "IR4xX0-rK0",
-                        "type": "p",
                     },
-                ],
-            },
-        }
+                }
 
-        self.portal.doc1.blocks = blocks
-        value = self.retrieve_links(blocks)
+                self.portal.doc1.blocks = blocks
+                value = self.retrieve_links(blocks)
 
-        self.assertEqual(len(value), 1)
-        self.assertIn(resolve_uid_link, value)
+                self.assertEqual(len(value), 1)
+                self.assertIn(resolve_uid_link, value)
 
 
 class TestLinkintegrityForBlocks(TestCase):

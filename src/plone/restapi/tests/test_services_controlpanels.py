@@ -1,11 +1,16 @@
+from importlib import import_module
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from Products.CMFCore.utils import getToolByName
 
+import transaction
 import unittest
+
+PLONE6 = getattr(import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False)
 
 
 class TestControlpanelsEndpoint(unittest.TestCase):
@@ -33,6 +38,57 @@ class TestControlpanelsEndpoint(unittest.TestCase):
         data = response.json()
         self.assertIs(type(data), list)
         self.assertGreater(len(data), 0)
+
+    def test_get_listing_configlet_data(self):
+        response = self.api_session.get("/@controlpanels")
+        panels = {item["@id"].split("/")[-1]: item for item in response.json()}
+
+        self.assertEqual(panels["date-and-time"]["group"], "General")
+        self.assertEqual(panels["date-and-time"]["group_id"], "plone-general")
+        self.assertTrue(panels["date-and-time"]["icon"])
+        self.assertEqual(panels["date-and-time"]["description"], "")
+        self.assertEqual(panels["security"]["group_id"], "plone-security")
+
+    @unittest.skipUnless(PLONE6, "Plone 5.2 configlets use image URLs as icons")
+    def test_get_listing_icon_names(self):
+        response = self.api_session.get("/@controlpanels")
+        panels = {item["@id"].split("/")[-1]: item for item in response.json()}
+
+        self.assertEqual(panels["date-and-time"]["icon"], "clock")
+        self.assertEqual(panels["security"]["icon"], "shield-check")
+
+    def test_get_listing_description(self):
+        controlpanel = getToolByName(self.portal, "portal_controlpanel")
+        configlet = controlpanel.getActionObject("plone-general/DateAndTime")
+        configlet.description = "Time zone and first day of the week"
+        transaction.commit()
+
+        response = self.api_session.get("/@controlpanels")
+        panels = {item["@id"].split("/")[-1]: item for item in response.json()}
+
+        self.assertEqual(
+            panels["date-and-time"]["description"],
+            "Time zone and first day of the week",
+        )
+
+    def test_get_listing_order(self):
+        # The groups come in the order Plone defines for them.
+        plone_groups = [
+            "plone-general",
+            "plone-content",
+            "plone-users",
+            "plone-security",
+            "plone-advanced",
+            "Plone",
+            "Products",
+        ]
+        response = self.api_session.get("/@controlpanels")
+        group_ids = []
+        for item in response.json():
+            if item["group_id"] not in group_ids:
+                group_ids.append(item["group_id"])
+        self.assertEqual(group_ids[:2], ["plone-general", "plone-content"])
+        self.assertEqual(group_ids, sorted(group_ids, key=plone_groups.index))
 
     def test_get_item_nonexisting(self):
         response = self.api_session.get("/@controlpanels/no-way-jose")

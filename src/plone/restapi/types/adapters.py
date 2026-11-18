@@ -1,6 +1,8 @@
 """JsonSchema providers."""
 
 from plone.app.textfield.interfaces import IRichText
+from plone.namedfile.interfaces import INamedFile
+from plone.namedfile.interfaces import INamedImage
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_properties
@@ -17,6 +19,7 @@ from zope.component import getMultiAdapter
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.schema import getFieldsInOrder
 from zope.schema.interfaces import IASCII
 from zope.schema.interfaces import IASCIILine
 from zope.schema.interfaces import IBool
@@ -411,25 +414,34 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
         return "object"
 
     def get_factory(self):
-        if self.field.schema.__name__ == "INamedBlobImage":
+        if self.field.schema.isOrExtends(INamedImage):
             return "Image"
-        else:
+        if self.field.schema.isOrExtends(INamedFile):
             return "File"
+        return None
 
     def get_properties(self):
+        context = self.context
+        request = self.request
+        fieldsets = get_fieldsets(context, request, self.field.schema)
+        if not self.get_factory():
+            return get_jsonschema_properties(context, request, fieldsets)
+        # BBB: file and image properties keep their dotted names.
         if self.prefix:
             prefix = ".".join([self.prefix, self.field.__name__])
         else:
             prefix = self.field.__name__
-
-        context = self.context
-        request = self.request
-        fieldsets = get_fieldsets(context, request, self.field.schema)
         return get_jsonschema_properties(context, request, fieldsets, prefix)
 
     def additional(self):
         info = super().additional()
         info["properties"] = self.get_properties()
+        if not self.get_factory():
+            info["required"] = [
+                name
+                for name, field in getFieldsInOrder(self.field.schema)
+                if name in info["properties"] and field.required and not field.readonly
+            ]
         return info
 
 

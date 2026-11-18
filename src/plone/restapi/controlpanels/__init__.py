@@ -1,5 +1,7 @@
 from plone.restapi.controlpanels.interfaces import IControlpanel
 from Products.CMFCore.utils import getToolByName
+from zope.i18n import translate
+from zope.i18nmessageid import Message
 from zope.interface import implementer
 from zope.publisher.interfaces import NotFound
 
@@ -12,6 +14,8 @@ class RegistryConfigletPanel:
     configlet_id = None
     configlet_category_id = None
     schema = None
+    description = ""
+    icon = ""
 
     schema_prefix = "plone"
 
@@ -39,6 +43,15 @@ class RegistryConfigletPanel:
         if self.configlet:
             self.title = self.configlet["title"]
             self.group = self._get_group_title()
+            self.description = self._get_description()
+            self.icon = self.configlet.get("icon") or ""
+
+    def _get_description(self):
+        # enumConfiglets translates the title only.
+        description = self.configlet.get("description") or ""
+        if description and not isinstance(description, Message):
+            description = Message(description, domain="plone")
+        return translate(description, context=self.request) if description else ""
 
     def get_searchable_text(self):
 

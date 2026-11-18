@@ -60,7 +60,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
         # Enable volto.blocks if Plone Site is DX
         fti = queryUtility(IDexterityFTI, name="Plone Site")
         if fti is not None:
-            behavior_list = [a for a in fti.behaviors]
+            behavior_list = [*fti.behaviors]
             behavior_list.append("volto.blocks")
             fti.behaviors = tuple(behavior_list)
             # Invalidating the cache is required for the FTI to be applied

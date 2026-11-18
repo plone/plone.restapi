@@ -67,14 +67,23 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertEqual("Foo", value)
 
     def test_bool_deserialization_returns_true(self):
-        value = self.deserialize("test_bool_field", True)
-        self.assertTrue(isinstance(value, bool), "Not a <bool>")
-        self.assertEqual(True, value)
+        for form_value in (True, "true", "True"):
+            with self.subTest(form_value=form_value):
+                value = self.deserialize("test_bool_field", form_value)
+                self.assertTrue(isinstance(value, bool), "Not a <bool>")
+                self.assertEqual(True, value)
 
     def test_bool_deserialization_returns_false(self):
-        value = self.deserialize("test_bool_field", False)
-        self.assertTrue(isinstance(value, bool), "Not a <bool>")
-        self.assertEqual(False, value)
+        for form_value in (False, "false", "False"):
+            with self.subTest(form_value=form_value):
+                value = self.deserialize("test_bool_field", form_value)
+                self.assertTrue(isinstance(value, bool), "Not a <bool>")
+                self.assertEqual(False, value)
+
+    def test_bool_deserialization_rejects_other_values(self):
+        for value in ("yes", "on", "", 0, 1, "0", "1"):
+            with self.assertRaises((ValueError, ValidationError)):
+                self.deserialize("test_bool_field", value)
 
     def test_bytes_deserialization_returns_bytestring(self):
         value = self.deserialize("test_bytes_field", "Foo")
@@ -357,6 +366,22 @@ class TestDXFieldDeserializer(unittest.TestCase):
             {"data": "Spam and eggs!", "filename": "doc.txt"},
         )
         self.assertEqual("doc.txt", value.filename)
+
+    def test_namedfield_deserialization_multipart_request_with_inline_data(self):
+        # A multipart request can still send a file inline, without "part".
+        self.request.environ["CONTENT_TYPE"] = "multipart/form-data; boundary=foo"
+        value = self.deserialize(
+            "test_namedfile_field",
+            {
+                "data": "U3BhbSBhbmQgZWdncyE=",
+                "encoding": "base64",
+                "filename": "doc.txt",
+                "content-type": "text/plain",
+            },
+        )
+        self.assertEqual(b"Spam and eggs!", value.data)
+        self.assertEqual("doc.txt", value.filename)
+        self.assertEqual("text/plain", value.contentType)
 
     def test_namedfile_deserialization_returns_namedfile(self):
         value = self.deserialize("test_namedfile_field", {"data": "Spam and eggs!"})

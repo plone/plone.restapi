@@ -77,14 +77,14 @@ class Aliases:
 
         self.request.response.setStatus(200)
         self.request.response.setHeader("Content-Type", "application/json")
-        return [i for i in batch], batch.items_total, batch.links
+        return [*batch], batch.items_total, batch.links
 
     def reply_root_csv(self):
         if not IPloneSiteRoot.providedBy(self.context):
             raise NotAcceptable("CSV reply is only available from site root.")
 
         batch = RedirectsControlPanel(self.context, self.request).redirects()
-        redirects = [entry for entry in batch]
+        redirects = [*batch]
 
         for redirect in redirects:
             del redirect["redirect"]

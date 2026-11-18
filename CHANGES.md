@@ -9,6 +9,95 @@
 
 <!-- towncrier release notes start -->
 
+## 10.3.0 (2026-11-16)
+
+
+### New features
+
+- Updated support for blocks-based content to be compatible with the evolving support for the Plate editor in Aurora and volto-plate. Plate regions (stored with the `plate` block type and keyed by region name) are handled in the block visitor, the `SearchableText` indexer, and link integrity checks. The legacy `__somersault__` block type is deprecated. Add-ons can check for the new `plonerestapi-plate-regions` ZCML feature. @sneridagh #2092
+
+
+### Internal
+
+- Update CI configuration to test Python 3.11 as the minimum version for Plone
+  6, and run Plone 5 tests using the ubuntu-24 runner. @davisagli 
+
+## 10.2.1 (2026-11-10)
+
+
+### Bug fixes
+
+- Security: no longer allow importing the `json` module in restricted code.
+  Some functions could be used to call protected methods on any object.
+  See https://github.com/plone/plone.restapi/security/advisories/GHSA-vgxm-pwch-89q6
+  @mauritsvanrees 
+
+## 10.2.0 (2026-11-02)
+
+
+### New features
+
+- Controlpanel service: Added `description`, `group_id`, and `icon` to the control panels listed by `GET @controlpanels`, taken from their configlets. @sneridagh #2086
+
+
+### Bug fixes
+
+- Schema serialization: Fix serialization of `schema.Object` fields that are not files or images. They use plain property names, list their required fields, and no longer claim a `File` factory. @sneridagh #2061
+- Deserializing Boolean values: Reject values other than Booleans and the strings "true" and "false" for Boolean fields. Other strings used to become False silently. @sneridagh #2061
+- Remove an existing user portrait when `PATCH @users/<id>` receives `"portrait": null`. @davisagli #2079
+- Fix partial updates to `@controlpanels/<name>` failing with a server error when the control panel schema has an invariant that reads a field omitted from the request. Invariants now see the stored registry values for omitted fields. @sneridagh 
+
+
+### Internal
+
+- Share the code that builds JSON schemas and converts values for `zope.schema` interfaces between control panels, content rules and new services, in private helpers of `plone.restapi.types.utils`. The new `SchemaValues` context replaces the three `FakeDXContext` copies, and `FakeDXContext` remains as an alias. @sneridagh #2061
+
+
+### Tests
+
+- Add an acceptance test layer and `make acceptance-backend-start` target for running frontend tests against a local REST API checkout.
+  [sneridagh] #2061
+
+## 10.1.0 (2026-10-29)
+
+
+### New features
+
+- Add support for `multipart/form-data` in POST and PATCH requests, allowing file uploads alongside JSON metadata. [mamico] #1953
+
+
+### Bug fixes
+
+- Fix `@controlpanels/content-rules` to read and write values for content rule action and condition fields that are declared in a non-default fieldset.
+  @ericof #2016
+- In the `@search` service, avoid passing `metadata_fields` from the request query to the catalog query. @kunalKumar-13 #2031
+- In the `@users` endpoint, fix parsing of the `limit` parameter when a non-integer is passed. @kunalKumar-13 #2046
+- Allow anonymous users to read the `@types` schema of the context's own content type, so Volto's default view works for them. Other types and the types list still require authentication. @ericof #2054
+- Fix two cases where REST API search and summary serialization could return HTTP 500 (`TypeError`) based on request parameters: a form or query string parameter named `summary_serializer_metadata`, and a `portal_type` value containing the substring "query" when `use_site_search_settings` is used. Also make the summary serializer's per-request metadata cache effective; it was recomputed for every item. @mliebischer #2060
+- Return the error instead of 204 No Content when the final `@tus-upload` PATCH fails to create the content. @ericof #2075
+- Content rules endpoints return 404 when content rules are not activated in the site, instead of failing with an error.
+  Preparation for PLIP https://github.com/plone/Products.CMFPlone/issues/4119.
+  @jensens 
+- ``POST``, ``PATCH`` and ``DELETE`` on ``@controlpanels`` with an unknown control panel name return 404 instead of 500.
+  @jensens 
+
+
+### Internal
+
+- Add files for Anthropic's oss-scanner programme to run their tests on the repo. @jackahl #2070
+
+
+### Documentation
+
+- Fix broken links and require linkcheck to pass. @stevepiercy 
+- Fix docs build on Read the Docs. @davisagli 
+
+
+### Tests
+
+- Add an acceptance test layer and `make acceptance-backend-start` target for frontend tests against a local REST API checkout.
+  [sneridagh] #2061
+
 ## 10.0.4 (2026-08-31)
 
 

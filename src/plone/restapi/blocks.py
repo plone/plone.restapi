@@ -7,6 +7,16 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 
+# A Plate region is stored under the ``blocks`` field, keyed by region name
+# (for example ``main``), with ``@type`` set to the storage format: ``plate``.
+# Code must find Plate regions by ``@type``, never by key.
+PLATE_BLOCK_TYPE = "plate"
+# Deprecated: legacy ``@type`` (and key) of the single Plate region, used before
+# regions were introduced. Supported for backwards compatibility only.
+# It will be removed in the next major version of plone.restapi.
+LEGACY_PLATE_BLOCK_TYPE = "__somersault__"
+PLATE_BLOCK_TYPES = (PLATE_BLOCK_TYPE, LEGACY_PLATE_BLOCK_TYPE)
+
 
 def visit_blocks(context, blocks):
     """Generator yielding all blocks, including nested blocks.
@@ -73,7 +83,7 @@ class NestedBlocksVisitor:
                     yield from block_value["data"]["blocks"].values()
         if "blocks" in block_value:
             yield from block_value["blocks"].values()
-        if block_value.get("@type") == "__somersault__":
+        if block_value.get("@type") in PLATE_BLOCK_TYPES:
             yield from self.visit_plate_value(block_value.get("value", []))
 
     def visit_plate_value(self, value):

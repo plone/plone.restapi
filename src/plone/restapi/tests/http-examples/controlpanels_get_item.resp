@@ -17,7 +17,10 @@ Content-Type: application/json
         "lock_on_ttw_edit": true,
         "subjects_of_navigation_root": false
     },
+    "description": "",
     "group": "Content",
+    "group_id": "plone-content",
+    "icon": "pencil",
     "schema": {
         "fieldsets": [
             {

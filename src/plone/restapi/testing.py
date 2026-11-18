@@ -3,6 +3,7 @@
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
 from plone.app.i18n.locales.interfaces import IMetadataLanguages
+from plone.app.robotframework.testing import REMOTE_LIBRARY_BUNDLE_FIXTURE
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
@@ -34,6 +35,12 @@ import os
 import re
 import requests
 import time
+
+try:
+    from plone.app.robotframework.testing import WSGI_SERVER_SINGLE_THREADED_FIXTURE
+except ImportError:
+    # plone.app.robotframework 1.x, pinned by Plone 5.2, has no such fixture.
+    WSGI_SERVER_SINGLE_THREADED_FIXTURE = None
 
 try:
     from plone.app.caching.testing import PloneAppCachingBase
@@ -157,6 +164,17 @@ PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_FIXTURE, zope.WSGI_SERVER_FIXTURE),
     name="PloneRestApiDXLayer:Functional",
 )
+if WSGI_SERVER_SINGLE_THREADED_FIXTURE is not None:
+    PLONE_RESTAPI_DX_ACCEPTANCE_TESTING = FunctionalTesting(
+        bases=(
+            PLONE_RESTAPI_DX_FIXTURE,
+            REMOTE_LIBRARY_BUNDLE_FIXTURE,
+            WSGI_SERVER_SINGLE_THREADED_FIXTURE,
+        ),
+        name="PloneRestApiDXLayer:Acceptance",
+    )
+else:
+    PLONE_RESTAPI_DX_ACCEPTANCE_TESTING = None
 
 
 class PloneRestApiTestWorkflowsLayer(PloneSandboxLayer):

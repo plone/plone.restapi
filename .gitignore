@@ -1,5 +1,5 @@
 # Generated from:
-# https://github.com/plone/meta/tree/main/src/plone/meta/default
+# https://github.com/plone/meta/tree/2.x/src/plone/meta/default
 # See the inline comments on how to expand/tweak this configuration file
 # python related
 *.egg-info
@@ -38,21 +38,21 @@ lib64
 parts/
 pyvenv.cfg
 var/
+.venv
 local.cfg
 
 # mxdev
 /instance/
 /.make-sentinels/
 /*-mxdev.txt
-/.mxdev_cache
 /reports/
 /sources/
 /venv/
-/.venv/
 .installed.txt
 .mxdev_cache/
 
 /docs/styles/Microsoft/
+/.mxdev_cache
 
 ##
 # Add extra configuration options in .meta.toml:

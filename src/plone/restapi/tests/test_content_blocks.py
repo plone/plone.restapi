@@ -27,7 +27,7 @@ class TestContentBlocks(unittest.TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         fti = queryUtility(IDexterityFTI, name="Document")
-        behavior_list = [a for a in fti.behaviors]
+        behavior_list = [*fti.behaviors]
         behavior_list.append("volto.blocks")
         behavior_list.append("plone.leadimage")
         fti.behaviors = tuple(behavior_list)

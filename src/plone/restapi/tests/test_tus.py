@@ -304,6 +304,45 @@ class TestTUS(unittest.TestCase):
         )
         tus.cleanup()
 
+    def test_tus_patch_without_fieldname_for_type_without_primary_field_returns_400(
+        self,
+    ):
+        tus = TUSUpload("myuid", {"@type": "Folder", "length": 12})
+        response = self.api_session.patch(
+            self.upload_url + "/myuid",
+            headers={
+                "Tus-Resumable": "1.0.0",
+                "Content-Type": "application/offset+octet-stream",
+                "Upload-Offset": "0",
+            },
+            data=BytesIO(b"abcdefghijkl"),
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual("Bad Request", response.json()["error"]["type"])
+        self.assertEqual("Fieldname required", response.json()["error"]["message"])
+        transaction.commit()
+        self.assertEqual([], self.folder.objectIds())
+        tus.cleanup()
+
+    def test_tus_patch_with_primary_field_returns_204_and_location(self):
+        tus = TUSUpload(
+            "myuid", {"@type": "File", "filename": "file.txt", "length": 12}
+        )
+        response = self.api_session.patch(
+            self.upload_url + "/myuid",
+            headers={
+                "Tus-Resumable": "1.0.0",
+                "Content-Type": "application/offset+octet-stream",
+                "Upload-Offset": "0",
+            },
+            data=BytesIO(b"abcdefghijkl"),
+        )
+        self.assertEqual(204, response.status_code)
+        self.assertIn("Location", response.headers)
+        transaction.commit()
+        self.assertEqual(1, len(self.folder.objectIds()))
+        tus.cleanup()
+
     def test_patch_in_create_mode_without_add_permission_raises_401(self):
         self.folder.manage_permission("Add portal content", [], 0)
         transaction.commit()

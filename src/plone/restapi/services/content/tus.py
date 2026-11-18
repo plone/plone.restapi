@@ -220,7 +220,9 @@ class UploadPatch(UploadFileBase):
         offset = tus_upload.offset()
 
         if tus_upload.finished:
-            self.create_or_modify_content(tus_upload)
+            error = self.create_or_modify_content(tus_upload)
+            if error is not None:
+                return error
         else:
             self.request.response.setHeader("Upload-Expires", tus_upload.expires())
 
@@ -246,7 +248,11 @@ class UploadPatch(UploadFileBase):
             obj = self.context
 
         if not fieldname:
-            info = IPrimaryFieldInfo(obj, None)
+            try:
+                info = IPrimaryFieldInfo(obj, None)
+            except TypeError:
+                # No primary field present (older plone.dexterity raises)
+                info = None
             if info is not None:
                 fieldname = info.fieldname
             elif base_hasattr(obj, "getPrimaryField"):

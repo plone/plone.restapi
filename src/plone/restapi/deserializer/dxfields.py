@@ -17,6 +17,7 @@ from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.schema.interfaces import IBool
 from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDatetime
@@ -51,6 +52,20 @@ class DefaultFieldDeserializer:
 
         value = IFromUnicode(self.field).fromUnicode(value)
         # IFromUnicode.fromUnicode() will validate, no need to do it twice
+        return value
+
+
+@implementer(IFieldDeserializer)
+@adapter(IBool, IDexterityContent, IBrowserRequest)
+class BoolFieldDeserializer(DefaultFieldDeserializer):
+    """Accept JSON booleans, and "true" or "false" from form-encoded input."""
+
+    def __call__(self, value):
+        if isinstance(value, str) and value.lower() in ("true", "false"):
+            value = value.lower() == "true"
+        if value is not None and not isinstance(value, bool):
+            raise ValueError(f"Expected a boolean, got {value!r}")
+        self.field.validate(value)
         return value
 
 
@@ -247,12 +262,11 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
         content_type = "application/octet-stream"
         filename = None
         if isinstance(value, dict):
-            is_multipart = self.request.getHeader("content-type", "").startswith(
-                "multipart/form-data"
-            )
-            if is_multipart and "part" in value:
-                pass
-            elif "data" not in value:
+            # A multipart request may still send some files inline in "data".
+            from_part = "part" in value and self.request.getHeader(
+                "content-type", ""
+            ).startswith("multipart/form-data")
+            if not from_part and "data" not in value:
                 # We are probably pushing the contents of a previous GET
                 # That contain the read representation of the file
                 # with the 'download' key so we return the same stored file
@@ -260,7 +274,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
 
             content_type = value.get("content-type", content_type)
             filename = value.get("filename", filename)
-            if is_multipart:
+            if from_part:
                 data = self.request.form[value["part"]]
                 if not filename and data.filename:
                     filename = data.filename

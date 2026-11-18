@@ -5,9 +5,6 @@ on:
       - master
       - main
   pull_request:
-    branches:
-      - master
-      - main
   workflow_dispatch:
 
 jobs:
@@ -25,7 +22,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Install uv + caching
-        uses: astral-sh/setup-uv@v10.3.0
+        uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
           python-version: ${{ matrix.python-version }}

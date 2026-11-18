@@ -714,7 +714,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "object",
                 "title": "My field",
                 "description": "My great field",
-                "factory": "File",
+                "required": ["field1", "field2"],
                 "properties": {
                     "field1": {
                         "title": "Foo",
