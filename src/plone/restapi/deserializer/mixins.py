@@ -63,7 +63,7 @@ class OrderingMixin:
         }
         brains = catalog(**query)
         if sort_order in ("reverse", "descending"):
-            brains = [b for b in reversed(brains)]
+            brains = [*reversed(brains)]
         for idx, brain in enumerate(brains):
             ordering.moveObjectToPosition(brain.id, idx)
 

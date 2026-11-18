@@ -46,7 +46,7 @@ class TestBlocksSerializer(unittest.TestCase):
         self.request = self.layer["request"]
 
         fti = queryUtility(IDexterityFTI, name="Document")
-        behavior_list = [a for a in fti.behaviors]
+        behavior_list = [*fti.behaviors]
         behavior_list.append("volto.blocks")
         fti.behaviors = tuple(behavior_list)
 
