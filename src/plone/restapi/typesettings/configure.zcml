@@ -1,0 +1,24 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <adapter
+      factory=".settings.GeneralSettings"
+      name="general"
+      />
+  <adapter
+      factory=".settings.ContentsSettings"
+      name="contents"
+      />
+  <adapter
+      factory=".settings.VisibilitySettings"
+      name="visibility"
+      />
+  <adapter
+      factory=".settings.CommentsSettings"
+      name="comments"
+      />
+  <adapter
+      factory=".settings.VersioningSettings"
+      name="versioning"
+      />
+
+</configure>

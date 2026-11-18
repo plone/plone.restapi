@@ -1,0 +1,1 @@
+Add the `@content-types` service to list, configure, create, copy, and delete content types, with the `Plone Site Setup: Types` permission. Add-ons can add their own settings to every content type with named `ITypeSettings` adapters, shown only when their `enabled()` method says so. [sneridagh]
