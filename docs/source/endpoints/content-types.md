@@ -73,7 +73,8 @@ Each fieldset has an `id`, a `title`, and the names of its `fields`.
 Fields marked `readOnly` in the schema cannot be changed.
 Choice values have a `token` and a `title`, like in control panels and content.
 
-`workflow.id` is the first workflow of the type's chain, or `null` when the type has no workflow.
+`workflow.chain` lists the IDs of the workflows of the type's chain, in order, and is empty when the type has no workflow.
+The first workflow sets the state of items of the type.
 `workflow.follows_default` is `true` when the type uses the site's default workflow, and `false` when a workflow, or no workflow, is assigned to it explicitly.
 It changes through `/@content-types/{type}/workflow`, described in {ref}`content-types-workflow`.
 
@@ -154,7 +155,7 @@ Send a `GET` request to `/@content-types/{type}/workflow` to get the workflow of
 :language: http
 ```
 
-It has the same `id` and `follows_default` as the `workflow` of the content type.
+It has the same `chain` and `follows_default` as the `workflow` of the content type.
 
 Send a `POST` request to `/@content-types/{type}/workflow` to change it.
 The body has these properties:
@@ -167,6 +168,8 @@ The body has these properties:
 | `dry_run` | When `true`, changes nothing, and returns the planned change. |
 
 The body needs `workflow` or `follows_default`.
+Assigning a workflow replaces the whole chain, so the type has only that workflow afterwards.
+The state mapping and the counts of items by state use the first workflow of the current chain.
 Unknown workflows and unknown target states return `400 Bad Request`.
 The service changes one content type at a time.
 Use the {doc}`workflows` service to list the workflows, their states and who can see items in them, and to change the default workflow assignment.

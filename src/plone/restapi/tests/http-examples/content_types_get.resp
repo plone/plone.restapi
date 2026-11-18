@@ -247,8 +247,10 @@ Content-Type: application/json
             },
             "title": "TempFolder",
             "workflow": {
-                "follows_default": true,
-                "id": "simple_publication_workflow"
+                "chain": [
+                    "simple_publication_workflow"
+                ],
+                "follows_default": true
             }
         },
         {
@@ -512,8 +514,8 @@ Content-Type: application/json
             },
             "title": "Plone Site",
             "workflow": {
-                "follows_default": false,
-                "id": null
+                "chain": [],
+                "follows_default": false
             }
         },
         {
@@ -789,8 +791,10 @@ Content-Type: application/json
             },
             "title": "Collection",
             "workflow": {
-                "follows_default": true,
-                "id": "simple_publication_workflow"
+                "chain": [
+                    "simple_publication_workflow"
+                ],
+                "follows_default": true
             }
         },
         {
@@ -1070,8 +1074,10 @@ Content-Type: application/json
             },
             "title": "Page",
             "workflow": {
-                "follows_default": true,
-                "id": "simple_publication_workflow"
+                "chain": [
+                    "simple_publication_workflow"
+                ],
+                "follows_default": true
             }
         },
         {
@@ -1343,8 +1349,10 @@ Content-Type: application/json
             },
             "title": "Folder",
             "workflow": {
-                "follows_default": true,
-                "id": "simple_publication_workflow"
+                "chain": [
+                    "simple_publication_workflow"
+                ],
+                "follows_default": true
             }
         },
         {
@@ -1608,8 +1616,10 @@ Content-Type: application/json
             },
             "title": "Link",
             "workflow": {
-                "follows_default": true,
-                "id": "simple_publication_workflow"
+                "chain": [
+                    "simple_publication_workflow"
+                ],
+                "follows_default": true
             }
         },
         {
@@ -1881,8 +1891,8 @@ Content-Type: application/json
             },
             "title": "File",
             "workflow": {
-                "follows_default": false,
-                "id": null
+                "chain": [],
+                "follows_default": false
             }
         },
         {
@@ -2154,8 +2164,8 @@ Content-Type: application/json
             },
             "title": "Image",
             "workflow": {
-                "follows_default": false,
-                "id": null
+                "chain": [],
+                "follows_default": false
             }
         },
         {
@@ -2435,8 +2445,10 @@ Content-Type: application/json
             },
             "title": "News Item",
             "workflow": {
-                "follows_default": true,
-                "id": "simple_publication_workflow"
+                "chain": [
+                    "simple_publication_workflow"
+                ],
+                "follows_default": true
             }
         },
         {
@@ -2736,8 +2748,10 @@ Content-Type: application/json
             },
             "title": "Event",
             "workflow": {
-                "follows_default": true,
-                "id": "simple_publication_workflow"
+                "chain": [
+                    "simple_publication_workflow"
+                ],
+                "follows_default": true
             }
         },
         {
@@ -2950,8 +2964,10 @@ Content-Type: application/json
             },
             "title": "Comment",
             "workflow": {
-                "follows_default": false,
-                "id": "comment_one_state_workflow"
+                "chain": [
+                    "comment_one_state_workflow"
+                ],
+                "follows_default": false
             }
         },
         {
@@ -3164,8 +3180,10 @@ Content-Type: application/json
             },
             "title": "Test Document",
             "workflow": {
-                "follows_default": true,
-                "id": "simple_publication_workflow"
+                "chain": [
+                    "simple_publication_workflow"
+                ],
+                "follows_default": true
             }
         },
         {
@@ -3387,8 +3405,10 @@ Content-Type: application/json
             },
             "title": "Test Folder",
             "workflow": {
-                "follows_default": true,
-                "id": "simple_publication_workflow"
+                "chain": [
+                    "simple_publication_workflow"
+                ],
+                "follows_default": true
             }
         },
         {
@@ -3640,8 +3660,10 @@ Content-Type: application/json
             },
             "title": "DX Test Document",
             "workflow": {
-                "follows_default": true,
-                "id": "simple_publication_workflow"
+                "chain": [
+                    "simple_publication_workflow"
+                ],
+                "follows_default": true
             }
         }
     ],
