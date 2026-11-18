@@ -1,0 +1,24 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="plone.restapi"
+    >
+
+  <!-- Title Serializer -->
+  <adapter
+      factory=".title.TitleSerializer"
+      name="block_title"
+      />
+
+  <!-- Slate Serializer -->
+  <adapter
+      factory=".slate.SlateSerializer"
+      name="block_slate"
+      />
+
+  <!-- Image Serializer -->
+  <adapter
+      factory=".image.ImageSerializer"
+      name="block_image"
+      />
+
+</configure>
