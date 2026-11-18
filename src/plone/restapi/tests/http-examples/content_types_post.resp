@@ -12,6 +12,16 @@ Location: http://localhost:55001/plone/@content-types/conference_event
             "title": "No types",
             "token": "none"
         },
+        "behaviors": [
+            {
+                "title": "Dublin Core metadata",
+                "token": "plone.dublincore"
+            },
+            {
+                "title": "Name from title",
+                "token": "plone.namefromtitle"
+            }
+        ],
         "default_page": false,
         "description": "An event at a conference.",
         "global_allow": true,
@@ -58,6 +68,13 @@ Location: http://localhost:55001/plone/@content-types/conference_event
                 ],
                 "id": "comments",
                 "title": "Comments"
+            },
+            {
+                "fields": [
+                    "behaviors"
+                ],
+                "id": "behaviors",
+                "title": "Behaviors"
             },
             {
                 "fields": [
@@ -124,6 +141,24 @@ Location: http://localhost:55001/plone/@content-types/conference_event
                 "vocabulary": {
                     "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                 }
+            },
+            "behaviors": {
+                "additionalItems": true,
+                "default": [],
+                "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                "factory": "Multiple Choice",
+                "items": {
+                    "description": "",
+                    "factory": "Choice",
+                    "title": "",
+                    "type": "string",
+                    "vocabulary": {
+                        "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                    }
+                },
+                "title": "Behaviors",
+                "type": "array",
+                "uniqueItems": true
             },
             "default_page": {
                 "description": "Content of this type can be a folder's default page",

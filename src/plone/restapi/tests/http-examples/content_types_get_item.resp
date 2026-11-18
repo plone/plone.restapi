@@ -11,6 +11,68 @@ Content-Type: application/json
             "title": "No types",
             "token": "none"
         },
+        "behaviors": [
+            {
+                "title": "Full-Text Indexing",
+                "token": "plone.textindexer"
+            },
+            {
+                "title": "Event Basic",
+                "token": "plone.eventbasic"
+            },
+            {
+                "title": "Event Recurrence",
+                "token": "plone.eventrecurrence"
+            },
+            {
+                "title": "Event Location",
+                "token": "plone.eventlocation"
+            },
+            {
+                "title": "Event Attendees",
+                "token": "plone.eventattendees"
+            },
+            {
+                "title": "Event Contact",
+                "token": "plone.eventcontact"
+            },
+            {
+                "title": "Dublin Core metadata",
+                "token": "plone.dublincore"
+            },
+            {
+                "title": "Name from title",
+                "token": "plone.namefromtitle"
+            },
+            {
+                "title": "RichText",
+                "token": "plone.richtext"
+            },
+            {
+                "title": "Allow discussion",
+                "token": "plone.allowdiscussion"
+            },
+            {
+                "title": "Exclude From navigation",
+                "token": "plone.excludefromnavigation"
+            },
+            {
+                "title": "Short name",
+                "token": "plone.shortname"
+            },
+            {
+                "title": "Related items",
+                "token": "plone.relateditems"
+            },
+            {
+                "title": "Versioning",
+                "token": "plone.versioning"
+            },
+            {
+                "title": "Locking",
+                "token": "plone.locking"
+            }
+        ],
         "default_page": true,
         "description": "Events can be shown in calendars.",
         "global_allow": true,
@@ -57,6 +119,13 @@ Content-Type: application/json
                 ],
                 "id": "comments",
                 "title": "Comments"
+            },
+            {
+                "fields": [
+                    "behaviors"
+                ],
+                "id": "behaviors",
+                "title": "Behaviors"
             },
             {
                 "fields": [
@@ -123,6 +192,24 @@ Content-Type: application/json
                 "vocabulary": {
                     "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                 }
+            },
+            "behaviors": {
+                "additionalItems": true,
+                "default": [],
+                "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                "factory": "Multiple Choice",
+                "items": {
+                    "description": "",
+                    "factory": "Choice",
+                    "title": "",
+                    "type": "string",
+                    "vocabulary": {
+                        "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                    }
+                },
+                "title": "Behaviors",
+                "type": "array",
+                "uniqueItems": true
             },
             "default_page": {
                 "description": "Content of this type can be a folder's default page",

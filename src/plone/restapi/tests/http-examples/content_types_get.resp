@@ -261,6 +261,32 @@ Content-Type: application/json
                     "title": "All types",
                     "token": "all"
                 },
+                "behaviors": [
+                    {
+                        "title": "Dublin Core metadata",
+                        "token": "plone.dublincore"
+                    },
+                    {
+                        "title": "RichText",
+                        "token": "plone.richtext"
+                    },
+                    {
+                        "title": "Related items",
+                        "token": "plone.relateditems"
+                    },
+                    {
+                        "title": "Locking",
+                        "token": "plone.locking"
+                    },
+                    {
+                        "title": "Exclude From navigation",
+                        "token": "plone.excludefromnavigation"
+                    },
+                    {
+                        "title": "Table of contents",
+                        "token": "plone.tableofcontents"
+                    }
+                ],
                 "default_page": false,
                 "description": "",
                 "global_allow": false,
@@ -307,6 +333,13 @@ Content-Type: application/json
                         ],
                         "id": "comments",
                         "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "behaviors"
+                        ],
+                        "id": "behaviors",
+                        "title": "Behaviors"
                     },
                     {
                         "fields": [
@@ -373,6 +406,24 @@ Content-Type: application/json
                         "vocabulary": {
                             "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                         }
+                    },
+                    "behaviors": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                            }
+                        },
+                        "title": "Behaviors",
+                        "type": "array",
+                        "uniqueItems": true
                     },
                     "default_page": {
                         "description": "Content of this type can be a folder's default page",
@@ -475,6 +526,44 @@ Content-Type: application/json
                     "title": "All types",
                     "token": "all"
                 },
+                "behaviors": [
+                    {
+                        "title": "Name from title",
+                        "token": "plone.namefromtitle"
+                    },
+                    {
+                        "title": "Collection",
+                        "token": "plone.collection"
+                    },
+                    {
+                        "title": "Short name",
+                        "token": "plone.shortname"
+                    },
+                    {
+                        "title": "Exclude From navigation",
+                        "token": "plone.excludefromnavigation"
+                    },
+                    {
+                        "title": "Dublin Core metadata",
+                        "token": "plone.dublincore"
+                    },
+                    {
+                        "title": "RichText",
+                        "token": "plone.richtext"
+                    },
+                    {
+                        "title": "Related items",
+                        "token": "plone.relateditems"
+                    },
+                    {
+                        "title": "Locking",
+                        "token": "plone.locking"
+                    },
+                    {
+                        "title": "Allow discussion",
+                        "token": "plone.allowdiscussion"
+                    }
+                ],
                 "default_page": true,
                 "description": "",
                 "global_allow": true,
@@ -521,6 +610,13 @@ Content-Type: application/json
                         ],
                         "id": "comments",
                         "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "behaviors"
+                        ],
+                        "id": "behaviors",
+                        "title": "Behaviors"
                     },
                     {
                         "fields": [
@@ -587,6 +683,24 @@ Content-Type: application/json
                         "vocabulary": {
                             "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                         }
+                    },
+                    "behaviors": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                            }
+                        },
+                        "title": "Behaviors",
+                        "type": "array",
+                        "uniqueItems": true
                     },
                     "default_page": {
                         "description": "Content of this type can be a folder's default page",
@@ -689,6 +803,48 @@ Content-Type: application/json
                     "title": "No types",
                     "token": "none"
                 },
+                "behaviors": [
+                    {
+                        "title": "Name from title",
+                        "token": "plone.namefromtitle"
+                    },
+                    {
+                        "title": "Exclude From navigation",
+                        "token": "plone.excludefromnavigation"
+                    },
+                    {
+                        "title": "Short name",
+                        "token": "plone.shortname"
+                    },
+                    {
+                        "title": "Dublin Core metadata",
+                        "token": "plone.dublincore"
+                    },
+                    {
+                        "title": "RichText",
+                        "token": "plone.richtext"
+                    },
+                    {
+                        "title": "Related items",
+                        "token": "plone.relateditems"
+                    },
+                    {
+                        "title": "Versioning",
+                        "token": "plone.versioning"
+                    },
+                    {
+                        "title": "Table of contents",
+                        "token": "plone.tableofcontents"
+                    },
+                    {
+                        "title": "Locking",
+                        "token": "plone.locking"
+                    },
+                    {
+                        "title": "Allow discussion",
+                        "token": "plone.allowdiscussion"
+                    }
+                ],
                 "default_page": true,
                 "description": "",
                 "global_allow": true,
@@ -735,6 +891,13 @@ Content-Type: application/json
                         ],
                         "id": "comments",
                         "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "behaviors"
+                        ],
+                        "id": "behaviors",
+                        "title": "Behaviors"
                     },
                     {
                         "fields": [
@@ -801,6 +964,24 @@ Content-Type: application/json
                         "vocabulary": {
                             "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                         }
+                    },
+                    "behaviors": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                            }
+                        },
+                        "title": "Behaviors",
+                        "type": "array",
+                        "uniqueItems": true
                     },
                     "default_page": {
                         "description": "Content of this type can be a folder's default page",
@@ -903,6 +1084,40 @@ Content-Type: application/json
                     "title": "All types",
                     "token": "all"
                 },
+                "behaviors": [
+                    {
+                        "title": "Dublin Core metadata",
+                        "token": "plone.dublincore"
+                    },
+                    {
+                        "title": "Name from title",
+                        "token": "plone.namefromtitle"
+                    },
+                    {
+                        "title": "Exclude From navigation",
+                        "token": "plone.excludefromnavigation"
+                    },
+                    {
+                        "title": "Short name",
+                        "token": "plone.shortname"
+                    },
+                    {
+                        "title": "Folder Addable Constrains",
+                        "token": "plone.constraintypes"
+                    },
+                    {
+                        "title": "Related items",
+                        "token": "plone.relateditems"
+                    },
+                    {
+                        "title": "Next previous navigation toggle",
+                        "token": "plone.nextprevioustoggle"
+                    },
+                    {
+                        "title": "Allow discussion",
+                        "token": "plone.allowdiscussion"
+                    }
+                ],
                 "default_page": false,
                 "description": "",
                 "global_allow": true,
@@ -949,6 +1164,13 @@ Content-Type: application/json
                         ],
                         "id": "comments",
                         "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "behaviors"
+                        ],
+                        "id": "behaviors",
+                        "title": "Behaviors"
                     },
                     {
                         "fields": [
@@ -1015,6 +1237,24 @@ Content-Type: application/json
                         "vocabulary": {
                             "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                         }
+                    },
+                    "behaviors": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                            }
+                        },
+                        "title": "Behaviors",
+                        "type": "array",
+                        "uniqueItems": true
                     },
                     "default_page": {
                         "description": "Content of this type can be a folder's default page",
@@ -1117,6 +1357,32 @@ Content-Type: application/json
                     "title": "No types",
                     "token": "none"
                 },
+                "behaviors": [
+                    {
+                        "title": "Short name",
+                        "token": "plone.shortname"
+                    },
+                    {
+                        "title": "Dublin Core metadata",
+                        "token": "plone.dublincore"
+                    },
+                    {
+                        "title": "Name from title",
+                        "token": "plone.namefromtitle"
+                    },
+                    {
+                        "title": "Exclude From navigation",
+                        "token": "plone.excludefromnavigation"
+                    },
+                    {
+                        "title": "Versioning",
+                        "token": "plone.versioning"
+                    },
+                    {
+                        "title": "Allow discussion",
+                        "token": "plone.allowdiscussion"
+                    }
+                ],
                 "default_page": false,
                 "description": "",
                 "global_allow": true,
@@ -1163,6 +1429,13 @@ Content-Type: application/json
                         ],
                         "id": "comments",
                         "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "behaviors"
+                        ],
+                        "id": "behaviors",
+                        "title": "Behaviors"
                     },
                     {
                         "fields": [
@@ -1229,6 +1502,24 @@ Content-Type: application/json
                         "vocabulary": {
                             "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                         }
+                    },
+                    "behaviors": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                            }
+                        },
+                        "title": "Behaviors",
+                        "type": "array",
+                        "uniqueItems": true
                     },
                     "default_page": {
                         "description": "Content of this type can be a folder's default page",
@@ -1331,6 +1622,40 @@ Content-Type: application/json
                     "title": "No types",
                     "token": "none"
                 },
+                "behaviors": [
+                    {
+                        "title": "Categorization",
+                        "token": "plone.categorization"
+                    },
+                    {
+                        "title": "Date range",
+                        "token": "plone.publication"
+                    },
+                    {
+                        "title": "Ownership",
+                        "token": "plone.ownership"
+                    },
+                    {
+                        "title": "Name from file name",
+                        "token": "plone.namefromfilename"
+                    },
+                    {
+                        "title": "Short name",
+                        "token": "plone.shortname"
+                    },
+                    {
+                        "title": "Exclude From navigation",
+                        "token": "plone.excludefromnavigation"
+                    },
+                    {
+                        "title": "Related items",
+                        "token": "plone.relateditems"
+                    },
+                    {
+                        "title": "Allow discussion",
+                        "token": "plone.allowdiscussion"
+                    }
+                ],
                 "default_page": false,
                 "description": "Lets you upload a file to the site.",
                 "global_allow": true,
@@ -1377,6 +1702,13 @@ Content-Type: application/json
                         ],
                         "id": "comments",
                         "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "behaviors"
+                        ],
+                        "id": "behaviors",
+                        "title": "Behaviors"
                     },
                     {
                         "fields": [
@@ -1443,6 +1775,24 @@ Content-Type: application/json
                         "vocabulary": {
                             "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                         }
+                    },
+                    "behaviors": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                            }
+                        },
+                        "title": "Behaviors",
+                        "type": "array",
+                        "uniqueItems": true
                     },
                     "default_page": {
                         "description": "Content of this type can be a folder's default page",
@@ -1545,6 +1895,40 @@ Content-Type: application/json
                     "title": "No types",
                     "token": "none"
                 },
+                "behaviors": [
+                    {
+                        "title": "Categorization",
+                        "token": "plone.categorization"
+                    },
+                    {
+                        "title": "Date range",
+                        "token": "plone.publication"
+                    },
+                    {
+                        "title": "Ownership",
+                        "token": "plone.ownership"
+                    },
+                    {
+                        "title": "Short name",
+                        "token": "plone.shortname"
+                    },
+                    {
+                        "title": "Name from file name",
+                        "token": "plone.namefromfilename"
+                    },
+                    {
+                        "title": "Exclude From navigation",
+                        "token": "plone.excludefromnavigation"
+                    },
+                    {
+                        "title": "Related items",
+                        "token": "plone.relateditems"
+                    },
+                    {
+                        "title": "Allow discussion",
+                        "token": "plone.allowdiscussion"
+                    }
+                ],
                 "default_page": false,
                 "description": "Images can be referenced in pages or displayed in an album.",
                 "global_allow": true,
@@ -1591,6 +1975,13 @@ Content-Type: application/json
                         ],
                         "id": "comments",
                         "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "behaviors"
+                        ],
+                        "id": "behaviors",
+                        "title": "Behaviors"
                     },
                     {
                         "fields": [
@@ -1657,6 +2048,24 @@ Content-Type: application/json
                         "vocabulary": {
                             "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                         }
+                    },
+                    "behaviors": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                            }
+                        },
+                        "title": "Behaviors",
+                        "type": "array",
+                        "uniqueItems": true
                     },
                     "default_page": {
                         "description": "Content of this type can be a folder's default page",
@@ -1759,6 +2168,48 @@ Content-Type: application/json
                     "title": "No types",
                     "token": "none"
                 },
+                "behaviors": [
+                    {
+                        "title": "Dublin Core metadata",
+                        "token": "plone.dublincore"
+                    },
+                    {
+                        "title": "RichText",
+                        "token": "plone.richtext"
+                    },
+                    {
+                        "title": "Name from title",
+                        "token": "plone.namefromtitle"
+                    },
+                    {
+                        "title": "Short name",
+                        "token": "plone.shortname"
+                    },
+                    {
+                        "title": "Exclude From navigation",
+                        "token": "plone.excludefromnavigation"
+                    },
+                    {
+                        "title": "Related items",
+                        "token": "plone.relateditems"
+                    },
+                    {
+                        "title": "Lead Image",
+                        "token": "plone.leadimage"
+                    },
+                    {
+                        "title": "Versioning",
+                        "token": "plone.versioning"
+                    },
+                    {
+                        "title": "Locking",
+                        "token": "plone.locking"
+                    },
+                    {
+                        "title": "Allow discussion",
+                        "token": "plone.allowdiscussion"
+                    }
+                ],
                 "default_page": true,
                 "description": "",
                 "global_allow": true,
@@ -1805,6 +2256,13 @@ Content-Type: application/json
                         ],
                         "id": "comments",
                         "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "behaviors"
+                        ],
+                        "id": "behaviors",
+                        "title": "Behaviors"
                     },
                     {
                         "fields": [
@@ -1871,6 +2329,24 @@ Content-Type: application/json
                         "vocabulary": {
                             "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                         }
+                    },
+                    "behaviors": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                            }
+                        },
+                        "title": "Behaviors",
+                        "type": "array",
+                        "uniqueItems": true
                     },
                     "default_page": {
                         "description": "Content of this type can be a folder's default page",
@@ -1973,6 +2449,68 @@ Content-Type: application/json
                     "title": "No types",
                     "token": "none"
                 },
+                "behaviors": [
+                    {
+                        "title": "Full-Text Indexing",
+                        "token": "plone.textindexer"
+                    },
+                    {
+                        "title": "Event Basic",
+                        "token": "plone.eventbasic"
+                    },
+                    {
+                        "title": "Event Recurrence",
+                        "token": "plone.eventrecurrence"
+                    },
+                    {
+                        "title": "Event Location",
+                        "token": "plone.eventlocation"
+                    },
+                    {
+                        "title": "Event Attendees",
+                        "token": "plone.eventattendees"
+                    },
+                    {
+                        "title": "Event Contact",
+                        "token": "plone.eventcontact"
+                    },
+                    {
+                        "title": "Dublin Core metadata",
+                        "token": "plone.dublincore"
+                    },
+                    {
+                        "title": "Name from title",
+                        "token": "plone.namefromtitle"
+                    },
+                    {
+                        "title": "RichText",
+                        "token": "plone.richtext"
+                    },
+                    {
+                        "title": "Allow discussion",
+                        "token": "plone.allowdiscussion"
+                    },
+                    {
+                        "title": "Exclude From navigation",
+                        "token": "plone.excludefromnavigation"
+                    },
+                    {
+                        "title": "Short name",
+                        "token": "plone.shortname"
+                    },
+                    {
+                        "title": "Related items",
+                        "token": "plone.relateditems"
+                    },
+                    {
+                        "title": "Versioning",
+                        "token": "plone.versioning"
+                    },
+                    {
+                        "title": "Locking",
+                        "token": "plone.locking"
+                    }
+                ],
                 "default_page": true,
                 "description": "Events can be shown in calendars.",
                 "global_allow": true,
@@ -2019,6 +2557,13 @@ Content-Type: application/json
                         ],
                         "id": "comments",
                         "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "behaviors"
+                        ],
+                        "id": "behaviors",
+                        "title": "Behaviors"
                     },
                     {
                         "fields": [
@@ -2085,6 +2630,24 @@ Content-Type: application/json
                         "vocabulary": {
                             "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                         }
+                    },
+                    "behaviors": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                            }
+                        },
+                        "title": "Behaviors",
+                        "type": "array",
+                        "uniqueItems": true
                     },
                     "default_page": {
                         "description": "Content of this type can be a folder's default page",
@@ -2838,6 +3401,20 @@ Content-Type: application/json
                     "title": "All types",
                     "token": "all"
                 },
+                "behaviors": [
+                    {
+                        "title": "Basic metadata",
+                        "token": "plone.basic"
+                    },
+                    {
+                        "title": "Test Annotations Behavior",
+                        "token": "tests.restapi.test_annotations_behavior"
+                    },
+                    {
+                        "title": "Test Behavior",
+                        "token": "tests.restapi.test_behavior"
+                    }
+                ],
                 "default_page": false,
                 "description": "",
                 "global_allow": true,
@@ -2884,6 +3461,13 @@ Content-Type: application/json
                         ],
                         "id": "comments",
                         "title": "Comments"
+                    },
+                    {
+                        "fields": [
+                            "behaviors"
+                        ],
+                        "id": "behaviors",
+                        "title": "Behaviors"
                     },
                     {
                         "fields": [
@@ -2950,6 +3534,24 @@ Content-Type: application/json
                         "vocabulary": {
                             "@id": "http://localhost:55001/plone/@sources/allowed_content_types_mode"
                         }
+                    },
+                    "behaviors": {
+                        "additionalItems": true,
+                        "default": [],
+                        "description": "The complete list of the type's behaviors. Their order sets where their fields appear in the edit form.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.Behaviors"
+                            }
+                        },
+                        "title": "Behaviors",
+                        "type": "array",
+                        "uniqueItems": true
                     },
                     "default_page": {
                         "description": "Content of this type can be a folder's default page",

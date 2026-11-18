@@ -16,9 +16,12 @@ from Acquisition import Implicit
 from collections import OrderedDict
 from copy import copy
 from plone.autoform.form import AutoExtensibleForm
+from plone.autoform.interfaces import IFormFieldProvider
 from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
 from plone.behavior.interfaces import IBehavior
+from plone.behavior.registration import BehaviorRegistrationNotFound
+from plone.behavior.registration import lookup_behavior_registration
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.schema import splitSchemaName
@@ -403,8 +406,31 @@ def get_multilingual_directives(schemas):
     return params
 
 
-def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
-    """Build a complete JSON schema for the given FTI."""
+def behavior_form_schemata(behaviors):
+    """Return the form schemata of these behaviors, in order.
+
+    Like ``getAdditionalSchemata``, but for a list of behavior names instead
+    of the behaviors stored on a type. Raises ``KeyError`` with the name of a
+    behavior that isn't registered.
+    """
+    schemata = []
+    for name in behaviors:
+        try:
+            registration = lookup_behavior_registration(name, warn_about_fallback=False)
+        except BehaviorRegistrationNotFound:
+            raise KeyError(name)
+        form_schema = IFormFieldProvider(registration.interface, None)
+        if form_schema is not None:
+            schemata.append(form_schema)
+    return tuple(schemata)
+
+
+def get_jsonschema_for_fti(fti, context, request, excluded_fields=None, behaviors=None):
+    """Build a complete JSON schema for the given FTI.
+
+    With ``behaviors``, a list of behavior names, build the schema the type
+    would have with these behaviors instead of its own, without changing it.
+    """
     if excluded_fields is None:
         excluded_fields = []
 
@@ -417,7 +443,10 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         fieldsets = ()
         additional_schemata = ()
     else:
-        additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
+        if behaviors is None:
+            additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
+        else:
+            additional_schemata = behavior_form_schemata(behaviors)
         fieldsets = get_fieldsets(context, request, schema, additional_schemata)
 
     # Build JSON schema properties
@@ -453,12 +482,14 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     }
 
 
-def get_jsonschema_for_portal_type(portal_type, context, request, excluded_fields=None):
+def get_jsonschema_for_portal_type(
+    portal_type, context, request, excluded_fields=None, behaviors=None
+):
     """Build a complete JSON schema for the given portal_type."""
     ttool = getToolByName(context, "portal_types")
     fti = ttool[portal_type]
     return get_jsonschema_for_fti(
-        fti, context, request, excluded_fields=excluded_fields
+        fti, context, request, excluded_fields=excluded_fields, behaviors=behaviors
     )
 
 
@@ -505,8 +536,11 @@ def serializeSchema(schema):
     fti.model_source = serializeModel(model)
 
 
-def get_info_for_type(context, request, name):
-    """Get JSON info for the given portal type"""
+def get_info_for_type(context, request, name, behaviors=None):
+    """Get JSON info for the given portal type.
+
+    With ``behaviors``, get it as if the type had these behaviors.
+    """
     base_context = context
 
     # If context is not a dexterity content, use site root to get
@@ -514,7 +548,9 @@ def get_info_for_type(context, request, name):
     if not IDexterityContent.providedBy(context):
         base_context = getSite()
 
-    schema = get_jsonschema_for_portal_type(name, base_context, request)
+    schema = get_jsonschema_for_portal_type(
+        name, base_context, request, behaviors=behaviors
+    )
 
     if not hasattr(context, "schema"):
         return schema
