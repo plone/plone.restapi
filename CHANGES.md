@@ -9,6 +9,19 @@
 
 <!-- towncrier release notes start -->
 
+## 10.3.0 (2026-11-16)
+
+
+### New features
+
+- Updated support for blocks-based content to be compatible with the evolving support for the Plate editor in Aurora and volto-plate. Plate regions (stored with the `plate` block type and keyed by region name) are handled in the block visitor, the `SearchableText` indexer, and link integrity checks. The legacy `__somersault__` block type is deprecated. Add-ons can check for the new `plonerestapi-plate-regions` ZCML feature. @sneridagh #2092
+
+
+### Internal
+
+- Update CI configuration to test Python 3.11 as the minimum version for Plone
+  6, and run Plone 5 tests using the ubuntu-24 runner. @davisagli 
+
 ## 10.2.1 (2026-11-10)
 
 

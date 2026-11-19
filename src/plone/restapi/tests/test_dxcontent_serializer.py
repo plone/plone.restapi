@@ -488,7 +488,7 @@ class TestDXContentSerializer(unittest.TestCase):
     @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_prev(self):
         fti = queryUtility(IDexterityFTI, name="Plone Site")
-        behavior_list = [a for a in fti.behaviors]
+        behavior_list = [*fti.behaviors]
         behavior_list.append("plone.nextpreviousenabled")
         fti.behaviors = tuple(behavior_list)
         # Invalidating the cache is required for the FTI to be applied
@@ -517,7 +517,7 @@ class TestDXContentSerializer(unittest.TestCase):
     @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_next(self):
         fti = queryUtility(IDexterityFTI, name="Plone Site")
-        behavior_list = [a for a in fti.behaviors]
+        behavior_list = [*fti.behaviors]
         behavior_list.append("plone.nextpreviousenabled")
         fti.behaviors = tuple(behavior_list)
         # Invalidating the cache is required for the FTI to be applied
@@ -546,7 +546,7 @@ class TestDXContentSerializer(unittest.TestCase):
     @unittest.skipUnless(HAS_PLONE_6, "Requires Dexterity-based site root")
     def test_nextprev_root_has_nextprev(self):
         fti = queryUtility(IDexterityFTI, name="Plone Site")
-        behavior_list = [a for a in fti.behaviors]
+        behavior_list = [*fti.behaviors]
         behavior_list.append("plone.nextpreviousenabled")
         fti.behaviors = tuple(behavior_list)
         # Invalidating the cache is required for the FTI to be applied

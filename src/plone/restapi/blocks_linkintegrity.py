@@ -2,6 +2,8 @@ from plone.app.linkintegrity.interfaces import IRetriever
 from plone.app.linkintegrity.retriever import DXGeneral
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.blocks import iter_block_transform_handlers
+from plone.restapi.blocks import LEGACY_PLATE_BLOCK_TYPE
+from plone.restapi.blocks import PLATE_BLOCK_TYPE
 from plone.restapi.blocks import visit_blocks
 from plone.restapi.deserializer.blocks import iterate_children
 from plone.restapi.interfaces import IBlockFieldLinkIntegrityRetriever
@@ -99,11 +101,20 @@ class SlateBlockLinksRetriever(BaseSlateOrPlateBlockLinksRetriever):
 @implementer(IBlockFieldLinkIntegrityRetriever)
 class PlateBlockLinksRetriever(BaseSlateOrPlateBlockLinksRetriever):
     order = 100
-    block_type = "__somersault__"
+    block_type = PLATE_BLOCK_TYPE
     field = "value"
 
     def handle_a(self, child):
         return child.get("url")
+
+
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldLinkIntegrityRetriever)
+class LegacyPlateBlockLinksRetriever(PlateBlockLinksRetriever):
+    """Deprecated: retriever for Plate regions stored with the legacy
+    ``__somersault__`` type. It will be removed in the next major version."""
+
+    block_type = LEGACY_PLATE_BLOCK_TYPE
 
 
 @adapter(IBlocks, IBrowserRequest)

@@ -1,15 +1,8 @@
 from setuptools import setup
 
 import pathlib
-import sys
 
-version = "10.2.2.dev0"
-
-if getattr(sys.version_info, "major") == 2:
-    raise ValueError(
-        "plone.restapi 10 requires Python 3. "
-        "Please downgrade to plone.restapi 7 for Python 2 and Plone 4.3/5.1."
-    )
+version = "10.3.1.dev0"
 
 long_description = "\n".join(
     [
@@ -55,18 +48,21 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     keywords="plone rest restful hypermedia api json",
     author="Timo Stollenwerk (kitconcept GmbH)",
     author_email="tisto@plone.org",
-    url="https://github.com/plone/plone.restapi/",
-    license="gpl",
+    project_urls={
+        "Repository": "https://github.com/plone/plone.restapi/",
+    },
+    license_expression="GPL-2.0-only",
+    license_files=["LICENSE"],
     python_requires=">=3.8",
     include_package_data=True,
     zip_safe=False,

@@ -35,7 +35,7 @@ class TestSiteSerializer(unittest.TestCase):
 
         fti = queryUtility(IDexterityFTI, name="Plone Site")
         if fti is not None:
-            behavior_list = [a for a in fti.behaviors]
+            behavior_list = [*fti.behaviors]
             behavior_list.append("volto.blocks")
             behavior_list.append("tests.restapi.test_behavior")
             fti.behaviors = tuple(behavior_list)

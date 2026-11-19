@@ -1,0 +1,1 @@
+Fix `KeyError: 'part'` when a `multipart/form-data` request sends a file inline in `data` instead of in a `part`, for example a classic form posting JSON. [bsuttor]

@@ -6,4 +6,10 @@
 
   <meta:provides feature="plonerestapi-7" />
 
+  <!-- plone.restapi handles Plate regions with "@type": "plate", not only the
+       legacy "@type": "__somersault__". Add-ons that registered their own
+       "plate" handlers can skip them with
+       zcml:condition="not-have plonerestapi-plate-regions". -->
+  <meta:provides feature="plonerestapi-plate-regions" />
+
 </configure>
