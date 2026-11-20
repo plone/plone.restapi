@@ -1,0 +1,69 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/folder/@constraints",
+    "addable_types": [
+        {
+            "id": "Collection",
+            "title": "Collection"
+        },
+        {
+            "id": "DXTestDocument",
+            "title": "DX Test Document"
+        },
+        {
+            "id": "Document",
+            "title": "Page"
+        },
+        {
+            "id": "Event",
+            "title": "Event"
+        },
+        {
+            "id": "File",
+            "title": "File"
+        },
+        {
+            "id": "Folder",
+            "title": "Folder"
+        },
+        {
+            "id": "Image",
+            "title": "Image"
+        },
+        {
+            "id": "Link",
+            "title": "Link"
+        },
+        {
+            "id": "News Item",
+            "title": "News Item"
+        }
+    ],
+    "can_edit": true,
+    "configurable": true,
+    "immediately_addable_types": [
+        "Collection",
+        "DXTestDocument",
+        "Document",
+        "Event",
+        "File",
+        "Folder",
+        "Image",
+        "Link",
+        "News Item"
+    ],
+    "locally_allowed_types": [
+        "Collection",
+        "DXTestDocument",
+        "Document",
+        "Event",
+        "File",
+        "Folder",
+        "Image",
+        "Link",
+        "News Item"
+    ],
+    "mode": "disabled"
+}
