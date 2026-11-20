@@ -40,10 +40,12 @@ class ConstraintsPatch(Service):
         )
 
         if immediately_addable_types is not None:
+            # Use effective allowed types (not the raw attribute) so acquire
+            # mode agrees with what GET reports.
             allowed_for_subset = (
                 locally_allowed_types
                 if locally_allowed_types is not None
-                else list(getattr(self.context, "locally_allowed_types", default_ids))
+                else list(adapter.getLocallyAllowedTypes())
             )
             extra = [
                 type_id
@@ -56,6 +58,20 @@ class ConstraintsPatch(Service):
                     "locally_allowed_types."
                 )
 
+        # Classic UI always writes both lists together. If only the allowed
+        # list is patched, drop immediately-addable types that are no longer
+        # allowed so @types stays consistent.
+        if locally_allowed_types is not None and immediately_addable_types is None:
+            if hasattr(self.context, "immediately_addable_types"):
+                current_immediately = list(self.context.immediately_addable_types)
+            else:
+                current_immediately = list(adapter.getImmediatelyAddableTypes())
+            immediately_addable_types = [
+                type_id
+                for type_id in current_immediately
+                if type_id in locally_allowed_types
+            ]
+
         if mode is not None:
             adapter.setConstrainTypesMode(NAME_TO_MODE[mode])
         if locally_allowed_types is not None:
@@ -63,7 +79,12 @@ class ConstraintsPatch(Service):
         if immediately_addable_types is not None:
             adapter.setImmediatelyAddableTypes(immediately_addable_types)
 
-        return serialize_constraints(self.context)
+        prefer = self.request.getHeader("Prefer")
+        if prefer == "return=representation":
+            self.request.response.setStatus(200)
+            return serialize_constraints(self.context)
+
+        return self.reply_no_content()
 
     def _validate_type_ids(self, value, default_ids, field_name):
         if value is None:

@@ -1898,6 +1898,7 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
         response = self.api_session.patch(
             "/folder/@constraints",
+            headers={"Prefer": "return=representation"},
             json={
                 "mode": "enabled",
                 "locally_allowed_types": ["Document", "News Item"],

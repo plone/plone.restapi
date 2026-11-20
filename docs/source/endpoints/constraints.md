@@ -54,6 +54,9 @@ The server responds with the current mode and the effective type lists:
 `acquire`
 :   Inherit from the parent folder ({guilabel}`Use parent folder settings`)
 
+`addable_types` is the candidate list for the Restrictions form.
+It comes from `getDefaultAddableTypes()` and is not filtered by the current constraints, so a frontend can offer types to re-enable.
+
 `locally_allowed_types` is the full set of types that may be added.
 `immediately_addable_types` is the subset shown directly in the {menuselection}`Add` menu.
 The remaining allowed types typically appear under {menuselection}`More…`.
@@ -61,20 +64,26 @@ The remaining allowed types typically appear under {menuselection}`More…`.
 `configurable` is `false` when the context does not support constraints, for example, a Page.
 In that case `mode` is `null` and the type lists are empty.
 
+`can_edit` is `true` when the current user may change the settings (`Modify constrain types`).
+Use it to decide whether to show the Restrictions action.
+
 
 ## Updating constraints
 
 Send a `PATCH` request with any combination of `mode`, `locally_allowed_types`, and `immediately_addable_types`.
 
 `immediately_addable_types` must be a subset of `locally_allowed_types`.
-Both lists must be a subset of the types that are addable on this folder by default.
+Both lists must be a subset of the types that are addable on this folder by default for the current user.
+
+If you send only `locally_allowed_types`, any stored `immediately_addable_types` values that are no longer allowed are dropped automatically.
+
+By default the server answers with `204 No Content`.
+Add a `Prefer: return=representation` header to receive the updated representation instead:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/constraints_patch.req
 ```
-
-The server responds with the updated representation:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/constraints_patch.resp
 :language: http
