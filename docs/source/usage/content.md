@@ -30,7 +30,7 @@ To create a new resource, we send a `POST` request to the resource container.
 If we want to create a new document within an existing folder, we send a `POST` request to that folder:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client
     :request: ../../../src/plone/restapi/tests/http-examples/content_post.req
 ```
 
@@ -125,7 +125,7 @@ Link to the real implementation...
 After a successful `POST`, we can access the resource by sending a `GET` request to the resource URL:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client
     :request: ../../../src/plone/restapi/tests/http-examples/content_get.req
 ```
 
@@ -216,7 +216,7 @@ If you send the value `null` for a field, the field's content will be deleted, a
 Note that this is not possible if the field is `required`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client
     :request: ../../../src/plone/restapi/tests/http-examples/content_patch.req
 ```
 
@@ -340,7 +340,7 @@ This follows [RFC 7231: HTTP 1.1: `PUT` Method](https://datatracker.ietf.org/doc
 We can delete an existing resource by sending a `DELETE` request:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client
     :request: ../../../src/plone/restapi/tests/http-examples/content_delete.req
 ```
 
