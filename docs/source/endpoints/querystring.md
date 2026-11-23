@@ -26,7 +26,7 @@ The vocabulary is resolved in the same context where the `/@querystring` endpoin
 To get the metadata about all query operations available in the portal, call the `/@querystring` endpoint with a `GET` request:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/querystring_get.req
 ```
 

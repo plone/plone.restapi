@@ -69,7 +69,7 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Request (unexpanded):
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/expansion.req
 ```
 
@@ -83,7 +83,7 @@ In order to expand and embed one or more components, use the `GET` parameter `ex
 Say you want to expand the `breadcrumbs` component:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/expansion_expanded.req
 ```
 
@@ -96,7 +96,7 @@ Response (breadcrumbs expanded):
 Here is an example of a request that expands all possible expansions:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/expansion_expanded_full.req
 ```
 

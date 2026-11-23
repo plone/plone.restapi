@@ -28,7 +28,7 @@ By default, Plone automatically creates a new alias when an object is renamed or
 To create a new alias, send a `POST` request to the `/@aliases` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/aliases_add.req
 ```
 
@@ -43,7 +43,7 @@ Response:
 To list aliases, you can send a `GET` request to the `/@aliases` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/aliases_get.req
 ```
 
@@ -59,7 +59,7 @@ Response:
 To remove aliases, send a `DELETE` request to the `/@aliases` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/aliases_delete.req
 ```
 
@@ -75,7 +75,7 @@ You can add multiple URL aliases for multiple pages by sending a `POST` request 
 **datetime** parameter is optional:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_add.req
 ```
 
@@ -91,7 +91,7 @@ You can add multiple URL aliases for multiple pages by sending a `POST` request 
 **datetime** parameter is optional:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_add_csv_format.req
 ```
 
@@ -107,7 +107,7 @@ Response:
 To list all aliases in JSON format, send a `GET` request to the `/@aliases` endpoint on site `root`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_get.req
 ```
 
@@ -122,7 +122,7 @@ Response:
 To download all aliases as a CSV file, send a `GET` request to the `/@aliases` endpoint on site `root`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_get_csv_format.req
 ```
 
@@ -156,7 +156,7 @@ See {doc}`../usage/parameters` for details.
 ```
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_filter.req
 ```
 
@@ -172,7 +172,7 @@ Response:
 To bulk remove aliases send a `DELETE` request to the `/@aliases` endpoint on site `root`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_delete.req
 ```
 

@@ -16,7 +16,7 @@ To copy a content object, send a `POST` request to the `/@copy` endpoint at the 
 The source object can be specified either by URL, path, UID or `intid`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/copy.req
 ```
 
@@ -33,7 +33,7 @@ To move a content object, send a `POST` request to the `/@move` endpoint at the 
 The source object can be specified either by URL, path, UID or `intid`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/move.req
 ```
 
@@ -49,7 +49,7 @@ If the move operation succeeds, the server will respond with status {term}`200 O
 Multiple objects can be moved or copied by giving a list of sources:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/copy_multiple.req
 ```
 

@@ -46,7 +46,7 @@ The sharing information of a content object can also be directly accessed by app
 For example, to access the sharing information for a top-level folder, do the following.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/sharing_folder_get.req
 ```
 
@@ -65,7 +65,7 @@ Global roles are marked with the string `global`.
 Inherited roles are marked with the string `acquired`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/sharing_search.req
 ```
 
@@ -80,7 +80,7 @@ You can update the sharing information by sending a `POST` request to the object
 Say you want to give the `AuthenticatedUsers` group the `Reader` local role for a folder:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/sharing_folder_post.req
 ```
 

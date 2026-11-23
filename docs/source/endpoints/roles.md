@@ -18,7 +18,7 @@ This action requires an authenticated user.
 To retrieve a list of all roles in the portal, call the `/@roles` endpoint with a `GET` request:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/roles.req
 ```
 

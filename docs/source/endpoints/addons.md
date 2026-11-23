@@ -19,7 +19,7 @@ Reading or writing add-ons metadata requires the `cmf.ManagePortal` permission.
 Reading a single record:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/addons_get.req
 ```
 
@@ -34,7 +34,7 @@ Example response:
 A list of all add-ons in the portal can be retrieved by sending a `GET` request to the `@addons` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/addons_get_list.req
 ```
 
@@ -61,7 +61,7 @@ The query string parameter `upgradeable` is available in case you want to query 
 An individual add-on can be installed by issuing a `POST` to the given URL:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/addons_install.req
 ```
 
@@ -74,7 +74,7 @@ An individual add-on can be installed by issuing a `POST` to the given URL:
 An individual add-on can be uninstalled by issuing a `POST` to the given URL:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/addons_uninstall.req
 ```
 
@@ -87,7 +87,7 @@ An individual add-on can be uninstalled by issuing a `POST` to the given URL:
 An individual add-on can be upgraded by issuing a `POST` to the given URL:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/addons_upgrade.req
 ```
 
@@ -100,7 +100,7 @@ An individual add-on can be upgraded by issuing a `POST` to the given URL:
 You can install a profile of a given add-on by issuing a `POST` to the given URL and providing the name of the profile like:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/addons_install_profile.req
 ```
 

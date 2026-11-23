@@ -27,7 +27,7 @@ The `@controlpanels` endpoint is implemented for Plone 5 or greater.
 A list of all existing control panels in the portal can be retrieved by sending a `GET` request to the `@controlpanels` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get.req
 ```
 
@@ -66,7 +66,7 @@ The control panels come in the order that Plone shows them: by group, then by th
 To retrieve a single control panel, send a `GET` request to the URL of the control panel:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get_item.req
 ```
 
@@ -108,7 +108,7 @@ The following fields are returned:
 To update the settings on a control panel, send a `PATCH` request to control panel resource:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_patch.req
 ```
 
@@ -147,7 +147,7 @@ Reading or writing Dexterity content types require the `plone.schemaeditor.Manag
 To list the available content types, send a `GET` request to `@controlpanels/dexterity-types`
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity.req
 ```
 
@@ -170,7 +170,7 @@ The following fields are returned:
 To create a new content type, send a `POST` request to the `/@controlpanels/dexterity-types` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_post_dexterity_item.req
 ```
 
@@ -186,7 +186,7 @@ Response:
 After a successful `POST`, access the content type by sending a `GET` request to the endpoint `/@controlpanels/dexterity-types/{type-id}`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity_item.req
 ```
 
@@ -203,7 +203,7 @@ To update an existing content type, send a `PATCH` request to the server.
 `PATCH` allows to provide just a subset of the resource, that is, the values you actually want to change:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_dexterity_item.req
 ```
 
@@ -219,7 +219,7 @@ Response:
 Delete an existing content type by sending a `DELETE` request to the URL of an existing content type:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_dexterity_item.req
 ```
 
@@ -247,7 +247,7 @@ Response:
 To list the available content rules, send a `GET` request to `@controlpanels/content-rules`
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get_contentrules.req
 ```
 
@@ -275,7 +275,7 @@ The following fields are returned:
 To create a new content rule, send a `POST` request to the `/@controlpanels/content-rules` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_post_rule.req
 ```
 
@@ -293,7 +293,7 @@ To create a new condition on a content rule, send a `POST` request to the
 condition type in the payload:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_condition_portaltype.req
 ```
 
@@ -311,7 +311,7 @@ To create a new action on a content rule, send a `POST` request to the
 action type in the payload:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_action_logger.req
 ```
 
@@ -327,7 +327,7 @@ Response:
 After a successful `POST`, access the content rule by sending a `GET` request to the endpoint `/@controlpanels/content-rules/{rule-id}`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get_rule.req
 ```
 
@@ -344,7 +344,7 @@ To update an existing content rule, send a `PATCH` request to the server.
 `PATCH` allows to provide just a subset of the resource, that is, the values you actually want to change:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule.req
 ```
 
@@ -360,7 +360,7 @@ To update an existing condition on a content rule, send a `PATCH` request to the
 `PATCH` allows to provide just a subset of the resource, that is, the values you actually want to change:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_condition_portaltype.req
 ```
 
@@ -376,7 +376,7 @@ To update an existing action on a content rule, send a `PATCH` request to the se
 `PATCH` allows to provide just a subset of the resource, that is, the values you actually want to change:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_action_logger.req
 ```
 
@@ -392,7 +392,7 @@ Response:
 Delete an existing content rule by sending a `DELETE` request to the URL of an existing content rule:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule.req
 ```
 
@@ -407,7 +407,7 @@ Response:
 Delete an existing condition from a content rule by sending a `DELETE` request to the URL of an existing content rule:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.req
 ```
 
@@ -422,7 +422,7 @@ Response:
 Delete an existing action from a content rule by sending a `DELETE` request to the URL of an existing content rule:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.req
 ```
 

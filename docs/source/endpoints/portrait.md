@@ -16,7 +16,7 @@ Plone users have the option to upload a portrait to their profile. This profile 
 You can request your own user portrait by issuing a `GET` request to the root URL appending `/@portrait`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/portrait_self_get.req
 ```
 
@@ -29,7 +29,7 @@ The server will respond with a `Status 200` and the image requested (not JSON). 
 The server will respond with a `Status 404` in case that the portrait is not set.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/portrait_self_get.req
 ```
 
@@ -42,7 +42,7 @@ The server will respond with a `Status 404` in case that the portrait is not set
 You can request the portrait for a specific user `username` by issuing a `GET` request to the root URL appending `/@portrait/username`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/portrait_username_get.req
 ```
 

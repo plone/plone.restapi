@@ -26,7 +26,7 @@ When commenting is enabled on your content object, you can retrieve a list of al
 You can list the existing comment on a content object by sending a `GET` request to the URL of the content object and appending `/@comments`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/comments_get.req
 ```
 
@@ -65,7 +65,7 @@ To add a new comment to a content object, send a `POST` request to the URL of th
 The body of the request needs to contain a JSON structure with a `text` attribute that contains the comment text:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/comments_add_root.req
 ```
 
@@ -83,7 +83,7 @@ To add a direct reply to an existing comment, send a `POST` request to the URL o
 The body of the request needs to contain a JSON structure with a `text` attribute that contains the comment text:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/comments_add_sub.req
 ```
 
@@ -104,7 +104,7 @@ An existing comment can be updated by sending a `PATCH` request to the URL of th
 The request body needs to contain a JSON structure with at least a `text` attribute:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/comments_update.req
 ```
 
@@ -124,7 +124,7 @@ Deleting a comment will, by default, also delete all existing replies to that co
 ```
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
          :request: ../../../src/plone/restapi/tests/http-examples/comments_delete.req
 ```
 

@@ -11,7 +11,7 @@ myst:
 
 How to get all standard Plone content representations.
 The syntax is given in various tools.
-Click on "curl", "http-request" or "python-requests" to see an example for those tools.
+Select {guilabel}`http`, {guilabel}`curl`, {guilabel}`httpie`, {guilabel}`python-requests`, or {guilabel}`plone-client` to see an example for those tools.
 
 ```{note}
 For folderish types, collections or search results, the results will be **batched** if the size of the resultset exceeds the batch size.
@@ -22,7 +22,7 @@ See {doc}`../usage/batching` for more details on how to work with batched result
 ## Plone Portal Root
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/siteroot.req
 ```
 
@@ -34,7 +34,7 @@ See {doc}`../usage/batching` for more details on how to work with batched result
 ## Plone Folder
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/folder.req
 ```
 
@@ -46,7 +46,7 @@ See {doc}`../usage/batching` for more details on how to work with batched result
 ## Plone Document
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/document.req
 ```
 
@@ -63,7 +63,7 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 ```
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/newsitem.req
 ```
 
@@ -75,7 +75,7 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 ## Event
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/event.req
 ```
 
@@ -92,7 +92,7 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 ```
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/image.req
 ```
 
@@ -104,7 +104,7 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 ## File
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/file.req
 ```
 
@@ -116,7 +116,7 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 ## Link
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/link.req
 ```
 
@@ -128,7 +128,7 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 ## Collection
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/collection.req
 ```
 
@@ -139,7 +139,7 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 You can also get all the data for each of the items in a collection by appending the `?fullobjects` parameter to the query:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/collection_fullobjects.req
 ```
 

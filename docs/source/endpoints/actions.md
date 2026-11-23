@@ -25,7 +25,7 @@ This also works for unauthenticated users.
 To list the available actions, send a `GET` request to the `@actions` endpoint on a specific content object:
 
 ```{eval-rst}
-.. http:example:: curl httpie python-requests
+.. http:example:: curl httpie python-requests plone-client-python
    :request: ../../../src/plone/restapi/tests/http-examples/actions_get.req
 ```
 

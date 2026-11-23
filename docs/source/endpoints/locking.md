@@ -28,7 +28,7 @@ The API consumer can create, read, update, and delete a content-type lock.
 To lock an object, send a `POST` request to the `/@lock` endpoint that is available on any content object in Plone:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/lock.req
 ```
 
@@ -48,7 +48,7 @@ To create a lock with a non-default timeout, you can pass the timeout value in s
 The following example creates a non-stealable lock with a timeout of one hour:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/lock_nonstealable_timeout.req
 ```
 
@@ -63,7 +63,7 @@ The server responds with status {term}`200 OK` and returns the lock information:
 To unlock an object, send a `DELETE` request to the `/@lock` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/unlock.req
 ```
 
@@ -76,7 +76,7 @@ The server responds with status {term}`200 OK` and returns the lock information:
 To unlock an object locked by another user, send a force `DELETE` request to the `/@lock` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/unlock_force.req
 ```
 
@@ -91,7 +91,7 @@ The server responds with status {term}`200 OK` and returns the lock information:
 An existing lock can be refreshed by sending a `PATCH` request to the `@lock` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/refresh_lock.req
 ```
 
@@ -106,7 +106,7 @@ The server responds with status {term}`200 OK` and returns the lock information 
 To find out if an object is locked or to get information about the current lock, you can send a `GET` request to the `@lock` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/lock_get.req
 ```
 
@@ -121,6 +121,6 @@ The server responds with status {term}`200 OK` and returns the information about
 To update a locked object with a `PATCH` request, you have to provide the lock token with the `Lock-Token` header:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/lock_update.req
 ```

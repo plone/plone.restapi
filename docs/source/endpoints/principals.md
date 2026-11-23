@@ -19,7 +19,7 @@ This endpoint requires an authenticated user.
 To retrieve a list of principals given a search string, call the `/@principals` endpoint with a `GET` request and a `search` query parameter:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/principals.req
 ```
 

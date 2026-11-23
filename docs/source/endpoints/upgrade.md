@@ -23,7 +23,7 @@ The upgrade endpoint is protected by the `cmf.ManagePortal` permission that requ
 Send a `GET` request to the `@upgrade` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/upgrade_get.req
 ```
 
@@ -41,7 +41,7 @@ The response will contain information about available upgrade steps:
 Send a `POST` request to the `@upgrade` endpoint passing the value of `dry_run` as `true`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/upgrade_post_dry_run.req
 ```
 
@@ -57,7 +57,7 @@ The response will contain the result of the upgrade operation, indicating `dry_r
 Send a `POST` request to the `@upgrade` endpoint, with `dry_run` set to `false`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/upgrade_post.req
 ```
 

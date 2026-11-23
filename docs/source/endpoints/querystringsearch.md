@@ -16,7 +16,7 @@ Call the `/@querystring-search` endpoint with either a `POST` or `GET` request.
 When using the `POST` request, provide a query in the request body:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/querystringsearch_post.req
 ```
 
@@ -29,7 +29,7 @@ The server will respond with the results that are filtered based on the query yo
 When using the `GET` request, provide the query as a JSON URL-encoded string as a parameter.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/querystringsearch_get.req
 ```
 

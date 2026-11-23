@@ -29,7 +29,7 @@ In terms of the resulting catalog query, this means that, by default, a search w
 Search results are represented similar to collections:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/search.req
 ```
 
@@ -92,7 +92,7 @@ query = {"path": {"query": "/folder1",
 This dictionary will need to be flattened in dotted notation to pass it into a query string:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/search_options.req
 ```
 
@@ -117,7 +117,7 @@ To specify multiple paths, repeat the query string parameter.
 The `requests` module will automatically do this for you if you pass it a list of values for a query string parameter.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/search_multiple_paths.req
 ```
 
@@ -130,7 +130,7 @@ The `requests` module will automatically do this for you if you pass it a list o
 Sorting can happen on multiple indexes, as the underlying catalog supports it. To do so the query has to contain the list of indexes to be used for sorting in the `sort_on` parameter. If wanted the ordering of the sorting can also be added in the query in the `sort_order` parameter.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/search_sort_multiple_indexes.req
 ```
 
@@ -161,7 +161,7 @@ By default, the results are represented as summaries that contain only the most 
 If you need to retrieve additional metadata columns, you can do so by specifying the additional column names in the `metadata_fields` parameter:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/search_metadata_fields.req
 ```
 
@@ -191,7 +191,7 @@ If the data provided as metadata is not enough, you can retrieve search results 
 You do so by specifying the `fullobjects` parameter:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/search_fullobjects.req
 ```
 

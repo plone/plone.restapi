@@ -25,7 +25,7 @@ To use the service, send a `GET` request to the `@inherit` endpoint in the conte
 Specify the `expand.inherit.behaviors` parameter as a comma-separated list of behaviors.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/inherit_get.req
 ```
 
@@ -47,7 +47,7 @@ This endpoint can be used with the {doc}`../usage/expansion` mechanism which all
 You can make a `GET` request for a content item, and include parameters to request `inherit` expansion for specific behaviors:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/inherit_expansion.req
 ```
 

@@ -22,7 +22,7 @@ To get the information about the navigation root, the REST API has a `@navroot` 
 For instance, send a `GET` request to the `@navroot` endpoint at the root of the site:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get.req
 ```
 
@@ -35,7 +35,7 @@ The response will contain the navigation root information for the site:
 If you request the `@navroot` of a given content item in the site:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.req
 ```
 
@@ -48,7 +48,7 @@ The response will contain the navigation root information in the context of that
 In a multilingual site, the root of the site will work as usual:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_site_get.req
 ```
 
@@ -61,7 +61,7 @@ The response will contain the navigation root information of the root of the sit
 In a multilingual site where the language folder is the navigation root, the response has the language folder information:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_lang_folder_get.req
 ```
 
@@ -74,7 +74,7 @@ The response will contain the navigation root information for the language folde
 In a multilingual site, if the navigation root is requested for content inside a language folder:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.req
 ```
 
@@ -95,7 +95,7 @@ If a simple `GET` request is made on the content item, a new entry will be shown
 In a standard site when querying the site root:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get_expansion.req
 ```
 
@@ -108,7 +108,7 @@ The response will contain information of the site root with the navigation expan
 When querying a content item inside the root:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get_expansion.req
 ```
 
@@ -122,7 +122,7 @@ In a multilingual site, it works the same.
 Use the request:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/site_get_expand_navroot.req
 ```
 
@@ -135,7 +135,7 @@ And the response will contain the navigation root information pointing to the ro
 It will also work with language root folders that are navigation roots:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder.req
 ```
 
@@ -148,7 +148,7 @@ The response will contain the navigation root information expanded:
 And also for content inside the language root folders:
 
 ```{eval-rst}
-.. http:example:: curl httpie python-requests
+.. http:example:: curl httpie python-requests plone-client-python
    :request: ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder_content.req
 ```
 

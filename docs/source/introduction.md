@@ -25,7 +25,7 @@ The entry point to the Plone RESTful API is the portal root.
 The client can send an HTTP request for a {term}`REST` API response by setting the `"Accept"` HTTP header to `"application/json"`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../src/plone/restapi/tests/http-examples/siteroot.req
 ```
 
@@ -52,10 +52,18 @@ This lets a developer build a loosely coupled client that does not break if some
 Only the entry point of the entire API (in our case the portal root) needs to be known in advance.
 
 Here is another example, this time showing a request and response for a document.
-Click {guilabel}`http`, {guilabel}`curl`, {guilabel}`httpie`, or {guilabel}`python-requests` to show the syntax of the request for that client:
+Click {guilabel}`http`, {guilabel}`curl`, {guilabel}`httpie`, {guilabel}`python-requests`, or {guilabel}`plone-client` to show the syntax of the request for that client.
+[`plone-client`](https://github.com/plone/plone-client) is a Python library and command line client for Plone sites.
+In its examples, `client` is a `PloneClient` connected to the site, which sends the `Accept` header and the credentials by itself, and takes paths from the site root:
+
+```python
+from plone_client import PloneClient
+
+client = PloneClient("http://localhost:8080/Plone", username="admin", password="secret")
+```
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../src/plone/restapi/tests/http-examples/document.req
 ```
 

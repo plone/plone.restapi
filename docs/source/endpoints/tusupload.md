@@ -22,7 +22,7 @@ There is a `@tus-upload` endpoint to upload a file, and a `@tus-replace` endpoin
 To create a new upload, send a `POST` request to the `@tus-upload` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/tusupload_post.req
 ```
 
@@ -106,7 +106,7 @@ The server will respond with a {term}`204 No Content` response and the final fil
 To ask the server for the current file offset, the client can send a `HEAD` request to the upload URL:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/tusupload_head.req
 ```
 
@@ -122,7 +122,7 @@ The server will respond with a {term}`200 OK` status and the current file offset
 The current TUS configuration and a list of supported options can be retrieved sending an `OPTIONS` request to the `@tus-upload` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/tusupload_options.req
 ```
 

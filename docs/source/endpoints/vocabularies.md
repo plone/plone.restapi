@@ -63,7 +63,7 @@ While the `@vocabularies` and `@sources` endpoints allow _enumeration_ of terms 
 To retrieve a list of all the available vocabularies, send a `GET` request to the `@vocabularies` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/vocabularies.req
 ```
 
@@ -83,7 +83,7 @@ To enumerate the terms of a particular vocabulary, use the `@vocabularies` endpo
 The endpoint can be used with the site root and content objects:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get.req
 ```
 
@@ -123,7 +123,7 @@ Use the `title` parameter to filter vocabulary terms by title.
 For example, search for all terms that contain the string `doc` in the title:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_title.req
 ```
 
@@ -136,7 +136,7 @@ This is useful when you have the `token`, and you need to retrieve the `title`.
 For example, search for the term `doc` in the token:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token.req
 ```
 
@@ -152,7 +152,7 @@ The API returns a 400 response code if you do so.
 Use the `tokens` parameter to filter vocabulary terms by a list of tokens:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token_list.req
 ```
 
@@ -165,7 +165,7 @@ Use the `tokens` parameter to filter vocabulary terms by a list of tokens:
 Sort vocabulary terms by title using the `sort_on=title` parameter.
 Sorting is applied server-side before results are batched.
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get_sorted_by_title.req
 ```
 
@@ -188,7 +188,7 @@ Otherwise, the endpoint behaves the same as the `@vocabularies` endpoint.
 Example:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/sources_get.req
 ```
 
@@ -219,7 +219,7 @@ The source's results are returned.
 Example:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/querysources_get.req
 ```
 

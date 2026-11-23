@@ -53,7 +53,7 @@ The plugin is installed automatically when installing the product.
 A JWT token can be acquired by posting a user's credentials to the `@login` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/jwt_login.req
 ```
 
@@ -69,7 +69,7 @@ The server responds with a JSON object containing the token:
 The token can now be used in subsequent requests by including it in the `Authorization` header with the `Bearer` scheme:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/jwt_logged_in.req
 ```
 
@@ -80,7 +80,7 @@ By default, the token will expire after 12 hours, and thus must be renewed befor
 To renew the token, `POST` to the `@login-renew` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/jwt_login_renew.req
 ```
 
@@ -101,7 +101,7 @@ If you need tokens that are valid indefinitely you should also disable the use o
 The logout request must contain the existing token in the `Authorization` header:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/jwt_logout.req
 ```
 

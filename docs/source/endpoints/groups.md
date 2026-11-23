@@ -18,7 +18,7 @@ This requires an authenticated user.
 To retrieve a list of all current groups in the portal, call the `/@groups` endpoint with a `GET` request:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/groups.req
 ```
 
@@ -31,7 +31,7 @@ The server will respond with a list of all groups in the portal:
 The endpoint supports some basic filtering:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/groups_filtered_by_groupname.req
 ```
 
@@ -50,7 +50,7 @@ Its default is a maximum of 25 groups at a time for performance reasons:
 To create a new group, send a `POST` request to the global `/@groups` endpoint with a JSON representation of the group you want to create in the body:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/groups_created.req
 ```
 
@@ -70,7 +70,7 @@ If the group has been created successfully, the server will respond with a statu
 To retrieve all details for a particular group, send a `GET` request to the `/@groups` endpoint and append the group ID to the URL:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/groups_get.req
 ```
 
@@ -88,7 +88,7 @@ Batching is supported for the `users` object.
 To update the settings of a group, send a `PATCH` request with the group details you want to amend to the URL of that particular group:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/groups_update.req
 ```
 
@@ -108,7 +108,7 @@ A successful response to a `PATCH` request will be indicated by a {term}`204 No 
 To delete a group, send a `DELETE` request to the `/@groups` endpoint and append the group id of the group you want to delete:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/groups_delete.req
 ```
 
