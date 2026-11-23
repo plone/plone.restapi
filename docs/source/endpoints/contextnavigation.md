@@ -19,7 +19,7 @@ parameters to the service or expand the component."
 Get the top-level navigation items:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/contextnavigation.req
 ```
 

@@ -18,7 +18,7 @@ It also allows to revert to a previous version of the file.
 Listing versions and history of a resource:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/history_get.req
 ```
 
@@ -43,7 +43,7 @@ The following fields are returned:
 Older versions of a resource can be retrieved by appending `version` to the `@history` endpoint URL:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/history_get_versioned.req
 ```
 
@@ -52,7 +52,7 @@ Older versions of a resource can be retrieved by appending `version` to the `@hi
 Reverting to an older versions of a resource can be done by sending a `PATCH` request to the `@history` endpoint and appending the version you want to revert to:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/history_revert.req
 ```
 

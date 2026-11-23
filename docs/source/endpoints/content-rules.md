@@ -31,7 +31,7 @@ Available content rules in a Plone site can be listed and queried by accessing t
 Access requires the `ManageContentRules` permission.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/rules_get.req
 ```
 
@@ -56,7 +56,7 @@ apply to subfolders or disable apply to subfolders, move down or move up |
 To assign a content rule to a context, send a `POST` request to the `<context>/@content-rules` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/rules_add.req
 ```
 
@@ -72,7 +72,7 @@ To get content rules that are assigned, assignable, or acquired for a context, s
 request to the `<context>/@content-rules` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/rules_get.req
 ```
 
@@ -90,7 +90,7 @@ request to the `<context>/@content-rules` endpoint:
 ### Apply on subfolders
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/rules_apply_subfolders.req
 ```
 
@@ -103,7 +103,7 @@ Response:
 ### Disable apply on subfolders
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/rules_disable_apply_subfolders.req
 ```
 
@@ -116,7 +116,7 @@ Response:
 ### Enable
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/rules_enable.req
 ```
 
@@ -129,7 +129,7 @@ Response:
 ### Disable
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/rules_disable.req
 ```
 
@@ -142,7 +142,7 @@ Response:
 ### Move up
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/rules_move_up.req
 ```
 
@@ -155,7 +155,7 @@ Response:
 ### Move down
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/rules_move_down.req
 ```
 
@@ -170,7 +170,7 @@ Response:
 To unassign content rules on a context, send a `DELETE` request to the `<context>/@content-rules` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/rules_delete.req
 ```
 

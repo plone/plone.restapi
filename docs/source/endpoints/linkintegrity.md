@@ -21,7 +21,7 @@ This check includes content objects that are located within a content object ("f
 You can call the `/@linkintegrity` endpoint on the site root with a `GET` request and a list of content UIDs in the JSON body:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/linkintegrity_get.req
 ```
 

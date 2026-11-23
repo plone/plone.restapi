@@ -33,7 +33,7 @@ Creating and deleting relations requires `zope2.View` permission on the target o
 The call without any parameters returns statistics on all existing relations to which the user has access.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_catalog_get_stats.req
 ```
 
@@ -58,7 +58,7 @@ The relations are grouped by relation name, source, and target, and are provided
 Query relations of a **relation type**:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_get_relationname.req
 ```
 
@@ -69,7 +69,7 @@ Query relations of a **relation type**:
 Query relations of a **source** object by path:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_get_source_by_path.req
 ```
 
@@ -80,7 +80,7 @@ Query relations of a **source** object by path:
 Query relations of a **source** object by UID:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_get_source_by_uid.req
 ```
 
@@ -91,7 +91,7 @@ Query relations of a **source** object by UID:
 Query relations by **relation name and source**:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_get_source_and_relation.req
 ```
 
@@ -102,7 +102,7 @@ Query relations by **relation name and source**:
 Query relations to a **target**:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_get_target.req
 ```
 
@@ -171,7 +171,7 @@ If the relation is based on a `RelationChoice` or `RelationList` field of the so
 Create a relation by **path**:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_post.req
 ```
 
@@ -182,7 +182,7 @@ Create a relation by **path**:
 Create a relation by **UID**:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_post_with_uid.req
 ```
 
@@ -193,7 +193,7 @@ Create a relation by **UID**:
 If either the source or target do not exist, then an attempt to create a relation will fail, and will return a `422 Unprocessable Entity` response.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_post_failure.req
 ```
 
@@ -215,7 +215,7 @@ If a deleted relation is based on a `RelationChoice` or `RelationList` field, th
 You can delete relations by either UID or path.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_del_path_uid.req
 ```
 
@@ -226,7 +226,7 @@ You can delete relations by either UID or path.
 If either the source or target do not exist, then an attempt to delete a relation will fail, and will return a `422 Unprocessable Entity` response.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_del_failure.req
 ```
 
@@ -237,7 +237,7 @@ If either the source or target do not exist, then an attempt to delete a relatio
 ### Delete relations by relation name
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_del_relationname.req
 ```
 
@@ -252,7 +252,7 @@ You can delete relations by either source UID or path.
 The following example shows how to delete a relation by source path.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_del_source.req
 ```
 
@@ -267,7 +267,7 @@ You can delete relations by either target UID or path.
 The following example shows how to delete a relation by target path.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_del_target.req
 ```
 
@@ -281,7 +281,7 @@ You can delete relations by a combination of either any two of their relation na
 In the following example, you would delete a relation by its relation name and target.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_del_combi.req
 ```
 
@@ -296,7 +296,7 @@ Broken relations can be fixed by releasing and re-indexing them.
 A successfully fixed relation will return a `204 No Content` response.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_rebuild.req
 ```
 
@@ -309,6 +309,6 @@ If your code relies on `intIds`, you should take caution and think carefully bef
 
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/relations_rebuild_with_flush.req
 ```

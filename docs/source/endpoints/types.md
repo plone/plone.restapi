@@ -21,7 +21,7 @@ The `addable` key specifies if the content type can be added to the current cont
 The `layouts` key specifies the defined views:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types.req
 ```
 
@@ -57,7 +57,7 @@ See {ref}`dexterity-types` control panel RestAPI endpoint for enabling and disab
 To create a new *fieldset*, send a `POST` request to the `/@types/Document` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document_post_fieldset.req
 ```
 
@@ -70,7 +70,7 @@ Response:
 To create a new *field*, send a `POST` request to the `/@types/Document` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document_post_field.req
 ```
 
@@ -83,7 +83,7 @@ Response:
 For a complete list of available field `@types`, you can access `/@vocabularies/Fields` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get_fields.req
 ```
 
@@ -99,7 +99,7 @@ Response:
 To get the schema of a content type, access the `/@types` endpoint with the name of the content type, for example, `plone/@types/Document`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document.req
 ```
 
@@ -125,7 +125,7 @@ See {ref}`types-schema` for a detailed documentation about the available field t
 To get one schema **fieldset** properties, access `@types/Document/{fieldset}` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document_get_fieldset.req
 ```
 
@@ -136,7 +136,7 @@ To get one schema **fieldset** properties, access `@types/Document/{fieldset}` e
 To get one schema *field* properties, access `@types/Document/{field}` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document_get_field.req
 ```
 
@@ -153,7 +153,7 @@ To update content type schema defaults, we send a `PATCH` request to the server.
 To update one or more schema *field* properties:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document_patch_properites.req
 ```
 
@@ -166,7 +166,7 @@ Response:
 To change one or more *fieldset* properties:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document_patch_fieldsets.req
 ```
 
@@ -179,7 +179,7 @@ Response:
 To update one *fieldset* settings, we can also send a `PATCH` request to `@types/Document/{fieldset}` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document_patch_fieldset.req
 ```
 
@@ -192,7 +192,7 @@ Response:
 To update one *field* settings, we can also send a `PATCH` request to `@types/Document/{field}` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document_patch_field.req
 ```
 
@@ -208,7 +208,7 @@ Response:
 Use `PUT` when more changes are needed in one call, such as creating new fields or fieldsets, moving fields to a fieldset, removing multiple fields, and so on:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document_put.req
 ```
 
@@ -222,7 +222,7 @@ Use `PUT` when more changes are needed in one call, such as creating new fields 
 Delete an existing schema *field* by sending a `DELETE` request to the URL of an existing schema field:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document_delete_field.req
 ```
 
@@ -235,7 +235,7 @@ Response:
 Delete an existing schema *fieldset* by sending a `DELETE` request to the URL of an existing schema fieldset:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/types_document_delete_fieldset.req
 ```
 

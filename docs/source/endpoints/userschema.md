@@ -20,7 +20,7 @@ This dynamic schema is exposed by this endpoint in order to build the user's pro
 To get the current schema for the user profile, make a request to the `/@userschema` endpoint.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/userschema.req
 ```
 
@@ -41,7 +41,7 @@ In Plone you can configure each of the fields of the user schema to be available
 To get the user schema available for the user registration form, make a request to the `@userschema/registration` endpoint.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/userschema_registration.req
 ```
 

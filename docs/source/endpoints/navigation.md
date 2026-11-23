@@ -17,7 +17,7 @@ myst:
 Get the top-level navigation items:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/navigation.req
 ```
 
@@ -33,7 +33,7 @@ Example response:
 Get the navigation item tree by providing a `expand.navigation.depth` parameter:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/navigation_tree.req
 ```
 

@@ -14,7 +14,7 @@ myst:
 Get the breadcrumbs for the current page:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/breadcrumbs.req
 ```
 

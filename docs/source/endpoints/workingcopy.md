@@ -24,7 +24,7 @@ This process has several steps in its life cycle.
 The user initiates the process and creates a working copy by checking out the content:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_post.req
 ```
 
@@ -40,7 +40,7 @@ The user initiates the process and creates a working copy by checking out the co
 A working copy has been created and can be accessed querying the content:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_get.req
 
 ```
@@ -54,7 +54,7 @@ A working copy has been created and can be accessed querying the content:
 The `GET` content of any object also states the location of the working copy, if any, as `working_copy`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_baseline_get.req
 
 ```
@@ -66,7 +66,7 @@ The `GET` content of any object also states the location of the working copy, if
 The `GET` content of any a working copy also returns the original as `working_copy_of`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_wc_get.req
 ```
 
@@ -80,7 +80,7 @@ The `GET` content of any a working copy also returns the original as `working_co
 Once the user has finished editing the working copy and wants to update the original with the changes, they would check in the working copy:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_patch.req
 
 ```
@@ -101,7 +101,7 @@ If you want to cancel the check-out and delete the working copy (in both the ori
 the working copy):
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_delete.req
 
 ```

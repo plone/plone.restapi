@@ -30,7 +30,7 @@ Once we have installed `plone.app.multilingual` and enabled more than one langua
 The `id` of the content must be a full URL of the content object:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/translations_post.req
 ```
 
@@ -47,7 +47,7 @@ The API will return a {term}`201 Created` response, if the linking was successfu
 We can also use the object's path to link the translation instead of the full URL:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples//translations_post_by_id.req
 ```
 
@@ -58,7 +58,7 @@ We can also use the object's path to link the translation instead of the full UR
 We can also use the object's UID to link the translation:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples//translations_post_by_uid.req
 ```
 
@@ -69,7 +69,7 @@ We can also use the object's UID to link the translation:
 After linking the contents, we can get the list of the translations of that content item by issuing a `GET` request on the `@translations` endpoint of that content item:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/translations_get.req
 ```
 
@@ -80,7 +80,7 @@ After linking the contents, we can get the list of the translations of that cont
 To unlink the content, issue a `DELETE` request on the `@translations` endpoint of the content item, and provide the language code you want to unlink:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/translations_delete.req
 ```
 
@@ -99,7 +99,7 @@ The `POST` content endpoint to a folder is also capable of linking this new cont
 existing translation using two parameters: `translationOf` and `language`.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/translations_link_on_post.req
 ```
 
@@ -114,7 +114,7 @@ When you create a translation in Plone, there are policies in place for finding 
 This endpoint returns the proper placement for the newly created translation:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/translation_locator.req
 ```
 
@@ -135,7 +135,7 @@ For other content types added later, it would be necessary to enable the behavio
 If a simple `GET` request is done on the content item, a new entry will be shown on the `@components` entry, with the URL of the `@translations` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/translations_unexpanded_get.req
 ```
 
@@ -146,7 +146,7 @@ If a simple `GET` request is done on the content item, a new entry will be shown
 In order to expand and embed the translations component, use the GET parameter `expand` with the value `translations`.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/translations_expand_get.req
 ```
 

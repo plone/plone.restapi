@@ -16,7 +16,7 @@ The `@system` endpoint exposes system information about the Plone backend.
 Send a `GET` request to the `@system` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/system_get.req
 ```
 

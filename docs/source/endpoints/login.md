@@ -60,7 +60,7 @@ With the corresponding ZCML stanza, in the corresponding {file}`configure.zcml` 
 The API request would be as follows:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/external_authentication_links.req
 ```
 

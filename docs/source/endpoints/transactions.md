@@ -19,7 +19,7 @@ It also allows to revert transactions so that the Plone website can be reverted 
 Listing versions and transactions of a resource:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/transactions_get.req
 ```
 
@@ -50,7 +50,7 @@ The following fields are returned:
 Reverting a single transaction or a group of transactions can be done by sending a `PATCH` request to the `@transactions` endpoint with a list of transaction IDs you want to revert:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/transactions_revert.req
 ```
 

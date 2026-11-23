@@ -18,7 +18,7 @@ This action requires an authenticated user:
 To retrieve a list of all current users in the portal, call the `/@users` endpoint with a `GET` request:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users.req
 ```
 
@@ -33,7 +33,7 @@ Anonymous users, or logged-in users without Manager rights, are not allowed to l
 This is the example as an anonymous user:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_anonymous.req
 ```
 
@@ -46,7 +46,7 @@ The server will return a {term}`401 Unauthorized` status code.
 And this one as a user without the proper rights:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_unauthorized.req
 ```
 
@@ -61,7 +61,7 @@ The server will return a {term}`401 Unauthorized` status code.
 To download all users of a Plone site as a CSV file, send a `GET` request to the `/@users` endpoint from the site root.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_get_csv_format.req
 ```
 
@@ -78,7 +78,7 @@ The endpoint supports some basic filtering.
 Filtering by `id`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_filtered_by_username.req
 ```
 
@@ -91,7 +91,7 @@ The server will respond with a list of the filtered users in the portal where th
 Filtering by `groups`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_filtered_by_groups.req
 ```
 
@@ -110,7 +110,7 @@ Its default is a maximum of 25 users at a time for performance reasons.
 Search by `id`, `fullname` and `email`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_searched.req
 ```
 
@@ -126,7 +126,7 @@ The server will respond with a list of users where the `fullname`, `email` or `i
 To create a new user, send a `POST` request to the global `/@users` endpoint with a JSON representation of the user you want to create in the body:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_created.req
 ```
 
@@ -153,7 +153,7 @@ To create new users from a CSV file, send a `POST` request to the `/@users` endp
 The endpoint expects a request body with `Content-Type: multipart/form-data` including a file upload named `file`.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_add_csv_format.req
 ```
 
@@ -195,7 +195,7 @@ jdoe,John Doe,Software Developer from Berlin,jdoe@example.com,"Member, Contribut
 To retrieve all details for a particular user, send a `GET` request to the `/@users` endpoint and append the user ID to the URL:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_get.req
 ```
 
@@ -210,7 +210,7 @@ The key `roles` lists the globally defined roles for the user.
 Only users with Manager rights are allowed to get other users' information:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_unauthorized_get.req
 ```
 
@@ -223,7 +223,7 @@ If the user lacks these rights, the server will respond with a {term}`401 Unauth
 Anonymous users are not allowed to get users' information:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_anonymous_get.req
 ```
 
@@ -236,7 +236,7 @@ If the user is anonymous, the server will respond with a {term}`401 Unauthorized
 But each user is allowed to get its own information:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_authorized_get.req
 ```
 
@@ -253,7 +253,7 @@ To update the settings of a user, send a `PATCH` request with the user details y
 For example, if you want to update the email address of the admin user, do the following:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_update.req
 ```
 
@@ -272,7 +272,7 @@ Any user is able to update their own properties and password (if allowed) by usi
 The user portrait or avatar can also be updated using the same serialization as the file one:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_update_portrait.req
 ```
 
@@ -287,7 +287,7 @@ Adding the portrait via the `@user` endpoint does not scale its size because it 
 If you still want Plone to take care of image scaling using the default Plone behavior for portraits, you have to add the `scale` attribute to the request:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_update_portrait_scale.req
 ```
 
@@ -301,7 +301,7 @@ To delete a user, send a `DELETE` request to the `/@users` endpoint and append t
 For example, to delete the user with the ID `johndoe`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_delete.req
 ```
 
@@ -321,7 +321,7 @@ To mark such a behavior, we need to pass specific parameters to the `delete` end
 In this case, we request not to delete the local roles:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_delete_no_localroles.req
 ```
 
@@ -334,7 +334,7 @@ A successful response will be indicated by a {term}`204 No Content` response:
 In this case we request not to delete the member areas:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_delete_no_memberareas.req
 ```
 
@@ -364,7 +364,7 @@ This new user will have the role `Member` by default, just the same as the Plone
 To create a new user, send a `POST` request to the `@users` endpoint:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_add.req
 ```
 
@@ -393,7 +393,7 @@ The server will respond with a {term}`200 OK` response, and send an email to the
 The token that is part of the reset URL in the email can be used to authorize setting a new password:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/users_reset.req
 ```
 

@@ -20,7 +20,7 @@ Reading or writing registry records require the `cmf.ManagePortal` permission.
 Reading a single record:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/registry_get.req
 ```
 
@@ -42,7 +42,7 @@ The output record contains the following fields:
 - `value`: The record's value. This is the same as `GET`ting `@registry/name`:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/registry_get_list.req
 ```
 
@@ -62,7 +62,7 @@ To do so, append a query string to the listing endpoint with a `q` parameter and
 See {doc}`../usage/batching` for details of how to work with batched results.
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/registry_get_list_filtered.req
 ```
 
@@ -77,7 +77,7 @@ Example response:
 Updating an existing record:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/registry_update.req
 ```
 

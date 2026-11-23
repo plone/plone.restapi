@@ -70,7 +70,7 @@ In order to address a specific batch page, the `b_start` parameter can be used t
 The following is a full example of a batched request and response:
 
 ```{eval-rst}
-..  http:example:: curl httpie python-requests
+..  http:example:: curl httpie python-requests plone-client-python
     :request: ../../../src/plone/restapi/tests/http-examples/batching.req
 ```
 
