@@ -13,6 +13,7 @@ from zope.container.contained import notifyContainerModified
 from zope.container.contained import ObjectAddedEvent
 from zope.container.interfaces import INameChooser
 from zope.event import notify
+from zope.lifecycleevent import ObjectCreatedEvent
 
 
 def create(container, type_, id_=None, title=None):
@@ -68,13 +69,15 @@ def create(container, type_, id_=None, title=None):
     return obj
 
 
-def add(container, obj, rename=True):
+def add(container, obj, rename=True, notify_created=False):
     """Add an object to a container."""
     id_ = getattr(aq_base(obj), "id", None)
 
     # Archetypes objects are already created in a container thus we just fire
     # the notification events and rename the object if necessary.
     if base_hasattr(obj, "_at_rename_after_creation"):
+        if notify_created:
+            notify(ObjectCreatedEvent(obj))
         notify(ObjectAddedEvent(obj, container, id_))
         notifyContainerModified(container)
         if obj._at_rename_after_creation and rename:
@@ -92,6 +95,8 @@ def add(container, obj, rename=True):
                 suggestion = obj.Title()
             id_ = chooser.chooseName(suggestion, obj)
             obj.id = id_
+        if notify_created:
+            notify(ObjectCreatedEvent(obj))
         new_id = container._setObject(id_, obj)
         # _setObject triggers ObjectAddedEvent which can end up triggering a
         # content rule to move the item to a different container. In this case
