@@ -1,0 +1,1 @@
+Changed the structure of the @content-rules endpoint response to return a flat format with @id at the top level, making it consistent with other REST API endpoints. @irtisamsajin
