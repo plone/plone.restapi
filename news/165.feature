@@ -1,0 +1,1 @@
+Implement RFC 7807 Problem Details for error responses. Errors now include standardized `type`, `title`, `status`, `detail`, and `instance` fields. Exceptions are logged to stderr with full traceback. Messages are translated via i18n. Backwards compatibility maintained with `message`, `context`, and `traceback` fields. Fixes #165.
